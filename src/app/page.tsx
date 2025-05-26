@@ -1,5 +1,7 @@
+'use client';
 import Image from 'next/image';
 import Sidebar from '../components/Sidebar';
+import { useState } from 'react';
 
 export default function Home() {
   return (
@@ -16,7 +18,7 @@ export default function Home() {
       <main className="ml-0 md:ml-64">
         {/* Hero Section */}
         <section className="text-center px-4 sm:px-8 py-8 sm:py-16">
-          <p className="text-gray-400 mb-4">DropSkills, Leader du Digital Dropshipping en France 🇫🇷</p>
+          {/* <p className="text-gray-400 mb-4">DropSkills, Leader du Digital Dropshipping en France 🇫🇷</p> */}
           <h2 className="text-2xl sm:text-5xl font-bold text-white mb-4">
             Revendez des Produits Digitaux
           </h2>
@@ -65,29 +67,186 @@ export default function Home() {
           </button>
         </section>
 
-        {/* Resource Grid */}
-        <section className="px-4 sm:px-8 py-8 sm:py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
-          {[
-            'Growth Hacking',
-            'Tunnels de Vente 2.0',
-            'Canva 2025',
-            'TikTok Ads',
-            'Coaching High Ticket',
-            'Amazon KDP',
-          ].map((title) => (
-            <div key={title} className="bg-[#111111] rounded-xl p-6 hover:bg-[#1a1a1a] transition-colors">
-              <div className="aspect-video bg-[#1a1a1a] rounded-lg mb-4"></div>
-              <h3 className="text-white font-semibold text-xl mb-2">{title}</h3>
-              <p className="text-gray-400 text-sm mb-4">
-                Description du produit digital avec ses principaux avantages et caractéristiques.
-              </p>
-              <button className="w-full bg-[#ff0033] text-white py-2 rounded-lg hover:bg-red-600 transition-colors">
-                En savoir plus
-              </button>
+        {/* Bannière échantillons */}
+        <div className="max-w-5xl mx-auto mb-12">
+          <div className="bg-[#18181b] rounded-2xl flex flex-col sm:flex-row items-center justify-between px-8 py-6 shadow-lg">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[#ff0033] text-2xl">★</span>
+                <span className="text-white text-lg font-semibold">Curieux de la qualité de nos produits&nbsp;?</span>
+              </div>
+              <p className="text-gray-300 text-base">Découvre nos échantillons gratuits pour tester la qualité premium des ressources DropSkills.</p>
             </div>
-          ))}
+            <a
+              href="/echantillons"
+              className="mt-4 sm:mt-0 sm:ml-8 bg-[#ff0033] hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors text-base shadow-md flex items-center gap-2"
+            >
+              Voir les échantillons
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L21 12m0 0l-3.75 5.25M21 12H3" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        {/* Resource Grid - style maquette */}
+        <section className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16">
+          <h2 className="text-3xl font-bold text-white mb-8">Tous les produits</h2>
+
+          {/* Filtres et recherche */}
+          <ProductGridMock />
         </section>
       </main>
+    </div>
+  );
+}
+
+const PRODUCTS = [
+  {
+    id: 1,
+    title: 'Brand Voice Unlocked',
+    image: '/mock/brand-voice-unlocked.jpg',
+    format: 'Audio',
+    tags: ['Voice', 'Audio', 'Branding', 'Digital Marketing'],
+  },
+  {
+    id: 2,
+    title: 'Build a Voice that Connect',
+    image: '/mock/build-voice-connect.jpg',
+    format: 'Book',
+    tags: ['Voice', 'Book', 'Content Marketing', 'Branding'],
+  },
+  {
+    id: 3,
+    title: 'Brand Voice Architect',
+    image: '/mock/brand-voice-architect.jpg',
+    format: 'Prompt Pack',
+    tags: ['Prompt', 'Pack', 'Branding', 'Business & Entrepreneurship'],
+  },
+  {
+    id: 4,
+    title: 'The Cross-Channel Voice Adaptation System',
+    image: '/mock/cross-channel-voice.jpg',
+    format: 'Guide',
+    tags: ['Voice', 'Guide', 'Startups', 'Digital Marketing'],
+  },
+  {
+    id: 5,
+    title: 'Cross-Platform Brand Voice Consistency',
+    image: '/mock/cross-platform-consistency.jpg',
+    format: 'Checklist',
+    tags: ['Checklist', 'Voice', 'Social Media Marketing', 'Content Marketing'],
+  },
+  {
+    id: 6,
+    title: 'The 7-Step Brand Voice System',
+    image: '/mock/7-step-brand-voice.jpg',
+    format: 'Guide',
+    tags: ['Voice', 'Guide', 'Personal Development', 'Mindset'],
+  },
+];
+
+const FORMATS = [
+  'Book',
+  'Video',
+  'Audio',
+  'Prompt Pack',
+  'Template',
+  'Notion Template',
+  'Checklist',
+  'Toolstack',
+  'Workbook',
+  'Guide',
+];
+
+const TAGS = [
+  'Digital Marketing',
+  'Business & Entrepreneurship',
+  'Content Marketing',
+  'Personal Development',
+  'Branding',
+  'Mindset',
+  'Social Media Marketing',
+  'Startups',
+  'Voice',
+  'Prompt',
+  'Pack',
+  'Checklist',
+  'Guide',
+  'Book',
+  'Audio',
+  'Video',
+  'Template',
+  'Notion Template',
+  'Toolstack',
+  'Workbook',
+];
+
+function ProductGridMock() {
+  const [search, setSearch] = useState('');
+  const [format, setFormat] = useState('');
+  const [tag, setTag] = useState('');
+
+  const filtered = PRODUCTS.filter((p) => {
+    const matchSearch = p.title.toLowerCase().includes(search.toLowerCase());
+    const matchFormat = !format || p.format === format;
+    const matchTag = !tag || p.tags.includes(tag);
+    return matchSearch && matchFormat && matchTag;
+  });
+
+  return (
+    <div>
+      <div className="flex flex-col sm:flex-row gap-4 mb-6 items-center">
+        <select
+          className="bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none"
+          value={tag}
+          onChange={e => setTag(e.target.value)}
+        >
+          <option value="">Filtrer par tags</option>
+          {TAGS.map((t) => (
+            <option key={t} value={t}>{t}</option>
+          ))}
+        </select>
+        <select
+          className="bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none"
+          value={format}
+          onChange={e => setFormat(e.target.value)}
+        >
+          <option value="">Filtrer par format</option>
+          {FORMATS.map((f) => (
+            <option key={f} value={f}>{f}</option>
+          ))}
+        </select>
+        <input
+          type="text"
+          placeholder="Rechercher un produit..."
+          className="flex-1 bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {filtered.map((p) => (
+          <div key={p.id} className="bg-[#111111] rounded-xl p-4 flex flex-col shadow-md border border-[#232323]">
+            <div className="aspect-video bg-[#1a1a1a] rounded-lg mb-4 flex items-center justify-center overflow-hidden">
+              <img src={p.image} alt={p.title} className="object-contain h-full w-full" />
+            </div>
+            <h3 className="text-white font-semibold text-lg mb-2 truncate">{p.title}</h3>
+            <div className="flex-1" />
+            <div className="flex gap-2 mt-4">
+              <button className="flex-1 bg-white text-[#111111] py-2 rounded-lg font-semibold hover:bg-gray-200 transition-colors">Ouvrir</button>
+              <button className="bg-[#18181b] border border-[#232323] text-white px-3 rounded-lg hover:bg-[#232323] transition-colors flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 16v-8m0 8l-3-3m3 3l3-3m-9 4a9 9 0 1118 0 9 9 0 01-18 0z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        ))}
+        {filtered.length === 0 && (
+          <div className="col-span-full text-center text-gray-400 py-12">Aucun produit trouvé.</div>
+        )}
+      </div>
     </div>
   );
 }
