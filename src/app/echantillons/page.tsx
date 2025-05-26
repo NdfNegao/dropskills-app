@@ -91,10 +91,10 @@ export default function EchantillonsPage() {
             <ProductCard
               key={sample.title}
               product={{
-                id: idx + 1,
+                id: (idx + 1).toString(),
                 title: sample.title,
                 subtitle: sample.type,
-                format: sample.type.toLowerCase(),
+                format: sample.type.toLowerCase() as import("@/data/products").Product["format"],
                 image: sample.image,
                 description: sample.description,
                 likes: Math.round(sample.rating * 10),
