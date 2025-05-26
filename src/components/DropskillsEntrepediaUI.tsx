@@ -106,7 +106,13 @@ export default function DropskillsEntrepediaUI() {
   );
 }
 
-function SidebarItem({ icon, label, active = false }) {
+type SidebarItemProps = {
+  icon: React.ReactNode;
+  label: string;
+  active?: boolean;
+};
+
+function SidebarItem({ icon, label, active = false }: SidebarItemProps) {
   return (
     <div
       className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer text-base font-medium hover:bg-neutral-100 transition ${active ? "bg-neutral-100 text-sky-600" : "text-neutral-700"}`}

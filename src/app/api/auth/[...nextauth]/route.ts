@@ -6,7 +6,7 @@ import bcrypt from 'bcryptjs';
 const ADMIN_EMAIL = 'admin@dropskills.com';
 const ADMIN_PASSWORD = bcrypt.hashSync('admin123', 10);
 
-export const authOptions = {
+const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -40,20 +40,18 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role;
+        token.role = (user as any).role;
       }
       return token;
     },
     async session({ session, token }) {
       if (session?.user) {
-        session.user.role = token.role;
+        (session.user as any).role = token.role;
       }
       return session;
     }
   },
-  secret: process.env.NEXTAUTH_SECRET || 'your-secret-key',
-};
-
-const handler = NextAuth(authOptions);
+  secret: process.env.NEXTAUTH_SECRET,
+});
 
 export { handler as GET, handler as POST }; 

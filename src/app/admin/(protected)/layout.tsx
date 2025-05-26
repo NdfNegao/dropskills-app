@@ -1,6 +1,26 @@
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../api/auth/[...nextauth]/route';
+import CredentialsProvider from 'next-auth/providers/credentials';
+
+const authOptions = {
+  providers: [
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Mot de passe", type: "password" }
+      },
+      async authorize(credentials) {
+        // Autorisation fictive pour l'admin
+        if (credentials?.email === 'admin@dropskills.com' && credentials?.password === 'admin123') {
+          return { id: '1', email: 'admin@dropskills.com', name: 'Admin', role: 'admin' };
+        }
+        return null;
+      }
+    })
+  ],
+  secret: process.env.NEXTAUTH_SECRET,
+};
 
 export default async function AdminLayout({
   children,
