@@ -32,6 +32,7 @@ export default function Sidebar() {
       >
         <Menu size={28} className="text-white" />
       </button>
+      
       {/* Overlay mobile */}
       {sidebarOpen && (
         <div
@@ -40,6 +41,7 @@ export default function Sidebar() {
           aria-label="Fermer le menu"
         />
       )}
+      
       {/* Sidebar */}
       <aside
         className={`
