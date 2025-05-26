@@ -1,12 +1,21 @@
 import OpenAI from 'openai';
 
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error('OPENAI_API_KEY is required');
+// Initialisation conditionnelle pour éviter les erreurs de build
+let openai: OpenAI | null = null;
+
+function getOpenAIClient(): OpenAI {
+  if (!openai) {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY is required');
+    }
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+  }
+  return openai;
 }
 
-export const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+export { getOpenAIClient as openai };
 
 export interface IdeaGenerationRequest {
   targetAudience: string;
@@ -29,6 +38,7 @@ export interface GeneratedIdea {
 }
 
 export async function generateProductIdeas(request: IdeaGenerationRequest): Promise<GeneratedIdea[]> {
+  const client = getOpenAIClient();
   const { targetAudience, topic, formats } = request;
   
   // Construction du prompt optimisé
@@ -64,7 +74,7 @@ Assure-toi que les idées sont :
 ${formats && formats.length > 0 ? `- Privilégiant les formats : ${formats.join(', ')}` : ''}`;
 
   try {
-    const completion = await openai.chat.completions.create({
+    const completion = await client.chat.completions.create({
       model: "gpt-4o",
       messages: [
         { role: "system", content: systemPrompt },

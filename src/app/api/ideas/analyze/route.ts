@@ -119,7 +119,7 @@ ${body.potentialRevenue ? `**POTENTIEL FINANCIER VISÉ :** ${body.potentialReven
 Fournis une analyse complète selon le format demandé.`;
 
     try {
-      const completion = await openai.chat.completions.create({
+      const completion = await openai().chat.completions.create({
         model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
