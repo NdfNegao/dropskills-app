@@ -100,6 +100,7 @@ model User {
   packsCreated          Pack[]             @relation("PackCreator")
   packsPurchased        PackUser[]
   iaToolUsage           IaToolUsage[]
+  productIdeaRequests   ProductIdeaRequest[]
   supportTickets        SupportTicket[]
   assignedTickets       SupportTicket[]    @relation("AssignedTickets")
   ticketResponses       TicketResponse[]
@@ -336,6 +337,109 @@ model IaToolUsage {
   createdAt     DateTime    @default(now()) @map("created_at")
   
   @@map("ia_tool_usage")
+}
+
+// ============================================================================
+// IDÉES DE PRODUITS PERSONNALISÉES
+// ============================================================================
+
+enum IdeaRequestStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  ERROR
+  CANCELLED
+}
+
+enum IdeaDifficulty {
+  FACILE
+  MOYEN
+  DIFFICILE
+}
+
+model ProductIdeaRequest {
+  id              String            @id @default(uuid())
+  userId          String            @map("user_id")
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Données du formulaire
+  targetAudience  String            @map("target_audience")
+  topic           String?
+  formats         String?           // JSON array des formats sélectionnés
+  
+  // Statut et métadonnées
+  status          IdeaRequestStatus @default(PENDING)
+  errorMessage    String?           @map("error_message")
+  processingTime  Int?              @map("processing_time") // en millisecondes
+  
+  // Timestamps
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+  completedAt     DateTime?         @map("completed_at")
+  
+  // Relations
+  generatedIdeas  ProductIdea[]
+  
+  @@map("product_idea_requests")
+}
+
+model ProductIdea {
+  id                String              @id @default(uuid())
+  requestId         String              @map("request_id")
+  request           ProductIdeaRequest  @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  
+  // Contenu de l'idée
+  title             String
+  description       String
+  targetAudience    String              @map("target_audience")
+  marketSize        String              @map("market_size")
+  difficulty        IdeaDifficulty
+  revenueEstimate   String              @map("revenue_estimate")
+  keyFeatures       String              // JSON array
+  marketingStrategy String              @map("marketing_strategy")
+  
+  // Métadonnées
+  confidence        Float?              // Score de confiance de l'IA (0-1)
+  tags              String?             // JSON array
+  category          String?
+  
+  // Interactions utilisateur
+  isBookmarked      Boolean             @default(false) @map("is_bookmarked")
+  userRating        Int?                @map("user_rating") // 1-5 étoiles
+  userFeedback      String?             @map("user_feedback")
+  
+  // Timestamps
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
+  
+  @@map("product_ideas")
+}
+
+// Modèle pour les idées générales/tendances (non personnalisées)
+model TrendingIdea {
+  id              String         @id @default(uuid())
+  title           String
+  description     String
+  category        String
+  difficulty      IdeaDifficulty
+  revenueEstimate String         @map("revenue_estimate")
+  trendScore      Int            @map("trend_score") // 0-100
+  tags            String?        // JSON array
+  
+  // Statistiques
+  views           Int            @default(0)
+  bookmarks       Int            @default(0)
+  averageRating   Float?         @map("average_rating")
+  
+  // Statut
+  isActive        Boolean        @default(true) @map("is_active")
+  isFeatured      Boolean        @default(false) @map("is_featured")
+  
+  // Timestamps
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+  
+  @@map("trending_ideas")
 }
 
 // ============================================================================
