@@ -160,4 +160,4 @@ export default function ProductGrid() {
   );
 }
 
-export const PRODUCTS = PRODUCTS_DATA; 
+export { PRODUCTS_DATA as PRODUCTS }; 
