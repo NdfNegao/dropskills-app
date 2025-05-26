@@ -6,11 +6,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "create-admin": "node scripts/create-admin.js"
   },
   "dependencies": {
     "@prisma/client": "^6.8.2",
+    "@supabase/supabase-js": "^2.49.8",
+    "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.2",
+    "date-fns": "^4.1.0",
     "lucide-react": "^0.278.0",
     "next": "^14.2.29",
     "next-auth": "^4.24.11",

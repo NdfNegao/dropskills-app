@@ -1,0 +1,592 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// AUTHENTIFICATION & UTILISATEURS
+// ============================================================================
+
+enum UserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
+  SUPPORT
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  BANNED
+  PENDING
+}
+
+enum SubscriptionType {
+  FREE
+  PREMIUM
+  ENTERPRISE
+}
+
+enum Provider {
+  EMAIL
+  GOOGLE
+  GITHUB
+  FACEBOOK
+  APPLE
+  SYSTEME_IO
+}
+
+enum PackStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+  SUSPENDED
+}
+
+enum PackVisibility {
+  PUBLIC
+  PRIVATE
+  UNLISTED
+}
+
+enum PackType {
+  DIGITAL_PRODUCT
+  COURSE
+  TEMPLATE
+  TOOL
+  SERVICE
+}
+
+model User {
+  id                    String             @id @default(uuid())
+  email                 String             @unique
+  firstName             String?            @map("first_name")
+  lastName              String?            @map("last_name")
+  username              String?            @unique
+  avatar                String?
+  bio                   String?
+  website               String?
+  location              String?
+  
+  // Authentication
+  emailVerified         DateTime?          @map("email_verified")
+  password              String?
+  provider              Provider           @default(EMAIL)
+  providerId            String?            @map("provider_id")
+  
+  // Status & Role
+  role                  UserRole           @default(USER)
+  status                UserStatus         @default(ACTIVE)
+  subscriptionType      SubscriptionType   @default(FREE) @map("subscription_type")
+  subscriptionExpiresAt DateTime?          @map("subscription_expires_at")
+  
+  // Timestamps
+  createdAt             DateTime           @default(now()) @map("created_at")
+  updatedAt             DateTime           @updatedAt @map("updated_at")
+  lastLoginAt           DateTime?          @map("last_login_at")
+  
+  // Relations
+  packsCreated          Pack[]             @relation("PackCreator")
+  packsPurchased        PackUser[]
+  iaToolUsage           IaToolUsage[]
+  supportTickets        SupportTicket[]
+  assignedTickets       SupportTicket[]    @relation("AssignedTickets")
+  ticketResponses       TicketResponse[]
+  adminLogs             AdminLog[]
+  notifications         Notification[]
+  
+  @@map("users")
+}
+
+// ============================================================================
+// PACKS & PRODUITS DIGITAUX
+// ============================================================================
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  icon        String?
+  color       String?
+  isActive    Boolean  @default(true) @map("is_active")
+  sortOrder   Int      @default(0) @map("sort_order")
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  packs       Pack[]
+  
+  @@map("categories")
+}
+
+model Pack {
+  id           String         @id @default(uuid())
+  title        String
+  description  String?
+  content      String?
+  image        String?
+  tags         String         @default("") // Stored as comma-separated string
+  price        Float?
+  currency     String         @default("EUR")
+  
+  // Pack configuration
+  type         PackType       @default(DIGITAL_PRODUCT)
+  status       PackStatus     @default(DRAFT)
+  visibility   PackVisibility @default(PUBLIC)
+  
+  // SEO & Marketing
+  slug         String         @unique
+  metaTitle    String?        @map("meta_title")
+  metaDescription String?     @map("meta_description")
+  
+  // Timestamps
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+  publishedAt  DateTime?      @map("published_at")
+  
+  // Relations
+  creatorId    String         @map("creator_id")
+  creator      User           @relation("PackCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  categoryId   String?        @map("category_id")
+  category     Category?      @relation(fields: [categoryId], references: [id])
+  
+  stats        PackStats?
+  files        PackFile[]
+  purchases    PackUser[]
+  
+  @@map("packs")
+}
+
+model PackStats {
+  id            String   @id @default(uuid())
+  packId        String   @unique @map("pack_id")
+  pack          Pack     @relation(fields: [packId], references: [id], onDelete: Cascade)
+  
+  views         Int      @default(0)
+  downloads     Int      @default(0)
+  purchases     Int      @default(0)
+  favorites     Int      @default(0)
+  revenue       Float    @default(0)
+  
+  @@map("pack_stats")
+}
+
+model PackFile {
+  id          String   @id @default(uuid())
+  packId      String   @map("pack_id")
+  pack        Pack     @relation(fields: [packId], references: [id], onDelete: Cascade)
+  
+  filename    String
+  originalName String  @map("original_name")
+  mimeType    String   @map("mime_type")
+  size        Int
+  url         String
+  
+  // File metadata
+  isPreview   Boolean  @default(false) @map("is_preview")
+  sortOrder   Int      @default(0) @map("sort_order")
+  description String?
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  @@map("pack_files")
+}
+
+// ============================================================================
+// ACHATS & ACCÈS
+// ============================================================================
+
+enum PurchaseStatus {
+  ACTIVE
+  EXPIRED
+  REFUNDED
+  CANCELLED
+}
+
+enum PurchaseOrigin {
+  SYSTEME_IO
+  STRIPE
+  ADMIN
+  MANUAL
+  WEBHOOK
+}
+
+model PackUser {
+  id            String         @id @default(uuid())
+  userId        String         @map("user_id")
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  packId        String         @map("pack_id")
+  pack          Pack           @relation(fields: [packId], references: [id], onDelete: Cascade)
+  
+  // Purchase details
+  status        String         @default("ACTIVE") // ACTIVE, EXPIRED, REFUNDED
+  purchaseDate  DateTime       @default(now()) @map("purchase_date")
+  expiresAt     DateTime?      @map("expires_at")
+  
+  // Payment details
+  paymentMethod String?        @map("payment_method")
+  transactionId String?        @map("transaction_id")
+  amount        Float?
+  currency      String?        @default("EUR")
+  
+  // Access tracking
+  lastAccessAt  DateTime?      @map("last_access_at")
+  downloadCount Int            @default(0) @map("download_count")
+  
+  // Timestamps
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  
+  @@unique([userId, packId])
+  @@map("pack_users")
+}
+
+// ============================================================================
+// OUTILS IA
+// ============================================================================
+
+enum IaToolType {
+  TEXT_GENERATOR
+  IMAGE_GENERATOR
+  PDF_PROCESSOR
+  TITLE_GENERATOR
+  CONTENT_OPTIMIZER
+  TRANSLATOR
+  SUMMARIZER
+  CUSTOM
+}
+
+enum IaToolStatus {
+  ACTIVE
+  INACTIVE
+  MAINTENANCE
+  DEPRECATED
+}
+
+enum UsageStatus {
+  SUCCESS
+  ERROR
+  PENDING
+  TIMEOUT
+  RATE_LIMITED
+}
+
+model IaTool {
+  id            String       @id @default(uuid())
+  name          String       @unique
+  description   String?
+  category      String?
+  endpoint      String
+  apiKey        String?      @map("api_key")
+  
+  // Configuration
+  isActive      Boolean      @default(true) @map("is_active")
+  maxUsagePerDay Int?        @map("max_usage_per_day")
+  costPerUse    Float?       @map("cost_per_use")
+  
+  // Metadata
+  icon          String?
+  color         String?
+  tags          String?      // Stored as comma-separated string
+  
+  // Timestamps
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  
+  // Relations
+  usage         IaToolUsage[]
+  
+  @@map("ia_tools")
+}
+
+model IaToolUsage {
+  id            String      @id @default(uuid())
+  userId        String      @map("user_id")
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  toolId        String      @map("tool_id")
+  tool          IaTool      @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  
+  // Usage details
+  prompt        String?
+  response      String?
+  tokensUsed    Int?        @map("tokens_used")
+  cost          Float?
+  
+  // Metadata
+  userAgent     String?     @map("user_agent")
+  ipAddress     String?     @map("ip_address")
+  
+  // Timestamps
+  createdAt     DateTime    @default(now()) @map("created_at")
+  
+  @@map("ia_tool_usage")
+}
+
+// ============================================================================
+// SUPPORT & FEEDBACK
+// ============================================================================
+
+enum TicketType {
+  FEEDBACK
+  BUG
+  SUPPORT
+  FEATURE_REQUEST
+  BILLING
+  TECHNICAL
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+  ESCALATED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+  CRITICAL
+}
+
+model SupportTicket {
+  id            String         @id @default(uuid())
+  userId        String         @map("user_id")
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Ticket details
+  title         String
+  description   String
+  status        String         @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED, CLOSED
+  priority      String         @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  category      String?
+  
+  // Assignment
+  assignedToId  String?        @map("assigned_to_id")
+  assignedTo    User?          @relation("AssignedTickets", fields: [assignedToId], references: [id])
+  
+  // Metadata
+  metadata      String?        // JSON string
+  tags          String?        @default("") // Stored as comma-separated string
+  
+  // Timestamps
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  resolvedAt    DateTime?      @map("resolved_at")
+  
+  // Relations
+  responses     TicketResponse[]
+  
+  @@map("support_tickets")
+}
+
+model TicketResponse {
+  id        String        @id @default(uuid())
+  ticketId  String        @map("ticket_id")
+  ticket    SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  
+  userId    String        @map("user_id")
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  content   String
+  isInternal Boolean      @default(false) @map("is_internal")
+  
+  // Attachments
+  attachments String?     // JSON string of file URLs
+  
+  // Timestamps
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+  
+  @@map("ticket_responses")
+}
+
+// ============================================================================
+// WEBHOOKS & INTÉGRATIONS
+// ============================================================================
+
+enum WebhookEventType {
+  USER_CREATED
+  USER_UPDATED
+  PURCHASE_COMPLETED
+  PURCHASE_REFUNDED
+  SUBSCRIPTION_CREATED
+  SUBSCRIPTION_UPDATED
+  SUBSCRIPTION_CANCELLED
+  PACK_PURCHASED
+  CUSTOM
+}
+
+enum WebhookProvider {
+  SYSTEME_IO
+  STRIPE
+  PAYPAL
+  ZAPIER
+  N8N
+  CUSTOM
+}
+
+enum WebhookStatus {
+  RECEIVED
+  PROCESSING
+  PROCESSED
+  ERROR
+  RETRY
+  FAILED
+}
+
+model WebhookEvent {
+  id            String            @id @default(uuid())
+  eventType     String            @map("event_type")
+  provider      String            // SYSTEME_IO, STRIPE, etc.
+  
+  // Event data
+  payload       String            // JSON string
+  headers       String?           // JSON string
+  userEmail     String?           @map("user_email")
+  userId        String?           @map("user_id")
+  
+  // Processing
+  status        String            @default("PENDING") // PENDING, PROCESSED, ERROR
+  processedAt   DateTime?         @map("processed_at")
+  errorMessage  String?           @map("error_message")
+  retryCount    Int               @default(0) @map("retry_count")
+  
+  // Timestamps
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+  
+  @@map("webhook_events")
+}
+
+// ============================================================================
+// ADMINISTRATION & LOGS
+// ============================================================================
+
+enum AdminAction {
+  USER_CREATED
+  USER_UPDATED
+  USER_DELETED
+  USER_SUSPENDED
+  USER_BANNED
+  PACK_CREATED
+  PACK_UPDATED
+  PACK_DELETED
+  PACK_PUBLISHED
+  SUBSCRIPTION_GRANTED
+  SUBSCRIPTION_REVOKED
+  TOOL_CONFIGURED
+  WEBHOOK_PROCESSED
+  CUSTOM
+}
+
+model AdminLog {
+  id          String      @id @default(uuid())
+  adminId     String      @map("admin_id")
+  admin       User        @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  
+  action      String      // CREATE_USER, UPDATE_PACK, DELETE_TICKET, etc.
+  resource    String?     // users, packs, tickets, etc.
+  resourceId  String?     @map("resource_id")
+  
+  // Details
+  description String?
+  metadata    String?     // JSON string
+  ipAddress   String?     @map("ip_address")
+  userAgent   String?     @map("user_agent")
+  
+  // Timestamps
+  createdAt   DateTime    @default(now()) @map("created_at")
+  
+  @@map("admin_logs")
+}
+
+// ============================================================================
+// NOTIFICATIONS
+// ============================================================================
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+  MARKETING
+  SYSTEM
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String           @map("user_id")
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type      String           // EMAIL, PUSH, IN_APP
+  title     String
+  message   String
+  
+  // Status
+  isRead    Boolean          @default(false) @map("is_read")
+  readAt    DateTime?        @map("read_at")
+  
+  // Metadata
+  metadata  String?          // JSON string
+  
+  // Timestamps
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+  
+  @@map("notifications")
+}
+
+// ============================================================================
+// ANALYTICS & MÉTRIQUES
+// ============================================================================
+
+model DailyMetrics {
+  id              String   @id @default(uuid())
+  date            DateTime @unique
+  
+  // User metrics
+  newUsers        Int      @default(0) @map("new_users")
+  activeUsers     Int      @default(0) @map("active_users")
+  totalUsers      Int      @default(0) @map("total_users")
+  
+  // Pack metrics
+  newPacks        Int      @default(0) @map("new_packs")
+  packViews       Int      @default(0) @map("pack_views")
+  packDownloads   Int      @default(0) @map("pack_downloads")
+  packPurchases   Int      @default(0) @map("pack_purchases")
+  
+  // Revenue
+  revenue         Float    @default(0)
+  
+  // Support metrics
+  newTickets      Int      @default(0) @map("new_tickets")
+  resolvedTickets Int      @default(0) @map("resolved_tickets")
+  
+  // IA usage
+  iaToolUsage     Int      @default(0) @map("ia_tool_usage")
+  
+  // Timestamps
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  
+  @@map("daily_metrics")
+}

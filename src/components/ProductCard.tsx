@@ -3,6 +3,7 @@ import { Bookmark, BookOpen, Headphones, Video, FileDown, Heart } from "lucide-r
 import { useSavedProducts } from "@/context/SavedProductsContext";
 import { Product } from "@/data/products";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 function getFormatIcon(format: string) {
   switch (format) {
@@ -27,6 +28,7 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
   onDownload?: () => void;
   bookmarkDisabled?: boolean;
 }) {
+  const router = useRouter();
   const { savedProducts, toggleBookmark } = useSavedProducts();
   const [likes, setLikes] = useState(product.likes);
   const [liked, setLiked] = useState(false);
@@ -35,6 +37,14 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
   const handleBookmark = () => {
     if (bookmarkDisabled) return;
     toggleBookmark(product.id);
+  };
+
+  const handleOpen = () => {
+    if (onOpen) {
+      onOpen();
+    } else {
+      router.push(`/produits/${product.id}`);
+    }
   };
 
   return (
@@ -80,7 +90,7 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
       <div className="flex items-center border-t border-gray-100">
         {/* Ouvrir */}
         <button
-          onClick={onOpen}
+          onClick={handleOpen}
           className="flex-1 py-3 border-x border-gray-100 font-semibold text-[#111] hover:bg-gray-50 transition-colors"
         >
           Ouvrir
