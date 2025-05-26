@@ -35,9 +35,8 @@ export async function POST(request: NextRequest) {
         provider: 'SYSTEME_IO',
         status: 'RECEIVED',
         userEmail: data.customer?.email,
-        rawData: data,
-        ipAddress: request.ip,
-        userAgent: request.headers.get('user-agent'),
+        payload: body,
+        headers: JSON.stringify(Object.fromEntries(request.headers.entries())),
       }
     })
 
@@ -61,7 +60,7 @@ export async function POST(request: NextRequest) {
       where: { id: webhookEvent.id },
       data: { 
         status: 'PROCESSED',
-        processedData: data
+        processedAt: new Date()
       }
     })
 
@@ -107,7 +106,6 @@ async function handleOrderCompleted(data: any, webhookEventId: string) {
         userId: user.id,
         packId: pack.id,
         status: 'ACTIVE',
-        origin: 'SYSTEME_IO',
         transactionId: data.order?.id,
         amount: amount,
         currency: data.order?.currency || 'EUR'
@@ -158,9 +156,7 @@ async function handleSubscriptionCreated(data: any, webhookEventId: string) {
     where: { id: user.id },
     data: {
       subscriptionType,
-      subscriptionStatus: 'ACTIVE',
-      subscriptionStartDate: new Date(),
-      subscriptionEndDate: calculateEndDate(data.subscription?.billing_cycle)
+      subscriptionExpiresAt: calculateEndDate(data.subscription?.billing_cycle)
     }
   })
 }
@@ -183,7 +179,7 @@ async function findPackByProductId(productId: string) {
   return await prisma.pack.findFirst({
     where: {
       // Exemple: utiliser les tags ou métadonnées
-      tags: { has: `systeme_io:${productId}` }
+      tags: { contains: `systeme_io:${productId}` }
     }
   })
 }

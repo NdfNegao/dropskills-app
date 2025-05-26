@@ -71,9 +71,7 @@ export async function PUT(
         role: data.role,
         status: data.status,
         subscriptionType: data.subscriptionType,
-        subscriptionStatus: data.subscriptionStatus,
-        subscriptionStartDate: data.subscriptionStartDate ? new Date(data.subscriptionStartDate) : undefined,
-        subscriptionEndDate: data.subscriptionEndDate ? new Date(data.subscriptionEndDate) : undefined,
+        subscriptionExpiresAt: data.subscriptionEndDate ? new Date(data.subscriptionEndDate) : undefined,
       },
       include: {
         packsPurchased: true

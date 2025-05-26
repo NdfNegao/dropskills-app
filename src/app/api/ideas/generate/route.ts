@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { generateProductIdeas, type IdeaGenerationRequest } from '@/lib/openai';
 
 interface GenerateIdeasRequest {
   targetAudience: string;
@@ -69,8 +70,14 @@ export async function POST(request: NextRequest) {
     });
 
     try {
-      // Générer les idées (simulation pour l'instant)
-      const ideas = await generatePersonalizedIdeas(body);
+      // Générer les idées avec OpenAI
+      const openaiRequest: IdeaGenerationRequest = {
+        targetAudience: body.targetAudience.trim(),
+        topic: body.topic?.trim(),
+        formats: body.formats
+      };
+
+      const ideas = await generateProductIdeas(openaiRequest);
       
       // Sauvegarder les idées générées
       const savedIdeas = await Promise.all(
@@ -126,7 +133,8 @@ export async function POST(request: NextRequest) {
         success: true,
         ideas: response,
         requestId: ideaRequest.id,
-        processingTime
+        processingTime,
+        source: 'openai'
       });
 
     } catch (error) {
@@ -153,107 +161,6 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-async function generatePersonalizedIdeas(request: GenerateIdeasRequest): Promise<PersonalizedIdea[]> {
-  // Simulation de génération d'idées avec IA
-  // Dans une vraie implémentation, ici on appellerait OpenAI, Claude, ou un workflow n8n
-  
-  await new Promise(resolve => setTimeout(resolve, 2000)); // Simulation du temps de traitement
-
-  const { targetAudience, topic, formats } = request;
-  
-  const ideas: PersonalizedIdea[] = [];
-
-  // Idée 1: Guide complet
-  ideas.push({
-    title: `Guide Complet pour ${targetAudience}`,
-    description: `Un guide étape par étape spécialement conçu pour ${targetAudience}${topic ? ` dans le domaine ${topic}` : ''}. Ce guide couvre tous les aspects essentiels avec des exemples pratiques et des templates prêts à utiliser.`,
-    targetAudience,
-    marketSize: 'Marché de niche avec forte demande',
-    difficulty: 'MOYEN',
-    revenueEstimate: '800-3500€/mois',
-    keyFeatures: [
-      'Contenu personnalisé pour votre audience',
-      'Templates et outils pratiques',
-      'Études de cas réels',
-      'Support communautaire',
-      'Mises à jour régulières'
-    ],
-    marketingStrategy: 'Marketing de contenu + réseaux sociaux ciblés',
-    confidence: 0.85,
-    tags: ['guide', 'formation', topic || 'business'].filter(Boolean),
-    category: topic || 'Business'
-  });
-
-  // Idée 2: Toolkit/Ressources
-  ideas.push({
-    title: `Toolkit ${topic || 'Business'} pour ${targetAudience}`,
-    description: `Collection complète d'outils, templates et ressources essentiels pour ${targetAudience} souhaitant exceller${topic ? ` en ${topic}` : ' dans leur domaine'}. Inclut des checklist, frameworks et outils d'automatisation.`,
-    targetAudience,
-    marketSize: 'Marché en croissance avec potentiel élevé',
-    difficulty: 'FACILE',
-    revenueEstimate: '500-2000€/mois',
-    keyFeatures: [
-      'Outils prêts à utiliser',
-      'Checklist et frameworks',
-      'Templates personnalisables',
-      'Vidéos explicatives',
-      'Accès à vie'
-    ],
-    marketingStrategy: 'Partenariats + marketing d\'influence',
-    confidence: 0.78,
-    tags: ['toolkit', 'ressources', 'templates', topic || 'productivité'].filter(Boolean),
-    category: 'Outils'
-  });
-
-  // Idée 3: Formation/Cours (si "Course" est dans les formats)
-  if (!formats || formats.includes('Course')) {
-    ideas.push({
-      title: `Formation Complète ${topic || 'Business'} pour ${targetAudience}`,
-      description: `Formation vidéo complète avec modules progressifs, exercices pratiques et certification. Spécialement adaptée aux besoins et défis de ${targetAudience}.`,
-      targetAudience,
-      marketSize: 'Marché premium avec forte valeur perçue',
-      difficulty: 'DIFFICILE',
-      revenueEstimate: '2000-8000€/mois',
-      keyFeatures: [
-        'Modules vidéo HD',
-        'Exercices pratiques',
-        'Certification incluse',
-        'Groupe privé d\'entraide',
-        'Sessions Q&A mensuelles'
-      ],
-      marketingStrategy: 'Webinaires gratuits + témoignages clients',
-      confidence: 0.72,
-      tags: ['formation', 'cours', 'certification', topic || 'éducation'].filter(Boolean),
-      category: 'Formation'
-    });
-  }
-
-  // Idée 4: Software/Outil (si "Software" est dans les formats)
-  if (!formats || formats.includes('Software')) {
-    ideas.push({
-      title: `Outil ${topic || 'Business'} pour ${targetAudience}`,
-      description: `Application web intuitive qui automatise les tâches répétitives de ${targetAudience}. Interface simple, résultats rapides et intégrations avec les outils populaires.`,
-      targetAudience,
-      marketSize: 'Marché SaaS en forte expansion',
-      difficulty: 'DIFFICILE',
-      revenueEstimate: '1500-6000€/mois',
-      keyFeatures: [
-        'Interface intuitive',
-        'Automatisation avancée',
-        'Intégrations multiples',
-        'Rapports détaillés',
-        'Support technique inclus'
-      ],
-      marketingStrategy: 'Freemium + démonstrations personnalisées',
-      confidence: 0.68,
-      tags: ['software', 'saas', 'automatisation', topic || 'productivité'].filter(Boolean),
-      category: 'Logiciel'
-    });
-  }
-
-  return ideas;
 }
 
 export async function GET(request: NextRequest) {

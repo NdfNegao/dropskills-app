@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma, MockPrismaClient } from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 
 function authenticateN8N(request: NextRequest) {
   const apiKey = request.headers.get('x-api-key')
@@ -76,14 +76,14 @@ export async function POST(request: NextRequest) {
       data: {
         title: data.title,
         description: data.description,
-        shortDesc: data.shortDesc,
         image: data.image,
-        tags: data.tags || [],
+        tags: data.tags || '',
         price: data.price,
-        visibility: data.visibility || 'DRAFT',
-        status: data.status || 'ACTIVE',
+        visibility: data.visibility || 'PRIVATE',
+        status: data.status || 'DRAFT',
         creatorId: data.creatorId,
         categoryId: data.categoryId,
+        slug: data.slug || data.title.toLowerCase().replace(/\s+/g, '-'),
         publishedAt: data.visibility === 'PUBLIC' ? new Date() : null
       },
       include: {

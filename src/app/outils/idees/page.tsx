@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
+import IdeaAnalysisModal from '@/components/IdeaAnalysisModal';
 import { 
   Lightbulb, 
   TrendingUp, 
@@ -64,6 +65,14 @@ export default function IdeesProduitsPage() {
   const [generalIdeas, setGeneralIdeas] = useState<ProductIdea[]>([]);
   const [isGeneratingGeneral, setIsGeneratingGeneral] = useState(false);
   const [isLoadingGeneral, setIsLoadingGeneral] = useState(true);
+
+  // États pour le modal d'analyse
+  const [selectedIdeaForAnalysis, setSelectedIdeaForAnalysis] = useState<{
+    title: string;
+    description: string;
+    revenue?: string;
+  } | null>(null);
+  const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
 
   const formatOptions = [
     'E-book', 'Course', 'Template', 'Software', 'Membership', 'Coaching'
@@ -172,6 +181,22 @@ export default function IdeesProduitsPage() {
     } finally {
       setIsGeneratingGeneral(false);
     }
+  };
+
+  // Fonction pour ouvrir l'analyse d'une idée
+  const handleAnalyzeIdea = (idea: ProductIdea) => {
+    setSelectedIdeaForAnalysis({
+      title: idea.title,
+      description: idea.description,
+      revenue: idea.revenue
+    });
+    setIsAnalysisModalOpen(true);
+  };
+
+  // Fonction pour fermer le modal d'analyse
+  const handleCloseAnalysisModal = () => {
+    setIsAnalysisModalOpen(false);
+    setSelectedIdeaForAnalysis(null);
   };
 
   if (!session) {
@@ -473,7 +498,10 @@ export default function IdeesProduitsPage() {
                       </div>
                     </div>
 
-                    <button className="w-full mt-4 bg-[#1a1a1a] text-white py-2 rounded-lg hover:bg-[#232323] transition-colors flex items-center justify-center gap-2">
+                    <button 
+                      onClick={() => handleAnalyzeIdea(idea)}
+                      className="w-full mt-4 bg-[#1a1a1a] text-white py-2 rounded-lg hover:bg-[#232323] transition-colors flex items-center justify-center gap-2"
+                    >
                       <Target className="w-4 h-4" />
                       Analyser cette idée
                     </button>
@@ -514,6 +542,15 @@ export default function IdeesProduitsPage() {
           </div>
         </div>
       </main>
+
+      {/* Modal d'analyse */}
+      {selectedIdeaForAnalysis && (
+        <IdeaAnalysisModal
+          isOpen={isAnalysisModalOpen}
+          onClose={handleCloseAnalysisModal}
+          idea={selectedIdeaForAnalysis}
+        />
+      )}
     </div>
   );
 } 
