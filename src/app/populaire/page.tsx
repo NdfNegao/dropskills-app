@@ -10,11 +10,6 @@ const mockProducts = [
   { id: 3, name: "Générateur de Titres", description: "Des titres accrocheurs pour booster tes ventes.", likes: 5 },
 ];
 
-export const metadata: Metadata = {
-  title: "Produits Populaires | DropSkills",
-  description: "Découvrez les produits digitaux les plus populaires sur DropSkills",
-};
-
 export default function PopulairePage() {
   const [products, setProducts] = useState(() => {
     // On récupère les likes de localStorage pour la démo
