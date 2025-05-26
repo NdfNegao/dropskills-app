@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import SessionWrapper from "../components/SessionWrapper";
 import Script from "next/script";
+import { SavedProductsProvider } from "@/context/SavedProductsContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -46,7 +47,9 @@ export default function RootLayout({
             style={{ display: "none", visibility: "hidden" }}
           ></iframe>
         </noscript>
-        <SessionWrapper>{children}</SessionWrapper>
+        <SavedProductsProvider>
+          <SessionWrapper>{children}</SessionWrapper>
+        </SavedProductsProvider>
       </body>
     </html>
   );

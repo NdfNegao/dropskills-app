@@ -2,6 +2,8 @@
 import Image from 'next/image';
 import Sidebar from '../components/Sidebar';
 import { useState } from 'react';
+import ProductCard from "@/components/ProductCard";
+import { SavedProductsProvider } from "@/context/SavedProductsContext";
 
 export default function Home() {
   return (
@@ -195,58 +197,46 @@ function ProductGridMock() {
   });
 
   return (
-    <div>
-      <div className="flex flex-col sm:flex-row gap-4 mb-6 items-center">
-        <select
-          className="bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none"
-          value={tag}
-          onChange={e => setTag(e.target.value)}
-        >
-          <option value="">Filtrer par tags</option>
-          {TAGS.map((t) => (
-            <option key={t} value={t}>{t}</option>
+    <SavedProductsProvider>
+      <div>
+        <div className="flex flex-col sm:flex-row gap-4 mb-6 items-center">
+          <select
+            className="bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none"
+            value={tag}
+            onChange={e => setTag(e.target.value)}
+          >
+            <option value="">Filtrer par tags</option>
+            {TAGS.map((t) => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
+          <select
+            className="bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none"
+            value={format}
+            onChange={e => setFormat(e.target.value)}
+          >
+            <option value="">Filtrer par format</option>
+            {FORMATS.map((f) => (
+              <option key={f} value={f}>{f}</option>
+            ))}
+          </select>
+          <input
+            type="text"
+            placeholder="Rechercher un produit..."
+            className="flex-1 bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {filtered.map((product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
-        </select>
-        <select
-          className="bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none"
-          value={format}
-          onChange={e => setFormat(e.target.value)}
-        >
-          <option value="">Filtrer par format</option>
-          {FORMATS.map((f) => (
-            <option key={f} value={f}>{f}</option>
-          ))}
-        </select>
-        <input
-          type="text"
-          placeholder="Rechercher un produit..."
-          className="flex-1 bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
+          {filtered.length === 0 && (
+            <div className="col-span-full text-center text-gray-400 py-12">Aucun produit trouvé.</div>
+          )}
+        </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {filtered.map((p) => (
-          <div key={p.id} className="bg-[#111111] rounded-xl p-4 flex flex-col shadow-md border border-[#232323]">
-            <div className="aspect-video bg-[#1a1a1a] rounded-lg mb-4 flex items-center justify-center overflow-hidden">
-              <img src={p.image} alt={p.title} className="object-contain h-full w-full" />
-            </div>
-            <h3 className="text-white font-semibold text-lg mb-2 truncate">{p.title}</h3>
-            <div className="flex-1" />
-            <div className="flex gap-2 mt-4">
-              <button className="flex-1 bg-white text-[#111111] py-2 rounded-lg font-semibold hover:bg-gray-200 transition-colors">Ouvrir</button>
-              <button className="bg-[#18181b] border border-[#232323] text-white px-3 rounded-lg hover:bg-[#232323] transition-colors flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 16v-8m0 8l-3-3m3 3l3-3m-9 4a9 9 0 1118 0 9 9 0 01-18 0z" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        ))}
-        {filtered.length === 0 && (
-          <div className="col-span-full text-center text-gray-400 py-12">Aucun produit trouvé.</div>
-        )}
-      </div>
-    </div>
+    </SavedProductsProvider>
   );
 }

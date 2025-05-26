@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Sidebar from '../../components/Sidebar';
 import { Download, Star } from 'lucide-react';
+import ProductCard from "@/components/ProductCard";
 
 // Définition du type pour un échantillon
 type Sample = {
@@ -86,33 +87,21 @@ export default function EchantillonsPage() {
 
         {/* Grille d'échantillons */}
         <div className="grid grid-cols-3 gap-8">
-          {filteredSamples.map((sample) => (
-            <div key={sample.title} className="bg-[#111111] rounded-xl overflow-hidden group hover:bg-[#1a1a1a] transition-all duration-200">
-              <div className="aspect-video bg-[#1a1a1a] relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <span className="absolute top-2 left-2 bg-[#ff0033] text-white text-xs px-2 py-1 rounded-full">
-                  {sample.type}
-                </span>
-              </div>
-              
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center">
-                    <Star className="w-4 h-4 text-yellow-400" />
-                    <span className="text-white ml-1">{sample.rating}</span>
-                  </div>
-                  <span className="text-gray-400 text-sm">{sample.downloads} téléchargements</span>
-                </div>
-                
-                <h3 className="text-white font-semibold text-xl mb-2">{sample.title}</h3>
-                <p className="text-gray-400 text-sm mb-4">{sample.description}</p>
-                
-                <button className="w-full bg-[#1a1a1a] group-hover:bg-[#ff0033] text-white py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
-                  <Download size={16} />
-                  Télécharger Gratuitement
-                </button>
-              </div>
-            </div>
+          {filteredSamples.map((sample, idx) => (
+            <ProductCard
+              key={sample.title}
+              product={{
+                id: idx + 1,
+                title: sample.title,
+                subtitle: sample.type,
+                format: sample.type.toLowerCase(),
+                image: sample.image,
+                description: sample.description,
+                likes: Math.round(sample.rating * 10),
+                fileUrl: "#",
+                tags: [sample.type],
+              }}
+            />
           ))}
         </div>
 

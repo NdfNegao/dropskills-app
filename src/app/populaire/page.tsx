@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
+import ProductCard from "@/components/ProductCard";
+import { PRODUCTS } from "@/data/products";
+import { SavedProductsProvider } from "@/context/SavedProductsContext";
 
 const products = [
   {
@@ -127,53 +130,13 @@ export default function PopulairePage() {
       <main className="ml-0 md:ml-64 px-4 py-8">
         <h1 className="text-3xl font-bold mb-2 text-white">Produits Populaires</h1>
         <p className="text-gray-400 mb-8">Découvrez nos produits digitaux les plus populaires.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {productsWithLikes.map((product) => (
-            <div key={product.id} className="bg-[#181818] rounded-xl shadow-lg overflow-hidden flex flex-col border border-[#232323]">
-              <div className="aspect-[4/3] bg-[#111] flex items-center justify-center">
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  className="object-contain w-full h-full max-h-48"
-                  loading="lazy"
-                />
-              </div>
-              <div className="p-4 flex-1 flex flex-col">
-                <h2 className="text-lg font-semibold text-white mb-2">{product.title}</h2>
-                <p className="text-gray-400 text-sm mb-4 flex-1">{product.description}</p>
-                <div className="flex gap-2">
-                  <button 
-                    onClick={() => handleLike(product.id)}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg font-semibold transition-all duration-200 ${
-                      likedProducts.includes(product.id)
-                        ? 'bg-[#ff0033] text-white hover:bg-[#cc0029]'
-                        : 'bg-[#232323] text-gray-400 hover:bg-[#2a2a2a]'
-                    }`}
-                  >
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      className="h-5 w-5" 
-                      fill={likedProducts.includes(product.id) ? "currentColor" : "none"} 
-                      viewBox="0 0 24 24" 
-                      stroke="currentColor"
-                    >
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth={2} 
-                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" 
-                      />
-                    </svg>
-                    {product.likes}
-                  </button>
-                  <button className="flex-1 bg-[#ff0033] text-white py-2 rounded-lg font-semibold hover:bg-[#cc0029] transition-all duration-200">
-                    Ouvrir
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <SavedProductsProvider>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {PRODUCTS.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </SavedProductsProvider>
       </main>
     </div>
   );
