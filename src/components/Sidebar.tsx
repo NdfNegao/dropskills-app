@@ -143,7 +143,27 @@ export default function Sidebar() {
 
         {/* Section Outils */}
         <div className="space-y-1 mb-6">
-          <h2 className="text-[11px] font-extrabold tracking-widest text-gray-300 uppercase mb-3">OUTILS</h2>
+          <h2 className="text-[11px] font-extrabold tracking-widest text-gray-300 uppercase mb-3">OUTILS IA</h2>
+          <Link 
+            href="/outils" 
+            onClick={handleLinkClick}
+            className={`flex items-center text-gray-300 hover:text-white py-2 px-3 rounded-lg transition-all duration-200 hover:bg-[#1a1a1a] group ${
+              isActive('/outils') ? 'bg-[#1a1a1a] text-white' : ''
+            }`}
+          >
+            <Sparkles size={20} className={`mr-3 ${isActive('/outils') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
+            <span className="group-hover:translate-x-1 transition-transform font-bold">Tous les Outils</span>
+          </Link>
+          <Link 
+            href="/outils/generateur-titres" 
+            onClick={handleLinkClick}
+            className={`flex items-center text-gray-300 hover:text-white py-2 px-3 rounded-lg transition-all duration-200 hover:bg-[#1a1a1a] group ${
+              isActive('/outils/generateur-titres') ? 'bg-[#1a1a1a] text-white' : ''
+            }`}
+          >
+            <BookOpen size={20} className={`mr-3 ${isActive('/outils/generateur-titres') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
+            <span className="group-hover:translate-x-1 transition-transform">Générateur de Titres</span>
+          </Link>
           <Link 
             href="/outils/pack-createur" 
             onClick={handleLinkClick}
@@ -151,58 +171,8 @@ export default function Sidebar() {
               isActive('/outils/pack-createur') ? 'bg-[#1a1a1a] text-white' : ''
             }`}
           >
-            <Sparkles size={20} className={`mr-3 ${isActive('/outils/pack-createur') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
-            <span className="group-hover:translate-x-1 transition-transform font-bold">Pack Créateur IA</span>
-          </Link>
-          <Link 
-            href="/outils/pdf-rebrander" 
-            onClick={handleLinkClick}
-            className={`flex items-center text-gray-300 hover:text-white py-2 px-3 rounded-lg transition-all duration-200 hover:bg-[#1a1a1a] group ${
-              isActive('/outils/pdf-rebrander') ? 'bg-[#1a1a1a] text-white' : ''
-            }`}
-          >
-            <FileCode size={20} className={`mr-3 ${isActive('/outils/pdf-rebrander') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
-            <span className="group-hover:translate-x-1 transition-transform">Rebranding PDF</span>
-          </Link>
-          <Link 
-            href="/outils/descriptions" 
-            onClick={handleLinkClick}
-            className={`flex items-center text-gray-300 hover:text-white py-2 px-3 rounded-lg transition-all duration-200 hover:bg-[#1a1a1a] group ${
-              isActive('/outils/descriptions') ? 'bg-[#1a1a1a] text-white' : ''
-            }`}
-          >
-            <BrainCircuit size={20} className={`mr-3 ${isActive('/outils/descriptions') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
-            <span className="group-hover:translate-x-1 transition-transform">Descriptions IA</span>
-          </Link>
-          <Link 
-            href="/outils/idees" 
-            onClick={handleLinkClick}
-            className={`flex items-center text-gray-300 hover:text-white py-2 px-3 rounded-lg transition-all duration-200 hover:bg-[#1a1a1a] group ${
-              isActive('/outils/idees') ? 'bg-[#1a1a1a] text-white' : ''
-            }`}
-          >
-            <Sparkles size={20} className={`mr-3 ${isActive('/outils/idees') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
-            <span className="group-hover:translate-x-1 transition-transform">Idées de Produits</span>
-          </Link>
-          <Link 
-            href="/outils/titres" 
-            onClick={handleLinkClick}
-            className={`flex items-center text-gray-300 hover:text-white py-2 px-3 rounded-lg transition-all duration-200 hover:bg-[#1a1a1a] group ${
-              isActive('/outils/titres') ? 'bg-[#1a1a1a] text-white' : ''
-            }`}
-          >
-            <BookOpen size={20} className={`mr-3 ${isActive('/outils/titres') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
-            <span className="group-hover:translate-x-1 transition-transform">Générateur de Titres</span>
-          </Link>
-          <Link 
-            href="/outils/calculateur" 
-            onClick={handleLinkClick}
-            className={`flex items-center text-gray-300 hover:text-white py-2 px-3 rounded-lg transition-all duration-200 hover:bg-[#1a1a1a] group ${
-              isActive('/outils/calculateur') ? 'bg-[#1a1a1a] text-white' : ''
-            }`}
-          >
-            <Calculator size={20} className={`mr-3 ${isActive('/outils/calculateur') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
-            <span className="group-hover:translate-x-1 transition-transform">Calculateur de Revenus</span>
+            <FileCode size={20} className={`mr-3 ${isActive('/outils/pack-createur') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
+            <span className="group-hover:translate-x-1 transition-transform">Pack Créateur IA</span>
           </Link>
         </div>
 

@@ -1,9 +1,5 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import GoogleProvider from 'next-auth/providers/google';
-import GitHubProvider from 'next-auth/providers/github';
-import { prisma } from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -18,49 +14,23 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        // Vérifier si l'utilisateur existe et a un rôle admin
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email }
-        });
-
-        if (!user || !['ADMIN', 'SUPER_ADMIN'].includes(user.role)) {
-          return null;
+        // Authentification simplifiée pour le développement
+        // TODO: Remplacer par une vraie authentification en production
+        if (credentials.email === 'admin@dropskills.com' && credentials.password === 'admin123') {
+          return {
+            id: '1',
+            email: credentials.email,
+            name: 'Admin DropSkills',
+            role: 'ADMIN'
+          };
         }
 
-        // Vérifier le mot de passe hashé
-        if (!user.password) {
-          return null;
-        }
-
-        const isValidPassword = await bcrypt.compare(credentials.password, user.password);
-        
-        if (!isValidPassword) {
-          return null;
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
-          role: user.role
-        };
+        return null;
       }
-    }),
-    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET ? [
-      GoogleProvider({
-        clientId: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      })
-    ] : []),
-    ...(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET ? [
-      GitHubProvider({
-        clientId: process.env.GITHUB_CLIENT_ID,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      })
-    ] : [])
+    })
   ],
   pages: {
-    signIn: '/admin/login',
+    signIn: '/auth/signin',
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -75,31 +45,9 @@ export const authOptions: NextAuthOptions = {
         (session.user as any).id = token.sub;
       }
       return session;
-    },
-    async signIn({ user, account, profile }) {
-      if (account?.provider === 'google' || account?.provider === 'github') {
-        // Vérifier si l'utilisateur existe dans la base de données
-        const existingUser = await prisma.user.findUnique({
-          where: { email: user.email! }
-        });
-
-        if (!existingUser || !['ADMIN', 'SUPER_ADMIN'].includes(existingUser.role)) {
-          return false; // Refuser la connexion si pas admin
-        }
-
-        // Mettre à jour les informations de l'utilisateur
-        await prisma.user.update({
-          where: { email: user.email! },
-          data: {
-            lastLoginAt: new Date(),
-            provider: account.provider === 'google' ? 'GOOGLE' : 'GITHUB'
-          }
-        });
-      }
-      return true;
     }
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || 'dev-secret-key',
   session: {
     strategy: 'jwt',
   },

@@ -1,124 +1,205 @@
-'use client';
+"use client";
 
-import Sidebar from '../../components/Sidebar';
-import { FileCode, BrainCircuit, Lightbulb, Book, Calculator } from 'lucide-react';
-import Link from 'next/link';
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Sidebar from "@/components/Sidebar";
+import { 
+  Sparkles, 
+  FileText, 
+  Palette, 
+  Lightbulb, 
+  Calculator, 
+  Package,
+  ArrowRight,
+  Zap
+} from "lucide-react";
 
-// Types
-type Tool = {
-  id: string;
-  title: string;
-  description: string;
-  icon: JSX.Element;
-  path: string;
-  isNew?: boolean;
-};
-
-// Liste des outils
-const tools: Tool[] = [
+const OUTILS = [
   {
-    id: 'pdf-rebrander',
-    title: 'PDF Rebrander',
-    description: 'Personnalisez vos PDFs avec votre marque et créez des versions uniques pour chaque client.',
-    icon: <FileCode className="w-6 h-6" />,
-    path: '/outils/pdf-rebrander',
-    isNew: true
+    id: "pack-createur",
+    title: "Pack Créateur IA",
+    description: "Générez des packs de produits digitaux complets avec l'IA",
+    icon: Package,
+    color: "from-purple-500 to-pink-500",
+    href: "/outils/pack-createur",
+    features: ["Génération automatique", "Table des matières", "Stratégie de prix"]
   },
   {
-    id: 'product-descriptions',
-    title: 'Product Descriptions',
-    description: 'Générez des descriptions de produits persuasives et optimisées pour la vente.',
-    icon: <BrainCircuit className="w-6 h-6" />,
-    path: '/outils/descriptions',
-    isNew: true
+    id: "generateur-titres",
+    title: "Générateur de Titres",
+    description: "Créez des titres accrocheurs qui convertissent",
+    icon: Sparkles,
+    color: "from-blue-500 to-cyan-500",
+    href: "/outils/generateur-titres",
+    features: ["Titres optimisés", "Score d'impact", "Différentes émotions"]
   },
   {
-    id: 'product-ideas',
-    title: 'Product Ideas',
-    description: 'Trouvez des idées de produits digitaux innovants basés sur les tendances du marché.',
-    icon: <Lightbulb className="w-6 h-6" />,
-    path: '/outils/idees'
+    id: "descriptions-ia",
+    title: "Descriptions IA",
+    description: "Rédigez des descriptions de produits persuasives",
+    icon: FileText,
+    color: "from-green-500 to-emerald-500",
+    href: "/outils/descriptions-ia",
+    features: ["Copywriting optimisé", "Différents tons", "SEO-friendly"]
   },
   {
-    id: 'book-title-generator',
-    title: 'Book Title Generator',
-    description: 'Créez des titres accrocheurs pour vos ebooks et guides digitaux.',
-    icon: <Book className="w-6 h-6" />,
-    path: '/outils/titres'
+    id: "rebranding-pdf",
+    title: "Rebranding PDF",
+    description: "Personnalisez vos PDFs avec votre marque",
+    icon: Palette,
+    color: "from-orange-500 to-red-500",
+    href: "/outils/rebranding-pdf",
+    features: ["Changement de couleurs", "Logo personnalisé", "Automatisé"]
   },
   {
-    id: 'revenue-calculator',
-    title: 'Revenue Calculator',
-    description: 'Calculez vos revenus potentiels et planifiez votre stratégie de prix.',
-    icon: <Calculator className="w-6 h-6" />,
-    path: '/outils/calculateur'
+    id: "idees-produits",
+    title: "Idées de Produits",
+    description: "Découvrez des idées de produits rentables",
+    icon: Lightbulb,
+    color: "from-yellow-500 to-orange-500",
+    href: "/outils/idees-produits",
+    features: ["Analyse de marché", "Estimation de revenus", "Tendances"]
+  },
+  {
+    id: "calculateur-revenus",
+    title: "Calculateur de Revenus",
+    description: "Calculez et projetez vos revenus futurs",
+    icon: Calculator,
+    color: "from-indigo-500 to-purple-500",
+    href: "/outils/calculateur-revenus",
+    features: ["Projections précises", "Analyse de coûts", "Graphiques"]
   }
 ];
 
 export default function OutilsPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Redirection si non connecté
+  if (status === "loading") {
+    return <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="text-white">Chargement...</div>
+    </div>;
+  }
+
+  if (!session) {
+    router.push("/auth/signin");
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       <Sidebar />
-      <main className="ml-0 md:ml-64 px-4 py-8">
-        {/* Bannière promotionnelle */}
-        <div className="bg-[#ff0033] text-white text-center py-2 text-sm">
-          🎉 Offre de lancement 2025 ➜ -50% sur le Plan Pro
-        </div>
+      
+      <main className="ml-0 md:ml-64 p-8">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="mb-12">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 bg-gradient-to-r from-[#00D2FF] to-[#3A7BD5] rounded-xl">
+                <Zap className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold text-white">Outils IA DropSkills</h1>
+                <p className="text-xl text-gray-400 mt-2">
+                  Boostez votre productivité avec nos outils d'intelligence artificielle
+                </p>
+              </div>
+            </div>
+            
+            <div className="bg-gradient-to-r from-[#00D2FF]/10 to-[#3A7BD5]/10 border border-[#00D2FF]/20 rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <Sparkles className="w-5 h-5 text-[#00D2FF]" />
+                <h3 className="text-lg font-semibold text-white">Powered by n8n</h3>
+              </div>
+              <p className="text-gray-300">
+                Nos outils utilisent des workflows n8n avancés pour vous offrir des résultats 
+                de qualité professionnelle en quelques secondes.
+              </p>
+            </div>
+          </div>
 
-        {/* En-tête */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4">Outils DropSkills</h1>
-          <p className="text-xl text-gray-400">Une suite complète d'outils pour optimiser votre business de produits digitaux</p>
-        </div>
-
-        {/* Liste des outils */}
-        <div className="space-y-4">
-          {tools.map((tool) => (
-            <Link 
-              href={tool.path}
-              key={tool.id}
-              className="block"
-            >
-              <div className="bg-[#111111] rounded-xl p-6 hover:bg-[#1a1a1a] transition-all duration-200 group">
-                <div className="flex items-start gap-6">
-                  {/* Icône */}
-                  <div className="p-4 bg-[#1a1a1a] group-hover:bg-[#242424] rounded-lg text-[#ff0033]">
-                    {tool.icon}
+          {/* Grille des outils */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {OUTILS.map((outil) => {
+              const IconComponent = outil.icon;
+              
+              return (
+                <div
+                  key={outil.id}
+                  className="group bg-[#111111] rounded-xl p-6 border border-[#232323] hover:border-[#333] transition-all duration-300 hover:transform hover:scale-105 cursor-pointer"
+                  onClick={() => router.push(outil.href)}
+                >
+                  {/* Header de la carte */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className={`p-3 bg-gradient-to-r ${outil.color} rounded-lg`}>
+                      <IconComponent className="w-6 h-6 text-white" />
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-white group-hover:translate-x-1 transition-all" />
                   </div>
 
                   {/* Contenu */}
-                  <div className="flex-grow">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-white text-xl font-semibold">{tool.title}</h3>
-                      {tool.isNew && (
-                        <span className="px-2 py-1 bg-[#ff0033]/10 text-[#ff0033] text-xs font-semibold rounded-full">
-                          NEW
-                        </span>
-                      )}
+                  <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-[#00D2FF] transition-colors">
+                    {outil.title}
+                  </h3>
+                  <p className="text-gray-400 mb-4 text-sm leading-relaxed">
+                    {outil.description}
+                  </p>
+
+                  {/* Features */}
+                  <div className="space-y-2">
+                    {outil.features.map((feature, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-[#00D2FF] rounded-full"></div>
+                        <span className="text-xs text-gray-500">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Badge "Nouveau" pour certains outils */}
+                  {outil.id === "pack-createur" && (
+                    <div className="mt-4">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
+                        Nouveau
+                      </span>
                     </div>
-                    <p className="text-gray-400">{tool.description}</p>
-                  </div>
-
-                  {/* Flèche */}
-                  <div className="text-gray-600 group-hover:text-[#ff0033] group-hover:transform group-hover:translate-x-1 transition-all">
-                    →
-                  </div>
+                  )}
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+              );
+            })}
+          </div>
 
-        {/* Section Pro */}
-        <div className="mt-12 bg-gradient-to-r from-[#ff0033] to-[#cc0029] rounded-xl p-8">
-          <div className="flex justify-between items-center">
-            <div>
-              <h2 className="text-2xl font-bold text-white mb-2">Débloquez Tous les Outils Pro</h2>
-              <p className="text-white/80">Accédez à tous les outils premium et leurs futures mises à jour.</p>
+          {/* Section informative */}
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-[#111111] rounded-xl p-6 border border-[#232323] text-center">
+              <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Zap className="w-6 h-6 text-blue-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">Rapide</h3>
+              <p className="text-gray-400 text-sm">
+                Résultats en quelques secondes grâce à nos workflows optimisés
+              </p>
             </div>
-            <button className="bg-white text-[#ff0033] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-              Passer au Plan Pro
-            </button>
+
+            <div className="bg-[#111111] rounded-xl p-6 border border-[#232323] text-center">
+              <div className="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Sparkles className="w-6 h-6 text-green-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">Intelligent</h3>
+              <p className="text-gray-400 text-sm">
+                Alimenté par les derniers modèles d'IA pour des résultats de qualité
+              </p>
+            </div>
+
+            <div className="bg-[#111111] rounded-xl p-6 border border-[#232323] text-center">
+              <div className="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Package className="w-6 h-6 text-purple-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">Complet</h3>
+              <p className="text-gray-400 text-sm">
+                Tous les outils dont vous avez besoin pour votre business digital
+              </p>
+            </div>
           </div>
         </div>
       </main>
