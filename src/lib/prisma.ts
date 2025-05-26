@@ -1,7 +1,7 @@
 // Prisma client placeholder - à configurer plus tard
 // Pour éviter les erreurs de build, nous utilisons un mock temporaire
 
-interface MockPrismaClient {
+export interface MockPrismaClient {
   user: any;
   pack: any;
   log: any;

@@ -12,9 +12,6 @@ export default function Sidebar() {
   const user = {
     name: 'cyril.iriebi',
     email: 'cyril.iriebi@gmail.com',
-    downloadsLeft: 1,
-    downloadsMax: 1,
-    nextReset: '23 juin 2025',
   };
 
   const isActive = (path: string) => pathname === path;
@@ -130,14 +127,14 @@ export default function Sidebar() {
             <span className="group-hover:translate-x-1 transition-transform">Université des Produits</span>
           </Link>
           <Link 
-            href="/maquettes" 
+            href="/produits" 
             onClick={handleLinkClick}
             className={`flex items-center text-gray-300 hover:text-white py-2 px-3 rounded-lg transition-all duration-200 hover:bg-[#1a1a1a] group ${
-              isActive('/maquettes') ? 'bg-[#1a1a1a] text-white' : ''
+              isActive('/produits') ? 'bg-[#1a1a1a] text-white' : ''
             }`}
           >
-            <Layout size={20} className={`mr-3 ${isActive('/maquettes') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
-            <span className="group-hover:translate-x-1 transition-transform">Maquettes de Produits</span>
+            <Layout size={20} className={`mr-3 ${isActive('/produits') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
+            <span className="group-hover:translate-x-1 transition-transform">Bibliothèque de Produits</span>
           </Link>
         </div>
 
@@ -155,13 +152,13 @@ export default function Sidebar() {
             <span className="group-hover:translate-x-1 transition-transform font-bold">Tous les Outils</span>
           </Link>
           <Link 
-            href="/outils/generateur-titres" 
+            href="/outils/titres" 
             onClick={handleLinkClick}
             className={`flex items-center text-gray-300 hover:text-white py-2 px-3 rounded-lg transition-all duration-200 hover:bg-[#1a1a1a] group ${
-              isActive('/outils/generateur-titres') ? 'bg-[#1a1a1a] text-white' : ''
+              isActive('/outils/titres') ? 'bg-[#1a1a1a] text-white' : ''
             }`}
           >
-            <BookOpen size={20} className={`mr-3 ${isActive('/outils/generateur-titres') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
+            <BookOpen size={20} className={`mr-3 ${isActive('/outils/titres') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
             <span className="group-hover:translate-x-1 transition-transform">Générateur de Titres</span>
           </Link>
           <Link 
@@ -203,15 +200,10 @@ export default function Sidebar() {
             </button>
             {userMenuOpen && (
               <div className="w-full px-3 pb-2 pt-1 flex flex-col gap-2 border-t border-[#232323] bg-[#191919] rounded-b-2xl animate-fade-in">
-                <div className="flex items-center justify-between text-[12px] text-gray-300 mb-1">
-                  <span className="flex items-center gap-1"><Download size={12} /> Downloads</span>
-                  <span className="font-bold text-white">{user.downloadsLeft} left</span>
-                </div>
-                <div className="text-[10px] text-gray-500 mb-1">0/{user.downloadsMax} used this period<br />Reset mensuel : {user.nextReset}</div>
                 <button className="flex items-center gap-2 text-[13px] text-white hover:text-[#ff0033] transition"><Sparkles size={14} /> Débloquer tous les produits</button>
                 <button className="flex items-center gap-2 text-[13px] text-white hover:text-[#ff0033] transition"><Users size={14} /> Devenir affilié</button>
                 <button className="flex items-center gap-2 text-[13px] text-white hover:text-[#ff0033] transition"><Gift size={14} /> Obtenir un cadeau</button>
-                <button className="flex items-center gap-2 text-[13px] text-white hover:text-[#ff0033] transition"><User size={14} /> Mon compte</button>
+                <Link href="/compte" onClick={handleLinkClick} className="flex items-center gap-2 text-[13px] text-white hover:text-[#ff0033] transition"><User size={14} /> Mon compte</Link>
                 <button className="flex items-center gap-2 text-[13px] text-white hover:text-[#ff0033] transition"><LogOut size={14} /> Déconnexion</button>
               </div>
             )}

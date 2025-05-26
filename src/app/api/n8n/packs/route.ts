@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { prisma, MockPrismaClient } from '@/lib/prisma'
 
 function authenticateN8N(request: NextRequest) {
   const apiKey = request.headers.get('x-api-key')
