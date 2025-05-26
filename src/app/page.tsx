@@ -4,6 +4,7 @@ import Sidebar from '../components/Sidebar';
 import { useState } from 'react';
 import ProductCard from "@/components/ProductCard";
 import { SavedProductsProvider } from "@/context/SavedProductsContext";
+import { PRODUCTS } from '@/data/products';
 
 export default function Home() {
   return (
@@ -102,51 +103,6 @@ export default function Home() {
     </div>
   );
 }
-
-const PRODUCTS = [
-  {
-    id: 1,
-    title: 'Brand Voice Unlocked',
-    image: '/mock/brand-voice-unlocked.jpg',
-    format: 'Audio',
-    tags: ['Voice', 'Audio', 'Branding', 'Digital Marketing'],
-  },
-  {
-    id: 2,
-    title: 'Build a Voice that Connect',
-    image: '/mock/build-voice-connect.jpg',
-    format: 'Book',
-    tags: ['Voice', 'Book', 'Content Marketing', 'Branding'],
-  },
-  {
-    id: 3,
-    title: 'Brand Voice Architect',
-    image: '/mock/brand-voice-architect.jpg',
-    format: 'Prompt Pack',
-    tags: ['Prompt', 'Pack', 'Branding', 'Business & Entrepreneurship'],
-  },
-  {
-    id: 4,
-    title: 'The Cross-Channel Voice Adaptation System',
-    image: '/mock/cross-channel-voice.jpg',
-    format: 'Guide',
-    tags: ['Voice', 'Guide', 'Startups', 'Digital Marketing'],
-  },
-  {
-    id: 5,
-    title: 'Cross-Platform Brand Voice Consistency',
-    image: '/mock/cross-platform-consistency.jpg',
-    format: 'Checklist',
-    tags: ['Checklist', 'Voice', 'Social Media Marketing', 'Content Marketing'],
-  },
-  {
-    id: 6,
-    title: 'The 7-Step Brand Voice System',
-    image: '/mock/7-step-brand-voice.jpg',
-    format: 'Guide',
-    tags: ['Voice', 'Guide', 'Personal Development', 'Mindset'],
-  },
-];
 
 const FORMATS = [
   'Book',
