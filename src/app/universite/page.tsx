@@ -65,16 +65,13 @@ export default function UniversitePage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
-      {/* Bannière promotionnelle */}
-      <div className="bg-[#ff0033] text-white text-center py-2 text-sm">
-        🎉 Offre de lancement 2025 ➜ -50% sur le Plan Pro
-      </div>
-
-      {/* Sidebar */}
       <Sidebar />
+      <main className="ml-0 md:ml-64 px-4 py-8">
+        {/* Bannière promotionnelle */}
+        <div className="bg-[#ff0033] text-white text-center py-2 text-sm">
+          🎉 Offre de lancement 2025 ➜ -50% sur le Plan Pro
+        </div>
 
-      {/* Contenu principal */}
-      <main className="ml-64 p-8">
         {/* En-tête */}
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-white mb-4">Université des Produits Digitaux</h1>

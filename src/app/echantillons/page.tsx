@@ -60,16 +60,8 @@ export default function EchantillonsPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
-      {/* Bannière promotionnelle */}
-      <div className="bg-[#ff0033] text-white text-center py-2 text-sm">
-        🎉 Offre de lancement 2025 ➜ -50% sur le Plan Pro
-      </div>
-
-      {/* Sidebar */}
       <Sidebar />
-
-      {/* Contenu principal */}
-      <main className="ml-64 p-8">
+      <main className="ml-0 md:ml-64 px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Échantillons Gratuits</h1>
           <p className="text-gray-400">Testez la qualité de nos produits avec ces ressources gratuites.</p>
