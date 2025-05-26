@@ -14,6 +14,7 @@ interface MockPrismaClient {
   iaTool: any;
   iaToolUsage: any;
   packUser: any;
+  packStats: any;
   webhookEvent: any;
   $disconnect: () => Promise<void>;
 }
@@ -24,14 +25,19 @@ const createMockPrisma = (): MockPrismaClient => ({
     findUnique: () => Promise.resolve(null),
     create: () => Promise.resolve({}),
     update: () => Promise.resolve({}),
+    updateMany: () => Promise.resolve({ count: 0 }),
+    upsert: () => Promise.resolve({}),
     delete: () => Promise.resolve({}),
     count: () => Promise.resolve(0),
   },
   pack: {
     findMany: () => Promise.resolve([]),
     findUnique: () => Promise.resolve(null),
+    findFirst: () => Promise.resolve(null),
     create: () => Promise.resolve({}),
     update: () => Promise.resolve({}),
+    updateMany: () => Promise.resolve({ count: 0 }),
+    upsert: () => Promise.resolve({}),
     delete: () => Promise.resolve({}),
     count: () => Promise.resolve(0),
   },
@@ -49,6 +55,8 @@ const createMockPrisma = (): MockPrismaClient => ({
     findUnique: () => Promise.resolve(null),
     create: () => Promise.resolve({}),
     update: () => Promise.resolve({}),
+    updateMany: () => Promise.resolve({ count: 0 }),
+    upsert: () => Promise.resolve({}),
     delete: () => Promise.resolve({}),
   },
   supportTicket: {
@@ -56,6 +64,8 @@ const createMockPrisma = (): MockPrismaClient => ({
     findUnique: () => Promise.resolve(null),
     create: () => Promise.resolve({}),
     update: () => Promise.resolve({}),
+    updateMany: () => Promise.resolve({ count: 0 }),
+    upsert: () => Promise.resolve({}),
     delete: () => Promise.resolve({}),
     count: () => Promise.resolve(0),
   },
@@ -64,6 +74,8 @@ const createMockPrisma = (): MockPrismaClient => ({
     findUnique: () => Promise.resolve(null),
     create: () => Promise.resolve({}),
     update: () => Promise.resolve({}),
+    updateMany: () => Promise.resolve({ count: 0 }),
+    upsert: () => Promise.resolve({}),
     delete: () => Promise.resolve({}),
   },
   webhook: {
@@ -75,6 +87,8 @@ const createMockPrisma = (): MockPrismaClient => ({
     findUnique: () => Promise.resolve(null),
     create: () => Promise.resolve({}),
     update: () => Promise.resolve({}),
+    updateMany: () => Promise.resolve({ count: 0 }),
+    upsert: () => Promise.resolve({}),
     delete: () => Promise.resolve({}),
   },
   iaTool: {
@@ -82,6 +96,8 @@ const createMockPrisma = (): MockPrismaClient => ({
     findUnique: () => Promise.resolve(null),
     create: () => Promise.resolve({}),
     update: () => Promise.resolve({}),
+    updateMany: () => Promise.resolve({ count: 0 }),
+    upsert: () => Promise.resolve({}),
     delete: () => Promise.resolve({}),
     count: () => Promise.resolve(0),
   },
@@ -94,12 +110,26 @@ const createMockPrisma = (): MockPrismaClient => ({
   packUser: {
     findMany: () => Promise.resolve([]),
     create: () => Promise.resolve({}),
+    updateMany: () => Promise.resolve({ count: 0 }),
     count: () => Promise.resolve(0),
     aggregate: () => Promise.resolve({ _sum: { price: 0 } }),
+  },
+  packStats: {
+    findMany: () => Promise.resolve([]),
+    findUnique: () => Promise.resolve(null),
+    create: () => Promise.resolve({}),
+    update: () => Promise.resolve({}),
+    updateMany: () => Promise.resolve({ count: 0 }),
+    upsert: () => Promise.resolve({}),
+    delete: () => Promise.resolve({}),
+    count: () => Promise.resolve(0),
   },
   webhookEvent: {
     findMany: () => Promise.resolve([]),
     create: () => Promise.resolve({}),
+    update: () => Promise.resolve({}),
+    updateMany: () => Promise.resolve({ count: 0 }),
+    upsert: () => Promise.resolve({}),
     count: () => Promise.resolve(0),
   },
   $disconnect: () => Promise.resolve(),
