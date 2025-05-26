@@ -51,6 +51,22 @@ const sampleData: Sample[] = [
   },
 ];
 
+// Fonction utilitaire pour convertir le type en format valide
+const typeToFormat = (type: string): import("@/data/products").Product["format"] => {
+  switch (type) {
+    case "E-books":
+      return "ebook";
+    case "Templates":
+      return "template";
+    case "Vidéos":
+      return "video";
+    case "Scripts":
+      return "tool";
+    default:
+      return "ebook";
+  }
+};
+
 export default function EchantillonsPage() {
   const [activeFilter, setActiveFilter] = useState('Tous');
 
@@ -94,7 +110,7 @@ export default function EchantillonsPage() {
                 id: (idx + 1).toString(),
                 title: sample.title,
                 subtitle: sample.type,
-                format: sample.type.toLowerCase() as import("@/data/products").Product["format"],
+                format: typeToFormat(sample.type),
                 image: sample.image,
                 description: sample.description,
                 likes: Math.round(sample.rating * 10),
