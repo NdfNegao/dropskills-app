@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Eye, Bookmark } from "lucide-react";
 import { useSavedProducts } from "@/context/SavedProductsContext";
-import { PRODUCTS } from "@/data/products";
 
 const FORMATS = [
   'Book',
@@ -41,13 +40,58 @@ const TAGS = [
   'Workbook',
 ];
 
+const PRODUCTS_DATA = [
+  {
+    id: "1",
+    title: 'Brand Voice Unlocked',
+    image: '/mock/brand-voice-unlocked.jpg',
+    format: 'Audio',
+    tags: ['Voice', 'Audio', 'Branding', 'Digital Marketing'],
+  },
+  {
+    id: "2",
+    title: 'Build a Voice that Connect',
+    image: '/mock/build-voice-connect.jpg',
+    format: 'Book',
+    tags: ['Voice', 'Book', 'Content Marketing', 'Branding'],
+  },
+  {
+    id: "3",
+    title: 'Brand Voice Architect',
+    image: '/mock/brand-voice-architect.jpg',
+    format: 'Prompt Pack',
+    tags: ['Prompt', 'Pack', 'Branding', 'Business & Entrepreneurship'],
+  },
+  {
+    id: "4",
+    title: 'The Cross-Channel Voice Adaptation System',
+    image: '/mock/cross-channel-voice.jpg',
+    format: 'Guide',
+    tags: ['Voice', 'Guide', 'Startups', 'Digital Marketing'],
+  },
+  {
+    id: "5",
+    title: 'Cross-Platform Brand Voice Consistency',
+    image: '/mock/cross-platform-consistency.jpg',
+    format: 'Checklist',
+    tags: ['Checklist', 'Voice', 'Social Media Marketing', 'Content Marketing'],
+  },
+  {
+    id: "6",
+    title: 'The 7-Step Brand Voice System',
+    image: '/mock/7-step-brand-voice.jpg',
+    format: 'Guide',
+    tags: ['Voice', 'Guide', 'Personal Development', 'Mindset'],
+  },
+];
+
 export default function ProductGrid() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedFormats, setSelectedFormats] = useState<string[]>([]);
   const { savedProducts, toggleBookmark } = useSavedProducts();
 
-  const filtered = PRODUCTS.filter((p) => {
+  const filtered = PRODUCTS_DATA.filter((p) => {
     const matchSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchFormat = !selectedFormats.length || selectedFormats.includes(p.format);
     const matchTag = !selectedTags.length || p.tags.some((t) => selectedTags.includes(t));
@@ -114,4 +158,6 @@ export default function ProductGrid() {
       </div>
     </div>
   );
-} 
+}
+
+export const PRODUCTS = PRODUCTS_DATA; 
