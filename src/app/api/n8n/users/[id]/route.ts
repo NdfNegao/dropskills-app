@@ -20,12 +20,23 @@ export async function GET(
     const profile = await prisma.profile.findUnique({
       where: { id: params.id },
       include: {
-        packsPurchased: true,
-        products: {
-          select: { id: true, title: true, status: true }
-        },
-        product_requests: {
-          select: { id: true, title: true, status: true }
+        user: {
+          include: {
+            userPacks: {
+              include: {
+                pack: {
+                  select: { id: true, title: true, status: true }
+                }
+              }
+            },
+            favorites: {
+              include: {
+                pack: {
+                  select: { id: true, title: true, status: true }
+                }
+              }
+            }
+          }
         }
       }
     })
@@ -34,7 +45,14 @@ export async function GET(
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
     }
 
-    return NextResponse.json(profile)
+    // Reformater les données pour compatibilité
+    const formattedProfile = {
+      ...profile,
+      packsPurchased: profile.user.userPacks.map(up => up.pack),
+      favorites: profile.user.favorites.map(f => f.pack)
+    }
+
+    return NextResponse.json(formattedProfile)
 
   } catch (error) {
     console.error('Erreur GET user:', error)
@@ -59,13 +77,18 @@ export async function PUT(
       data: {
         firstName: data.firstName,
         lastName: data.lastName,
-        role: data.role,
-        status: data.status,
-        avatar_url: data.avatar_url
+        role: data.role
       },
       include: {
-        packsPurchased: true,
-        products: true
+        user: {
+          include: {
+            userPacks: {
+              include: {
+                pack: true
+              }
+            }
+          }
+        }
       }
     })
 

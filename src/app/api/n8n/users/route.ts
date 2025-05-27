@@ -18,23 +18,32 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '50')
     const role = searchParams.get('role')
-    const status = searchParams.get('status')
 
     const where: any = {}
     if (role) where.role = role
-    if (status) where.status = status
 
     const profiles = await prisma.profile.findMany({
       where,
       skip: (page - 1) * limit,
       take: limit,
       include: {
-        packsPurchased: true,
-        products: {
-          select: { id: true, title: true }
-        },
-        product_requests: {
-          select: { id: true, title: true, status: true }
+        user: {
+          include: {
+            userPacks: {
+              include: {
+                pack: {
+                  select: { id: true, title: true, status: true }
+                }
+              }
+            },
+            favorites: {
+              include: {
+                pack: {
+                  select: { id: true, title: true, status: true }
+                }
+              }
+            }
+          }
         }
       },
       orderBy: { createdAt: 'desc' }
@@ -42,8 +51,15 @@ export async function GET(request: NextRequest) {
 
     const total = await prisma.profile.count({ where })
 
+    // Reformater les données pour compatibilité
+    const formattedProfiles = profiles.map(profile => ({
+      ...profile,
+      packsPurchased: profile.user.userPacks.map(up => up.pack),
+      favorites: profile.user.favorites.map(f => f.pack)
+    }))
+
     return NextResponse.json({
-      users: profiles, // Garde le nom "users" pour compatibilité avec N8N
+      users: formattedProfiles, // Garde le nom "users" pour compatibilité avec N8N
       pagination: {
         page,
         limit,
@@ -58,7 +74,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/n8n/users - Créer un profil utilisateur
+// POST /api/n8n/users - Créer un nouvel utilisateur
 export async function POST(request: NextRequest) {
   if (!authenticateN8N(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -67,22 +83,25 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.json()
     
-    // Vérifier que l'ID utilisateur existe dans auth.users
-    if (!data.id) {
-      return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
-    }
-    
+    // Créer d'abord l'utilisateur
+    const user = await prisma.user.create({
+      data: {
+        email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName
+      }
+    })
+
+    // Puis créer le profil associé
     const profile = await prisma.profile.create({
       data: {
-        id: data.id, // ID de auth.users
+        userId: user.id,
         firstName: data.firstName,
         lastName: data.lastName,
-        role: data.role || 'USER',
-        status: data.status || 'ACTIVE',
-        avatar_url: data.avatar_url
+        role: data.role || 'USER'
       },
       include: {
-        packsPurchased: true
+        user: true
       }
     })
 
