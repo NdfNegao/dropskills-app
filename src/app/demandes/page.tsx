@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import Sidebar from "../../components/Sidebar";
+import LayoutWithSidebar from "@/components/LayoutWithSidebar";
 import { ArrowUp, X } from "lucide-react";
 
 const TABS = [
@@ -31,7 +31,7 @@ const DEMANDES_INIT = [
     id: "3",
     title: "Clés pour humaniser vos textes marketing IA",
     description:
-      "Des astuces pour rendre vos textes IA plus humains, plus rapides à produire, tout en gardant votre identité de marque !",
+      "Des astuces pour rendre vos textes IA plus humains, plus rapides à produire, tout en gardant votre identité de marque !",
     votes: 39,
     status: "idee",
   },
@@ -45,7 +45,7 @@ const DEMANDES_INIT = [
   },
   {
     id: "5",
-    title: "Leadership sécurité : construire une culture de responsabilité",
+    title: "Leadership sécurité : construire une culture de responsabilité",
     description:
       "Guide pratique pour les leaders afin d'instaurer une culture sécurité forte par l'exemple, la communication et l'engagement quotidien.",
     votes: 24,
@@ -128,13 +128,12 @@ export default function DemandesPage() {
   const filteredDemandes = demandes.filter((d) => d.status === TABS[activeTab].value);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex">
-      <Sidebar />
-      <main className="flex-1 flex flex-col items-center px-4 md:px-0 ml-0 md:ml-64 py-10">
-        <div className="w-full max-w-4xl flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+    <LayoutWithSidebar>
+      <div className="max-w-4xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
           <div>
             <h1 className="text-3xl font-bold text-white mb-1">Tableau des demandes de produits</h1>
-            <p className="text-gray-400 text-base">Votez ou suggérez de nouveaux produits à ajouter à la DropSkills Library !</p>
+            <p className="text-gray-400 text-base">Votez ou suggérez de nouveaux produits à ajouter à la DropSkills Library !</p>
           </div>
           <button
             onClick={() => setModalOpen(true)}
@@ -144,7 +143,7 @@ export default function DemandesPage() {
           </button>
         </div>
         {/* Tabs */}
-        <div className="flex gap-2 mb-8 w-full max-w-4xl">
+        <div className="flex gap-2 mb-8">
           {TABS.map((tab, i) => (
             <button
               key={tab.label}
@@ -156,7 +155,7 @@ export default function DemandesPage() {
           ))}
         </div>
         {/* List */}
-        <div className="w-full max-w-4xl flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
           {filteredDemandes.length === 0 && (
             <div className="text-center text-gray-500 py-12">Aucune suggestion pour cette catégorie.</div>
           )}
@@ -198,16 +197,7 @@ export default function DemandesPage() {
             </div>
           </div>
         )}
-      </main>
-      {/* Sidebar droite */}
-      <aside className="hidden lg:flex flex-col items-center w-[350px] px-6 pt-20">
-        <img src="/mock/ebook.png" alt="Ebook" className="w-40 mb-6 drop-shadow-xl" />
-        <div className="bg-[#18181b] rounded-2xl shadow-md p-6 border border-[#232323] w-full">
-          <h3 className="font-bold text-lg text-white mb-2">Envie de votre propre bundle produit ?</h3>
-          <p className="text-gray-400 text-sm mb-4">Obtenez vos propres produits digitaux personnalisés pour vos clients. Offrez-les pour générer des leads, vendez-les avec votre offre principale, ou proposez-les en bonus exclusif.</p>
-          <button className="w-full bg-[#ff0033] text-white py-3 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors text-sm">Créer mon bundle sur-mesure dès 297 €</button>
-        </div>
-      </aside>
-    </div>
+      </div>
+    </LayoutWithSidebar>
   );
 } 

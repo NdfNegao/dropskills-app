@@ -48,7 +48,7 @@ export default function SignInPage() {
           {/* Logo */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-white tracking-tight">
-              DROP<span className="text-[#00D2FF]">SKILLS</span>
+              DROP<span className="text-[#ff0033]">SKILLS</span>
             </h1>
             <p className="text-gray-400 mt-2">Connectez-vous à votre compte</p>
           </div>
@@ -72,7 +72,7 @@ export default function SignInPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D2FF] transition-colors"
+                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#ff0033] transition-colors"
                   placeholder="admin@dropskills.com"
                   required
                 />
@@ -90,7 +90,7 @@ export default function SignInPage() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-12 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D2FF] transition-colors"
+                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-12 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#ff0033] transition-colors"
                   placeholder="Votre mot de passe"
                   required
                 />
@@ -108,7 +108,7 @@ export default function SignInPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-[#00D2FF] to-[#3A7BD5] text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-[#ff0033] to-red-600 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "Connexion..." : "Se connecter"}
             </button>

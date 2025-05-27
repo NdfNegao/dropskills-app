@@ -21,6 +21,7 @@ datasource db {
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
+  password  String?
   firstName String?
   lastName  String?
   createdAt DateTime @default(now())
@@ -32,8 +33,24 @@ model User {
   favorites    Favorite[]
   aiUsage      AiUsage[]
   adminLogs    AdminLog[]
+  profile      Profile?
 
   @@map("users")
+}
+
+model Profile {
+  id        String   @id @default(cuid())
+  role      UserRole @default(USER)
+  firstName String?
+  lastName  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
 }
 
 model Category {
@@ -208,4 +225,10 @@ enum UsageStatus {
   SUCCESS
   ERROR
   PENDING
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
 }

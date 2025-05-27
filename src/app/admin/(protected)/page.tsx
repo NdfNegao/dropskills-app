@@ -1,148 +1,157 @@
-import { prisma } from '@/lib/prisma';
-import { 
-  Users, 
-  Package, 
-  DollarSign, 
-  Activity, 
-  TrendingUp, 
-  AlertTriangle,
-  Bot,
-  MessageSquare
-} from 'lucide-react';
-import AdminStatsCard from '@/components/admin/AdminStatsCard';
-import AdminRecentActivity from '@/components/admin/AdminRecentActivity';
-import AdminQuickActions from '@/components/admin/AdminQuickActions';
+import { Users, Package, Bot, Activity } from 'lucide-react';
 
-async function getDashboardStats() {
-  const [
-    totalUsers,
-    totalProducts,
-    totalActiveUsers,
-    totalRevenue,
-    recentUsers,
-    topProducts
-  ] = await Promise.all([
-    prisma.profile.count(),
-    prisma.products.count(),
-    prisma.profile.count({
-      where: { status: 'ACTIVE' }
-    }),
-    // TODO: Calculer le revenu total depuis une table de transactions
-    0, // Temporaire
-    prisma.profile.findMany({
-      take: 5,
-      orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        role: true,
-        status: true,
-        createdAt: true
-      }
-    }),
-    prisma.products.findMany({
-      take: 5,
-      orderBy: { created_at: 'desc' },
-      include: {
-        product_stats: true,
-        profiles: {
-          select: { firstName: true, lastName: true }
-        }
-      }
-    })
-  ]);
-
-  return {
-    totalUsers,
-    totalProducts,
-    totalActiveUsers,
-    totalRevenue,
-    recentUsers,
-    topProducts
-  };
-}
-
-export default async function AdminDashboard() {
-  const stats = await getDashboardStats();
-
+export default function AdminDashboard() {
   return (
     <div className="space-y-6">
+      {/* En-tête */}
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Tableau de bord</h1>
-        <p className="text-gray-400">Vue d'ensemble de votre plateforme DropSkills</p>
+        <h1 className="text-3xl font-bold text-white">Dashboard Admin</h1>
+        <p className="text-gray-400 mt-2">Vue d'ensemble de la plateforme DropSkills</p>
       </div>
 
-      {/* Statistiques principales */}
+      {/* Statistiques */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <AdminStatsCard
-          title="Utilisateurs totaux"
-          value={stats.totalUsers}
-          icon={Users}
-          trend={`${stats.totalActiveUsers} actifs`}
-          trendUp={true}
+        <StatCard
+          title="Utilisateurs"
+          value="1,234"
+          change="+12%"
+          icon={<Users className="w-6 h-6" />}
+          color="blue"
         />
-        
-        <AdminStatsCard
-          title="Packs actifs"
-          value={stats.totalProducts}
-          icon={Package}
-          trend={`${stats.totalProducts} total`}
-          trendUp={true}
+        <StatCard
+          title="Packs Vendus"
+          value="567"
+          change="+8%"
+          icon={<Package className="w-6 h-6" />}
+          color="green"
         />
-        
-        <AdminStatsCard
-          title="Revenus totaux"
-          value={`${Number(stats.totalRevenue).toFixed(0)}€`}
-          icon={DollarSign}
-          trend={`${stats.recentUsers.length} cette semaine`}
-          trendUp={true}
+        <StatCard
+          title="Outils IA"
+          value="6"
+          change="0%"
+          icon={<Bot className="w-6 h-6" />}
+          color="purple"
         />
-        
-        <AdminStatsCard
-          title="Usage IA"
-          value={stats.topProducts.length}
-          icon={Bot}
-          trend="7 derniers jours"
-          trendUp={true}
+        <StatCard
+          title="Activité"
+          value="89%"
+          change="+5%"
+          icon={<Activity className="w-6 h-6" />}
+          color="red"
         />
-      </div>
-
-      {/* Actions rapides et alertes */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <AdminQuickActions />
-        </div>
-        
-        <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-yellow-500" />
-            Alertes
-          </h3>
-          <div className="space-y-3">
-            {stats.topProducts.length > 0 && (
-              <div className="flex items-center justify-between p-3 bg-[#1a1a1a] rounded-lg">
-                <div className="flex items-center gap-2">
-                  <MessageSquare className="w-4 h-4 text-yellow-500" />
-                  <span className="text-sm text-white">Top produits</span>
-                </div>
-                <span className="text-sm font-semibold text-yellow-500">{stats.topProducts.length}</span>
-              </div>
-            )}
-            
-            <div className="flex items-center justify-between p-3 bg-[#1a1a1a] rounded-lg">
-              <div className="flex items-center gap-2">
-                <Activity className="w-4 h-4 text-green-500" />
-                <span className="text-sm text-white">Système</span>
-              </div>
-              <span className="text-sm font-semibold text-green-500">Opérationnel</span>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Activité récente */}
-      <AdminRecentActivity webhooks={[]} />
+      <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
+        <h2 className="text-xl font-semibold text-white mb-4">Activité Récente</h2>
+        <div className="space-y-3">
+          <ActivityItem
+            action="Nouvel utilisateur inscrit"
+            user="john.doe@example.com"
+            time="Il y a 5 minutes"
+          />
+          <ActivityItem
+            action="Pack acheté"
+            user="jane.smith@example.com"
+            time="Il y a 15 minutes"
+          />
+          <ActivityItem
+            action="Outil IA utilisé"
+            user="bob.wilson@example.com"
+            time="Il y a 30 minutes"
+          />
+        </div>
+      </div>
+
+      {/* Actions rapides */}
+      <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
+        <h2 className="text-xl font-semibold text-white mb-4">Actions Rapides</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <QuickAction
+            title="Créer un utilisateur"
+            description="Ajouter un nouvel utilisateur"
+            href="/admin/utilisateurs/nouveau"
+          />
+          <QuickAction
+            title="Nouveau pack"
+            description="Créer un nouveau pack"
+            href="/admin/packs/nouveau"
+          />
+          <QuickAction
+            title="Voir les logs"
+            description="Consulter l'activité système"
+            href="/admin/logs"
+          />
+        </div>
+      </div>
     </div>
+  );
+}
+
+interface StatCardProps {
+  title: string;
+  value: string;
+  change: string;
+  icon: React.ReactNode;
+  color: 'blue' | 'green' | 'purple' | 'red';
+}
+
+function StatCard({ title, value, change, icon, color }: StatCardProps) {
+  const colorClasses = {
+    blue: 'text-blue-400 bg-blue-400/10',
+    green: 'text-green-400 bg-green-400/10',
+    purple: 'text-purple-400 bg-purple-400/10',
+    red: 'text-[#ff0033] bg-[#ff0033]/10'
+  };
+
+  return (
+    <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
+      <div className="flex items-center justify-between">
+        <div className={`p-2 rounded-lg ${colorClasses[color]}`}>
+          {icon}
+        </div>
+        <span className="text-green-400 text-sm font-medium">{change}</span>
+      </div>
+      <div className="mt-4">
+        <h3 className="text-2xl font-bold text-white">{value}</h3>
+        <p className="text-gray-400 text-sm">{title}</p>
+      </div>
+    </div>
+  );
+}
+
+interface ActivityItemProps {
+  action: string;
+  user: string;
+  time: string;
+}
+
+function ActivityItem({ action, user, time }: ActivityItemProps) {
+  return (
+    <div className="flex items-center justify-between py-2">
+      <div>
+        <p className="text-white text-sm">{action}</p>
+        <p className="text-gray-400 text-xs">{user}</p>
+      </div>
+      <span className="text-gray-400 text-xs">{time}</span>
+    </div>
+  );
+}
+
+interface QuickActionProps {
+  title: string;
+  description: string;
+  href: string;
+}
+
+function QuickAction({ title, description, href }: QuickActionProps) {
+  return (
+    <a
+      href={href}
+      className="block p-4 bg-[#1a1a1a] rounded-lg border border-[#232323] hover:border-[#ff0033] transition-colors"
+    >
+      <h3 className="text-white font-medium">{title}</h3>
+      <p className="text-gray-400 text-sm mt-1">{description}</p>
+    </a>
   );
 } 

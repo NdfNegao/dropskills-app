@@ -1,261 +1,177 @@
-"use client";
+'use client';
 
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import Sidebar from "@/components/Sidebar";
-import { 
-  Sparkles, 
-  FileText, 
-  Palette, 
-  Lightbulb, 
-  Calculator, 
-  Package,
-  ArrowRight,
-  Zap,
-  Target,
-  Mail,
-  Calendar,
-  TrendingUp
-} from "lucide-react";
-import { DropskillsRoadmap } from '@/components/DropskillsRoadmap';
+import React from 'react';
+import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import { BrainCog, Rocket, FolderKanban, Mail, CalendarCheck, Target, Lock } from 'lucide-react';
 
-const OUTILS = [
+const AI_TOOLS = [
   {
-    id: "content-system",
-    title: "Content System AI",
-    description: "Générez un calendrier éditorial de 90 jours avec contenus variés et stratégie complète",
-    icon: Calendar,
-    color: "from-green-500 to-emerald-500",
-    href: "/outils/content-system",
-    features: ["Calendrier 90 jours", "10+ exemples de posts", "Export CSV/Notion"]
-  },
-  {
-    id: "agent-veille",
-    title: "Agent IA Veille & Opportunités",
-    description: "Détectez automatiquement les opportunités business et tendances de votre marché",
-    icon: TrendingUp,
-    color: "from-purple-500 to-indigo-500",
-    href: "/outils/agent-veille",
-    features: ["Scoring IA", "Blue Ocean detector", "Alertes personnalisées"]
-  },
-  {
-    id: "copymoneymail",
-    title: "CopyMoneyMail AI",
-    description: "Pas d'email = pas de relance = argent laissé sur la table. Générez des séquences qui convertissent",
-    icon: Mail,
-    color: "from-indigo-500 to-blue-500",
-    href: "/outils/copymoneymail",
-    features: ["Wizard 8 étapes", "Navigation entre emails", "A/B testing inclus"]
-  },
-  {
-    id: "tunnel-maker",
-    title: "Générateur de Tunnel IA",
-    description: "Créez votre tunnel de vente optimisé qui maximise les conversions",
-    icon: Zap,
-    color: "from-orange-500 to-red-500",
-    href: "/outils/tunnel-maker",
-    features: ["Wizard 8 étapes", "Schéma visuel", "Séquence email incluse"]
-  },
-  {
-    id: "usp-maker",
-    title: "USP Maker IA",
-    description: "Créez votre proposition de valeur unique irrésistible",
-    icon: Sparkles,
-    color: "from-purple-500 to-pink-500",
-    href: "/outils/usp-maker",
-    features: ["Wizard 8 étapes", "3 variantes d'USP", "Conseils d'utilisation"]
-  },
-  {
-    id: "icp-maker",
-    title: "ICP Maker IA",
-    description: "Créez votre profil client idéal en 7 étapes avec l'IA",
-    icon: Target,
-    color: "from-blue-500 to-indigo-500",
+    id: 1,
+    name: "ICP Maker",
+    description: "Créateur de profil client idéal avec IA",
+    icon: <BrainCog className="w-8 h-8" />,
+    type: "GENERATOR",
     href: "/outils/icp-maker",
-    features: ["Wizard 7 étapes", "Analyse psychologique", "Fiche actionable"]
+    color: "from-blue-500 to-blue-600"
   },
   {
-    id: "generateur-titres",
-    title: "Générateur de Titres",
-    description: "Créez des titres accrocheurs qui convertissent",
-    icon: Sparkles,
-    color: "from-blue-500 to-cyan-500",
-    href: "/outils/titres",
-    features: ["Titres optimisés", "Score d'impact", "Différentes émotions"]
+    id: 2,
+    name: "Générateur d'Offre",
+    description: "Générateur d'offres irrésistibles automatisé",
+    icon: <Rocket className="w-8 h-8" />,
+    type: "GENERATOR",
+    href: "/outils/generateur-offre",
+    color: "from-purple-500 to-purple-600"
   },
   {
-    id: "descriptions-ia",
-    title: "Descriptions IA",
-    description: "Rédigez des descriptions de produits persuasives",
-    icon: FileText,
-    color: "from-green-500 to-emerald-500",
-    href: "/outils/descriptions",
-    features: ["Copywriting optimisé", "Différents tons", "SEO-friendly"]
+    id: 3,
+    name: "Tunnel de Vente IA",
+    description: "Assistant pour créer des tunnels de vente optimisés",
+    icon: <FolderKanban className="w-8 h-8" />,
+    type: "ASSISTANT",
+    href: "/outils/tunnel-vente",
+    color: "from-green-500 to-green-600"
   },
   {
-    id: "rebranding-pdf",
-    title: "Rebranding PDF",
-    description: "Personnalisez vos PDFs avec votre marque",
-    icon: Palette,
-    color: "from-orange-500 to-red-500",
-    href: "/outils/pdf-rebrander",
-    features: ["Changement de couleurs", "Logo personnalisé", "Automatisé"]
+    id: 4,
+    name: "CopyMoneyMail",
+    description: "Optimiseur d'emails de vente haute conversion",
+    icon: <Mail className="w-8 h-8" />,
+    type: "OPTIMIZER",
+    href: "/outils/copy-money-mail",
+    color: "from-red-500 to-red-600"
   },
   {
-    id: "idees-produits",
-    title: "Idées de Produits",
-    description: "Découvrez des idées de produits rentables",
-    icon: Lightbulb,
-    color: "from-yellow-500 to-orange-500",
-    href: "/outils/idees",
-    features: ["Analyse de marché", "Estimation de revenus", "Tendances"]
+    id: 5,
+    name: "Content System 90J",
+    description: "Analyseur et planificateur de contenu sur 90 jours",
+    icon: <CalendarCheck className="w-8 h-8" />,
+    type: "ANALYZER",
+    href: "/outils/content-system",
+    color: "from-yellow-500 to-yellow-600"
   },
   {
-    id: "calculateur-revenus",
-    title: "Calculateur de Revenus",
-    description: "Calculez et projetez vos revenus futurs",
-    icon: Calculator,
-    color: "from-indigo-500 to-purple-500",
-    href: "/outils/calculateur",
-    features: ["Projections précises", "Analyse de coûts", "Graphiques"]
+    id: 6,
+    name: "Lead Magnet Creator",
+    description: "Générateur de lead magnets attractifs",
+    icon: <Target className="w-8 h-8" />,
+    type: "GENERATOR",
+    href: "/outils/lead-magnet",
+    color: "from-indigo-500 to-indigo-600"
   }
 ];
 
 export default function OutilsPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  // Redirection si non connecté
-  if (status === "loading") {
-    return <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-      <div className="text-white">Chargement...</div>
-    </div>;
-  }
-
-  if (!session) {
-    router.push("/auth/signin");
-    return null;
-  }
+  const isPremium = false; // Simuler un utilisateur non-premium
+  const userPacksCount = 3;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
-      <Sidebar />
-      
-      <main className="ml-0 md:ml-64 p-8">
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="mb-12">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-gradient-to-r from-[#ff0033] to-[#cc0029] rounded-xl">
-                <Zap className="w-8 h-8 text-white" />
+    <LayoutWithSidebar>
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-white mb-4">
+            Outils IA Dropskills
+          </h1>
+          <p className="text-gray-300 text-lg">
+            6 outils d'intelligence artificielle pour booster votre business en ligne
+          </p>
+          
+          {!isPremium && (
+            <div className="mt-4 p-4 bg-yellow-900/20 border border-yellow-500/30 rounded-lg">
+              <div className="flex items-center gap-2 text-yellow-400">
+                <Lock className="w-5 h-5" />
+                <span className="font-semibold">Accès Premium Requis</span>
               </div>
-              <div>
-                <h1 className="text-4xl font-bold text-white">Outils IA DropSkills</h1>
-                <p className="text-xl text-gray-400 mt-2">
-                  Boostez votre productivité avec nos outils d'intelligence artificielle
-                </p>
-              </div>
-            </div>
-            
-            {/* Section de réassurance déplacée en haut */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-[#111111] rounded-xl p-6 border border-[#232323] text-center">
-                <div className="w-12 h-12 bg-[#ff0033]/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Zap className="w-6 h-6 text-[#ff0033]" />
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-2">Rapide</h3>
-                <p className="text-gray-400 text-sm">
-                  Résultats en quelques secondes grâce à nos workflows optimisés
-                </p>
-              </div>
-
-              <div className="bg-[#111111] rounded-xl p-6 border border-[#232323] text-center">
-                <div className="w-12 h-12 bg-[#ff0033]/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Sparkles className="w-6 h-6 text-[#ff0033]" />
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-2">Intelligent</h3>
-                <p className="text-gray-400 text-sm">
-                  Alimenté par les derniers modèles d'IA pour des résultats de qualité
-                </p>
-              </div>
-
-              <div className="bg-[#111111] rounded-xl p-6 border border-[#232323] text-center">
-                <div className="w-12 h-12 bg-[#ff0033]/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Package className="w-6 h-6 text-[#ff0033]" />
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-2">Complet</h3>
-                <p className="text-gray-400 text-sm">
-                  Tous les outils dont vous avez besoin pour votre business digital
-                </p>
-              </div>
-            </div>
-            
-            <div className="bg-gradient-to-r from-[#ff0033]/10 to-[#cc0029]/10 border border-[#ff0033]/20 rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <Sparkles className="w-5 h-5 text-[#ff0033]" />
-                <h3 className="text-lg font-semibold text-white">Powered by n8n</h3>
-              </div>
-              <p className="text-gray-300">
-                Nos outils utilisent des workflows n8n avancés pour vous offrir des résultats 
-                de qualité professionnelle en quelques secondes.
+              <p className="text-yellow-300 mt-1">
+                Débloquez tous les outils IA avec un abonnement premium
               </p>
             </div>
-          </div>
-
-          {/* Roadmap IA animée */}
-          <DropskillsRoadmap />
-
-          {/* Grille des outils */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {OUTILS.map((outil) => {
-              const IconComponent = outil.icon;
-              
-              return (
-                <div
-                  key={outil.id}
-                  className="group bg-[#111111] rounded-xl p-6 border border-[#232323] hover:border-[#ff0033]/30 transition-all duration-300 hover:transform hover:scale-105 cursor-pointer"
-                  onClick={() => router.push(outil.href)}
-                >
-                  {/* Header de la carte */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`p-3 bg-gradient-to-r ${outil.color} rounded-lg`}>
-                      <IconComponent className="w-6 h-6 text-white" />
-                    </div>
-                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-[#ff0033] group-hover:translate-x-1 transition-all" />
-                  </div>
-
-                  {/* Contenu */}
-                  <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-[#ff0033] transition-colors">
-                    {outil.title}
-                  </h3>
-                  <p className="text-gray-400 mb-4 text-sm leading-relaxed">
-                    {outil.description}
-                  </p>
-
-                  {/* Features avec bullet points rouges */}
-                  <div className="space-y-2">
-                    {outil.features.map((feature, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 bg-[#ff0033] rounded-full"></div>
-                        <span className="text-xs text-gray-500">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Badge "Nouveau" pour certains outils */}
-                  {(outil.id === "content-system" || outil.id === "agent-veille") && (
-                    <div className="mt-4">
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#ff0033]/10 text-[#ff0033] border border-[#ff0033]/20">
-                        Nouveau
-                      </span>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          )}
         </div>
-      </main>
+
+        {/* Grille des outils */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {AI_TOOLS.map((tool) => (
+            <ToolCard 
+              key={tool.id} 
+              tool={tool} 
+              isPremium={isPremium}
+            />
+          ))}
+        </div>
+
+        {/* CTA Premium */}
+        {!isPremium && (
+          <div className="mt-12 text-center">
+            <div className="bg-gradient-to-r from-[#ff0033] to-red-600 rounded-2xl p-8">
+              <h2 className="text-2xl font-bold text-white mb-4">
+                Débloquez Tous les Outils IA
+              </h2>
+              <p className="text-white/80 mb-6">
+                Accédez aux 6 outils IA premium et boostez votre productivité
+              </p>
+              <button className="bg-black text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors">
+                Passer Premium
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </LayoutWithSidebar>
+  );
+}
+
+interface ToolCardProps {
+  tool: typeof AI_TOOLS[0];
+  isPremium: boolean;
+}
+
+function ToolCard({ tool, isPremium }: ToolCardProps) {
+  const isLocked = !isPremium;
+
+  return (
+    <div className={`relative bg-[#18181b] rounded-xl p-6 border border-gray-800 hover:border-gray-700 transition-all ${isLocked ? 'opacity-60' : 'hover:scale-105'}`}>
+      {/* Lock overlay */}
+      {isLocked && (
+        <div className="absolute top-4 right-4">
+          <Lock className="w-5 h-5 text-yellow-500" />
+        </div>
+      )}
+
+      {/* Icon avec gradient */}
+      <div className={`w-16 h-16 rounded-lg bg-gradient-to-r ${tool.color} flex items-center justify-center text-white mb-4`}>
+        {tool.icon}
+      </div>
+
+      {/* Contenu */}
+      <h3 className="text-xl font-semibold text-white mb-2">
+        {tool.name}
+      </h3>
+      
+      <p className="text-gray-300 mb-4">
+        {tool.description}
+      </p>
+
+      {/* Type badge */}
+      <div className="flex items-center justify-between">
+        <span className="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded">
+          {tool.type}
+        </span>
+        
+        {isLocked ? (
+          <button className="text-[#ff0033] text-sm font-medium cursor-not-allowed">
+            Premium requis
+          </button>
+        ) : (
+          <a 
+            href={tool.href}
+            className="text-[#ff0033] text-sm font-medium hover:underline"
+          >
+            Utiliser →
+          </a>
+        )}
+      </div>
     </div>
   );
 } 

@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import Sidebar from '../components/Sidebar';
+import DropskillsSidebar from '../components/DropskillsSidebar';
 import { useState } from 'react';
 import ProductCard from "@/components/ProductCard";
 import { SavedProductsProvider } from "@/context/SavedProductsContext";
@@ -14,8 +14,11 @@ export default function Home() {
         🎉 Offre de lancement 2025 ➜ -50% sur le Plan Pro
       </div>
 
-      {/* Sidebar */}
-      <Sidebar />
+      {/* Nouvelle Sidebar Dropskills */}
+      <DropskillsSidebar 
+        isPremium={false} 
+        userPacksCount={3}
+      />
 
       {/* Contenu principal */}
       <main className="ml-0 md:ml-64">
@@ -70,21 +73,21 @@ export default function Home() {
           </button>
         </section>
 
-        {/* Bannière échantillons */}
+        {/* Bannière outils IA */}
         <div className="max-w-5xl mx-auto mb-12">
           <div className="bg-[#18181b] rounded-2xl flex flex-col sm:flex-row items-center justify-between px-8 py-6 shadow-lg">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-[#ff0033] text-2xl">★</span>
-                <span className="text-white text-lg font-semibold">Curieux de la qualité de nos produits&nbsp;?</span>
+                <span className="text-[#ff0033] text-2xl">🤖</span>
+                <span className="text-white text-lg font-semibold">Découvrez nos 6 Outils IA Premium</span>
               </div>
-              <p className="text-gray-300 text-base">Découvre nos échantillons gratuits pour tester la qualité premium des ressources DropSkills.</p>
+              <p className="text-gray-300 text-base">ICP Maker, Générateur d'Offre, Tunnel de Vente IA et plus encore pour booster votre business.</p>
             </div>
             <a
-              href="/echantillons"
+              href="/outils"
               className="mt-4 sm:mt-0 sm:ml-8 bg-[#ff0033] hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors text-base shadow-md flex items-center gap-2"
             >
-              Voir les échantillons
+              Voir les outils IA
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L21 12m0 0l-3.75 5.25M21 12H3" />
               </svg>
