@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+// Middleware d'authentification pour n8n
 function authenticateN8N(request: NextRequest) {
   const apiKey = request.headers.get('x-api-key')
   return apiKey === process.env.N8N_API_KEY
 }
 
-// GET /api/n8n/users/[id] - Récupérer un utilisateur
+// GET /api/n8n/users/[id] - Récupérer un profil utilisateur
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -16,34 +17,24 @@ export async function GET(
   }
 
   try {
-    const user = await prisma.user.findUnique({
+    const profile = await prisma.profile.findUnique({
       where: { id: params.id },
       include: {
-        packsPurchased: {
-          include: {
-            pack: true
-          }
+        packsPurchased: true,
+        products: {
+          select: { id: true, title: true, status: true }
         },
-        iaToolUsage: {
-          take: 10,
-          orderBy: { createdAt: 'desc' }
-        },
-        supportTickets: {
-          take: 5,
-          orderBy: { createdAt: 'desc' }
-        },
-        notifications: {
-          where: { isRead: false },
-          take: 10
+        product_requests: {
+          select: { id: true, title: true, status: true }
         }
       }
     })
 
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    if (!profile) {
+      return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
     }
 
-    return NextResponse.json(user)
+    return NextResponse.json(profile)
 
   } catch (error) {
     console.error('Erreur GET user:', error)
@@ -51,7 +42,7 @@ export async function GET(
   }
 }
 
-// PUT /api/n8n/users/[id] - Mettre à jour un utilisateur
+// PUT /api/n8n/users/[id] - Mettre à jour un profil utilisateur
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -63,30 +54,33 @@ export async function PUT(
   try {
     const data = await request.json()
     
-    const user = await prisma.user.update({
+    const profile = await prisma.profile.update({
       where: { id: params.id },
       data: {
         firstName: data.firstName,
         lastName: data.lastName,
         role: data.role,
         status: data.status,
-        subscriptionType: data.subscriptionType,
-        subscriptionExpiresAt: data.subscriptionEndDate ? new Date(data.subscriptionEndDate) : undefined,
+        avatar_url: data.avatar_url
       },
       include: {
-        packsPurchased: true
+        packsPurchased: true,
+        products: true
       }
     })
 
-    return NextResponse.json(user)
+    return NextResponse.json(profile)
 
   } catch (error) {
     console.error('Erreur PUT user:', error)
+    if (error.code === 'P2025') {
+      return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
+    }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
-// DELETE /api/n8n/users/[id] - Supprimer un utilisateur
+// DELETE /api/n8n/users/[id] - Supprimer un profil utilisateur
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -96,14 +90,17 @@ export async function DELETE(
   }
 
   try {
-    await prisma.user.delete({
+    await prisma.profile.delete({
       where: { id: params.id }
     })
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ message: 'Profile deleted successfully' })
 
   } catch (error) {
     console.error('Erreur DELETE user:', error)
+    if (error.code === 'P2025') {
+      return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
+    }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 } 

@@ -12,22 +12,17 @@ import {
 import Link from 'next/link';
 
 async function getUsers() {
-  return await prisma.user.findMany({
-    include: {
-      packsPurchased: {
-        where: { status: 'ACTIVE' },
-        include: { pack: true }
-      },
-      _count: {
-        select: {
-          packsPurchased: true,
-          iaToolUsage: true,
-          supportTickets: true
-        }
-      }
-    },
+  return await prisma.profile.findMany({
     orderBy: { createdAt: 'desc' },
-    take: 50
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      role: true,
+      status: true,
+      createdAt: true,
+      updatedAt: true
+    }
   });
 }
 
@@ -150,7 +145,7 @@ export default async function UtilisateursAdmin() {
             <span className="text-sm text-gray-400">Premium</span>
           </div>
           <p className="text-2xl font-bold text-white">
-            {users.filter(u => u.subscriptionType !== 'FREE').length}
+            0
           </p>
         </div>
       </div>
@@ -182,17 +177,17 @@ export default async function UtilisateursAdmin() {
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-[#ff0033] rounded-full flex items-center justify-center">
                           <span className="text-white font-semibold">
-                            {(user.firstName?.[0] || user.email[0]).toUpperCase()}
+                            {(user.firstName?.[0] || 'U').toUpperCase()}
                           </span>
                         </div>
                         <div>
                           <p className="text-white font-medium">
                             {user.firstName && user.lastName 
                               ? `${user.firstName} ${user.lastName}`
-                              : user.email
+                              : `Utilisateur ${user.id.slice(0, 8)}`
                             }
                           </p>
-                          <p className="text-sm text-gray-400">{user.email}</p>
+                          <p className="text-sm text-gray-400">ID: {user.id.slice(0, 8)}...</p>
                         </div>
                       </div>
                     </td>
@@ -208,17 +203,14 @@ export default async function UtilisateursAdmin() {
                       </div>
                     </td>
                     <td className="p-4">
-                      <span className="text-white">{user.subscriptionType}</span>
+                      <span className="text-white">-</span>
                     </td>
                     <td className="p-4">
-                      <span className="text-white">{user._count.packsPurchased}</span>
+                      <span className="text-white">-</span>
                     </td>
                     <td className="p-4">
                       <span className="text-gray-400 text-sm">
-                        {user.lastLoginAt 
-                          ? new Date(user.lastLoginAt).toLocaleDateString('fr-FR')
-                          : 'Jamais'
-                        }
+                        {new Date(user.createdAt).toLocaleDateString('fr-FR')}
                       </span>
                     </td>
                     <td className="p-4">

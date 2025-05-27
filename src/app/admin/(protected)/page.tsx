@@ -16,90 +16,50 @@ import AdminQuickActions from '@/components/admin/AdminQuickActions';
 async function getDashboardStats() {
   const [
     totalUsers,
-    activeUsers,
-    totalPacks,
-    activePacks,
+    totalProducts,
+    totalActiveUsers,
     totalRevenue,
-    recentPurchases,
-    iaToolUsage,
-    supportTickets,
-    recentWebhooks
+    recentUsers,
+    topProducts
   ] = await Promise.all([
-    // Utilisateurs totaux
-    prisma.user.count(),
-    
-    // Utilisateurs actifs (connectés dans les 30 derniers jours)
-    prisma.user.count({
-      where: {
-        lastLoginAt: {
-          gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-        }
-      }
-    }),
-    
-    // Packs totaux
-    prisma.pack.count(),
-    
-    // Packs actifs
-    prisma.pack.count({
-      where: { status: 'ACTIVE', visibility: 'PUBLIC' }
-    }),
-    
-    // Revenus totaux
-    prisma.packUser.aggregate({
-      _sum: { amount: true },
+    prisma.profile.count(),
+    prisma.products.count(),
+    prisma.profile.count({
       where: { status: 'ACTIVE' }
     }),
-    
-    // Achats récents (7 derniers jours)
-    prisma.packUser.count({
-      where: {
-        createdAt: {
-          gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-        },
-        status: 'ACTIVE'
-      }
-    }),
-    
-    // Usage outils IA (7 derniers jours)
-    prisma.iaToolUsage.count({
-      where: {
-        createdAt: {
-          gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-        }
-      }
-    }),
-    
-    // Tickets de support ouverts
-    prisma.supportTicket.count({
-      where: { status: { in: ['OPEN', 'IN_PROGRESS'] } }
-    }),
-    
-    // Webhooks récents
-    prisma.webhookEvent.findMany({
+    // TODO: Calculer le revenu total depuis une table de transactions
+    0, // Temporaire
+    prisma.profile.findMany({
       take: 5,
       orderBy: { createdAt: 'desc' },
       select: {
         id: true,
-        eventType: true,
-        provider: true,
+        firstName: true,
+        lastName: true,
+        role: true,
         status: true,
-        createdAt: true,
-        userEmail: true
+        createdAt: true
+      }
+    }),
+    prisma.products.findMany({
+      take: 5,
+      orderBy: { created_at: 'desc' },
+      include: {
+        product_stats: true,
+        profiles: {
+          select: { firstName: true, lastName: true }
+        }
       }
     })
   ]);
 
   return {
     totalUsers,
-    activeUsers,
-    totalPacks,
-    activePacks,
-    totalRevenue: totalRevenue._sum.amount || 0,
-    recentPurchases,
-    iaToolUsage,
-    supportTickets,
-    recentWebhooks
+    totalProducts,
+    totalActiveUsers,
+    totalRevenue,
+    recentUsers,
+    topProducts
   };
 }
 
@@ -119,15 +79,15 @@ export default async function AdminDashboard() {
           title="Utilisateurs totaux"
           value={stats.totalUsers}
           icon={Users}
-          trend={`${stats.activeUsers} actifs`}
+          trend={`${stats.totalActiveUsers} actifs`}
           trendUp={true}
         />
         
         <AdminStatsCard
           title="Packs actifs"
-          value={stats.activePacks}
+          value={stats.totalProducts}
           icon={Package}
-          trend={`${stats.totalPacks} total`}
+          trend={`${stats.totalProducts} total`}
           trendUp={true}
         />
         
@@ -135,13 +95,13 @@ export default async function AdminDashboard() {
           title="Revenus totaux"
           value={`${Number(stats.totalRevenue).toFixed(0)}€`}
           icon={DollarSign}
-          trend={`${stats.recentPurchases} cette semaine`}
+          trend={`${stats.recentUsers.length} cette semaine`}
           trendUp={true}
         />
         
         <AdminStatsCard
           title="Usage IA"
-          value={stats.iaToolUsage}
+          value={stats.topProducts.length}
           icon={Bot}
           trend="7 derniers jours"
           trendUp={true}
@@ -160,13 +120,13 @@ export default async function AdminDashboard() {
             Alertes
           </h3>
           <div className="space-y-3">
-            {stats.supportTickets > 0 && (
+            {stats.topProducts.length > 0 && (
               <div className="flex items-center justify-between p-3 bg-[#1a1a1a] rounded-lg">
                 <div className="flex items-center gap-2">
                   <MessageSquare className="w-4 h-4 text-yellow-500" />
-                  <span className="text-sm text-white">Tickets ouverts</span>
+                  <span className="text-sm text-white">Top produits</span>
                 </div>
-                <span className="text-sm font-semibold text-yellow-500">{stats.supportTickets}</span>
+                <span className="text-sm font-semibold text-yellow-500">{stats.topProducts.length}</span>
               </div>
             )}
             
@@ -182,7 +142,7 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Activité récente */}
-      <AdminRecentActivity webhooks={stats.recentWebhooks} />
+      <AdminRecentActivity webhooks={[]} />
     </div>
   );
 } 
