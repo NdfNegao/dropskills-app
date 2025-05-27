@@ -1,71 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '../../../../generated/prisma-v2'
-
-// Client Prisma V2 dédié
-const prismaV2 = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export async function GET(request: NextRequest) {
   try {
-    console.log('🧪 Test du schéma Dropskills V2...')
-
-    // 1. Test de connexion
-    await prismaV2.$connect()
-    console.log('✅ Connexion Prisma V2 réussie')
-
-    // 2. Test des données de base
+    console.log('🧪 Test: Route V2 avec schéma ultra-simplifié')
+    
+    const startTime = Date.now()
+    
+    // Compter les entités principales
     const stats = {
-      users: await prismaV2.user.count(),
-      packs: await prismaV2.pack.count(),
-      categories: await prismaV2.category.count(),
-      samples: await prismaV2.sample.count(),
-      favorites: await prismaV2.favorite.count(),
-      userPacks: await prismaV2.userPack.count(),
-      aiTools: await prismaV2.aiTool.count(),
-      packStats: await prismaV2.packStats.count(),
-      adminLogs: await prismaV2.adminLog.count(),
-      aiUsage: await prismaV2.aiUsage.count()
+      users: await prisma.user.count(),
+      packs: await prisma.pack.count(),
+      categories: await prisma.category.count(),
+      samples: await prisma.sample.count(),
+      favorites: await prisma.favorite.count(),
+      userPacks: await prisma.userPack.count(),
+      aiTools: await prisma.aiTool.count(),
+      packStats: await prisma.packStats.count(),
+      adminLogs: await prisma.adminLog.count(),
+      aiUsage: await prisma.aiUsage.count()
     }
 
-    // 3. Test des relations
-    const usersWithPacks = await prismaV2.user.findMany({
+    // Tests de relations
+    const usersWithPacks = await prisma.user.findMany({
       take: 3,
       include: {
-        createdPacks: {
-          take: 2,
+        userPacks: {
           include: {
-            category: true,
-            samples: { take: 1 }
-          }
-        },
-        favorites: {
-          take: 2,
-          include: {
-            pack: { select: { title: true } }
+            pack: {
+              select: { title: true }
+            }
           }
         }
       }
     })
 
-    // 4. Test des packs avec analytics simplifiées
-    const packsWithRelations = await prismaV2.pack.findMany({
-      take: 3,
+    const packsWithRelations = await prisma.pack.findMany({
+      take: 5,
       include: {
-        category: true,
-        creator: { select: { email: true, firstName: true, lastName: true } },
-        samples: { take: 2 },
-        packStats: true,
-        _count: {
-          select: {
-            favorites: true,
-            userPacks: true,
-            samples: true
-          }
-        }
+        category: { select: { name: true } },
+        creator: { select: { firstName: true, lastName: true, email: true } },
+        samples: { take: 2, select: { title: true } },
+        favorites: { take: 1 },
+        userPacks: { take: 1 },
+        stats: true
       }
     })
 
-    // 5. Test des catégories avec comptage
-    const categoriesWithCounts = await prismaV2.category.findMany({
+    const categoriesWithCounts = await prisma.category.findMany({
       include: {
         _count: {
           select: { packs: true }
@@ -73,9 +55,7 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    // 6. Test des outils IA avec usage simplifié
-    const aiToolsData = await prismaV2.aiTool.findMany({
-      take: 5,
+    const aiTools = await prisma.aiTool.findMany({
       include: {
         _count: {
           select: { aiUsage: true }
@@ -83,68 +63,62 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    const response = {
+    const totalTime = Date.now() - startTime
+
+    // Tests d'intégrité
+    const integrity = {
+      usersWithEmail: stats.users > 0 ? 'OK' : 'ATTENTION',
+      packsWithCategory: packsWithRelations.filter(p => p.category).length,
+      samplesLinked: stats.samples > 0 ? 'OK' : 'ATTENTION',
+      relationsWorking: packsWithRelations.length > 0 ? 'OK' : 'PROBLÈME'
+    }
+
+    return NextResponse.json({
       status: 'SUCCESS',
       message: '🎉 Schéma V2 ULTRA-SIMPLIFIÉ - Analytics minimalistes !',
       timestamp: new Date().toISOString(),
-      
-      // Statistiques générales
       stats,
-      
-      // Tests de relations
       tests: {
         usersWithPacks: {
           count: usersWithPacks.length,
-          sample: usersWithPacks.map(user => ({
-            email: user.email,
-            packsCreated: user.createdPacks.length,
-            favorites: user.favorites.length,
-            firstPack: user.createdPacks[0]?.title || 'Aucun'
+          sample: usersWithPacks.map(u => ({
+            email: u.email,
+            packsCount: u.userPacks.length,
+            packs: u.userPacks.map(up => up.pack.title)
           }))
         },
-        
         packsWithRelations: {
           count: packsWithRelations.length,
-          sample: packsWithRelations.map(pack => ({
-            title: pack.title,
-            category: pack.category?.name || 'Sans catégorie',
-            creator: pack.creator ? `${pack.creator.firstName} ${pack.creator.lastName}` : 'Anonyme',
-            samplesCount: pack._count.samples,
-            favoritesCount: pack._count.favorites,
-            userPacksCount: pack._count.userPacks,
-            // Analytics simplifiées
-            stats: pack.packStats ? {
-              views: pack.packStats.viewsCount,
-              favorites: pack.packStats.favoritesCount,
-              purchases: pack.packStats.purchasesCount
+          sample: packsWithRelations.map(p => ({
+            title: p.title,
+            category: p.category?.name || 'Sans catégorie',
+            creator: p.creator.firstName && p.creator.lastName 
+              ? `${p.creator.firstName} ${p.creator.lastName}` 
+              : 'Anonyme',
+            samplesCount: p.samples.length,
+            favoritesCount: p.favorites.length,
+            userPacksCount: p.userPacks.length,
+            stats: p.stats ? {
+              views: p.stats.viewsCount,
+              favorites: p.stats.favoritesCount,
+              purchases: p.stats.purchasesCount
             } : null
           }))
         },
-        
-        categoriesWithCounts: categoriesWithCounts.map(cat => ({
-          name: cat.name,
-          slug: cat.slug,
-          packsCount: cat._count.packs,
-          isActive: cat.isActive
+        categoriesWithCounts: categoriesWithCounts.map(c => ({
+          name: c.name,
+          slug: c.slug,
+          packsCount: c._count.packs,
+          isActive: c.isActive
         })),
-        
-        aiTools: aiToolsData.map(tool => ({
-          name: tool.name,
-          type: tool.toolType,
-          isActive: tool.isActive,
-          usageCount: tool._count.aiUsage
+        aiTools: aiTools.map(t => ({
+          name: t.name,
+          type: t.toolType,
+          isActive: t.isActive,
+          usageCount: t._count.aiUsage
         }))
       },
-      
-      // Validation de l'intégrité
-      integrity: {
-        usersWithEmail: stats.users > 0 ? 'OK' : 'ATTENTION',
-        packsWithCategory: packsWithRelations.filter(p => p.category).length,
-        samplesLinked: stats.samples > 0 ? 'OK' : 'VIDE',
-        relationsWorking: usersWithPacks.length > 0 ? 'OK' : 'PROBLÈME'
-      },
-      
-      // Confirmation du nettoyage
+      integrity,
       cleanup: {
         trendingIdeasRemoved: true,
         tagsSystemRemoved: true,
@@ -156,99 +130,118 @@ export async function GET(request: NextRequest) {
         schemaUltraMinimal: true,
         coreBusinessFocus: true
       },
-
-      // Métriques simplifiées
       simplifiedMetrics: {
         packStats: 'Seulement vues, favoris, achats',
         adminLogs: 'Actions critiques uniquement',
         aiUsage: 'Tracking basique seulement',
         philosophy: 'Simplicité avant tout !'
       }
-    }
-
-    return NextResponse.json(response, { status: 200 })
+    })
 
   } catch (error) {
     console.error('❌ Erreur test V2:', error)
     
     return NextResponse.json({
       status: 'ERROR',
-      message: 'Erreur lors du test du schéma V2',
+      message: 'Erreur lors du test V2',
       error: error instanceof Error ? error.message : 'Erreur inconnue',
       timestamp: new Date().toISOString()
     }, { status: 500 })
-    
-  } finally {
-    await prismaV2.$disconnect()
   }
 }
 
-// Route POST pour tester les écritures
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
-    // Test de création d'un pack de test
-    const testPack = await prismaV2.pack.create({
-      data: {
-        title: `Test Pack V2 MINIMAL - ${new Date().toISOString()}`,
-        slug: `test-pack-v2-minimal-${Date.now()}`,
-        description: 'Pack de test pour valider le schéma V2 ultra-minimal (analytics simplifiées)',
-        price: 0,
-        isFree: true,
-        status: 'DRAFT',
-        visibility: 'PRIVATE'
-      }
-    })
+    console.log('🧪 Test: Création de données V2', body)
 
-    // Test de création d'un sample
-    const testSample = await prismaV2.sample.create({
-      data: {
-        packId: testPack.id,
-        title: 'Sample de test V2 minimal',
-        fileUrl: 'https://example.com/test-minimal.pdf',
-        fileType: 'PDF'
-      }
-    })
+    if (body.action === 'create_test_data') {
+      const timestamp = new Date().toISOString()
+      
+      // Créer un pack de test
+      const pack = await prisma.pack.create({
+        data: {
+          title: `Test Pack V2 MINIMAL - ${timestamp}`,
+          slug: `test-pack-v2-minimal-${Date.now()}`,
+          description: 'Pack de test pour validation V2 ultra-simplifié',
+          price: 29.99,
+          status: 'ACTIVE',
+          creator: {
+            connectOrCreate: {
+              where: { email: 'test@dropskills.com' },
+              create: {
+                email: 'test@dropskills.com',
+                firstName: 'Test',
+                lastName: 'User'
+              }
+            }
+          },
+          category: {
+            connectOrCreate: {
+              where: { slug: 'test' },
+              create: {
+                name: 'Test Category',
+                slug: 'test'
+              }
+            }
+          }
+        }
+      })
 
-    // Test de création de stats simplifiées
-    const testStats = await prismaV2.packStats.create({
-      data: {
-        packId: testPack.id,
-        viewsCount: 1,
-        favoritesCount: 0,
-        purchasesCount: 0
-      }
-    })
+      // Créer un sample
+      const sample = await prisma.sample.create({
+        data: {
+          title: 'Sample de test V2 minimal',
+          description: 'Échantillon pour validation schéma V2',
+          fileUrl: 'https://example.com/sample.pdf',
+          packId: pack.id
+        }
+      })
+
+      // Créer des stats simplifiées
+      const stats = await prisma.packStats.create({
+        data: {
+          packId: pack.id,
+          viewsCount: 1,
+          favoritesCount: 0,
+          purchasesCount: 0
+        }
+      })
+
+      return NextResponse.json({
+        status: 'SUCCESS',
+        message: '✅ Test d\'écriture V2 réussi - Schéma ultra-minimal',
+        created: {
+          pack: {
+            id: pack.id,
+            title: pack.title,
+            slug: pack.slug
+          },
+          sample: {
+            id: sample.id,
+            title: sample.title
+          },
+          stats: {
+            views: stats.viewsCount,
+            favorites: stats.favoritesCount,
+            purchases: stats.purchasesCount
+          }
+        },
+        note: 'Analytics ultra-simplifiées - Focus sur l\'essentiel !'
+      })
+    }
 
     return NextResponse.json({
-      status: 'SUCCESS',
-      message: '✅ Test d\'écriture V2 réussi - Schéma ultra-minimal',
-      created: {
-        pack: {
-          id: testPack.id,
-          title: testPack.title,
-          slug: testPack.slug
-        },
-        sample: {
-          id: testSample.id,
-          title: testSample.title
-        },
-        stats: {
-          views: testStats.viewsCount,
-          favorites: testStats.favoritesCount,
-          purchases: testStats.purchasesCount
-        }
-      },
-      note: 'Analytics ultra-simplifiées - Focus sur l\'essentiel !'
-    })
+      status: 'ERROR',
+      message: 'Action non reconnue'
+    }, { status: 400 })
 
   } catch (error) {
-    console.error('❌ Erreur test écriture V2:', error)
+    console.error('❌ Erreur création V2:', error)
     
     return NextResponse.json({
       status: 'ERROR',
-      message: 'Erreur lors du test d\'écriture V2',
+      message: 'Erreur lors de la création V2',
       error: error instanceof Error ? error.message : 'Erreur inconnue'
     }, { status: 500 })
   }

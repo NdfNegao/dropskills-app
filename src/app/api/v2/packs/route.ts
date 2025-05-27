@@ -1,33 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '../../../../generated/prisma-v2'
-
-const prismaV2 = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 // GET /api/v2/packs - Récupérer tous les packs
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '12')
+    const limit = parseInt(searchParams.get('limit') || '10')
     const category = searchParams.get('category')
+    const status = searchParams.get('status')
     const search = searchParams.get('search')
-    const status = searchParams.get('status') || 'PUBLISHED'
-    const isFree = searchParams.get('free')
-
+    
     const skip = (page - 1) * limit
-
-    // Construction des filtres
-    const where: any = {
-      status: status,
-      visibility: 'PUBLIC'
-    }
-
+    
+    const where: any = {}
+    
     if (category) {
       where.category = {
         slug: category
       }
     }
-
+    
+    if (status) {
+      where.status = status
+    }
+    
     if (search) {
       where.OR = [
         { title: { contains: search, mode: 'insensitive' } },
@@ -35,113 +32,89 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    if (isFree === 'true') {
-      where.isFree = true
-    }
-
-    // Récupération des packs avec relations
     const [packs, total] = await Promise.all([
-      prismaV2.pack.findMany({
+      prisma.pack.findMany({
         where,
-        skip,
-        take: limit,
         include: {
           category: {
-            select: { id: true, name: true, slug: true }
+            select: {
+              name: true,
+              slug: true
+            }
           },
           creator: {
-            select: { id: true, firstName: true, lastName: true, avatarUrl: true }
+            select: {
+              firstName: true,
+              lastName: true,
+              email: true
+            }
           },
           samples: {
             take: 3,
-            select: { id: true, title: true, fileType: true }
+            select: {
+              id: true,
+              title: true,
+              fileUrl: true
+            }
           },
-          packStats: {
-            select: { viewsCount: true, favoritesCount: true, purchasesCount: true }
-          },
+          stats: true,
           _count: {
-            select: { samples: true, favorites: true, userPacks: true }
+            select: {
+              favorites: true,
+              userPacks: true,
+              samples: true
+            }
           }
         },
-        orderBy: [
-          { isFeatured: 'desc' },
-          { createdAt: 'desc' }
-        ]
+        skip,
+        take: limit,
+        orderBy: {
+          createdAt: 'desc'
+        }
       }),
-      prismaV2.pack.count({ where })
+      prisma.pack.count({ where })
     ])
 
-    // Formatage des données
     const formattedPacks = packs.map(pack => ({
       id: pack.id,
       title: pack.title,
       slug: pack.slug,
       description: pack.description,
-      shortDescription: pack.shortDescription,
       price: pack.price,
-      originalPrice: pack.originalPrice,
-      currency: pack.currency,
-      coverImageUrl: pack.coverImageUrl,
-      previewVideoUrl: pack.previewVideoUrl,
-      isFree: pack.isFree,
-      isFeatured: pack.isFeatured,
-      difficultyLevel: pack.difficultyLevel,
-      estimatedDuration: pack.estimatedDuration,
-      publishedAt: pack.publishedAt,
-      
-      // Relations
+      status: pack.status,
       category: pack.category,
       creator: pack.creator,
       samples: pack.samples,
-      
-      // Stats
-      stats: {
-        views: pack.packStats?.viewsCount || 0,
-        favorites: pack.packStats?.favoritesCount || 0,
-        purchases: pack.packStats?.purchasesCount || 0,
-        samplesCount: pack._count.samples,
-        userPacksCount: pack._count.userPacks
-      }
+      stats: pack.stats ? {
+        views: pack.stats.viewsCount,
+        favorites: pack.stats.favoritesCount,
+        purchases: pack.stats.purchasesCount
+      } : null,
+      counts: pack._count,
+      createdAt: pack.createdAt,
+      updatedAt: pack.updatedAt
     }))
 
-    const response = {
+    return NextResponse.json({
       status: 'SUCCESS',
-      data: {
-        packs: formattedPacks,
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages: Math.ceil(total / limit),
-          hasNext: page * limit < total,
-          hasPrev: page > 1
-        },
-        filters: {
-          category,
-          search,
-          status,
-          isFree: isFree === 'true'
-        }
+      data: formattedPacks,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
       },
-      meta: {
-        timestamp: new Date().toISOString(),
-        version: 'v2',
-        schema: 'dropskills_v2'
-      }
-    }
-
-    return NextResponse.json(response)
+      message: `${total} pack(s) trouvé(s)`
+    })
 
   } catch (error) {
-    console.error('❌ Erreur GET /api/v2/packs:', error)
+    console.error('Erreur récupération packs:', error)
     
     return NextResponse.json({
       status: 'ERROR',
       message: 'Erreur lors de la récupération des packs',
       error: error instanceof Error ? error.message : 'Erreur inconnue'
     }, { status: 500 })
-  } finally {
-    await prismaV2.$disconnect()
   }
 }
 
@@ -150,22 +123,23 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     
-    // Validation des données requises
-    if (!body.title || !body.creatorId) {
+    if (!body.title) {
       return NextResponse.json({
         status: 'ERROR',
-        message: 'Titre et créateur requis'
+        message: 'Le titre est requis'
       }, { status: 400 })
     }
 
     // Génération du slug
     const slug = body.slug || body.title
       .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '')
 
     // Vérification de l'unicité du slug
-    const existingPack = await prismaV2.pack.findUnique({
+    const existingPack = await prisma.pack.findUnique({
       where: { slug }
     })
 
@@ -177,37 +151,31 @@ export async function POST(request: NextRequest) {
     }
 
     // Création du pack
-    const newPack = await prismaV2.pack.create({
+    const newPack = await prisma.pack.create({
       data: {
         title: body.title,
         slug,
         description: body.description,
-        shortDescription: body.shortDescription,
         price: body.price || 0,
-        originalPrice: body.originalPrice,
-        currency: body.currency || 'EUR',
-        coverImageUrl: body.coverImageUrl,
-        previewVideoUrl: body.previewVideoUrl,
-        categoryId: body.categoryId,
-        creatorId: body.creatorId,
-        difficultyLevel: body.difficultyLevel,
-        estimatedDuration: body.estimatedDuration,
         status: body.status || 'DRAFT',
-        visibility: body.visibility || 'PRIVATE',
-        isFree: body.price === 0 || body.isFree === true,
-        metaTitle: body.metaTitle,
-        metaDescription: body.metaDescription
-      },
-      include: {
-        category: true,
         creator: {
-          select: { id: true, firstName: true, lastName: true, email: true }
-        }
+          connectOrCreate: {
+            where: { email: body.creatorEmail || 'admin@dropskills.com' },
+            create: {
+              email: body.creatorEmail || 'admin@dropskills.com',
+              firstName: 'Admin',
+              lastName: 'User'
+            }
+          }
+        },
+        category: body.categoryId ? {
+          connect: { id: body.categoryId }
+        } : undefined
       }
     })
 
     // Création des stats initiales
-    await prismaV2.packStats.create({
+    await prisma.packStats.create({
       data: {
         packId: newPack.id
       }
@@ -215,21 +183,17 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       status: 'SUCCESS',
-      message: 'Pack créé avec succès',
-      data: {
-        pack: newPack
-      }
+      data: newPack,
+      message: 'Pack créé avec succès'
     }, { status: 201 })
 
   } catch (error) {
-    console.error('❌ Erreur POST /api/v2/packs:', error)
+    console.error('Erreur création pack:', error)
     
     return NextResponse.json({
       status: 'ERROR',
       message: 'Erreur lors de la création du pack',
       error: error instanceof Error ? error.message : 'Erreur inconnue'
     }, { status: 500 })
-  } finally {
-    await prismaV2.$disconnect()
   }
 } 
