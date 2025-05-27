@@ -5,6 +5,7 @@ import SessionWrapper from "../components/SessionWrapper";
 import Script from "next/script";
 import { SavedProductsProvider } from "@/context/SavedProductsContext";
 import PageTransitionClient from "@/components/PageTransitionClient";
+import PostHogProvider from "@/components/PostHogProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className + " bg-black text-white min-h-screen"}>
+        <PostHogProvider />
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe

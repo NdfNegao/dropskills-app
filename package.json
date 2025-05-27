@@ -23,7 +23,9 @@
     "lucide-react": "^0.278.0",
     "next": "^14.2.29",
     "next-auth": "^4.24.11",
+    "nuxt": "^3.17.4",
     "openai": "^4.103.0",
+    "posthog-js": "^1.246.0",
     "prisma": "^6.8.2",
     "react": "18.2.0",
     "react-dom": "18.2.0"
