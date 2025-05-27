@@ -10,7 +10,8 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
-    "create-admin": "node scripts/create-admin.js"
+    "create-admin": "node scripts/create-admin.js",
+    "postinstall": "echo 'Dependencies installed'"
   },
   "dependencies": {
     "@prisma/client": "^6.8.2",
@@ -18,6 +19,7 @@
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.2",
     "date-fns": "^4.1.0",
+    "framer-motion": "^10.16.4",
     "lucide-react": "^0.278.0",
     "next": "^14.2.29",
     "next-auth": "^4.24.11",
