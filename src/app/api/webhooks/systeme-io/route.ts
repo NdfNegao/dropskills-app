@@ -80,7 +80,7 @@ async function handleOrderCompleted(data: any, webhookEventId: string) {
   if (!customerEmail) return
 
   // Créer ou récupérer l'utilisateur
-  let user = await prisma.user.findUnique({
+  let user = await prisma.user.findFirst({
     where: { email: customerEmail }
   })
 
@@ -134,7 +134,7 @@ async function handleSubscriptionCreated(data: any, webhookEventId: string) {
 
   if (!customerEmail) return
 
-  let user = await prisma.user.findUnique({
+  let user = await prisma.user.findFirst({
     where: { email: customerEmail }
   })
 
