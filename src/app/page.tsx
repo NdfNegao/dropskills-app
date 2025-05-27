@@ -96,8 +96,8 @@ export default function Home() {
         <section className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16">
           <h2 className="text-3xl font-bold text-white mb-8">Tous les produits</h2>
 
-          {/* Filtres et recherche */}
-          <ProductGridMock />
+          {/* Filtres et recherche simplifiés */}
+          <ProductGridSimplified />
         </section>
       </main>
     </div>
@@ -117,39 +117,28 @@ const FORMATS = [
   'Guide',
 ];
 
-const TAGS = [
-  'Digital Marketing',
-  'Business & Entrepreneurship',
-  'Content Marketing',
-  'Personal Development',
-  'Branding',
-  'Mindset',
-  'Social Media Marketing',
-  'Startups',
-  'Voice',
-  'Prompt',
-  'Pack',
-  'Checklist',
-  'Guide',
-  'Book',
-  'Audio',
-  'Video',
-  'Template',
-  'Notion Template',
-  'Toolstack',
-  'Workbook',
+const CATEGORIES = [
+  'Marketing Digital',
+  'Entrepreneuriat',
+  'Productivité',
+  'Intelligence Artificielle',
+  'Vente & Négociation',
 ];
 
-function ProductGridMock() {
+function ProductGridSimplified() {
   const [search, setSearch] = useState('');
   const [format, setFormat] = useState('');
-  const [tag, setTag] = useState('');
+  const [category, setCategory] = useState('');
 
   const filtered = PRODUCTS.filter((p) => {
     const matchSearch = p.title.toLowerCase().includes(search.toLowerCase());
     const matchFormat = !format || p.format === format;
-    const matchTag = !tag || p.tags.includes(tag);
-    return matchSearch && matchFormat && matchTag;
+    // Simplification : on utilise les tags existants comme catégories temporairement
+    const matchCategory = !category || p.tags.some(tag => 
+      tag.toLowerCase().includes(category.toLowerCase()) ||
+      category.toLowerCase().includes(tag.toLowerCase())
+    );
+    return matchSearch && matchFormat && matchCategory;
   });
 
   return (
@@ -158,12 +147,12 @@ function ProductGridMock() {
         <div className="flex flex-col sm:flex-row gap-4 mb-6 items-center">
           <select
             className="bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none"
-            value={tag}
-            onChange={e => setTag(e.target.value)}
+            value={category}
+            onChange={e => setCategory(e.target.value)}
           >
-            <option value="">Filtrer par tags</option>
-            {TAGS.map((t) => (
-              <option key={t} value={t}>{t}</option>
+            <option value="">Toutes les catégories</option>
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c}>{c}</option>
             ))}
           </select>
           <select
@@ -171,7 +160,7 @@ function ProductGridMock() {
             value={format}
             onChange={e => setFormat(e.target.value)}
           >
-            <option value="">Filtrer par format</option>
+            <option value="">Tous les formats</option>
             {FORMATS.map((f) => (
               <option key={f} value={f}>{f}</option>
             ))}

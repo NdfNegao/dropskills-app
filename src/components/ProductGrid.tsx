@@ -14,48 +14,30 @@ const FORMATS = [
   'tool',
 ];
 
-const TAGS = [
-  'Digital Marketing',
-  'Business & Entrepreneurship',
-  'Content Marketing',
-  'Personal Development',
-  'Branding',
-  'Mindset',
-  'Social Media Marketing',
-  'Startups',
-  'Voice',
-  'Prompt',
-  'Pack',
-  'Checklist',
-  'Guide',
-  'Book',
-  'Audio',
-  'Video',
-  'Template',
-  'Notion Template',
-  'Toolstack',
-  'Workbook',
-  'YouTube',
-  'Tools',
-  'Sales',
-  'Psychology',
-  'Ebook',
-  'Motivation',
-  'Bien-être',
+const CATEGORIES = [
+  'Marketing Digital',
+  'Entrepreneuriat',
+  'Productivité',
+  'Intelligence Artificielle',
+  'Vente & Négociation',
 ];
 
 export default function ProductGrid() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedFormats, setSelectedFormats] = useState<string[]>([]);
   const { savedProducts, toggleBookmark } = useSavedProducts();
 
   const filtered = PRODUCTS.filter((p) => {
     const matchSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchFormat = !selectedFormats.length || selectedFormats.includes(p.format);
-    const matchTag = !selectedTags.length || p.tags.some((t) => selectedTags.includes(t));
-    return matchSearch && matchFormat && matchTag;
+    // Simplification : on utilise les tags existants comme catégories temporairement
+    const matchCategory = !selectedCategory || p.tags.some(tag => 
+      tag.toLowerCase().includes(selectedCategory.toLowerCase()) ||
+      selectedCategory.toLowerCase().includes(tag.toLowerCase())
+    );
+    return matchSearch && matchFormat && matchCategory;
   });
 
   const handleOpenProduct = (productId: string) => {
@@ -74,22 +56,22 @@ export default function ProductGrid() {
         />
         <select
           className="bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none"
-          value={selectedFormats.join(',')}
-          onChange={(e) => setSelectedFormats(e.target.value ? e.target.value.split(',') : [])}
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
         >
-          <option value="">Filtrer par format</option>
-          {FORMATS.map((f) => (
-            <option key={f} value={f}>{f}</option>
+          <option value="">Toutes les catégories</option>
+          {CATEGORIES.map((c) => (
+            <option key={c} value={c}>{c}</option>
           ))}
         </select>
         <select
           className="bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none"
-          value={selectedTags.join(',')}
-          onChange={(e) => setSelectedTags(e.target.value ? e.target.value.split(',') : [])}
+          value={selectedFormats.join(',')}
+          onChange={(e) => setSelectedFormats(e.target.value ? e.target.value.split(',') : [])}
         >
-          <option value="">Filtrer par tags</option>
-          {TAGS.map((t) => (
-            <option key={t} value={t}>{t}</option>
+          <option value="">Tous les formats</option>
+          {FORMATS.map((f) => (
+            <option key={f} value={f}>{f}</option>
           ))}
         </select>
       </div>

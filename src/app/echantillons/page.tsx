@@ -115,7 +115,7 @@ export default function EchantillonsPage() {
                 description: sample.description,
                 likes: Math.round(sample.rating * 10),
                 fileUrl: "#",
-                tags: [sample.type],
+                tags: ['Marketing Digital'], // Catégorie par défaut simplifiée
               }}
             />
           ))}

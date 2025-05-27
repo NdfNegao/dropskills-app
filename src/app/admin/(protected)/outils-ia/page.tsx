@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import dynamic from 'next/dynamic';
 import { prisma } from '@/lib/prisma';
 import { Bot, Plus, Activity, Zap, Search, Filter } from 'lucide-react';
 
@@ -8,15 +7,13 @@ export const metadata: Metadata = {
   description: 'Gestion des outils d\'intelligence artificielle',
 };
 
-const OutilsIaClient = dynamic(() => import('./OutilsIaClient'), { ssr: false });
-
 async function getIaTools() {
   try {
-    const tools = await prisma.iaTool.findMany({
+    const tools = await prisma.aiTool.findMany({
       include: {
         _count: {
           select: {
-            usage: true
+            aiUsage: true
           }
         }
       },
@@ -35,14 +32,14 @@ async function getUsageStats() {
   try {
     const today = new Date();
     const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const todayUsage = await prisma.iaToolUsage.count({
+    const todayUsage = await prisma.aiUsage.count({
       where: {
         createdAt: {
           gte: startOfDay
         }
       }
     });
-    const totalUsage = await prisma.iaToolUsage.count();
+    const totalUsage = await prisma.aiUsage.count();
     return { todayUsage, totalUsage };
   } catch (error) {
     console.error('Erreur lors de la récupération des stats:', error);
@@ -70,6 +67,7 @@ export default async function OutilsIaPage() {
           Nouvel Outil
         </button>
       </div>
+
       {/* Statistiques rapides */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
         <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
@@ -122,39 +120,37 @@ export default async function OutilsIaPage() {
           </div>
         </div>
       </div>
-      {/* Filtres et recherche */}
+
+      {/* Liste des outils simplifiée */}
       <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Rechercher un outil..."
-              className="w-full bg-[#18181b] text-white rounded-lg pl-10 pr-4 py-2 border border-[#232323] focus:outline-none focus:border-[#00D2FF]"
-            />
-          </div>
-          <select className="bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none">
-            <option value="">Tous les statuts</option>
-            <option value="active">Actif</option>
-            <option value="inactive">Inactif</option>
-            <option value="maintenance">Maintenance</option>
-          </select>
-          <select className="bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none">
-            <option value="">Toutes les catégories</option>
-            <option value="TEXT_GENERATOR">Générateur de texte</option>
-            <option value="IMAGE_GENERATOR">Générateur d'images</option>
-            <option value="PDF_PROCESSOR">Traitement PDF</option>
-            <option value="TRANSLATOR">Traducteur</option>
-            <option value="SUMMARIZER">Résumeur</option>
-          </select>
-          <button className="bg-[#18181b] text-white px-4 py-2 rounded-lg border border-[#232323] hover:bg-[#232323] transition-colors flex items-center gap-2">
-            <Filter className="w-4 h-4" />
-            Filtrer
-          </button>
+        <h2 className="text-xl font-semibold text-white mb-4">Outils IA Disponibles</h2>
+        <div className="space-y-4">
+          {tools.map((tool) => (
+            <div key={tool.id} className="flex items-center justify-between p-4 bg-[#18181b] rounded-lg border border-[#232323]">
+              <div className="flex-1">
+                <h3 className="text-white font-medium">{tool.name}</h3>
+                <p className="text-gray-400 text-sm">{tool.description}</p>
+                <div className="flex items-center gap-4 mt-2">
+                  <span className="text-xs text-gray-500">Type: {tool.toolType}</span>
+                  <span className="text-xs text-gray-500">Utilisations: {tool._count.aiUsage}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`px-2 py-1 rounded text-xs ${
+                  tool.isActive ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'
+                }`}>
+                  {tool.isActive ? 'Actif' : 'Inactif'}
+                </span>
+              </div>
+            </div>
+          ))}
+          {tools.length === 0 && (
+            <div className="text-center text-gray-400 py-8">
+              Aucun outil IA configuré
+            </div>
+          )}
         </div>
       </div>
-      {/* Tableau interactif client */}
-      <OutilsIaClient initialTools={tools} initialStats={stats} />
     </div>
   );
 } 

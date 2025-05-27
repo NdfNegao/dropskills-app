@@ -1,0 +1,316 @@
+// =====================================================
+// DROPSKILLS - SCHÉMA PRISMA V2
+// Compatible avec la nouvelle structure optimisée
+// =====================================================
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma-v2"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["dropskills_v2"]
+}
+
+// =====================================================
+// 1. CORE BUSINESS MODELS
+// =====================================================
+
+model User {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email        String    @unique
+  firstName    String?   @map("first_name")
+  lastName     String?   @map("last_name")
+  avatarUrl    String?   @map("avatar_url")
+  role         String    @default("USER")
+  status       String    @default("ACTIVE")
+  lastLoginAt  DateTime? @map("last_login_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  createdPacks Pack[]     @relation("PackCreator")
+  userPacks    UserPack[]
+  favorites    Favorite[]
+  aiUsage      AiUsage[]
+  adminLogs    AdminLog[]
+
+  @@map("users")
+  @@schema("dropskills_v2")
+}
+
+model Category {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  icon        String?
+  color       String?
+  sortOrder   Int      @default(0) @map("sort_order")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  packs Pack[]
+
+  @@map("categories")
+  @@schema("dropskills_v2")
+}
+
+model Pack {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title             String
+  slug              String    @unique
+  description       String?
+  shortDescription  String?   @map("short_description")
+  contentType       String    @default("MIXED") @map("content_type")
+  price             Decimal   @default(0) @db.Decimal(10, 2)
+  originalPrice     Decimal?  @map("original_price") @db.Decimal(10, 2)
+  currency          String    @default("EUR")
+  coverImageUrl     String?   @map("cover_image_url")
+  previewVideoUrl   String?   @map("preview_video_url")
+  files             Json?
+  categoryId        String?   @map("category_id") @db.Uuid
+  creatorId         String?   @map("creator_id") @db.Uuid
+  difficultyLevel   String?   @map("difficulty_level")
+  estimatedDuration Int?      @map("estimated_duration")
+  status            String    @default("DRAFT")
+  visibility        String    @default("PUBLIC")
+  isFeatured        Boolean   @default(false) @map("is_featured")
+  isFree            Boolean   @default(false) @map("is_free")
+  metaTitle         String?   @map("meta_title")
+  metaDescription   String?   @map("meta_description")
+  publishedAt       DateTime? @map("published_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  category   Category?   @relation(fields: [categoryId], references: [id])
+  creator    User?       @relation("PackCreator", fields: [creatorId], references: [id])
+  userPacks  UserPack[]
+  samples    Sample[]
+  favorites  Favorite[]
+  packTags   PackTag[]
+  packStats  PackStats?
+  aiTools    AiTool[]
+
+  @@map("packs")
+  @@schema("dropskills_v2")
+}
+
+model UserPack {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId             String    @map("user_id") @db.Uuid
+  packId             String    @map("pack_id") @db.Uuid
+  transactionId      String?   @map("transaction_id")
+  paymentMethod      String?   @map("payment_method")
+  amountPaid         Decimal?  @map("amount_paid") @db.Decimal(10, 2)
+  currency           String    @default("EUR")
+  status             String    @default("ACTIVE")
+  accessGrantedAt    DateTime  @default(now()) @map("access_granted_at")
+  accessExpiresAt    DateTime? @map("access_expires_at")
+  progressPercentage Int       @default(0) @map("progress_percentage")
+  lastAccessedAt     DateTime? @map("last_accessed_at")
+  completionDate     DateTime? @map("completion_date")
+  notes              String?
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pack Pack @relation(fields: [packId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, packId])
+  @@map("user_packs")
+  @@schema("dropskills_v2")
+}
+
+model Sample {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  packId      String   @map("pack_id") @db.Uuid
+  title       String
+  description String?
+  fileUrl     String   @map("file_url")
+  fileType    String   @map("file_type")
+  fileSize    BigInt?  @map("file_size")
+  duration    Int?
+  sortOrder   Int      @default(0) @map("sort_order")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  pack Pack @relation(fields: [packId], references: [id], onDelete: Cascade)
+
+  @@map("samples")
+  @@schema("dropskills_v2")
+}
+
+// =====================================================
+// 2. TAGGING SYSTEM
+// =====================================================
+
+model Tag {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String    @unique
+  slug       String    @unique
+  color      String?
+  usageCount Int       @default(0) @map("usage_count")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  packTags PackTag[]
+
+  @@map("tags")
+  @@schema("dropskills_v2")
+}
+
+model PackTag {
+  packId    String   @map("pack_id") @db.Uuid
+  tagId     String   @map("tag_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  pack Pack @relation(fields: [packId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([packId, tagId])
+  @@map("pack_tags")
+  @@schema("dropskills_v2")
+}
+
+// =====================================================
+// 3. ENGAGEMENT & ANALYTICS
+// =====================================================
+
+model Favorite {
+  userId    String   @map("user_id") @db.Uuid
+  packId    String   @map("pack_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pack Pack @relation(fields: [packId], references: [id], onDelete: Cascade)
+
+  @@id([userId, packId])
+  @@map("favorites")
+  @@schema("dropskills_v2")
+}
+
+model PackStats {
+  packId           String    @id @map("pack_id") @db.Uuid
+  viewsCount       Int       @default(0) @map("views_count")
+  favoritesCount   Int       @default(0) @map("favorites_count")
+  samplesDownloads Int       @default(0) @map("samples_downloads")
+  purchasesCount   Int       @default(0) @map("purchases_count")
+  revenueTotal     Decimal   @default(0) @map("revenue_total") @db.Decimal(12, 2)
+  averageRating    Decimal   @default(0) @map("average_rating") @db.Decimal(3, 2)
+  ratingsCount     Int       @default(0) @map("ratings_count")
+  lastViewedAt     DateTime? @map("last_viewed_at")
+  updatedAt        DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  pack Pack @relation(fields: [packId], references: [id], onDelete: Cascade)
+
+  @@map("pack_stats")
+  @@schema("dropskills_v2")
+}
+
+// =====================================================
+// 4. IA & OUTILS
+// =====================================================
+
+model AiTool {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name               String   @unique
+  slug               String   @unique
+  description        String?
+  toolType           String   @map("tool_type")
+  apiEndpoint        String?  @map("api_endpoint")
+  config             Json?
+  isActive           Boolean  @default(true) @map("is_active")
+  requiresPackAccess Boolean  @default(false) @map("requires_pack_access")
+  packId             String?  @map("pack_id") @db.Uuid
+  dailyLimit         Int?     @map("daily_limit")
+  monthlyLimit       Int?     @map("monthly_limit")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  pack    Pack?     @relation(fields: [packId], references: [id])
+  aiUsage AiUsage[]
+
+  @@map("ai_tools")
+  @@schema("dropskills_v2")
+}
+
+model AiUsage {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String   @map("user_id") @db.Uuid
+  toolId          String   @map("tool_id") @db.Uuid
+  inputData       Json?    @map("input_data")
+  outputData      Json?    @map("output_data")
+  executionTimeMs Int?     @map("execution_time_ms")
+  tokensUsed      Int?     @map("tokens_used")
+  costCents       Int?     @map("cost_cents")
+  status          String   @default("SUCCESS")
+  errorMessage    String?  @map("error_message")
+  ipAddress       String?  @map("ip_address")
+  userAgent       String?  @map("user_agent")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tool AiTool @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@map("ai_usage")
+  @@schema("dropskills_v2")
+}
+
+// =====================================================
+// 5. ADMIN & AUDIT
+// =====================================================
+
+model AdminLog {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  adminId      String   @map("admin_id") @db.Uuid
+  action       String
+  resourceType String   @map("resource_type")
+  resourceId   String?  @map("resource_id") @db.Uuid
+  changes      Json?
+  reason       String?
+  ipAddress    String?  @map("ip_address")
+  userAgent    String?  @map("user_agent")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  // Relations
+  admin User @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@map("admin_logs")
+  @@schema("dropskills_v2")
+}
+
+// =====================================================
+// 6. TRENDING IDEAS (CONSERVATION)
+// =====================================================
+
+model TrendingIdea {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String
+  description     String?
+  category        String?
+  difficulty      String?
+  revenueEstimate String?  @map("revenue_estimate")
+  trendScore      Int      @default(50) @map("trend_score")
+  tags            String?
+  isActive        Boolean  @default(true) @map("is_active")
+  isFeatured      Boolean  @default(false) @map("is_featured")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("trending_ideas")
+  @@schema("dropskills_v2")
+} 

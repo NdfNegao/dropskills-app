@@ -36,4 +36,16 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/src/generated/prisma
+# Prisma
+/prisma/migrations
+
+# Generated Prisma clients (volumineux)
+/src/generated/
+
+# Logs de migration
+/logs/
+
+# Fichiers de sauvegarde SQL volumineux
+*.sql
+!database_schema_v2.sql
+!migration_plan.md

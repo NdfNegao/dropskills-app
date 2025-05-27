@@ -1,7 +1,7 @@
 // Prisma client placeholder - à configurer plus tard
 // Pour éviter les erreurs de build, nous utilisons un mock temporaire
 
-import { PrismaClient } from '@/generated/prisma';
+import { PrismaClient } from '../generated/prisma'
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
