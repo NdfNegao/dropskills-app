@@ -102,7 +102,7 @@ export default function DropskillsDashboard() {
                   ['Communauté active', '✅', '❌'],
                   ['Templates exclusifs', '✅', '❌'],
                   ['Packs diaspora/thématiques', '✅', '❌'],
-                  ['Facilité d'usage', '✅', '❌'],
+                  ["Facilité d'usage", '✅', '❌'],
                   ['Zéro bullshit', '✅', '❌']
                 ].map((row, idx) => (
                   <tr key={idx}>
