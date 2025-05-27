@@ -19,9 +19,13 @@ async function getUsers() {
       firstName: true,
       lastName: true,
       role: true,
-      status: true,
       createdAt: true,
-      updatedAt: true
+      updatedAt: true,
+      user: {
+        select: {
+          email: true
+        }
+      }
     }
   });
 }
@@ -42,24 +46,9 @@ const getRoleColor = (role: string) => {
     case 'SUPER_ADMIN':
       return 'text-yellow-500 bg-yellow-500/10';
     case 'ADMIN':
-      return 'text-blue-500 bg-blue-500/10';
+      return 'text-[#ff0033] bg-[#ff0033]/10';
     case 'SUPPORT':
       return 'text-green-500 bg-green-500/10';
-    default:
-      return 'text-gray-500 bg-gray-500/10';
-  }
-};
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'ACTIVE':
-      return 'text-green-500 bg-green-500/10';
-    case 'SUSPENDED':
-      return 'text-yellow-500 bg-yellow-500/10';
-    case 'BANNED':
-      return 'text-red-500 bg-red-500/10';
-    case 'PENDING':
-      return 'text-gray-500 bg-gray-500/10';
     default:
       return 'text-gray-500 bg-gray-500/10';
   }
@@ -102,18 +91,11 @@ export default async function UtilisateursAdmin() {
             <option value="SUPER_ADMIN">Super Admin</option>
             <option value="SUPPORT">Support</option>
           </select>
-          <select className="bg-[#1a1a1a] text-white px-4 py-2 rounded-lg border border-[#232323] focus:outline-none focus:border-[#ff0033]">
-            <option value="">Tous les statuts</option>
-            <option value="ACTIVE">Actif</option>
-            <option value="SUSPENDED">Suspendu</option>
-            <option value="BANNED">Banni</option>
-            <option value="PENDING">En attente</option>
-          </select>
         </div>
       </div>
 
       {/* Statistiques rapides */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
           <div className="flex items-center gap-2 mb-2">
             <Users className="w-4 h-4 text-[#ff0033]" />
@@ -123,16 +105,7 @@ export default async function UtilisateursAdmin() {
         </div>
         <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
           <div className="flex items-center gap-2 mb-2">
-            <UserIcon className="w-4 h-4 text-green-500" />
-            <span className="text-sm text-gray-400">Actifs</span>
-          </div>
-          <p className="text-2xl font-bold text-white">
-            {users.filter(u => u.status === 'ACTIVE').length}
-          </p>
-        </div>
-        <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
-          <div className="flex items-center gap-2 mb-2">
-            <Shield className="w-4 h-4 text-blue-500" />
+            <Shield className="w-4 h-4 text-[#ff0033]" />
             <span className="text-sm text-gray-400">Admins</span>
           </div>
           <p className="text-2xl font-bold text-white">
@@ -142,10 +115,10 @@ export default async function UtilisateursAdmin() {
         <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
           <div className="flex items-center gap-2 mb-2">
             <Crown className="w-4 h-4 text-yellow-500" />
-            <span className="text-sm text-gray-400">Premium</span>
+            <span className="text-sm text-gray-400">Super Admins</span>
           </div>
           <p className="text-2xl font-bold text-white">
-            0
+            {users.filter(u => u.role === 'SUPER_ADMIN').length}
           </p>
         </div>
       </div>
@@ -157,11 +130,9 @@ export default async function UtilisateursAdmin() {
             <thead className="bg-[#1a1a1a] border-b border-[#232323]">
               <tr>
                 <th className="text-left p-4 text-gray-400 font-medium">Utilisateur</th>
+                <th className="text-left p-4 text-gray-400 font-medium">Email</th>
                 <th className="text-left p-4 text-gray-400 font-medium">Rôle</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Statut</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Abonnement</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Packs</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Dernière connexion</th>
+                <th className="text-left p-4 text-gray-400 font-medium">Créé le</th>
                 <th className="text-left p-4 text-gray-400 font-medium">Actions</th>
               </tr>
             </thead>
@@ -169,7 +140,6 @@ export default async function UtilisateursAdmin() {
               {users.map((user) => {
                 const RoleIcon = getRoleIcon(user.role);
                 const roleColor = getRoleColor(user.role);
-                const statusColor = getStatusColor(user.status);
                 
                 return (
                   <tr key={user.id} className="border-b border-[#232323] hover:bg-[#1a1a1a] transition-colors">
@@ -177,7 +147,7 @@ export default async function UtilisateursAdmin() {
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-[#ff0033] rounded-full flex items-center justify-center">
                           <span className="text-white font-semibold">
-                            {(user.firstName?.[0] || 'U').toUpperCase()}
+                            {(user.firstName?.[0] || user.user.email[0]).toUpperCase()}
                           </span>
                         </div>
                         <div>
@@ -192,29 +162,21 @@ export default async function UtilisateursAdmin() {
                       </div>
                     </td>
                     <td className="p-4">
+                      <p className="text-white">{user.user.email}</p>
+                    </td>
+                    <td className="p-4">
                       <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${roleColor}`}>
                         <RoleIcon className="w-3 h-3" />
                         {user.role}
                       </div>
                     </td>
                     <td className="p-4">
-                      <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusColor}`}>
-                        {user.status}
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <span className="text-white">-</span>
-                    </td>
-                    <td className="p-4">
-                      <span className="text-white">-</span>
-                    </td>
-                    <td className="p-4">
-                      <span className="text-gray-400 text-sm">
+                      <p className="text-white text-sm">
                         {new Date(user.createdAt).toLocaleDateString('fr-FR')}
-                      </span>
+                      </p>
                     </td>
                     <td className="p-4">
-                      <button className="p-2 text-gray-400 hover:text-white transition-colors">
+                      <button className="text-gray-400 hover:text-white transition-colors">
                         <MoreHorizontal className="w-4 h-4" />
                       </button>
                     </td>
@@ -225,6 +187,14 @@ export default async function UtilisateursAdmin() {
           </table>
         </div>
       </div>
+
+      {users.length === 0 && (
+        <div className="bg-[#111111] rounded-xl p-8 border border-[#232323] text-center">
+          <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-white mb-2">Aucun utilisateur trouvé</h3>
+          <p className="text-gray-400">Commencez par ajouter votre premier utilisateur.</p>
+        </div>
+      )}
     </div>
   );
 } 
