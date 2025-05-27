@@ -1,18 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createHmac } from 'crypto'
 import { prisma } from '@/lib/prisma'
-import crypto from 'crypto'
 
 // Vérification de la signature webhook
 function verifyWebhookSignature(payload: string, signature: string, secret: string): boolean {
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
+  const expectedSignature = createHmac('sha256', secret)
     .update(payload)
     .digest('hex')
   
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  )
+  return signature === expectedSignature
 }
 
 export async function POST(request: NextRequest) {
@@ -79,61 +75,54 @@ async function handleOrderCompleted(data: any, webhookEventId: string) {
 
   if (!customerEmail) return
 
-  // Créer ou récupérer le profil utilisateur
-  // Note: Pour Systeme.io, nous devons d'abord créer l'utilisateur dans Supabase Auth
-  // puis créer le profil correspondant
-  let profile = await prisma.profile.findFirst({
-    where: { 
-      // Recherche par email via une jointure ou logique personnalisée
-      // Pour l'instant, on utilise une approche simplifiée
-    }
+  // Créer ou récupérer l'utilisateur et son profil
+  let user = await prisma.user.findUnique({
+    where: { email: customerEmail },
+    include: { profile: true }
   })
 
-  if (!profile) {
-    // TODO: Intégrer avec Supabase Auth pour créer l'utilisateur complet
-    // Pour l'instant, on crée juste le profil avec un ID temporaire
-    const tempId = `systeme_io_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
-    profile = await prisma.profile.create({
+  if (!user) {
+    // Créer l'utilisateur et son profil
+    user = await prisma.user.create({
       data: {
-        id: tempId, // ID temporaire - à remplacer par l'ID Supabase Auth
+        email: customerEmail,
         firstName: data.customer?.first_name,
         lastName: data.customer?.last_name,
-        status: 'ACTIVE',
-        role: 'USER'
-      }
+        profile: {
+          create: {
+            firstName: data.customer?.first_name,
+            lastName: data.customer?.last_name,
+            role: 'USER'
+          }
+        }
+      },
+      include: { profile: true }
     })
   }
 
   // Trouver le pack correspondant (mapping par productId ou autre logique)
   const pack = await findPackByProductId(productId)
   
-  if (pack) {
-    // TODO: Réimplémenter l'accès aux packs avec le nouveau schéma
-    // await prisma.packUser.create({
-    //   data: {
-    //     userId: profile.id,
-    //     packId: pack.id,
-    //     status: 'ACTIVE',
-    //     transactionId: data.order?.id,
-    //     amount: amount,
-    //     currency: data.order?.currency || 'EUR'
-    //   }
-    // })
+  if (pack && user) {
+    // Créer l'accès au pack pour l'utilisateur
+    await prisma.userPack.create({
+      data: {
+        userId: user.id,
+        packId: pack.id
+      }
+    })
 
-    // TODO: Réimplémenter les statistiques des packs
-    // await prisma.packStats.upsert({
-    //   where: { packId: pack.id },
-    //   update: {
-    //     purchases: { increment: 1 },
-    //     revenue: { increment: amount || 0 }
-    //   },
-    //   create: {
-    //     packId: pack.id,
-    //     purchases: 1,
-    //     revenue: amount || 0
-    //   }
-    // })
+    // Mettre à jour les statistiques du pack
+    await prisma.packStats.upsert({
+      where: { packId: pack.id },
+      update: {
+        purchasesCount: { increment: 1 }
+      },
+      create: {
+        packId: pack.id,
+        purchasesCount: 1
+      }
+    })
   }
 }
 
@@ -143,25 +132,27 @@ async function handleSubscriptionCreated(data: any, webhookEventId: string) {
 
   if (!customerEmail) return
 
-  let profile = await prisma.profile.findFirst({
-    where: { 
-      // Recherche par email - nécessite une logique personnalisée
-      // car l'email est dans auth.users, pas dans profiles
-    }
+  let user = await prisma.user.findUnique({
+    where: { email: customerEmail },
+    include: { profile: true }
   })
 
-  if (!profile) {
-    // TODO: Intégrer avec Supabase Auth
-    const tempId = `systeme_io_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
-    profile = await prisma.profile.create({
+  if (!user) {
+    // Créer l'utilisateur et son profil
+    user = await prisma.user.create({
       data: {
-        id: tempId,
+        email: customerEmail,
         firstName: data.customer?.first_name,
         lastName: data.customer?.last_name,
-        role: 'USER',
-        status: 'ACTIVE'
-      }
+        profile: {
+          create: {
+            firstName: data.customer?.first_name,
+            lastName: data.customer?.last_name,
+            role: 'USER'
+          }
+        }
+      },
+      include: { profile: true }
     })
   }
 
@@ -175,9 +166,9 @@ async function handleRefundCompleted(data: any, webhookEventId: string) {
 
   if (transactionId) {
     // TODO: Réimplémenter la gestion des remboursements
-    // await prisma.packUser.updateMany({
-    //   where: { transactionId },
-    //   data: { status: 'REFUNDED' }
+    // Supprimer l'accès au pack ou marquer comme remboursé
+    // await prisma.userPack.deleteMany({
+    //   where: { transactionId }
     // })
   }
 }
@@ -188,7 +179,7 @@ async function findPackByProductId(productId: string) {
   return await prisma.pack.findFirst({
     where: {
       // Exemple: utiliser une logique de mapping personnalisée
-      name: { contains: productId } // Logique temporaire
+      title: { contains: productId } // Logique temporaire
     }
   })
 }
