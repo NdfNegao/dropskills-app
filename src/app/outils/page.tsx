@@ -11,10 +11,69 @@ import {
   Calculator, 
   Package,
   ArrowRight,
-  Zap
+  Zap,
+  Target,
+  Mail,
+  Calendar,
+  TrendingUp
 } from "lucide-react";
+import { DropskillsRoadmap } from '@/components/DropskillsRoadmap';
 
 const OUTILS = [
+  {
+    id: "content-system",
+    title: "Content System AI",
+    description: "Générez un calendrier éditorial de 90 jours avec contenus variés et stratégie complète",
+    icon: Calendar,
+    color: "from-green-500 to-emerald-500",
+    href: "/outils/content-system",
+    features: ["Calendrier 90 jours", "10+ exemples de posts", "Export CSV/Notion"]
+  },
+  {
+    id: "agent-veille",
+    title: "Agent IA Veille & Opportunités",
+    description: "Détectez automatiquement les opportunités business et tendances de votre marché",
+    icon: TrendingUp,
+    color: "from-purple-500 to-indigo-500",
+    href: "/outils/agent-veille",
+    features: ["Scoring IA", "Blue Ocean detector", "Alertes personnalisées"]
+  },
+  {
+    id: "copymoneymail",
+    title: "CopyMoneyMail AI",
+    description: "Pas d'email = pas de relance = argent laissé sur la table. Générez des séquences qui convertissent",
+    icon: Mail,
+    color: "from-indigo-500 to-blue-500",
+    href: "/outils/copymoneymail",
+    features: ["Wizard 8 étapes", "Navigation entre emails", "A/B testing inclus"]
+  },
+  {
+    id: "tunnel-maker",
+    title: "Générateur de Tunnel IA",
+    description: "Créez votre tunnel de vente optimisé qui maximise les conversions",
+    icon: Zap,
+    color: "from-orange-500 to-red-500",
+    href: "/outils/tunnel-maker",
+    features: ["Wizard 8 étapes", "Schéma visuel", "Séquence email incluse"]
+  },
+  {
+    id: "usp-maker",
+    title: "USP Maker IA",
+    description: "Créez votre proposition de valeur unique irrésistible",
+    icon: Sparkles,
+    color: "from-purple-500 to-pink-500",
+    href: "/outils/usp-maker",
+    features: ["Wizard 8 étapes", "3 variantes d'USP", "Conseils d'utilisation"]
+  },
+  {
+    id: "icp-maker",
+    title: "ICP Maker IA",
+    description: "Créez votre profil client idéal en 7 étapes avec l'IA",
+    icon: Target,
+    color: "from-blue-500 to-indigo-500",
+    href: "/outils/icp-maker",
+    features: ["Wizard 7 étapes", "Analyse psychologique", "Fiche actionable"]
+  },
   {
     id: "pack-createur",
     title: "Pack Créateur IA",
@@ -152,6 +211,9 @@ export default function OutilsPage() {
             </div>
           </div>
 
+          {/* Roadmap IA animée */}
+          <DropskillsRoadmap />
+
           {/* Grille des outils */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {OUTILS.map((outil) => {
@@ -190,7 +252,7 @@ export default function OutilsPage() {
                   </div>
 
                   {/* Badge "Nouveau" pour certains outils */}
-                  {outil.id === "pack-createur" && (
+                  {(outil.id === "pack-createur" || outil.id === "content-system" || outil.id === "agent-veille") && (
                     <div className="mt-4">
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#ff0033]/10 text-[#ff0033] border border-[#ff0033]/20">
                         Nouveau

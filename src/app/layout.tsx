@@ -4,6 +4,7 @@ import "./globals.css";
 import SessionWrapper from "../components/SessionWrapper";
 import Script from "next/script";
 import { SavedProductsProvider } from "@/context/SavedProductsContext";
+import PageTransitionClient from "@/components/PageTransitionClient";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,7 +38,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.className} antialiased`}>
+      <body className={inter.className + " bg-black text-white min-h-screen"}>
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
@@ -47,9 +48,22 @@ export default function RootLayout({
             style={{ display: "none", visibility: "hidden" }}
           ></iframe>
         </noscript>
-        <SavedProductsProvider>
-          <SessionWrapper>{children}</SessionWrapper>
-        </SavedProductsProvider>
+        <SessionWrapper>
+          <SavedProductsProvider>
+            <PageTransitionClient>
+              {children}
+            </PageTransitionClient>
+          </SavedProductsProvider>
+        </SessionWrapper>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-7QK9KQKQKQ" strategy="afterInteractive" />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-7QK9KQKQKQ');
+          `}
+        </Script>
       </body>
     </html>
   );
