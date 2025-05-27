@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { getAuthUserByEmail } from '@/lib/supabase-auth';
 import { generateProductIdeas, type IdeaGenerationRequest } from '@/lib/openai';
 
 interface GenerateIdeasRequest {
@@ -44,28 +45,42 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Trouver l'utilisateur
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email }
-    });
+    // Récupérer l'utilisateur depuis auth.users via Supabase
+    const authUser = await getAuthUserByEmail(session.user.email);
 
-    if (!user) {
+    if (!authUser) {
       return NextResponse.json(
-        { error: 'Utilisateur non trouvé' },
+        { error: 'Utilisateur d\'authentification non trouvé' },
         { status: 404 }
       );
+    }
+
+    // Récupérer ou créer le profil utilisateur
+    let userProfile = await prisma.profile.findFirst({
+      where: { id: authUser.id }
+    });
+
+    if (!userProfile) {
+      // Créer automatiquement le profil s'il n'existe pas
+      userProfile = await prisma.profile.create({
+        data: {
+          id: authUser.id,
+          role: 'USER',
+          status: 'ACTIVE'
+        }
+      });
     }
 
     const startTime = Date.now();
 
     // Créer la demande d'idées
-    const ideaRequest = await prisma.productIdeaRequest.create({
+    const ideaRequest = await prisma.product_requests.create({
       data: {
-        userId: user.id,
-        targetAudience: body.targetAudience.trim(),
-        topic: body.topic?.trim() || null,
-        formats: body.formats ? JSON.stringify(body.formats) : null,
-        status: 'PROCESSING'
+        user_id: userProfile.id,
+        title: body.topic || 'Idée générée',
+        description: body.targetAudience,
+        status: 'IDEA',
+        source: 'AI',
       }
     });
 
@@ -79,59 +94,19 @@ export async function POST(request: NextRequest) {
 
       const ideas = await generateProductIdeas(openaiRequest);
       
-      // Sauvegarder les idées générées
-      const savedIdeas = await Promise.all(
-        ideas.map(idea => 
-          prisma.productIdea.create({
-            data: {
-              requestId: ideaRequest.id,
-              title: idea.title,
-              description: idea.description,
-              targetAudience: idea.targetAudience,
-              marketSize: idea.marketSize,
-              difficulty: idea.difficulty,
-              revenueEstimate: idea.revenueEstimate,
-              keyFeatures: JSON.stringify(idea.keyFeatures),
-              marketingStrategy: idea.marketingStrategy,
-              confidence: idea.confidence,
-              tags: idea.tags ? JSON.stringify(idea.tags) : null,
-              category: idea.category
-            }
-          })
-        )
-      );
-
       const processingTime = Date.now() - startTime;
 
       // Mettre à jour le statut de la demande
-      await prisma.productIdeaRequest.update({
+      await prisma.product_requests.update({
         where: { id: ideaRequest.id },
         data: {
-          status: 'COMPLETED',
-          processingTime,
-          completedAt: new Date()
+          status: 'COMPLETED'
         }
       });
 
-      // Retourner les idées avec les IDs de base de données
-      const response = savedIdeas.map(idea => ({
-        id: idea.id,
-        title: idea.title,
-        description: idea.description,
-        targetAudience: idea.targetAudience,
-        marketSize: idea.marketSize,
-        difficulty: idea.difficulty,
-        revenue: idea.revenueEstimate,
-        keyFeatures: JSON.parse(idea.keyFeatures),
-        marketingStrategy: idea.marketingStrategy,
-        confidence: idea.confidence,
-        tags: idea.tags ? JSON.parse(idea.tags) : [],
-        category: idea.category
-      }));
-
       return NextResponse.json({
         success: true,
-        ideas: response,
+        ideas,
         requestId: ideaRequest.id,
         processingTime,
         source: 'openai'
@@ -139,12 +114,10 @@ export async function POST(request: NextRequest) {
 
     } catch (error) {
       // Mettre à jour le statut en cas d'erreur
-      await prisma.productIdeaRequest.update({
+      await prisma.product_requests.update({
         where: { id: ideaRequest.id },
         data: {
-          status: 'ERROR',
-          errorMessage: error instanceof Error ? error.message : 'Erreur inconnue',
-          processingTime: Date.now() - startTime
+          status: 'ERROR'
         }
       });
 
@@ -174,24 +147,32 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email }
+    // Récupérer l'utilisateur depuis auth.users via Supabase
+    const authUser = await getAuthUserByEmail(session.user.email);
+
+    if (!authUser) {
+      return NextResponse.json(
+        { error: 'Utilisateur d\'authentification non trouvé' },
+        { status: 404 }
+      );
+    }
+
+    // Récupérer le profil utilisateur
+    const userProfile = await prisma.profile.findFirst({
+      where: { id: authUser.id }
     });
 
-    if (!user) {
+    if (!userProfile) {
       return NextResponse.json(
-        { error: 'Utilisateur non trouvé' },
+        { error: 'Profil utilisateur non trouvé' },
         { status: 404 }
       );
     }
 
     // Récupérer l'historique des demandes d'idées de l'utilisateur
-    const requests = await prisma.productIdeaRequest.findMany({
-      where: { userId: user.id },
-      include: {
-        generatedIdeas: true
-      },
-      orderBy: { createdAt: 'desc' },
+    const requests = await prisma.product_requests.findMany({
+      where: { user_id: userProfile.id, source: 'AI' },
+      orderBy: { created_at: 'desc' },
       take: 10
     });
 
@@ -199,20 +180,10 @@ export async function GET(request: NextRequest) {
       success: true,
       requests: requests.map(req => ({
         id: req.id,
-        targetAudience: req.targetAudience,
-        topic: req.topic,
-        formats: req.formats ? JSON.parse(req.formats) : [],
+        targetAudience: req.description,
+        topic: req.title,
         status: req.status,
-        createdAt: req.createdAt,
-        ideas: req.generatedIdeas.map(idea => ({
-          id: idea.id,
-          title: idea.title,
-          description: idea.description,
-          difficulty: idea.difficulty,
-          revenue: idea.revenueEstimate,
-          keyFeatures: JSON.parse(idea.keyFeatures),
-          marketingStrategy: idea.marketingStrategy
-        }))
+        createdAt: req.created_at
       }))
     });
 

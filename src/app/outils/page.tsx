@@ -75,15 +75,6 @@ const OUTILS = [
     features: ["Wizard 7 étapes", "Analyse psychologique", "Fiche actionable"]
   },
   {
-    id: "pack-createur",
-    title: "Pack Créateur IA",
-    description: "Générez des packs de produits digitaux complets avec l'IA",
-    icon: Package,
-    color: "from-purple-500 to-pink-500",
-    href: "/outils/pack-createur",
-    features: ["Génération automatique", "Table des matières", "Stratégie de prix"]
-  },
-  {
     id: "generateur-titres",
     title: "Générateur de Titres",
     description: "Créez des titres accrocheurs qui convertissent",
@@ -252,7 +243,7 @@ export default function OutilsPage() {
                   </div>
 
                   {/* Badge "Nouveau" pour certains outils */}
-                  {(outil.id === "pack-createur" || outil.id === "content-system" || outil.id === "agent-veille") && (
+                  {(outil.id === "content-system" || outil.id === "agent-veille") && (
                     <div className="mt-4">
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#ff0033]/10 text-[#ff0033] border border-[#ff0033]/20">
                         Nouveau

@@ -11,7 +11,7 @@ async function createAdmin() {
     const lastName = process.env.ADMIN_LAST_NAME || 'DropSkills';
 
     // Vérifier si l'admin existe déjà
-    const existingAdmin = await prisma.user.findUnique({
+    const existingAdmin = await prisma.user.findFirst({
       where: { email }
     });
 

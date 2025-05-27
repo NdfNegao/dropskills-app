@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Lock, Mail, Eye, EyeOff } from "lucide-react";
+import { Lock, Mail, Eye, EyeOff, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
-export default function SignInPage() {
+export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -28,14 +29,14 @@ export default function SignInPage() {
       if (result?.error) {
         setError("Email ou mot de passe incorrect");
       } else {
-        // Vérifier la session
+        // Vérifier la session et rediriger
         const session = await getSession();
         if (session) {
-          router.push("/");
+          router.push("/dashboard");
         }
       }
     } catch (err) {
-      setError("Une erreur est survenue");
+      setError("Une erreur est survenue. Veuillez réessayer.");
     } finally {
       setIsLoading(false);
     }
@@ -50,7 +51,7 @@ export default function SignInPage() {
             <h1 className="text-3xl font-bold text-white tracking-tight">
               DROP<span className="text-[#00D2FF]">SKILLS</span>
             </h1>
-            <p className="text-gray-400 mt-2">Connectez-vous à votre compte</p>
+            <p className="text-gray-400 mt-2">Connectez-vous à votre espace</p>
           </div>
 
           {/* Formulaire */}
@@ -73,7 +74,7 @@ export default function SignInPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D2FF] transition-colors"
-                  placeholder="admin@dropskills.com"
+                  placeholder="votre@email.com"
                   required
                 />
               </div>
@@ -104,21 +105,44 @@ export default function SignInPage() {
               </div>
             </div>
 
+            {/* Mot de passe oublié */}
+            <div className="flex justify-end">
+              <Link 
+                href="/auth/forgot-password" 
+                className="text-sm text-[#00D2FF] hover:text-[#00B8E6] transition-colors"
+              >
+                Mot de passe oublié ?
+              </Link>
+            </div>
+
             {/* Bouton de connexion */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-[#00D2FF] to-[#3A7BD5] text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-[#00D2FF] to-[#3A7BD5] text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {isLoading ? "Connexion..." : "Se connecter"}
+              {isLoading ? (
+                "Connexion en cours..."
+              ) : (
+                <>
+                  Se connecter
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </button>
           </form>
 
-          {/* Compte de test */}
-          <div className="mt-8 bg-[#18181b] rounded-lg p-4 text-center border border-[#232323]">
-            <p className="text-gray-400 text-sm mb-1 font-semibold">Compte de test :</p>
-            <p className="text-gray-300 text-xs">Email: <span className="font-mono">admin@dropskills.com</span></p>
-            <p className="text-gray-300 text-xs">Mot de passe: <span className="font-mono">admin123</span></p>
+          {/* Lien inscription */}
+          <div className="mt-6 text-center">
+            <p className="text-gray-400 text-sm">
+              Pas encore de compte ?{" "}
+              <Link 
+                href="/signup" 
+                className="text-[#00D2FF] hover:text-[#00B8E6] font-medium transition-colors"
+              >
+                Créer un compte
+              </Link>
+            </p>
           </div>
         </div>
       </div>

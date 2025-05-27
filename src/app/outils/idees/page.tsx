@@ -124,6 +124,12 @@ export default function IdeesProduitsPage() {
     setIsGeneratingPersonalized(true);
     
     try {
+      console.log('Appel API /api/ideas/generate avec :', {
+        targetAudience: formData.targetAudience,
+        topic: formData.topic || undefined,
+        formats: formData.formats.length > 0 ? formData.formats : undefined
+      });
+
       const response = await fetch('/api/ideas/generate', {
         method: 'POST',
         headers: {
@@ -136,34 +142,33 @@ export default function IdeesProduitsPage() {
         })
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Erreur lors de la génération');
-      }
-
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || data.details || 'Erreur lors de la génération');
+      }
       
-      if (data.success && data.ideas) {
-        // Convertir les idées de l'API vers le format attendu par l'interface
-        const convertedIdeas: PersonalizedIdea[] = data.ideas.map((idea: any) => ({
-          id: idea.id,
-          title: idea.title,
-          description: idea.description,
-          targetAudience: idea.targetAudience,
-          marketSize: idea.marketSize,
-          difficulty: idea.difficulty,
-          revenue: idea.revenue,
-          keyFeatures: idea.keyFeatures,
-          marketingStrategy: idea.marketingStrategy
-        }));
-        
-        setPersonalizedIdeas(convertedIdeas);
-      } else {
+      if (!data.success || !data.ideas) {
         throw new Error('Format de réponse invalide');
       }
+
+      // Convertir les idées de l'API vers le format attendu par l'interface
+      const convertedIdeas: PersonalizedIdea[] = data.ideas.map((idea: any) => ({
+        id: idea.id || crypto.randomUUID(),
+        title: idea.title,
+        description: idea.description,
+        targetAudience: idea.targetAudience,
+        marketSize: idea.marketSize,
+        difficulty: idea.difficulty,
+        revenue: idea.revenue,
+        keyFeatures: idea.keyFeatures || [],
+        marketingStrategy: idea.marketingStrategy
+      }));
+      
+      setPersonalizedIdeas(convertedIdeas);
       
     } catch (error) {
-      console.error('Erreur lors de la génération:', error);
+      console.error('Erreur détaillée lors de la génération:', error);
       alert(error instanceof Error ? error.message : 'Erreur lors de la génération des idées');
     } finally {
       setIsGeneratingPersonalized(false);

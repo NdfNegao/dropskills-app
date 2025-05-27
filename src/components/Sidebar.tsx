@@ -126,16 +126,6 @@ export default function Sidebar() {
             <GraduationCap size={20} className={`mr-3 ${isActive('/universite') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
             <span className="group-hover:translate-x-1 transition-transform">Université des Produits</span>
           </Link>
-          <Link 
-            href="/produits" 
-            onClick={handleLinkClick}
-            className={`flex items-center text-gray-300 hover:text-white py-2 px-3 rounded-lg transition-all duration-200 hover:bg-[#1a1a1a] group ${
-              isActive('/produits') ? 'bg-[#1a1a1a] text-white' : ''
-            }`}
-          >
-            <Layout size={20} className={`mr-3 ${isActive('/produits') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
-            <span className="group-hover:translate-x-1 transition-transform">Bibliothèque de Produits</span>
-          </Link>
         </div>
 
         {/* Section Outils */}
@@ -160,16 +150,6 @@ export default function Sidebar() {
           >
             <BookOpen size={20} className={`mr-3 ${isActive('/outils/titres') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
             <span className="group-hover:translate-x-1 transition-transform">Générateur de Titres</span>
-          </Link>
-          <Link 
-            href="/outils/pack-createur" 
-            onClick={handleLinkClick}
-            className={`flex items-center text-gray-300 hover:text-white py-2 px-3 rounded-lg transition-all duration-200 hover:bg-[#1a1a1a] group ${
-              isActive('/outils/pack-createur') ? 'bg-[#1a1a1a] text-white' : ''
-            }`}
-          >
-            <FileCode size={20} className={`mr-3 ${isActive('/outils/pack-createur') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
-            <span className="group-hover:translate-x-1 transition-transform">Pack Créateur IA</span>
           </Link>
         </div>
 

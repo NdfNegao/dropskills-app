@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { getAuthUserByEmail } from '@/lib/supabase-auth';
 
 export async function GET(request: NextRequest) {
   try {
@@ -171,12 +172,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Vérifier que l'utilisateur est admin
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email }
+    // Récupérer l'utilisateur depuis auth.users via Supabase
+    const authUser = await getAuthUserByEmail(session.user.email);
+
+    if (!authUser) {
+      return NextResponse.json(
+        { error: 'Utilisateur d\'authentification non trouvé' },
+        { status: 404 }
+      );
+    }
+
+    // Récupérer le profil utilisateur
+    const userProfile = await prisma.profile.findFirst({
+      where: { id: authUser.id }
     });
 
-    if (!user || !['ADMIN', 'SUPER_ADMIN'].includes(user.role)) {
+    if (!userProfile || !['ADMIN', 'SUPER_ADMIN'].includes(userProfile.role)) {
       return NextResponse.json(
         { error: 'Accès non autorisé' },
         { status: 403 }
