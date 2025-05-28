@@ -1,14 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Sidebar from '@/components/Sidebar';
-import { Palette, Upload, Download, ArrowLeft, FileText, Settings } from 'lucide-react';
+import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import { 
+  Palette, 
+  Upload, 
+  Download, 
+  FileText, 
+  Settings, 
+  Sparkles,
+  TrendingUp,
+  Users,
+  CheckCircle,
+  Lightbulb,
+  Zap
+} from 'lucide-react';
 
 export default function PDFRebranderPage() {
-  const { data: session } = useSession();
-  const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [settings, setSettings] = useState({
     primaryColor: '#ff0033',
@@ -39,266 +47,294 @@ export default function PDFRebranderPage() {
     }, 3000);
   };
 
-  if (!session) {
-    router.push('/auth/signin');
-    return null;
-  }
-
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
-      <Sidebar />
-      
-      <main className="ml-0 md:ml-64 p-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <button 
-              onClick={() => router.back()}
-              className="flex items-center gap-2 text-gray-400 hover:text-[#ff0033] transition-colors mb-4"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Retour aux outils
-            </button>
-            
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl">
-                <Palette className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-white">Rebranding PDF</h1>
-                <p className="text-gray-400">Personnalisez vos PDFs avec votre marque</p>
-              </div>
+    <LayoutWithSidebar>
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl">
+              <Palette className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-white">PDF Rebrander</h1>
+              <p className="text-gray-400">Personnalisez vos PDFs avec votre identité de marque</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Upload et paramètres */}
-            <div className="space-y-6">
-              {/* Upload de fichier */}
-              <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-                <h3 className="text-lg font-semibold text-white mb-4">
-                  <Upload className="w-5 h-5 inline mr-2" />
-                  Fichier PDF
-                </h3>
-                
-                <div className="border-2 border-dashed border-[#232323] rounded-lg p-8 text-center">
-                  {file ? (
-                    <div className="space-y-4">
-                      <FileText className="w-12 h-12 text-green-400 mx-auto" />
-                      <div>
-                        <p className="text-white font-medium">{file.name}</p>
-                        <p className="text-gray-400 text-sm">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                      </div>
-                      <button
-                        onClick={() => setFile(null)}
-                        className="text-[#ff0033] hover:text-[#cc0029] transition-colors"
-                      >
-                        Changer de fichier
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <Upload className="w-12 h-12 text-gray-400 mx-auto" />
-                      <div>
-                        <p className="text-gray-400 mb-2">Glissez-déposez votre PDF ici ou cliquez pour sélectionner</p>
-                        <input
-                          type="file"
-                          accept=".pdf"
-                          onChange={handleFileUpload}
-                          className="hidden"
-                          id="pdf-upload"
-                        />
-                        <label
-                          htmlFor="pdf-upload"
-                          className="inline-block bg-[#232323] text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-[#333] transition-colors"
-                        >
-                          Sélectionner un PDF
-                        </label>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Paramètres de branding */}
-              <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-                <h3 className="text-lg font-semibold text-white mb-4">
-                  <Settings className="w-5 h-5 inline mr-2" />
-                  Paramètres de marque
-                </h3>
-                
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Couleur principale
-                    </label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="color"
-                        value={settings.primaryColor}
-                        onChange={(e) => setSettings({...settings, primaryColor: e.target.value})}
-                        className="w-12 h-10 rounded border border-[#232323] bg-[#1a1a1a]"
-                      />
-                      <input
-                        type="text"
-                        value={settings.primaryColor}
-                        onChange={(e) => setSettings({...settings, primaryColor: e.target.value})}
-                        className="flex-1 bg-[#1a1a1a] border border-[#232323] rounded-lg px-4 py-2 text-white focus:border-[#ff0033] focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Couleur secondaire
-                    </label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="color"
-                        value={settings.secondaryColor}
-                        onChange={(e) => setSettings({...settings, secondaryColor: e.target.value})}
-                        className="w-12 h-10 rounded border border-[#232323] bg-[#1a1a1a]"
-                      />
-                      <input
-                        type="text"
-                        value={settings.secondaryColor}
-                        onChange={(e) => setSettings({...settings, secondaryColor: e.target.value})}
-                        className="flex-1 bg-[#1a1a1a] border border-[#232323] rounded-lg px-4 py-2 text-white focus:border-[#ff0033] focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Nom de l'entreprise
-                    </label>
-                    <input
-                      type="text"
-                      value={settings.companyName}
-                      onChange={(e) => setSettings({...settings, companyName: e.target.value})}
-                      className="w-full bg-[#1a1a1a] border border-[#232323] rounded-lg px-4 py-2 text-white focus:border-[#ff0033] focus:outline-none"
-                      placeholder="Ex: Mon Entreprise"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Site web
-                    </label>
-                    <input
-                      type="url"
-                      value={settings.website}
-                      onChange={(e) => setSettings({...settings, website: e.target.value})}
-                      className="w-full bg-[#1a1a1a] border border-[#232323] rounded-lg px-4 py-2 text-white focus:border-[#ff0033] focus:outline-none"
-                      placeholder="https://monsite.com"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      URL du logo
-                    </label>
-                    <input
-                      type="url"
-                      value={settings.logoUrl}
-                      onChange={(e) => setSettings({...settings, logoUrl: e.target.value})}
-                      className="w-full bg-[#1a1a1a] border border-[#232323] rounded-lg px-4 py-2 text-white focus:border-[#ff0033] focus:outline-none"
-                      placeholder="https://monsite.com/logo.png"
-                    />
-                  </div>
+          {/* Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
+              <div className="flex items-center gap-3">
+                <FileText className="w-5 h-5 text-orange-400" />
+                <div>
+                  <p className="text-white font-semibold">2,847</p>
+                  <p className="text-gray-400 text-sm">PDFs rebrandés</p>
                 </div>
               </div>
             </div>
-
-            {/* Aperçu et traitement */}
-            <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-              <h3 className="text-lg font-semibold text-white mb-4">Aperçu et traitement</h3>
-              
-              {file ? (
-                <div className="space-y-6">
-                  {/* Aperçu des couleurs */}
-                  <div className="bg-[#1a1a1a] rounded-lg p-4 border border-[#232323]">
-                    <h4 className="text-white font-medium mb-3">Aperçu des couleurs</h4>
-                    <div className="flex gap-4">
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-6 h-6 rounded border border-[#232323]"
-                          style={{ backgroundColor: settings.primaryColor }}
-                        ></div>
-                        <span className="text-gray-300 text-sm">Principale</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-6 h-6 rounded border border-[#232323]"
-                          style={{ backgroundColor: settings.secondaryColor }}
-                        ></div>
-                        <span className="text-gray-300 text-sm">Secondaire</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Informations de branding */}
-                  {(settings.companyName || settings.website) && (
-                    <div className="bg-[#1a1a1a] rounded-lg p-4 border border-[#232323]">
-                      <h4 className="text-white font-medium mb-3">Informations ajoutées</h4>
-                      <div className="space-y-2 text-sm">
-                        {settings.companyName && (
-                          <p className="text-gray-300">Entreprise: {settings.companyName}</p>
-                        )}
-                        {settings.website && (
-                          <p className="text-gray-300">Site: {settings.website}</p>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Bouton de traitement */}
-                  <button
-                    onClick={handleProcess}
-                    disabled={isProcessing}
-                    className="w-full bg-[#ff0033] text-white py-3 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-                  >
-                    {isProcessing ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                        Traitement en cours...
-                      </>
-                    ) : (
-                      <>
-                        <Palette className="w-4 h-4" />
-                        Appliquer le rebranding
-                      </>
-                    )}
-                  </button>
-
-                  {/* Résultat */}
-                  {processedFile && (
-                    <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-green-400 font-medium">PDF traité avec succès !</p>
-                          <p className="text-gray-300 text-sm">{processedFile}</p>
-                        </div>
-                        <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center gap-2">
-                          <Download className="w-4 h-4" />
-                          Télécharger
-                        </button>
-                      </div>
-                    </div>
-                  )}
+            <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
+              <div className="flex items-center gap-3">
+                <TrendingUp className="w-5 h-5 text-green-400" />
+                <div>
+                  <p className="text-white font-semibold">+45%</p>
+                  <p className="text-gray-400 text-sm">Reconnaissance de marque</p>
                 </div>
-              ) : (
-                <div className="bg-[#1a1a1a] rounded-lg p-8 border border-[#232323] text-center">
-                  <Palette className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-                  <p className="text-gray-500">
-                    Uploadez un fichier PDF pour commencer le rebranding
-                  </p>
+              </div>
+            </div>
+            <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
+              <div className="flex items-center gap-3">
+                <Users className="w-5 h-5 text-blue-400" />
+                <div>
+                  <p className="text-white font-semibold">892</p>
+                  <p className="text-gray-400 text-sm">Utilisateurs actifs</p>
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </div>
-      </main>
-    </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Upload et paramètres */}
+          <div className="space-y-6">
+            {/* Upload de fichier */}
+            <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
+              <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+                <Upload className="w-5 h-5 text-orange-400" />
+                Fichier PDF
+              </h2>
+              
+              <div className="border-2 border-dashed border-[#333] rounded-lg p-8 text-center hover:border-[#00D2FF] transition-colors">
+                {file ? (
+                  <div className="space-y-4">
+                    <FileText className="w-12 h-12 text-green-400 mx-auto" />
+                    <div>
+                      <p className="text-white font-medium">{file.name}</p>
+                      <p className="text-gray-400 text-sm">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                    </div>
+                    <button
+                      onClick={() => setFile(null)}
+                      className="text-[#ff0033] hover:text-[#cc0029] transition-colors"
+                    >
+                      Changer de fichier
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <Upload className="w-12 h-12 text-gray-400 mx-auto" />
+                    <div>
+                      <p className="text-gray-400 mb-2">Glissez-déposez votre PDF ici ou cliquez pour sélectionner</p>
+                      <input
+                        type="file"
+                        accept=".pdf"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                        id="pdf-upload"
+                      />
+                      <label
+                        htmlFor="pdf-upload"
+                        className="inline-block bg-[#1a1a1a] text-white px-6 py-3 rounded-lg cursor-pointer hover:bg-[#333] transition-colors border border-[#333]"
+                      >
+                        Sélectionner un PDF
+                      </label>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Paramètres de branding */}
+            <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
+              <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+                <Settings className="w-5 h-5 text-blue-400" />
+                Paramètres de marque
+              </h2>
+              
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-white font-medium mb-2">
+                    Couleur principale
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={settings.primaryColor}
+                      onChange={(e) => setSettings({...settings, primaryColor: e.target.value})}
+                      className="w-12 h-10 rounded border border-[#333] bg-[#1a1a1a]"
+                    />
+                    <input
+                      type="text"
+                      value={settings.primaryColor}
+                      onChange={(e) => setSettings({...settings, primaryColor: e.target.value})}
+                      className="flex-1 bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:border-[#00D2FF] focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">
+                    Couleur secondaire
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={settings.secondaryColor}
+                      onChange={(e) => setSettings({...settings, secondaryColor: e.target.value})}
+                      className="w-12 h-10 rounded border border-[#333] bg-[#1a1a1a]"
+                    />
+                    <input
+                      type="text"
+                      value={settings.secondaryColor}
+                      onChange={(e) => setSettings({...settings, secondaryColor: e.target.value})}
+                      className="flex-1 bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:border-[#00D2FF] focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">
+                    Nom de l'entreprise
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.companyName}
+                    onChange={(e) => setSettings({...settings, companyName: e.target.value})}
+                    className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
+                    placeholder="Ex: Mon Entreprise"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">
+                    Site web
+                  </label>
+                  <input
+                    type="url"
+                    value={settings.website}
+                    onChange={(e) => setSettings({...settings, website: e.target.value})}
+                    className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
+                    placeholder="https://monsite.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">
+                    URL du logo
+                  </label>
+                  <input
+                    type="url"
+                    value={settings.logoUrl}
+                    onChange={(e) => setSettings({...settings, logoUrl: e.target.value})}
+                    className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
+                    placeholder="https://monsite.com/logo.png"
+                  />
+                </div>
+
+                <button
+                  onClick={handleProcess}
+                  disabled={!file || isProcessing}
+                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-600 hover:to-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {isProcessing ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      Traitement en cours...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-5 h-5" />
+                      Rebrander le PDF
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Résultats et aperçu */}
+          <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
+            <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+              <Zap className="w-5 h-5 text-orange-400" />
+              Résultat
+            </h2>
+
+            {!processedFile ? (
+              <div className="text-center py-12">
+                <Palette className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                <p className="text-gray-400 mb-4">
+                  Uploadez un PDF et configurez vos paramètres de marque pour commencer
+                </p>
+                <div className="space-y-2 text-sm text-gray-500">
+                  <p>✨ Ajout automatique de votre logo</p>
+                  <p>🎨 Application de vos couleurs de marque</p>
+                  <p>📝 Insertion de vos informations d'entreprise</p>
+                  <p>⚡ Traitement rapide et sécurisé</p>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div className="bg-[#1a1a1a] p-6 rounded-lg border border-[#333]">
+                  <div className="flex items-center gap-3 mb-4">
+                    <CheckCircle className="w-6 h-6 text-green-400" />
+                    <h3 className="text-white font-semibold">PDF rebrandé avec succès !</h3>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400">Fichier original :</span>
+                      <span className="text-white">{file?.name}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400">Fichier rebrandé :</span>
+                      <span className="text-white">{processedFile}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400">Couleur principale :</span>
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-4 h-4 rounded border border-gray-600"
+                          style={{ backgroundColor: settings.primaryColor }}
+                        ></div>
+                        <span className="text-white">{settings.primaryColor}</span>
+                      </div>
+                    </div>
+                    {settings.companyName && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-400">Entreprise :</span>
+                        <span className="text-white">{settings.companyName}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => {
+                    // Simulation du téléchargement
+                    const link = document.createElement('a');
+                    link.href = '#';
+                    link.download = processedFile || 'rebranded.pdf';
+                    link.click();
+                  }}
+                  className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Download className="w-5 h-5" />
+                  Télécharger le PDF rebrandé
+                </button>
+
+                <button
+                  onClick={() => {
+                    setProcessedFile(null);
+                    setFile(null);
+                  }}
+                  className="w-full bg-[#1a1a1a] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[#333] transition-colors border border-[#333]"
+                >
+                  Rebrander un autre PDF
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </LayoutWithSidebar>
   );
 } 

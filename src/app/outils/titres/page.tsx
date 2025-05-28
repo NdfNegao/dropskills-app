@@ -1,164 +1,263 @@
 'use client';
 
 import { useState } from 'react';
-import Sidebar from '../../../components/Sidebar';
-import { BookOpen, Users, Sparkles, Type, Lock } from 'lucide-react';
+import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import { 
+  Type, 
+  Sparkles, 
+  Copy, 
+  RefreshCw, 
+  TrendingUp, 
+  Users, 
+  Target,
+  Lightbulb,
+  Zap
+} from 'lucide-react';
 
-const TONES = [
-  { label: 'Accrocheur', value: 'catchy' },
-  { label: 'Professionnel', value: 'professional' },
-  { label: 'Inspirant', value: 'inspiring' },
-  { label: 'Mystérieux', value: 'mysterious' },
-  { label: 'Drôle', value: 'funny' },
-];
-
-export default function BookTitleGenerator() {
-  const [subject, setSubject] = useState('');
-  const [audience, setAudience] = useState('');
-  const [tone, setTone] = useState('catchy');
-  const [keyword, setKeyword] = useState('');
-  const [titles, setTitles] = useState<string[]>([]);
+export default function TitresPage() {
+  const [formData, setFormData] = useState({
+    subject: '',
+    audience: '',
+    tone: 'accrocheur',
+    type: 'article'
+  });
   const [isGenerating, setIsGenerating] = useState(false);
+  const [results, setResults] = useState<string[]>([]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const tones = [
+    { id: 'accrocheur', label: 'Accrocheur' },
+    { id: 'professionnel', label: 'Professionnel' },
+    { id: 'emotionnel', label: 'Émotionnel' },
+    { id: 'urgent', label: 'Urgent' }
+  ];
+
+  const types = [
+    { id: 'article', label: 'Article de blog' },
+    { id: 'video', label: 'Vidéo YouTube' },
+    { id: 'email', label: 'Email marketing' },
+    { id: 'social', label: 'Post réseaux sociaux' }
+  ];
+
+  const handleGenerate = async () => {
+    if (!formData.subject) {
+      alert('Veuillez remplir le sujet');
+      return;
+    }
+
     setIsGenerating(true);
-    // Simulation de génération de titres
+    
+    // Simulation de génération IA
     setTimeout(() => {
-      const base = subject || 'Votre sujet';
-      const aud = audience ? ` pour ${audience}` : '';
-      const key = keyword ? ` avec "${keyword}"` : '';
-      const toneLabel = TONES.find(t => t.value === tone)?.label || '';
-      setTitles([
-        `${base}${aud} : Le guide ultime${key}`,
-        `${base}${aud} : Secrets et stratégies${key}`,
-        `Réussir dans ${base}${aud} (${toneLabel})${key}`,
-        `${base}${aud} : 10 étapes pour exceller${key}`,
-        `Tout savoir sur ${base}${aud}${key}`,
-        `${base}${aud} : Les clés du succès${key}`
-      ]);
+      const mockResults = [
+        `🚀 ${formData.subject} : Le Guide Complet pour ${formData.audience || 'Réussir'}`,
+        `✨ Découvrez ${formData.subject} en 2024 : Stratégies Gagnantes`,
+        `💡 ${formData.subject} : 7 Secrets que Personne ne Vous Dit`,
+        `🎯 Comment Maîtriser ${formData.subject} en 30 Jours`,
+        `⚡ ${formData.subject} : La Méthode Révolutionnaire qui Change Tout`,
+        `🔥 ${formData.subject} : De Débutant à Expert en 5 Étapes`,
+        `💰 ${formData.subject} : Transformez Votre Passion en Profit`,
+        `🌟 ${formData.subject} : Les Erreurs à Éviter Absolument`
+      ];
+      
+      setResults(mockResults);
       setIsGenerating(false);
-    }, 1500);
+    }, 2000);
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] relative">
-      {/* Bannière */}
-      <div className="bg-[#ff0033] text-white text-center py-2 text-sm relative z-10">
-        🎉 Offre de lancement 2025 ➜ -50% sur le Plan Pro
-      </div>
-      <Sidebar />
-      <main className="ml-64 p-8 relative z-10 flex flex-col items-center">
-        {/* En-tête */}
-        <div className="mb-12 text-center">
-          <div className="flex items-center gap-3 justify-center mb-4">
-            <BookOpen className="text-[#ff0033] w-8 h-8" />
-            <h1 className="text-4xl font-bold text-white">Book Title Generator</h1>
+    <LayoutWithSidebar>
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-3 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-xl">
+              <Type className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-white">Générateur de Titres</h1>
+              <p className="text-gray-400">Créez des titres accrocheurs qui convertissent</p>
+            </div>
           </div>
-          <p className="text-xl text-gray-400">Générez des titres accrocheurs pour vos ebooks et guides digitaux</p>
+
+          {/* Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
+              <div className="flex items-center gap-3">
+                <Sparkles className="w-5 h-5 text-blue-400" />
+                <div>
+                  <p className="text-white font-semibold">8,432</p>
+                  <p className="text-gray-400 text-sm">Titres générés</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
+              <div className="flex items-center gap-3">
+                <TrendingUp className="w-5 h-5 text-green-400" />
+                <div>
+                  <p className="text-white font-semibold">+34%</p>
+                  <p className="text-gray-400 text-sm">Taux de clic moyen</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
+              <div className="flex items-center gap-3">
+                <Users className="w-5 h-5 text-purple-400" />
+                <div>
+                  <p className="text-white font-semibold">2,156</p>
+                  <p className="text-gray-400 text-sm">Créateurs actifs</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        {/* Formulaire */}
-        <form onSubmit={handleSubmit} className="w-full max-w-xl bg-[#111111] rounded-xl p-8 mb-10 border border-gray-800 flex flex-col gap-6">
-          <div>
-            <label className="block text-gray-400 mb-2">Sujet du livre</label>
-            <div className="flex items-center bg-[#1a1a1a] rounded-lg px-4 py-2">
-              <Type className="text-gray-500 w-5 h-5 mr-2" />
-              <input
-                type="text"
-                value={subject}
-                onChange={e => setSubject(e.target.value)}
-                placeholder="ex: Productivité, Marketing Digital..."
-                className="bg-transparent text-white w-full focus:outline-none"
-                required
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block text-gray-400 mb-2">Public cible (optionnel)</label>
-            <div className="flex items-center bg-[#1a1a1a] rounded-lg px-4 py-2">
-              <Users className="text-gray-500 w-5 h-5 mr-2" />
-              <input
-                type="text"
-                value={audience}
-                onChange={e => setAudience(e.target.value)}
-                placeholder="ex: Entrepreneurs, Freelances..."
-                className="bg-transparent text-white w-full focus:outline-none"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-gray-400 mb-2">Ton</label>
-              <select
-                value={tone}
-                onChange={e => setTone(e.target.value)}
-                className="w-full bg-[#1a1a1a] text-white p-3 rounded-lg focus:outline-none"
-              >
-                {TONES.map(t => (
-                  <option key={t.value} value={t.value}>{t.label}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-gray-400 mb-2">Mot-clé à inclure (optionnel)</label>
-              <div className="flex items-center bg-[#1a1a1a] rounded-lg px-4 py-2">
-                <Sparkles className="text-gray-500 w-5 h-5 mr-2" />
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Formulaire */}
+          <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
+            <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+              <Lightbulb className="w-5 h-5 text-yellow-400" />
+              Paramètres du titre
+            </h2>
+
+            <div className="space-y-6">
+              <div>
+                <label className="block text-white font-medium mb-2">
+                  Sujet principal *
+                </label>
                 <input
                   type="text"
-                  value={keyword}
-                  onChange={e => setKeyword(e.target.value)}
-                  placeholder="ex: IA, Succès, 2025..."
-                  className="bg-transparent text-white w-full focus:outline-none"
+                  value={formData.subject}
+                  onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                  placeholder="Ex: Marketing digital, Développement personnel..."
+                  className="w-full p-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
                 />
               </div>
+
+              <div>
+                <label className="block text-white font-medium mb-2">
+                  Audience cible
+                </label>
+                <input
+                  type="text"
+                  value={formData.audience}
+                  onChange={(e) => setFormData({...formData, audience: e.target.value})}
+                  placeholder="Ex: Entrepreneurs, Étudiants, Freelances..."
+                  className="w-full p-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-white font-medium mb-2">
+                  Type de contenu
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {types.map((type) => (
+                    <button
+                      key={type.id}
+                      onClick={() => setFormData({...formData, type: type.id})}
+                      className={`p-3 rounded-lg border transition-colors text-sm ${
+                        formData.type === type.id
+                          ? 'bg-[#00D2FF] border-[#00D2FF] text-black'
+                          : 'bg-[#1a1a1a] border-[#333] text-white hover:border-[#00D2FF]'
+                      }`}
+                    >
+                      {type.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-white font-medium mb-2">
+                  Ton du titre
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {tones.map((tone) => (
+                    <button
+                      key={tone.id}
+                      onClick={() => setFormData({...formData, tone: tone.id})}
+                      className={`p-3 rounded-lg border transition-colors ${
+                        formData.tone === tone.id
+                          ? 'bg-[#00D2FF] border-[#00D2FF] text-black'
+                          : 'bg-[#1a1a1a] border-[#333] text-white hover:border-[#00D2FF]'
+                      }`}
+                    >
+                      {tone.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={handleGenerate}
+                disabled={isGenerating}
+                className="w-full bg-gradient-to-r from-blue-500 to-cyan-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-cyan-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isGenerating ? (
+                  <>
+                    <RefreshCw className="w-5 h-5 animate-spin" />
+                    Génération en cours...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-5 h-5" />
+                    Générer les titres
+                  </>
+                )}
+              </button>
             </div>
           </div>
-          <button
-            type="submit"
-            disabled={isGenerating}
-            className={`w-full mt-4 py-3 rounded-lg font-semibold transition-colors ${
-              isGenerating
-                ? 'bg-gray-600 text-gray-300 cursor-not-allowed'
-                : 'bg-[#ff0033] text-white hover:bg-[#cc0029]'
-            }`}
-          >
-            {isGenerating ? 'Génération en cours...' : 'Générer des titres'}
-          </button>
-        </form>
-        {/* Résultats */}
-        <div className="w-full max-w-2xl flex flex-col gap-4">
-          {titles.length > 0 && (
-            <>
-              <h2 className="text-white text-xl font-semibold mb-2">Titres générés</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {titles.map((title, i) => (
-                  <div key={i} className="bg-[#111111] border border-gray-800 rounded-xl p-4 flex items-center justify-between gap-2">
-                    <span className="text-white font-medium">{title}</span>
-                    <button
-                      className="ml-2 px-3 py-1 bg-[#ff0033] text-white rounded hover:bg-[#cc0029] text-xs font-semibold"
-                      onClick={() => navigator.clipboard.writeText(title)}
-                    >
-                      Copier
-                    </button>
+
+          {/* Résultats */}
+          <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
+            <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+              <Zap className="w-5 h-5 text-blue-400" />
+              Titres générés
+            </h2>
+
+            {results.length === 0 ? (
+              <div className="text-center py-12">
+                <Type className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                <p className="text-gray-400">
+                  Remplissez le formulaire et cliquez sur "Générer" pour créer vos titres
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {results.map((title, index) => (
+                  <div key={index} className="bg-[#1a1a1a] p-4 rounded-lg border border-[#333] hover:border-[#00D2FF] transition-colors group">
+                    <div className="flex items-start justify-between">
+                      <p className="text-gray-300 leading-relaxed flex-1 pr-3">{title}</p>
+                      <button
+                        onClick={() => copyToClipboard(title)}
+                        className="text-gray-500 hover:text-[#00D2FF] transition-colors opacity-0 group-hover:opacity-100"
+                        title="Copier"
+                      >
+                        <Copy className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 ))}
+                
+                <div className="mt-6 pt-4 border-t border-[#333]">
+                  <button
+                    onClick={handleGenerate}
+                    disabled={isGenerating}
+                    className="w-full bg-[#1a1a1a] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[#333] transition-colors border border-[#333] flex items-center justify-center gap-2"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                    Générer de nouveaux titres
+                  </button>
+                </div>
               </div>
-            </>
-          )}
-        </div>
-        {/* Section Pro */}
-        <div className="mt-12 bg-gradient-to-r from-[#ff0033] to-[#cc0029] rounded-xl p-8 w-full max-w-2xl">
-          <div className="flex justify-between items-center">
-            <div>
-              <h2 className="text-2xl font-bold text-white mb-2">Version Pro</h2>
-              <p className="text-white/80">Générez des variantes, titres SEO, slogans, et plus encore…</p>
-            </div>
-            <button className="bg-white text-[#ff0033] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors flex items-center gap-2" disabled>
-              <Lock className="w-4 h-4 mr-1" /> Débloquer les Options Pro
-            </button>
+            )}
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </LayoutWithSidebar>
   );
 } 
