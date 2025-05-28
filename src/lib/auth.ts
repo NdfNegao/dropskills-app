@@ -16,14 +16,40 @@ export const authOptions: NextAuthOptions = {
 
         // Authentification simplifiée pour le développement
         // TODO: Remplacer par une vraie authentification en production
+        
+        // Admin principal
         if (credentials.email === 'admin@dropskills.com' && credentials.password === 'admin123') {
           return {
             id: '1',
             email: credentials.email,
             name: 'Admin DropSkills',
-            role: 'ADMIN',
+            role: 'SUPER_ADMIN',
             firstName: 'Admin',
             lastName: 'DropSkills'
+          };
+        }
+
+        // Utilisateur premium de test
+        if (credentials.email === 'premium@dropskills.com' && credentials.password === 'premium123') {
+          return {
+            id: '2',
+            email: credentials.email,
+            name: 'Premium User',
+            role: 'PREMIUM',
+            firstName: 'Premium',
+            lastName: 'User'
+          };
+        }
+
+        // Utilisateur standard de test
+        if (credentials.email === 'user@dropskills.com' && credentials.password === 'user123') {
+          return {
+            id: '3',
+            email: credentials.email,
+            name: 'Standard User',
+            role: 'USER',
+            firstName: 'Standard',
+            lastName: 'User'
           };
         }
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 import {
   Home, Lock, BookOpen, User, Settings, LogOut, 
   Sparkles, BrainCog, Rocket, FolderKanban, Mail, 
@@ -49,29 +50,38 @@ const IA_TOOLS = [
 ];
 
 interface DropskillsSidebarProps {
-  isPremium?: boolean;
-  userPacksCount?: number;
   className?: string;
   onCollapseChange?: (collapsed: boolean) => void;
 }
 
 export default function DropskillsSidebar({ 
-  isPremium = false, 
-  userPacksCount = 0,
   className = "",
   onCollapseChange
 }: DropskillsSidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
+  const { user, canAccessPremium, isLoading } = useAuth();
 
   const handleCollapse = (value: boolean) => {
     setCollapsed(value);
     onCollapseChange?.(value);
   };
 
+  if (isLoading) {
+    return (
+      <aside className={`flex flex-col h-screen bg-black text-white transition-all duration-300 shadow-xl
+        w-64 hidden lg:flex fixed top-0 left-0 z-30 ${className}`}>
+        <div className="flex items-center justify-center h-full">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff0033]"></div>
+        </div>
+      </aside>
+    );
+  }
+
   return (
     <aside className={`flex flex-col h-screen bg-black text-white transition-all duration-300 shadow-xl
       ${collapsed ? "w-20" : "w-64"} 
+      hidden lg:flex
       fixed top-0 left-0 z-30
       ${className}
       `}>
@@ -105,8 +115,8 @@ export default function DropskillsSidebar({
           icon={<Lock />} 
           label="Mon Coffre" 
           href="/coffre"
-          tooltip={`Mes ${userPacksCount} produit(s) acheté(s)`}
-          badge={userPacksCount > 0 ? userPacksCount.toString() : undefined}
+          tooltip="Mes produits achetés"
+          badge={user ? "0" : undefined}
         />
         
         <SidebarLink 
@@ -136,12 +146,12 @@ export default function DropskillsSidebar({
             label={tool.label} 
             href={tool.href}
             tooltip={`Outil ${tool.type.toLowerCase()}`}
-            isPremium={!isPremium} // Affiche le lock si pas premium
+            isPremium={!canAccessPremium} // Affiche le lock si pas premium
           />
         ))}
 
         {/* CTA Premium */}
-        {!isPremium && (
+        {!canAccessPremium && (
           <div className="mt-3">
             <SidebarCTA 
               collapsed={collapsed} 
@@ -210,6 +220,13 @@ export default function DropskillsSidebar({
         {!collapsed && (
           <div className="text-xs text-neutral-600 mt-2 px-2 text-center">
             © {new Date().getFullYear()} Dropskills
+            {user && (
+              <div className="text-[#ff0033] font-medium">
+                {user.role === 'PREMIUM' && '👑 Premium'}
+                {user.role === 'ADMIN' && '🛡️ Admin'}
+                {user.role === 'SUPER_ADMIN' && '⚡ Super Admin'}
+              </div>
+            )}
           </div>
         )}
       </div>

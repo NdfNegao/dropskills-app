@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { ICPWizard } from '@/components/ICPWizard';
 import { ICPResult } from '@/components/ICPResult';
+import PremiumGuard from '@/components/auth/PremiumGuard';
+import LayoutWithSidebar from '@/components/LayoutWithSidebar';
 
 export interface ICPFormData {
   secteur: string;
@@ -65,7 +67,7 @@ export interface ICPAnalysis {
   };
 }
 
-export default function ICPMakerPage() {
+function ICPMakerContent() {
   const [currentStep, setCurrentStep] = useState<'wizard' | 'result'>('wizard');
   const [icpResult, setICPResult] = useState<ICPAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -74,7 +76,7 @@ export default function ICPMakerPage() {
     setIsLoading(true);
     
     try {
-      const response = await fetch('/api/icp/generate', {
+      const response = await fetch('/api/ai/icp/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +85,8 @@ export default function ICPMakerPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Erreur lors de la génération de l\'ICP');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erreur lors de la génération de l\'ICP');
       }
 
       const data = await response.json();
@@ -94,7 +97,7 @@ export default function ICPMakerPage() {
       localStorage.setItem('dropskills_icp_data', JSON.stringify(data.analysis));
     } catch (error) {
       console.error('Erreur:', error);
-      alert('Une erreur est survenue lors de la génération de l\'ICP. Veuillez réessayer.');
+      alert(error instanceof Error ? error.message : 'Une erreur est survenue lors de la génération de l\'ICP. Veuillez réessayer.');
     } finally {
       setIsLoading(false);
     }
@@ -155,5 +158,15 @@ export default function ICPMakerPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ICPMakerPage() {
+  return (
+    <LayoutWithSidebar>
+      <PremiumGuard feature="l'ICP Maker IA">
+        <ICPMakerContent />
+      </PremiumGuard>
+    </LayoutWithSidebar>
   );
 } 
