@@ -14,8 +14,8 @@ import {
 const IA_TOOLS = [
   { icon: <BrainCog />, label: "ICP Maker", href: "/outils/icp-maker" },
   { icon: <Rocket />, label: "Générateur d'Offre", href: "/outils/generateur-offre" },
-  { icon: <FolderKanban />, label: "Tunnel de Vente IA", href: "/outils/tunnel-vente" },
-  { icon: <Mail />, label: "CopyMoneyMail", href: "/outils/copy-money-mail" },
+  { icon: <FolderKanban />, label: "Tunnel de Vente IA", href: "/outils/tunnel-maker" },
+  { icon: <Mail />, label: "CopyMoneyMail", href: "/outils/copymoneymail" },
   { icon: <CalendarCheck />, label: "Content System 90J", href: "/outils/content-system" },
   { icon: <Target />, label: "Lead Magnet Creator", href: "/outils/lead-magnet" },
 ];

@@ -26,13 +26,13 @@ const IA_TOOLS = [
   { 
     icon: <FolderKanban />, 
     label: "Tunnel de Vente IA", 
-    href: "/outils/tunnel-vente",
+    href: "/outils/tunnel-maker",
     type: "ASSISTANT" 
   },
   { 
     icon: <Mail />, 
     label: "CopyMoneyMail", 
-    href: "/outils/copy-money-mail",
+    href: "/outils/copymoneymail",
     type: "OPTIMIZER" 
   },
   { 

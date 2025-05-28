@@ -52,8 +52,8 @@ export default withAuth(
     const premiumRoutes = [
       '/outils/icp-maker',
       '/outils/generateur-offre',
-      '/outils/tunnel-vente',
-      '/outils/copy-money-mail',
+      '/outils/tunnel-maker',
+      '/outils/copymoneymail',
       '/outils/content-system',
       '/outils/lead-magnet'
     ];
