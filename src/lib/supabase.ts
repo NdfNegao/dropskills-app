@@ -1,40 +1,55 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-// Nettoyer et valider les variables
-const safeSupabaseUrl = (supabaseUrl || '').trim()
-const safeSupabaseAnonKey = (supabaseAnonKey || '').trim()
-
-if (!safeSupabaseUrl || !safeSupabaseAnonKey) {
-  throw new Error(`Variables Supabase manquantes: URL=${!!safeSupabaseUrl}, KEY=${!!safeSupabaseAnonKey}`)
-}
-
 // Initialisation lazy pour éviter les problèmes de timing
 let supabaseClient: any = null
+let supabaseAdminClient: any = null
 
 export const getSupabase = () => {
   if (!supabaseClient) {
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    // Nettoyer et valider les variables
+    const safeSupabaseUrl = (supabaseUrl || '').trim()
+    const safeSupabaseAnonKey = (supabaseAnonKey || '').trim()
+
+    if (!safeSupabaseUrl || !safeSupabaseAnonKey) {
+      throw new Error(`Variables Supabase manquantes: URL=${!!safeSupabaseUrl}, KEY=${!!safeSupabaseAnonKey}`)
+    }
+
     supabaseClient = createClient(safeSupabaseUrl, safeSupabaseAnonKey)
   }
   return supabaseClient
 }
 
+export const getSupabaseAdmin = () => {
+  if (!supabaseAdminClient) {
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+    const safeSupabaseUrl = (supabaseUrl || '').trim()
+
+    if (!safeSupabaseUrl || !serviceRoleKey) {
+      throw new Error(`Variables Supabase Admin manquantes: URL=${!!safeSupabaseUrl}, SERVICE_KEY=${!!serviceRoleKey}`)
+    }
+
+    supabaseAdminClient = createClient(
+      safeSupabaseUrl,
+      serviceRoleKey,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false
+        }
+      }
+    )
+  }
+  return supabaseAdminClient
+}
+
 // Export pour compatibilité avec le code existant
 export const supabase = getSupabase()
-
-// Client avec service role pour les opérations admin
-export const supabaseAdmin = createClient(
-  safeSupabaseUrl,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    }
-  }
-)
+export const supabaseAdmin = getSupabaseAdmin()
 
 // Types pour TypeScript
 export interface Profile {
@@ -134,6 +149,7 @@ export class SupabaseHelper {
   
   // Profiles (remplace Users)
   static async findProfileById(id: string) {
+    const supabase = getSupabase()
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
@@ -145,6 +161,7 @@ export class SupabaseHelper {
   }
 
   static async findProfileByUserId(userId: string) {
+    const supabase = getSupabase()
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
@@ -156,6 +173,7 @@ export class SupabaseHelper {
   }
 
   static async createProfile(profileData: Partial<Profile>) {
+    const supabase = getSupabase()
     const { data, error } = await supabase
       .from('profiles')
       .insert(profileData)
@@ -167,6 +185,7 @@ export class SupabaseHelper {
   }
 
   static async updateProfile(userId: string, profileData: Partial<Profile>) {
+    const supabase = getSupabase()
     const { data, error } = await supabase
       .from('profiles')
       .update(profileData)
@@ -180,6 +199,7 @@ export class SupabaseHelper {
 
   // Categories
   static async findCategoryById(id: string) {
+    const supabase = getSupabase()
     const { data, error } = await supabase
       .from('categories')
       .select('*')
@@ -191,6 +211,7 @@ export class SupabaseHelper {
   }
 
   static async findCategoryBySlug(slug: string) {
+    const supabase = getSupabase()
     const { data, error } = await supabase
       .from('categories')
       .select('*')
@@ -209,6 +230,7 @@ export class SupabaseHelper {
     take?: number
     skip?: number
   } = {}) {
+    const supabase = getSupabase()
     let query = supabase.from('packs').select('*')
     
     // Ajouter les relations si demandées
@@ -263,6 +285,7 @@ export class SupabaseHelper {
   }
 
   static async createPack(packData: Partial<Pack>) {
+    const supabase = getSupabase()
     const { data, error } = await supabase
       .from('packs')
       .insert(packData)
@@ -274,6 +297,7 @@ export class SupabaseHelper {
   }
 
   static async createSample(sampleData: Partial<Sample>) {
+    const supabase = getSupabase()
     const { data, error } = await supabase
       .from('samples')
       .insert(sampleData)
@@ -285,6 +309,7 @@ export class SupabaseHelper {
   }
 
   static async createPackStats(statsData: Partial<PackStats>) {
+    const supabase = getSupabase()
     const { data, error } = await supabase
       .from('pack_stats')
       .insert(statsData)
@@ -296,6 +321,7 @@ export class SupabaseHelper {
   }
 
   static async findManyCategories(options: { where?: any } = {}) {
+    const supabase = getSupabase()
     let query = supabase.from('categories').select('*')
     
     if (options.where?.is_active !== undefined) {
@@ -309,6 +335,7 @@ export class SupabaseHelper {
   }
 
   static async createCategory(categoryData: Partial<Category>) {
+    const supabase = getSupabase()
     const { data, error } = await supabase
       .from('categories')
       .insert(categoryData)
@@ -320,6 +347,7 @@ export class SupabaseHelper {
   }
 
   static async findManyAiTools(options: { where?: any } = {}) {
+    const supabase = getSupabase()
     let query = supabase.from('ai_tools').select('*')
     
     if (options.where?.is_active !== undefined) {
@@ -333,6 +361,7 @@ export class SupabaseHelper {
   }
 
   static async createAiTool(toolData: Partial<AiTool>) {
+    const supabase = getSupabase()
     const { data, error } = await supabase
       .from('ai_tools')
       .insert(toolData)
@@ -345,6 +374,7 @@ export class SupabaseHelper {
 
   // Méthodes de comptage
   static async countProfiles() {
+    const supabase = getSupabase()
     const { count, error } = await supabase
       .from('profiles')
       .select('*', { count: 'exact', head: true })
@@ -354,6 +384,7 @@ export class SupabaseHelper {
   }
 
   static async countPacks() {
+    const supabase = getSupabase()
     const { count, error } = await supabase
       .from('packs')
       .select('*', { count: 'exact', head: true })
@@ -363,6 +394,7 @@ export class SupabaseHelper {
   }
 
   static async countCategories() {
+    const supabase = getSupabase()
     const { count, error } = await supabase
       .from('categories')
       .select('*', { count: 'exact', head: true })
@@ -372,6 +404,7 @@ export class SupabaseHelper {
   }
 
   static async countSamples() {
+    const supabase = getSupabase()
     const { count, error } = await supabase
       .from('samples')
       .select('*', { count: 'exact', head: true })
@@ -381,6 +414,7 @@ export class SupabaseHelper {
   }
 
   static async countFavorites() {
+    const supabase = getSupabase()
     const { count, error } = await supabase
       .from('favorites')
       .select('*', { count: 'exact', head: true })
@@ -390,6 +424,7 @@ export class SupabaseHelper {
   }
 
   static async countUserPacks() {
+    const supabase = getSupabase()
     const { count, error } = await supabase
       .from('user_packs')
       .select('*', { count: 'exact', head: true })
@@ -399,6 +434,7 @@ export class SupabaseHelper {
   }
 
   static async countAiTools() {
+    const supabase = getSupabase()
     const { count, error } = await supabase
       .from('ai_tools')
       .select('*', { count: 'exact', head: true })
@@ -408,6 +444,7 @@ export class SupabaseHelper {
   }
 
   static async countPackStats() {
+    const supabase = getSupabase()
     const { count, error } = await supabase
       .from('pack_stats')
       .select('*', { count: 'exact', head: true })
@@ -417,6 +454,7 @@ export class SupabaseHelper {
   }
 
   static async countAdminLogs() {
+    const supabase = getSupabase()
     const { count, error } = await supabase
       .from('admin_logs')
       .select('*', { count: 'exact', head: true })
@@ -426,6 +464,7 @@ export class SupabaseHelper {
   }
 
   static async countAiUsage() {
+    const supabase = getSupabase()
     const { count, error } = await supabase
       .from('ai_usage')
       .select('*', { count: 'exact', head: true })
