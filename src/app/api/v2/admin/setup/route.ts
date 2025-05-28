@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { supabase, SupabaseHelper } from '@/lib/supabase'
+import bcrypt from 'bcryptjs'
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,80 +14,113 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // Vérifier si l'utilisateur existe
-    let user = await prisma.user.findUnique({
-      where: { email },
-      include: { profile: true }
-    });
+    // Vérifier si l'utilisateur existe dans auth.users
+    const { data: authUsers } = await supabase.auth.admin.listUsers()
+    let authUser = authUsers.users.find(u => u.email === email)
 
-    // Créer l'utilisateur s'il n'existe pas
-    if (!user) {
-      user = await prisma.user.create({
-        data: {
-          email,
-          password: password || 'admin123', // Password par défaut
-          firstName,
-          lastName
-        },
-        include: { profile: true }
-      });
-    } else if (password) {
-      // Mettre à jour le password si fourni
-      user = await prisma.user.update({
-        where: { id: user.id },
-        data: { password },
-        include: { profile: true }
-      });
+    let userId: string
+
+    if (!authUser) {
+      // Créer l'utilisateur dans Supabase Auth
+      const { data: newAuthUser, error: authError } = await supabase.auth.admin.createUser({
+        email,
+        password: password || 'admin123',
+        email_confirm: true,
+        user_metadata: {
+          first_name: firstName,
+          last_name: lastName
+        }
+      })
+
+      if (authError) {
+        throw new Error(`Erreur création auth: ${authError.message}`)
+      }
+
+      userId = newAuthUser.user.id
+      authUser = newAuthUser.user
+    } else {
+      userId = authUser.id
+      
+      // Mettre à jour le mot de passe si fourni
+      if (password) {
+        const { error: updateError } = await supabase.auth.admin.updateUserById(
+          userId,
+          { password }
+        )
+        
+        if (updateError) {
+          console.warn('Erreur mise à jour mot de passe:', updateError.message)
+        }
+      }
     }
 
-    // Créer ou mettre à jour le profil admin
-    let profile;
-    if (user.profile) {
-      profile = await prisma.profile.update({
-        where: { userId: user.id },
-        data: {
-          role: role as any,
-          firstName: firstName || user.firstName,
-          lastName: lastName || user.lastName
-        }
-      });
+    // Vérifier si le profil existe
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', userId)
+      .single()
+
+    let profile
+    if (existingProfile) {
+      // Mettre à jour le profil existant
+      const { data: updatedProfile, error: updateError } = await supabase
+        .from('profiles')
+        .update({
+          role: role,
+          first_name: firstName || existingProfile.first_name,
+          last_name: lastName || existingProfile.last_name,
+          updated_at: new Date().toISOString()
+        })
+        .eq('user_id', userId)
+        .select()
+        .single()
+
+      if (updateError) throw updateError
+      profile = updatedProfile
     } else {
-      profile = await prisma.profile.create({
-        data: {
-          userId: user.id,
-          role: role as any,
-          firstName: firstName || user.firstName,
-          lastName: lastName || user.lastName
-        }
-      });
+      // Créer un nouveau profil
+      const { data: newProfile, error: createError } = await SupabaseHelper.createProfile({
+        user_id: userId,
+        role: role,
+        first_name: firstName,
+        last_name: lastName
+      })
+
+      if (createError) throw createError
+      profile = newProfile
     }
 
     // Log de l'action admin
-    await prisma.adminLog.create({
-      data: {
-        adminId: user.id,
-        action: 'ADMIN_SETUP',
-        resourceType: 'PROFILE',
-        resourceId: profile.id
-      }
-    });
+    try {
+      await supabase
+        .from('admin_logs')
+        .insert({
+          admin_id: userId,
+          action: 'ADMIN_SETUP',
+          resource_type: 'PROFILE',
+          resource_id: profile.id
+        })
+    } catch (logError) {
+      console.warn('Erreur création log:', logError)
+    }
 
     return NextResponse.json({
       status: 'SUCCESS',
       message: `✅ Profil ${role} créé/mis à jour pour ${email}`,
       data: {
         user: {
-          id: user.id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          hasPassword: !!user.password
+          id: userId,
+          email: authUser.email,
+          firstName: firstName,
+          lastName: lastName,
+          hasPassword: true
         },
         profile: {
           id: profile.id,
           role: profile.role,
-          firstName: profile.firstName,
-          lastName: profile.lastName
+          firstName: profile.first_name,
+          lastName: profile.last_name
         }
       }
     }, { status: 201 });

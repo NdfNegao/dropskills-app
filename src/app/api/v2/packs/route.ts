@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { supabase, SupabaseHelper } from '@/lib/supabase'
 
 // GET /api/v2/packs - Récupérer tous les packs
 export async function GET(request: NextRequest) {
@@ -13,87 +13,110 @@ export async function GET(request: NextRequest) {
     
     const skip = (page - 1) * limit
     
-    const where: any = {}
+    // Construction de la requête Supabase simplifiée
+    let query = supabase
+      .from('packs')
+      .select('*')
     
-    if (category) {
-      where.category = {
-        slug: category
-      }
-    }
-    
+    // Filtres
     if (status) {
-      where.status = status
+      query = query.eq('status', status)
     }
     
     if (search) {
-      where.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } }
-      ]
+      query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`)
     }
 
-    const [packs, total] = await Promise.all([
-      prisma.pack.findMany({
-        where,
-        include: {
-          category: {
-            select: {
-              name: true,
-              slug: true
-            }
-          },
-          creator: {
-            select: {
-              firstName: true,
-              lastName: true,
-              email: true
-            }
-          },
-          samples: {
-            take: 3,
-            select: {
-              id: true,
-              title: true,
-              fileUrl: true
-            }
-          },
-          stats: true,
-          _count: {
-            select: {
-              favorites: true,
-              userPacks: true,
-              samples: true
-            }
-          }
-        },
-        skip,
-        take: limit,
-        orderBy: {
-          createdAt: 'desc'
-        }
-      }),
-      prisma.pack.count({ where })
-    ])
+    // Pagination et tri
+    query = query
+      .range(skip, skip + limit - 1)
+      .order('created_at', { ascending: false })
 
-    const formattedPacks = packs.map(pack => ({
-      id: pack.id,
-      title: pack.title,
-      slug: pack.slug,
-      description: pack.description,
-      price: pack.price,
-      status: pack.status,
-      category: pack.category,
-      creator: pack.creator,
-      samples: pack.samples,
-      stats: pack.stats ? {
-        views: pack.stats.viewsCount,
-        favorites: pack.stats.favoritesCount,
-        purchases: pack.stats.purchasesCount
-      } : null,
-      counts: pack._count,
-      createdAt: pack.createdAt,
-      updatedAt: pack.updatedAt
-    }))
+    const { data: packs, error, count } = await query
+
+    if (error) {
+      console.error('Erreur Supabase packs:', error)
+      throw error
+    }
+
+    // Compter le total pour la pagination
+    let countQuery = supabase
+      .from('packs')
+      .select('*', { count: 'exact', head: true })
+    
+    if (status) {
+      countQuery = countQuery.eq('status', status)
+    }
+    if (search) {
+      countQuery = countQuery.or(`title.ilike.%${search}%,description.ilike.%${search}%`)
+    }
+
+    const { count: total } = await countQuery
+
+    // Pour chaque pack, récupérer les relations séparément
+    const formattedPacks = await Promise.all(
+      (packs || []).map(async (pack) => {
+        // Récupérer la catégorie
+        let category = null
+        if (pack.category_id) {
+          const { data: categoryData } = await supabase
+            .from('categories')
+            .select('*')
+            .eq('id', pack.category_id)
+            .single()
+          category = categoryData
+        }
+
+        // Récupérer le créateur
+        let creator = null
+        if (pack.creator_id) {
+          const { data: creatorData } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('user_id', pack.creator_id)
+            .single()
+          creator = creatorData
+        }
+
+        // Récupérer les samples
+        const { data: samples } = await supabase
+          .from('samples')
+          .select('*')
+          .eq('pack_id', pack.id)
+          .limit(3)
+
+        // Récupérer les stats
+        const { data: stats } = await supabase
+          .from('pack_stats')
+          .select('*')
+          .eq('pack_id', pack.id)
+          .single()
+
+        return {
+          id: pack.id,
+          title: pack.title,
+          slug: pack.slug,
+          description: pack.description,
+          price: pack.price,
+          status: pack.status,
+          category: category,
+          creator: creator,
+          samples: samples || [],
+          stats: stats ? {
+            views: stats.views_count,
+            favorites: stats.favorites_count,
+            purchases: stats.purchases_count
+          } : null,
+          counts: {
+            favorites: stats?.favorites_count || 0,
+            userPacks: stats?.purchases_count || 0,
+            samples: samples?.length || 0
+          },
+          createdAt: pack.created_at,
+          updatedAt: pack.updated_at
+        }
+      })
+    )
 
     return NextResponse.json({
       status: 'SUCCESS',
@@ -101,10 +124,10 @@ export async function GET(request: NextRequest) {
       pagination: {
         page,
         limit,
-        total,
-        pages: Math.ceil(total / limit)
+        total: total || 0,
+        pages: Math.ceil((total || 0) / limit)
       },
-      message: `${total} pack(s) trouvé(s)`
+      message: `${total || 0} pack(s) trouvé(s)`
     })
 
   } catch (error) {
@@ -139,9 +162,11 @@ export async function POST(request: NextRequest) {
       .replace(/(^-|-$)/g, '')
 
     // Vérification de l'unicité du slug
-    const existingPack = await prisma.pack.findUnique({
-      where: { slug }
-    })
+    const { data: existingPack } = await supabase
+      .from('packs')
+      .select('id')
+      .eq('slug', slug)
+      .single()
 
     if (existingPack) {
       return NextResponse.json({
@@ -150,35 +175,41 @@ export async function POST(request: NextRequest) {
       }, { status: 409 })
     }
 
+    // Récupérer l'ID du créateur par email (ou utiliser un ID par défaut)
+    let creatorId = body.creatorId
+    if (!creatorId && body.creatorEmail) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('user_id')
+        .eq('user_id', body.creatorEmail) // Adapter selon votre logique
+        .single()
+      
+      creatorId = profile?.user_id
+    }
+
     // Création du pack
-    const newPack = await prisma.pack.create({
-      data: {
+    const { data: newPack, error } = await supabase
+      .from('packs')
+      .insert({
         title: body.title,
         slug,
         description: body.description,
         price: body.price || 0,
         status: body.status || 'DRAFT',
-        creator: {
-          connectOrCreate: {
-            where: { email: body.creatorEmail || 'admin@dropskills.com' },
-            create: {
-              email: body.creatorEmail || 'admin@dropskills.com',
-              firstName: 'Admin',
-              lastName: 'User'
-            }
-          }
-        },
-        category: body.categoryId ? {
-          connect: { id: body.categoryId }
-        } : undefined
-      }
-    })
+        creator_id: creatorId || '00000000-0000-0000-0000-000000000000', // ID par défaut
+        category_id: body.categoryId || null
+      })
+      .select()
+      .single()
+
+    if (error) throw error
 
     // Création des stats initiales
-    await prisma.packStats.create({
-      data: {
-        packId: newPack.id
-      }
+    await SupabaseHelper.createPackStats({
+      pack_id: newPack.id,
+      views_count: 0,
+      favorites_count: 0,
+      purchases_count: 0
     })
 
     return NextResponse.json({

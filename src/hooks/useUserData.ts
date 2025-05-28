@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { prisma } from '@/lib/prisma';
 
 interface UserData {
   id: string;
@@ -18,6 +17,7 @@ interface UseUserDataReturn {
   refetch: () => void;
 }
 
+// Hook principal utilisant l'API Supabase
 export function useUserData(userId?: string): UseUserDataReturn {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -33,51 +33,39 @@ export function useUserData(userId?: string): UseUserDataReturn {
       setLoading(true);
       setError(null);
 
-      // Récupérer les données utilisateur avec relations V2
-      const user = await prisma.user.findUnique({
-        where: { id: userId },
-        include: {
-          userPacks: {
-            include: {
-              pack: {
-                select: {
-                  price: true,
-                  status: true
-                }
-              }
-            }
-          },
-          favorites: true,
-          _count: {
-            select: {
-              userPacks: true,
-              favorites: true
-            }
-          }
-        }
-      });
-
-      if (!user) {
-        throw new Error('Utilisateur non trouvé');
+      // Utiliser l'API route au lieu d'accès direct à Prisma
+      const response = await fetch(`/api/v2/users/${userId}`);
+      
+      if (!response.ok) {
+        throw new Error('Erreur lors de la récupération des données');
       }
 
-      // Déterminer le statut premium
-      // Un utilisateur est premium s'il a acheté au moins un pack payant
-      const isPremium = user.userPacks.some(
-        userPack => userPack.pack.price && userPack.pack.price > 0
-      );
+      const data = await response.json();
+      
+      if (data.status === 'SUCCESS') {
+        // Transformer les données pour correspondre à l'interface UserData
+        const profile = data.data;
+        
+        // Déterminer le statut premium
+        const isPremium = profile.role === 'PREMIUM' || 
+                         profile.role === 'ADMIN' || 
+                         profile.role === 'SUPER_ADMIN' ||
+                         (profile.packsPurchased && profile.packsPurchased.some((pack: any) => pack.price && pack.price > 0));
 
-      const userData: UserData = {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName || undefined,
-        lastName: user.lastName || undefined,
-        isPremium,
-        userPacksCount: user._count.userPacks,
-        favoritesCount: user._count.favorites
-      };
+        const userData: UserData = {
+          id: profile.id,
+          email: profile.user?.email || profile.email,
+          firstName: profile.first_name,
+          lastName: profile.last_name,
+          isPremium,
+          userPacksCount: profile.packsPurchased?.length || 0,
+          favoritesCount: profile.favorites?.length || 0
+        };
 
-      setUserData(userData);
+        setUserData(userData);
+      } else {
+        throw new Error(data.message || 'Erreur inconnue');
+      }
     } catch (err) {
       console.error('Erreur lors de la récupération des données utilisateur:', err);
       setError(err instanceof Error ? err.message : 'Erreur inconnue');
@@ -98,51 +86,7 @@ export function useUserData(userId?: string): UseUserDataReturn {
   };
 }
 
-// Hook alternatif pour récupérer via API (si pas d'accès direct à Prisma)
+// Hook alternatif pour récupérer via API (maintenant identique au principal)
 export function useUserDataAPI(userId?: string): UseUserDataReturn {
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchUserData = async () => {
-    if (!userId) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch(`/api/v2/users/${userId}`);
-      
-      if (!response.ok) {
-        throw new Error('Erreur lors de la récupération des données');
-      }
-
-      const data = await response.json();
-      
-      if (data.status === 'SUCCESS') {
-        setUserData(data.data);
-      } else {
-        throw new Error(data.message || 'Erreur inconnue');
-      }
-    } catch (err) {
-      console.error('Erreur API utilisateur:', err);
-      setError(err instanceof Error ? err.message : 'Erreur inconnue');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUserData();
-  }, [userId]);
-
-  return {
-    userData,
-    loading,
-    error,
-    refetch: fetchUserData
-  };
+  return useUserData(userId);
 } 

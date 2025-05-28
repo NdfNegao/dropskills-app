@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { supabase, SupabaseHelper } from '@/lib/supabase'
 
 // Middleware d'authentification pour n8n
 function authenticateN8N(request: NextRequest) {
@@ -19,52 +19,80 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '50')
     const role = searchParams.get('role')
 
-    const where: any = {}
-    if (role) where.role = role
+    const skip = (page - 1) * limit
 
-    const profiles = await prisma.profile.findMany({
-      where,
-      skip: (page - 1) * limit,
-      take: limit,
-      include: {
-        user: {
-          include: {
-            userPacks: {
-              include: {
-                pack: {
-                  select: { id: true, title: true, status: true }
-                }
-              }
-            },
-            favorites: {
-              include: {
-                pack: {
-                  select: { id: true, title: true, status: true }
-                }
-              }
-            }
-          }
+    // Construction de la requête Supabase
+    let query = supabase
+      .from('profiles')
+      .select('*')
+
+    // Filtre par rôle si spécifié
+    if (role) {
+      query = query.eq('role', role)
+    }
+
+    // Pagination et tri
+    query = query
+      .range(skip, skip + limit - 1)
+      .order('created_at', { ascending: false })
+
+    const { data: profiles, error } = await query
+
+    if (error) throw error
+
+    // Compter le total
+    let countQuery = supabase
+      .from('profiles')
+      .select('*', { count: 'exact', head: true })
+    
+    if (role) {
+      countQuery = countQuery.eq('role', role)
+    }
+
+    const { count: total } = await countQuery
+
+    // Pour chaque profil, récupérer les packs achetés et favoris
+    const formattedProfiles = await Promise.all(
+      (profiles || []).map(async (profile) => {
+        // Récupérer les packs achetés
+        const { data: userPacks } = await supabase
+          .from('user_packs')
+          .select(`
+            *,
+            pack:packs(id, title, status)
+          `)
+          .eq('user_id', profile.user_id)
+
+        // Récupérer les favoris
+        const { data: favorites } = await supabase
+          .from('favorites')
+          .select(`
+            *,
+            pack:packs(id, title, status)
+          `)
+          .eq('user_id', profile.user_id)
+
+        return {
+          ...profile,
+          user: {
+            id: profile.user_id,
+            email: `user-${profile.user_id}@example.com`, // Placeholder
+            userPacks: userPacks || [],
+            favorites: favorites || []
+          },
+          packsPurchased: (userPacks || []).map(up => up.pack),
+          favorites: (favorites || []).map(f => f.pack)
         }
-      },
-      orderBy: { createdAt: 'desc' }
-    })
-
-    const total = await prisma.profile.count({ where })
-
-    // Reformater les données pour compatibilité
-    const formattedProfiles = profiles.map(profile => ({
-      ...profile,
-      packsPurchased: profile.user.userPacks.map(up => up.pack),
-      favorites: profile.user.favorites.map(f => f.pack)
-    }))
+      })
+    )
 
     return NextResponse.json({
       users: formattedProfiles, // Garde le nom "users" pour compatibilité avec N8N
       pagination: {
         page,
         limit,
-        total,
-        pages: Math.ceil(total / limit)
+        total: total || 0,
+        pages: Math.ceil((total || 0) / limit)
       }
     })
 
@@ -83,29 +111,45 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.json()
     
-    // Créer d'abord l'utilisateur
-    const user = await prisma.user.create({
-      data: {
-        email: data.email,
-        firstName: data.firstName,
-        lastName: data.lastName
-      }
-    })
+    // Avec Supabase, nous devons d'abord créer l'utilisateur dans auth.users
+    // puis créer le profil associé
+    
+    // Pour n8n, nous allons créer directement le profil avec un user_id généré
+    // ou utiliser un utilisateur existant
+    
+    let userId = data.userId
+    
+    if (!userId) {
+      // Générer un UUID pour l'utilisateur
+      userId = crypto.randomUUID()
+    }
 
-    // Puis créer le profil associé
-    const profile = await prisma.profile.create({
-      data: {
-        userId: user.id,
-        firstName: data.firstName,
-        lastName: data.lastName,
+    // Créer le profil
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .insert({
+        user_id: userId,
+        first_name: data.firstName,
+        last_name: data.lastName,
         role: data.role || 'USER'
-      },
-      include: {
-        user: true
-      }
-    })
+      })
+      .select()
+      .single()
 
-    return NextResponse.json(profile, { status: 201 })
+    if (error) throw error
+
+    // Ajouter les informations utilisateur pour la compatibilité
+    const responseProfile = {
+      ...profile,
+      user: {
+        id: profile.user_id,
+        email: data.email || `user-${profile.user_id}@example.com`,
+        userPacks: [],
+        favorites: []
+      }
+    }
+
+    return NextResponse.json(responseProfile, { status: 201 })
 
   } catch (error) {
     console.error('Erreur POST user:', error)

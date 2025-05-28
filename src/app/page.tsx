@@ -15,10 +15,7 @@ export default function Home() {
       </div>
 
       {/* Nouvelle Sidebar Dropskills */}
-      <DropskillsSidebar 
-        isPremium={false} 
-        userPacksCount={3}
-      />
+      <DropskillsSidebar />
 
       {/* Contenu principal */}
       <main className="ml-0 md:ml-64">

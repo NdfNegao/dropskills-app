@@ -1,14 +1,15 @@
 'use client';
 
 import React from 'react';
-import LayoutWithSidebar, { useCurrentUser } from '@/components/LayoutWithSidebar';
+import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import { useAuth } from '@/hooks/useAuth';
 import { Package, Users, TrendingUp, Star } from 'lucide-react';
 
 export default function DashboardPage() {
-  const userId = useCurrentUser();
+  const { user } = useAuth();
 
   return (
-    <LayoutWithSidebar userId={userId}>
+    <LayoutWithSidebar>
       <div className="space-y-6">
         {/* Header */}
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">

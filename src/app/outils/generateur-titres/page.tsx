@@ -1,275 +1,299 @@
 "use client";
 
 import { useState } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import Sidebar from "@/components/Sidebar";
-import { Sparkles, Copy, Download, RefreshCw } from "lucide-react";
+import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import PremiumGuard from '@/components/auth/PremiumGuard';
+import { 
+  Sparkles, 
+  Type, 
+  Target, 
+  TrendingUp, 
+  Copy,
+  RefreshCw,
+  Lightbulb
+} from 'lucide-react';
 
-interface GeneratedTitle {
-  titre: string;
-  score: number;
-  explication: string;
+interface TitleData {
+  topic: string;
+  platform: string;
+  tone: string;
+  audience: string;
+  goal: string;
 }
 
-export default function GenerateurTitresPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  
-  const [formData, setFormData] = useState({
-    sujet: "",
-    type: "article" as const,
-    emotion: "curiosite" as const,
-    nombreTitres: 5
+function GenerateurTitresContent() {
+  const [formData, setFormData] = useState<TitleData>({
+    topic: '',
+    platform: 'blog',
+    tone: 'engaging',
+    audience: '',
+    goal: 'traffic'
   });
-  
+
+  const [generatedTitles, setGeneratedTitles] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [results, setResults] = useState<GeneratedTitle[]>([]);
-  const [error, setError] = useState("");
-
-  // Redirection si non connecté
-  if (status === "loading") {
-    return <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-      <div className="text-white">Chargement...</div>
-    </div>;
-  }
-
-  if (!session) {
-    router.push("/auth/signin");
-    return null;
-  }
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
-    setResults([]);
 
     try {
-      const response = await fetch("/api/outils/generateur-titres", {
-        method: "POST",
+      const response = await fetch('/api/ai/titles/generate', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || "Erreur lors de la génération");
+        throw new Error('Erreur lors de la génération');
       }
 
-      if (data.success && data.data?.titres) {
-        setResults(data.data.titres);
-      } else {
-        throw new Error("Format de réponse invalide");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Erreur inconnue");
+      const data = await response.json();
+      setGeneratedTitles(data.titles);
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert('Erreur lors de la génération des titres');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    // Vous pourriez ajouter une notification toast ici
-  };
-
-  const exportResults = () => {
-    const content = results.map((r, i) => 
-      `${i + 1}. ${r.titre}\n   Score: ${r.score}/10\n   ${r.explication}\n`
-    ).join('\n');
-    
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `titres-${formData.sujet.replace(/\s+/g, '-')}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const handleCopy = async (title: string, index: number) => {
+    try {
+      await navigator.clipboard.writeText(title);
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2000);
+    } catch (error) {
+      console.error('Erreur de copie:', error);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
-      <Sidebar />
-      
-      <main className="ml-0 md:ml-64 p-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-gradient-to-r from-[#00D2FF] to-[#3A7BD5] rounded-xl">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-white">Générateur de Titres IA</h1>
-                <p className="text-gray-400">Créez des titres accrocheurs qui convertissent</p>
-              </div>
-            </div>
+    <div className="max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
+            <Type className="w-6 h-6 text-white" />
           </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Formulaire */}
-            <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-              <h2 className="text-xl font-semibold text-white mb-6">Configuration</h2>
-              
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Sujet */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Sujet principal *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.sujet}
-                    onChange={(e) => setFormData({...formData, sujet: e.target.value})}
-                    placeholder="Ex: Comment créer un business en ligne"
-                    className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D2FF]"
-                    required
-                  />
-                </div>
-
-                {/* Type de contenu */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Type de contenu
-                  </label>
-                  <select
-                    value={formData.type}
-                    onChange={(e) => setFormData({...formData, type: e.target.value as any})}
-                    className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#00D2FF]"
-                  >
-                    <option value="article">Article de blog</option>
-                    <option value="video">Vidéo YouTube</option>
-                    <option value="ebook">Ebook</option>
-                    <option value="formation">Formation en ligne</option>
-                  </select>
-                </div>
-
-                {/* Émotion cible */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Émotion cible
-                  </label>
-                  <select
-                    value={formData.emotion}
-                    onChange={(e) => setFormData({...formData, emotion: e.target.value as any})}
-                    className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#00D2FF]"
-                  >
-                    <option value="curiosite">Curiosité</option>
-                    <option value="urgence">Urgence</option>
-                    <option value="benefice">Bénéfice</option>
-                    <option value="probleme">Résolution de problème</option>
-                  </select>
-                </div>
-
-                {/* Nombre de titres */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Nombre de titres ({formData.nombreTitres})
-                  </label>
-                  <input
-                    type="range"
-                    min="1"
-                    max="20"
-                    value={formData.nombreTitres}
-                    onChange={(e) => setFormData({...formData, nombreTitres: parseInt(e.target.value)})}
-                    className="w-full h-2 bg-[#333] rounded-lg appearance-none cursor-pointer slider"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>1</span>
-                    <span>20</span>
-                  </div>
-                </div>
-
-                {/* Bouton de génération */}
-                <button
-                  type="submit"
-                  disabled={isLoading || !formData.sujet}
-                  className="w-full bg-gradient-to-r from-[#00D2FF] to-[#3A7BD5] text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {isLoading ? (
-                    <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
-                      Génération en cours...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4" />
-                      Générer les titres
-                    </>
-                  )}
-                </button>
-              </form>
-            </div>
-
-            {/* Résultats */}
-            <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white">Résultats</h2>
-                {results.length > 0 && (
-                  <button
-                    onClick={exportResults}
-                    className="flex items-center gap-2 px-4 py-2 bg-[#1a1a1a] border border-[#333] rounded-lg text-gray-300 hover:bg-[#232323] transition-colors"
-                  >
-                    <Download className="w-4 h-4" />
-                    Exporter
-                  </button>
-                )}
-              </div>
-
-              {error && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 mb-6">
-                  <p className="text-red-400">{error}</p>
-                </div>
-              )}
-
-              {results.length === 0 && !isLoading && !error && (
-                <div className="text-center py-12 text-gray-500">
-                  <Sparkles className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>Configurez vos paramètres et générez vos premiers titres</p>
-                </div>
-              )}
-
-              {isLoading && (
-                <div className="text-center py-12">
-                  <RefreshCw className="w-8 h-8 mx-auto mb-4 text-[#00D2FF] animate-spin" />
-                  <p className="text-gray-400">Génération de vos titres en cours...</p>
-                </div>
-              )}
-
-              {results.length > 0 && (
-                <div className="space-y-4">
-                  {results.map((result, index) => (
-                    <div key={index} className="bg-[#1a1a1a] rounded-lg p-4 border border-[#333]">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-xs bg-[#00D2FF] text-black px-2 py-1 rounded font-medium">
-                              Score: {result.score}/10
-                            </span>
-                          </div>
-                          <h3 className="text-white font-medium mb-2">{result.titre}</h3>
-                          <p className="text-sm text-gray-400">{result.explication}</p>
-                        </div>
-                        <button
-                          onClick={() => copyToClipboard(result.titre)}
-                          className="p-2 text-gray-400 hover:text-white hover:bg-[#333] rounded-lg transition-colors"
-                          title="Copier le titre"
-                        >
-                          <Copy className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+          <div>
+            <h1 className="text-3xl font-bold text-white">Générateur de Titres IA</h1>
+            <p className="text-gray-400">Créez des titres irrésistibles qui captent l'attention</p>
           </div>
         </div>
-      </main>
+
+        {/* Statistiques */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+            <div className="flex items-center gap-2 text-blue-400 mb-1">
+              <Target className="w-4 h-4" />
+              <span className="text-sm font-medium">Taux de clic</span>
+            </div>
+            <div className="text-2xl font-bold text-white">+73%</div>
+            <div className="text-xs text-gray-400">vs titres standards</div>
+          </div>
+          
+          <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+            <div className="flex items-center gap-2 text-green-400 mb-1">
+              <TrendingUp className="w-4 h-4" />
+              <span className="text-sm font-medium">Engagement</span>
+            </div>
+            <div className="text-2xl font-bold text-white">+156%</div>
+            <div className="text-xs text-gray-400">sur les réseaux sociaux</div>
+          </div>
+          
+          <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+            <div className="flex items-center gap-2 text-purple-400 mb-1">
+              <Lightbulb className="w-4 h-4" />
+              <span className="text-sm font-medium">Titres générés</span>
+            </div>
+            <div className="text-2xl font-bold text-white">45,231</div>
+            <div className="text-xs text-gray-400">ce mois-ci</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Formulaire */}
+        <div className="bg-[#111111] border border-[#232323] rounded-xl p-6">
+          <h2 className="text-xl font-semibold text-white mb-6">Paramètres de génération</h2>
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Sujet principal
+              </label>
+              <input
+                type="text"
+                value={formData.topic}
+                onChange={(e) => setFormData({...formData, topic: e.target.value})}
+                placeholder="Ex: Marketing digital, Productivité, Cuisine..."
+                className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Plateforme
+              </label>
+              <select
+                value={formData.platform}
+                onChange={(e) => setFormData({...formData, platform: e.target.value})}
+                className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
+              >
+                <option value="blog">Article de blog</option>
+                <option value="youtube">Vidéo YouTube</option>
+                <option value="linkedin">Post LinkedIn</option>
+                <option value="facebook">Post Facebook</option>
+                <option value="instagram">Post Instagram</option>
+                <option value="twitter">Tweet</option>
+                <option value="email">Email marketing</option>
+                <option value="podcast">Podcast</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Audience cible
+              </label>
+              <input
+                type="text"
+                value={formData.audience}
+                onChange={(e) => setFormData({...formData, audience: e.target.value})}
+                placeholder="Ex: Entrepreneurs, Parents, Étudiants..."
+                className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Ton
+                </label>
+                <select
+                  value={formData.tone}
+                  onChange={(e) => setFormData({...formData, tone: e.target.value})}
+                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
+                >
+                  <option value="engaging">Engageant</option>
+                  <option value="professional">Professionnel</option>
+                  <option value="funny">Humoristique</option>
+                  <option value="urgent">Urgent</option>
+                  <option value="mysterious">Mystérieux</option>
+                  <option value="educational">Éducatif</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Objectif
+                </label>
+                <select
+                  value={formData.goal}
+                  onChange={(e) => setFormData({...formData, goal: e.target.value})}
+                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
+                >
+                  <option value="traffic">Générer du trafic</option>
+                  <option value="engagement">Augmenter l'engagement</option>
+                  <option value="conversion">Convertir</option>
+                  <option value="awareness">Sensibiliser</option>
+                  <option value="education">Éduquer</option>
+                </select>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-[#ff0033] to-[#cc0029] text-white py-4 rounded-lg font-semibold hover:from-[#cc0029] hover:to-[#990022] transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {isLoading ? (
+                <>
+                  <RefreshCw className="w-5 h-5 animate-spin" />
+                  Génération en cours...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-5 h-5" />
+                  Générer 10 titres
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+
+        {/* Résultats */}
+        <div className="bg-[#111111] border border-[#232323] rounded-xl p-6">
+          <h2 className="text-xl font-semibold text-white mb-6">Titres générés</h2>
+
+          {generatedTitles.length > 0 ? (
+            <div className="space-y-3">
+              {generatedTitles.map((title, index) => (
+                <div key={index} className="bg-[#1a1a1a] border border-[#333] rounded-lg p-4 group hover:border-[#ff0033]/30 transition-colors">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="text-gray-300 leading-relaxed flex-1">{title}</p>
+                    <button
+                      onClick={() => handleCopy(title, index)}
+                      className="opacity-0 group-hover:opacity-100 bg-[#ff0033] text-white px-3 py-1 rounded text-sm hover:bg-[#cc0029] transition-all flex items-center gap-1"
+                    >
+                      <Copy className="w-3 h-3" />
+                      {copiedIndex === index ? 'Copié !' : 'Copier'}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-[#1a1a1a] border border-[#333] rounded-lg p-12 text-center">
+              <Type className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+              <p className="text-gray-400 mb-2">Vos titres apparaîtront ici</p>
+              <p className="text-gray-500 text-sm">
+                Remplissez le formulaire et cliquez sur "Générer" pour créer 10 titres optimisés
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Conseils */}
+      <div className="mt-8 bg-blue-900/20 border border-blue-500/30 rounded-xl p-6">
+        <h3 className="text-blue-400 font-semibold mb-4">💡 Conseils pour des titres efficaces</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-blue-300 text-sm">
+          <div>
+            <h4 className="font-medium mb-2">✨ Structure optimale</h4>
+            <ul className="space-y-1 text-blue-200">
+              <li>• Utilisez des chiffres (5 façons de...)</li>
+              <li>• Posez des questions intrigantes</li>
+              <li>• Promettez un bénéfice clair</li>
+              <li>• Créez de la curiosité</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-2">🎯 Mots puissants</h4>
+            <ul className="space-y-1 text-blue-200">
+              <li>• "Secret", "Révélé", "Exclusif"</li>
+              <li>• "Gratuit", "Rapide", "Simple"</li>
+              <li>• "Prouvé", "Garanti", "Testé"</li>
+              <li>• "Nouveau", "Ultime", "Complet"</li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
+  );
+}
+
+export default function GenerateurTitresPage() {
+  return (
+    <LayoutWithSidebar>
+      <PremiumGuard feature="Générateur de Titres IA">
+        <GenerateurTitresContent />
+      </PremiumGuard>
+    </LayoutWithSidebar>
   );
 } 

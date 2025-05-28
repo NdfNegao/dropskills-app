@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { supabase } from '@/lib/supabase'
 
 // Middleware d'authentification pour n8n
 function authenticateN8N(request: NextRequest) {
@@ -17,39 +17,46 @@ export async function GET(
   }
 
   try {
-    const profile = await prisma.profile.findUnique({
-      where: { id: params.id },
-      include: {
-        user: {
-          include: {
-            userPacks: {
-              include: {
-                pack: {
-                  select: { id: true, title: true, status: true }
-                }
-              }
-            },
-            favorites: {
-              include: {
-                pack: {
-                  select: { id: true, title: true, status: true }
-                }
-              }
-            }
-          }
-        }
-      }
-    })
+    // Récupérer le profil
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', params.id)
+      .single()
 
-    if (!profile) {
+    if (error || !profile) {
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
     }
+
+    // Récupérer les packs achetés
+    const { data: userPacks } = await supabase
+      .from('user_packs')
+      .select(`
+        *,
+        pack:packs(id, title, status)
+      `)
+      .eq('user_id', profile.user_id)
+
+    // Récupérer les favoris
+    const { data: favorites } = await supabase
+      .from('favorites')
+      .select(`
+        *,
+        pack:packs(id, title, status)
+      `)
+      .eq('user_id', profile.user_id)
 
     // Reformater les données pour compatibilité
     const formattedProfile = {
       ...profile,
-      packsPurchased: profile.user.userPacks.map(up => up.pack),
-      favorites: profile.user.favorites.map(f => f.pack)
+      user: {
+        id: profile.user_id,
+        email: `user-${profile.user_id}@example.com`, // Placeholder
+        userPacks: userPacks || [],
+        favorites: favorites || []
+      },
+      packsPurchased: (userPacks || []).map(up => up.pack),
+      favorites: (favorites || []).map(f => f.pack)
     }
 
     return NextResponse.json(formattedProfile)
@@ -71,34 +78,41 @@ export async function PUT(
 
   try {
     const data = await request.json()
-    
-    const profile = await prisma.profile.update({
-      where: { id: params.id },
-      data: {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        role: data.role
-      },
-      include: {
-        user: {
-          include: {
-            userPacks: {
-              include: {
-                pack: true
-              }
-            }
-          }
-        }
-      }
-    })
 
-    return NextResponse.json(profile)
+    // Mettre à jour le profil
+    const { data: updatedProfile, error } = await supabase
+      .from('profiles')
+      .update({
+        first_name: data.firstName,
+        last_name: data.lastName,
+        role: data.role,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', params.id)
+      .select()
+      .single()
+
+    if (error) throw error
+
+    if (!updatedProfile) {
+      return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
+    }
+
+    // Ajouter les informations utilisateur pour la compatibilité
+    const responseProfile = {
+      ...updatedProfile,
+      user: {
+        id: updatedProfile.user_id,
+        email: data.email || `user-${updatedProfile.user_id}@example.com`,
+        userPacks: [],
+        favorites: []
+      }
+    }
+
+    return NextResponse.json(responseProfile)
 
   } catch (error) {
     console.error('Erreur PUT user:', error)
-    if (error.code === 'P2025') {
-      return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-    }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -113,17 +127,18 @@ export async function DELETE(
   }
 
   try {
-    await prisma.profile.delete({
-      where: { id: params.id }
-    })
+    // Supprimer le profil (les relations seront supprimées en cascade)
+    const { error } = await supabase
+      .from('profiles')
+      .delete()
+      .eq('id', params.id)
+
+    if (error) throw error
 
     return NextResponse.json({ message: 'Profile deleted successfully' })
 
   } catch (error) {
     console.error('Erreur DELETE user:', error)
-    if (error.code === 'P2025') {
-      return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-    }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 } 
