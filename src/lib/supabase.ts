@@ -27,12 +27,33 @@ if (!safeSupabaseUrl || !safeSupabaseAnonKey) {
 }
 
 // Initialisation lazy pour éviter les problèmes de timing
-let supabaseClient: ReturnType<typeof createClient> | null = null
+let supabaseClient: any = null
 
 export const getSupabase = () => {
   if (!supabaseClient) {
     console.log('Création du client Supabase...')
-    supabaseClient = createClient(safeSupabaseUrl, safeSupabaseAnonKey)
+    console.log('Arguments pour createClient:')
+    console.log('- Arg 1 (URL):', JSON.stringify(safeSupabaseUrl))
+    console.log('- Arg 2 (KEY):', JSON.stringify(safeSupabaseAnonKey))
+    console.log('- typeof Arg 1:', typeof safeSupabaseUrl)
+    console.log('- typeof Arg 2:', typeof safeSupabaseAnonKey)
+    
+    // Test avec des valeurs hardcodées pour isoler le problème
+    try {
+      console.log('Test avec valeurs hardcodées...')
+      const testClient = createClient(
+        'https://qlpaxyrebidvxizpxdym.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFscGF4eXJlYmlkdnhpenB4ZHltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyNjgwMzYsImV4cCI6MjA2Mzg0NDAzNn0.J1vEzUSYCkCZg-9JQDTdFQ2BDVr6iwcjutcFyctnWRU'
+      )
+      console.log('✅ Test hardcodé réussi')
+      supabaseClient = testClient
+    } catch (hardcodedError) {
+      console.log('❌ Test hardcodé échoué:', hardcodedError)
+      
+      // Fallback avec les variables
+      console.log('Tentative avec variables...')
+      supabaseClient = createClient(safeSupabaseUrl, safeSupabaseAnonKey)
+    }
   }
   return supabaseClient
 }
