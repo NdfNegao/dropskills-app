@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Lock, ArrowLeft, CheckCircle } from "lucide-react";
 import Link from "next/link";
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -57,7 +57,7 @@ export default function ResetPasswordPage() {
             </p>
             <Link
               href="/auth/forgot-password"
-              className="inline-flex items-center gap-2 text-[#00D2FF] hover:text-[#00B8E6] transition-colors"
+              className="inline-flex items-center gap-2 text-[#ff0033] hover:text-[#cc0029] transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Demander un nouveau lien
@@ -82,7 +82,7 @@ export default function ResetPasswordPage() {
             </p>
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 text-[#00D2FF] hover:text-[#00B8E6] transition-colors"
+              className="inline-flex items-center gap-2 text-[#ff0033] hover:text-[#cc0029] transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Retour à la connexion
@@ -100,7 +100,7 @@ export default function ResetPasswordPage() {
           {/* Logo */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-white tracking-tight">
-              DROP<span className="text-[#00D2FF]">SKILLS</span>
+              DROP<span className="text-[#ff0033]">SKILLS</span>
             </h1>
             <p className="text-gray-400 mt-2">Réinitialiser votre mot de passe</p>
           </div>
@@ -124,7 +124,7 @@ export default function ResetPasswordPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D2FF] transition-colors"
+                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#ff0033] transition-colors"
                   placeholder="••••••••"
                   required
                   minLength={8}
@@ -143,7 +143,7 @@ export default function ResetPasswordPage() {
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#00D2FF] transition-colors"
+                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#ff0033] transition-colors"
                   placeholder="••••••••"
                   required
                   minLength={8}
@@ -155,7 +155,7 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-[#00D2FF] to-[#3A7BD5] text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-[#ff0033] to-red-600 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "Réinitialisation..." : "Réinitialiser le mot de passe"}
             </button>
@@ -174,5 +174,17 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff0033]"></div>
+      </div>
+    }>
+      <ResetPasswordContent />
+    </Suspense>
   );
 } 

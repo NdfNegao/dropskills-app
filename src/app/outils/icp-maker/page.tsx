@@ -89,6 +89,9 @@ export default function ICPMakerPage() {
       const data = await response.json();
       setICPResult(data.analysis);
       setCurrentStep('result');
+      
+      // Sauvegarder l'ICP généré
+      localStorage.setItem('dropskills_icp_data', JSON.stringify(data.analysis));
     } catch (error) {
       console.error('Erreur:', error);
       alert('Une erreur est survenue lors de la génération de l\'ICP. Veuillez réessayer.');
@@ -100,6 +103,25 @@ export default function ICPMakerPage() {
   const handleBackToWizard = () => {
     setCurrentStep('wizard');
     setICPResult(null);
+  };
+
+  const handleReformulate = async () => {
+    if (!icpResult) return;
+    
+    setIsLoading(true);
+    try {
+      // Relancer la génération avec les mêmes données
+      const savedFormData = localStorage.getItem('dropskills_icp_form_data');
+      if (savedFormData) {
+        const formData = JSON.parse(savedFormData);
+        await handleWizardComplete(formData);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la reformulation:', error);
+      alert('Erreur lors de la reformulation');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -127,6 +149,8 @@ export default function ICPMakerPage() {
           <ICPResult 
             analysis={icpResult}
             onBackToWizard={handleBackToWizard}
+            onReformulate={handleReformulate}
+            isReformulating={isLoading}
           />
         )}
       </div>

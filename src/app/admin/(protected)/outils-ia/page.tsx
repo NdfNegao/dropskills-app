@@ -1,68 +1,96 @@
-import { Metadata } from 'next';
-import { prisma } from '@/lib/prisma';
+'use client';
+
+import { useState } from 'react';
 import { Bot, Plus, Activity, Zap, Search, Filter } from 'lucide-react';
 
-export const metadata: Metadata = {
-  title: 'Outils IA | Admin DropSkills',
-  description: 'Gestion des outils d\'intelligence artificielle',
-};
-
-async function getIaTools() {
-  try {
-    const tools = await prisma.aiTool.findMany({
-      include: {
-        _count: {
-          select: {
-            aiUsage: true
-          }
-        }
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    });
-    return tools;
-  } catch (error) {
-    console.error('Erreur lors de la récupération des outils IA:', error);
-    return [];
+// Données de démonstration
+const mockTools = [
+  {
+    id: '1',
+    name: 'ICP Maker IA',
+    description: 'Générateur de profil client idéal avec IA',
+    toolType: 'GENERATOR',
+    isActive: true,
+    createdAt: new Date('2024-01-01'),
+    _count: { aiUsage: 45 }
+  },
+  {
+    id: '2',
+    name: 'USP Maker IA',
+    description: 'Créateur de proposition de valeur unique',
+    toolType: 'GENERATOR',
+    isActive: true,
+    createdAt: new Date('2024-01-01'),
+    _count: { aiUsage: 32 }
+  },
+  {
+    id: '3',
+    name: 'Tunnel Maker IA',
+    description: 'Générateur de tunnel de vente optimisé',
+    toolType: 'GENERATOR',
+    isActive: true,
+    createdAt: new Date('2024-01-01'),
+    _count: { aiUsage: 28 }
+  },
+  {
+    id: '4',
+    name: 'CopyMoneyMail IA',
+    description: 'Séquences email automatisées',
+    toolType: 'EMAIL',
+    isActive: true,
+    createdAt: new Date('2024-01-01'),
+    _count: { aiUsage: 19 }
+  },
+  {
+    id: '5',
+    name: 'Content System 90J',
+    description: 'Système de contenu pour 90 jours',
+    toolType: 'CONTENT',
+    isActive: true,
+    createdAt: new Date('2024-01-01'),
+    _count: { aiUsage: 15 }
+  },
+  {
+    id: '6',
+    name: 'Lead Magnet Creator',
+    description: 'Créateur d\'aimants à prospects',
+    toolType: 'GENERATOR',
+    isActive: false,
+    createdAt: new Date('2024-01-01'),
+    _count: { aiUsage: 8 }
   }
-}
+];
 
-async function getUsageStats() {
-  try {
-    const today = new Date();
-    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const todayUsage = await prisma.aiUsage.count({
-      where: {
-        createdAt: {
-          gte: startOfDay
-        }
-      }
-    });
-    const totalUsage = await prisma.aiUsage.count();
-    return { todayUsage, totalUsage };
-  } catch (error) {
-    console.error('Erreur lors de la récupération des stats:', error);
-    return { todayUsage: 0, totalUsage: 0 };
-  }
-}
+export default function OutilsIaPage() {
+  const [tools] = useState(mockTools);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
 
-export default async function OutilsIaPage() {
-  const tools = await getIaTools();
-  const { todayUsage, totalUsage } = await getUsageStats();
+  const filteredTools = tools.filter(tool => {
+    const matchesSearch = !searchTerm || 
+      tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      tool.description.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = !statusFilter || 
+      (statusFilter === 'active' && tool.isActive) ||
+      (statusFilter === 'inactive' && !tool.isActive);
+    
+    return matchesSearch && matchesStatus;
+  });
+
   const stats = {
     total: tools.length,
     active: tools.filter(t => t.isActive).length,
     inactive: tools.filter(t => !t.isActive).length,
-    todayUsage,
-    totalUsage
+    todayUsage: 12,
+    totalUsage: tools.reduce((sum, tool) => sum + tool._count.aiUsage, 0)
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-white">Outils IA</h1>
-        <button className="bg-[#00D2FF] text-black px-4 py-2 rounded-lg font-semibold hover:bg-[#00B8E6] transition-colors flex items-center gap-2">
+        <button className="bg-[#ff0033] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors flex items-center gap-2">
           <Plus className="w-4 h-4" />
           Nouvel Outil
         </button>
@@ -121,11 +149,36 @@ export default async function OutilsIaPage() {
         </div>
       </div>
 
-      {/* Liste des outils simplifiée */}
+      {/* Filtres et recherche */}
+      <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Rechercher un outil..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-[#1a1a1a] text-white pl-10 pr-4 py-2 rounded-lg border border-[#232323] focus:outline-none focus:border-[#ff0033]"
+            />
+          </div>
+          <select 
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="bg-[#1a1a1a] text-white px-4 py-2 rounded-lg border border-[#232323] focus:outline-none focus:border-[#ff0033]"
+          >
+            <option value="">Tous les statuts</option>
+            <option value="active">Actifs</option>
+            <option value="inactive">Inactifs</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Liste des outils */}
       <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
         <h2 className="text-xl font-semibold text-white mb-4">Outils IA Disponibles</h2>
         <div className="space-y-4">
-          {tools.map((tool) => (
+          {filteredTools.map((tool) => (
             <div key={tool.id} className="flex items-center justify-between p-4 bg-[#18181b] rounded-lg border border-[#232323]">
               <div className="flex-1">
                 <h3 className="text-white font-medium">{tool.name}</h3>
@@ -144,9 +197,9 @@ export default async function OutilsIaPage() {
               </div>
             </div>
           ))}
-          {tools.length === 0 && (
+          {filteredTools.length === 0 && (
             <div className="text-center text-gray-400 py-8">
-              Aucun outil IA configuré
+              {searchTerm || statusFilter ? 'Aucun outil ne correspond à vos critères' : 'Aucun outil IA configuré'}
             </div>
           )}
         </div>

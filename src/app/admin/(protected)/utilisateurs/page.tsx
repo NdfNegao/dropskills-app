@@ -1,4 +1,6 @@
-import { prisma } from '@/lib/prisma';
+'use client';
+
+import { useState } from 'react';
 import { 
   Users, 
   Search, 
@@ -11,24 +13,42 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-async function getUsers() {
-  return await prisma.profile.findMany({
-    orderBy: { createdAt: 'desc' },
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      role: true,
-      createdAt: true,
-      updatedAt: true,
-      user: {
-        select: {
-          email: true
-        }
-      }
+// Données de démonstration
+const mockUsers = [
+  {
+    id: '1',
+    firstName: 'Admin',
+    lastName: 'DropSkills',
+    role: 'SUPER_ADMIN',
+    createdAt: new Date('2024-01-01'),
+    updatedAt: new Date('2024-01-01'),
+    user: {
+      email: 'admin@dropskills.com'
     }
-  });
-}
+  },
+  {
+    id: '2',
+    firstName: 'Support',
+    lastName: 'Team',
+    role: 'SUPPORT',
+    createdAt: new Date('2024-01-15'),
+    updatedAt: new Date('2024-01-15'),
+    user: {
+      email: 'support@dropskills.com'
+    }
+  },
+  {
+    id: '3',
+    firstName: 'John',
+    lastName: 'Doe',
+    role: 'USER',
+    createdAt: new Date('2024-02-01'),
+    updatedAt: new Date('2024-02-01'),
+    user: {
+      email: 'john.doe@example.com'
+    }
+  }
+];
 
 const getRoleIcon = (role: string) => {
   switch (role) {
@@ -54,8 +74,21 @@ const getRoleColor = (role: string) => {
   }
 };
 
-export default async function UtilisateursAdmin() {
-  const users = await getUsers();
+export default function UtilisateursAdmin() {
+  const [users] = useState(mockUsers);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [roleFilter, setRoleFilter] = useState('');
+
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = !searchTerm || 
+      user.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesRole = !roleFilter || user.role === roleFilter;
+    
+    return matchesSearch && matchesRole;
+  });
 
   return (
     <div className="space-y-6">
@@ -81,10 +114,16 @@ export default async function UtilisateursAdmin() {
             <input
               type="text"
               placeholder="Rechercher un utilisateur..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full bg-[#1a1a1a] text-white pl-10 pr-4 py-2 rounded-lg border border-[#232323] focus:outline-none focus:border-[#ff0033]"
             />
           </div>
-          <select className="bg-[#1a1a1a] text-white px-4 py-2 rounded-lg border border-[#232323] focus:outline-none focus:border-[#ff0033]">
+          <select 
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
+            className="bg-[#1a1a1a] text-white px-4 py-2 rounded-lg border border-[#232323] focus:outline-none focus:border-[#ff0033]"
+          >
             <option value="">Tous les rôles</option>
             <option value="USER">Utilisateur</option>
             <option value="ADMIN">Admin</option>
@@ -137,7 +176,7 @@ export default async function UtilisateursAdmin() {
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => {
+              {filteredUsers.map((user) => {
                 const RoleIcon = getRoleIcon(user.role);
                 const roleColor = getRoleColor(user.role);
                 
@@ -188,11 +227,11 @@ export default async function UtilisateursAdmin() {
         </div>
       </div>
 
-      {users.length === 0 && (
+      {filteredUsers.length === 0 && (
         <div className="bg-[#111111] rounded-xl p-8 border border-[#232323] text-center">
           <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-white mb-2">Aucun utilisateur trouvé</h3>
-          <p className="text-gray-400">Commencez par ajouter votre premier utilisateur.</p>
+          <p className="text-gray-400">Aucun utilisateur ne correspond à vos critères de recherche.</p>
         </div>
       )}
     </div>

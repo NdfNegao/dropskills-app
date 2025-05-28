@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Download, RefreshCw, ArrowLeft, ArrowRight, Mail, Target, Lightbulb, Zap, BarChart3, CheckCircle, ExternalLink, ChevronRight, Clock, TrendingUp } from 'lucide-react';
 import { TunnelAnalysis } from '@/app/outils/tunnel-maker/page';
 
@@ -13,6 +14,7 @@ interface TunnelResultProps {
 
 export function TunnelResult({ analysis, onBackToWizard, onRegenerate, isRegenerating }: TunnelResultProps) {
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
+  const router = useRouter();
 
   const handleDownloadPlan = async () => {
     setIsGeneratingPlan(true);
@@ -72,7 +74,7 @@ ${analysis.outilsRecommandes.join(', ')}
     // Sauvegarder les données du tunnel pour CopyMoneyMail
     localStorage.setItem('dropskills_tunnel_data', JSON.stringify(analysis));
     // Redirection vers CopyMoneyMail AI
-    window.location.href = '/outils/copymoneymail';
+    router.push('/outils/copymoneymail');
   };
 
   const getMetriqueColor = (score: number) => {

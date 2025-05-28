@@ -53,8 +53,9 @@ export const authOptions: NextAuthOptions = {
       return session;
     }
   },
-  secret: process.env.NEXTAUTH_SECRET || 'dev-secret-key',
+  secret: process.env.NEXTAUTH_SECRET || process.env.VERCEL_URL || 'dropskills-v2-secret-key-2024',
   session: {
     strategy: 'jwt',
   },
+  debug: process.env.NODE_ENV === 'development',
 }; 

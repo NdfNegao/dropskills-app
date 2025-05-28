@@ -1,16 +1,21 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Download, ArrowRight, ArrowLeft, User, Brain, AlertTriangle, MapPin, MessageCircle, DollarSign, Target, CheckCircle, Sparkles } from 'lucide-react';
 import { ICPAnalysis } from '@/app/outils/icp-maker/page';
 
 interface ICPResultProps {
   analysis: ICPAnalysis;
   onBackToWizard: () => void;
+  onReformulate: () => void;
+  isReformulating: boolean;
 }
 
-export function ICPResult({ analysis, onBackToWizard }: ICPResultProps) {
+export function ICPResult({ analysis, onBackToWizard, onReformulate, isReformulating }: ICPResultProps) {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [copiedText, setCopiedText] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true);
@@ -37,11 +42,11 @@ export function ICPResult({ analysis, onBackToWizard }: ICPResultProps) {
     }
   };
 
-  const handleGenerateOffer = () => {
+  const handleGenerateUSP = () => {
     // Sauvegarder les données ICP pour l'USP Maker
     localStorage.setItem('dropskills_icp_data', JSON.stringify(analysis));
-    // Redirection vers l'USP Maker
-    window.location.href = '/outils/usp-maker';
+    // Redirection vers USP Maker IA
+    router.push('/outils/usp-maker');
   };
 
   return (
@@ -446,7 +451,7 @@ export function ICPResult({ analysis, onBackToWizard }: ICPResultProps) {
           </button>
           
           <button
-            onClick={handleGenerateOffer}
+            onClick={handleGenerateUSP}
             className="flex items-center justify-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all"
           >
             <Sparkles className="w-5 h-5" />

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Copy, RefreshCw, ArrowRight, ArrowLeft, Sparkles, Target, Brain, TrendingUp, MessageCircle, BarChart3, CheckCircle, ExternalLink } from 'lucide-react';
 import { USPAnalysis } from '@/app/outils/usp-maker/page';
 
@@ -13,6 +14,8 @@ interface USPResultProps {
 
 export function USPResult({ analysis, onBackToWizard, onReformulate, isReformulating }: USPResultProps) {
   const [copiedText, setCopiedText] = useState<string | null>(null);
+  const [isGeneratingTunnel, setIsGeneratingTunnel] = useState(false);
+  const router = useRouter();
 
   const handleCopy = async (text: string, label: string) => {
     try {
@@ -28,8 +31,8 @@ export function USPResult({ analysis, onBackToWizard, onReformulate, isReformula
   const handleGenerateTunnel = () => {
     // Sauvegarder les données USP pour le Tunnel Maker
     localStorage.setItem('dropskills_usp_data', JSON.stringify(analysis));
-    // Redirection vers le Tunnel Maker
-    window.location.href = '/outils/tunnel-maker';
+    // Redirection vers Tunnel Maker IA
+    router.push('/outils/tunnel-maker');
   };
 
   const getScoreColor = (score: number) => {

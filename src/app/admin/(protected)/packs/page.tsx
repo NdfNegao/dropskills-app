@@ -1,42 +1,90 @@
-import { Metadata } from 'next';
-import { Plus, Search, Filter, Eye, Edit, Trash2, Package, TrendingUp } from 'lucide-react';
-import { prisma } from '@/lib/prisma';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Gestion des Packs | Admin DropSkills',
-  description: 'Gérer les packs et produits digitaux',
-};
+import { useState } from 'react';
+import { Plus, Search, Eye, Edit, Trash2, Package } from 'lucide-react';
 
-async function getPacks() {
-  try {
-    const packs = await prisma.pack.findMany({
-      include: {
-        creator: {
-          select: {
-            firstName: true,
-            lastName: true,
-            email: true
-          }
-        },
-        category: {
-          select: {
-            name: true
-          }
-        }
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    });
-    return packs;
-  } catch (error) {
-    console.error('Erreur lors de la récupération des packs:', error);
-    return [];
+// Données de démonstration
+const mockPacks = [
+  {
+    id: '1',
+    title: 'Pack Marketing Digital Complet',
+    description: 'Formation complète en marketing digital',
+    price: 297,
+    status: 'ACTIVE',
+    createdAt: new Date('2024-01-15'),
+    creator: {
+      firstName: 'Jean',
+      lastName: 'Dupont',
+      email: 'jean.dupont@example.com'
+    },
+    category: {
+      name: 'Marketing'
+    }
+  },
+  {
+    id: '2',
+    title: 'Formation E-commerce Avancée',
+    description: 'Créer et optimiser sa boutique en ligne',
+    price: 497,
+    status: 'ACTIVE',
+    createdAt: new Date('2024-01-10'),
+    creator: {
+      firstName: 'Marie',
+      lastName: 'Martin',
+      email: 'marie.martin@example.com'
+    },
+    category: {
+      name: 'E-commerce'
+    }
+  },
+  {
+    id: '3',
+    title: 'Pack Réseaux Sociaux Pro',
+    description: 'Stratégies avancées pour les réseaux sociaux',
+    price: 197,
+    status: 'DRAFT',
+    createdAt: new Date('2024-01-05'),
+    creator: {
+      firstName: 'Pierre',
+      lastName: 'Durand',
+      email: 'pierre.durand@example.com'
+    },
+    category: {
+      name: 'Social Media'
+    }
+  },
+  {
+    id: '4',
+    title: 'Formation Copywriting Persuasif',
+    description: 'Maîtriser l\'art de la persuasion écrite',
+    price: 0,
+    status: 'ACTIVE',
+    createdAt: new Date('2024-01-01'),
+    creator: {
+      firstName: 'Sophie',
+      lastName: 'Bernard',
+      email: 'sophie.bernard@example.com'
+    },
+    category: {
+      name: 'Copywriting'
+    }
   }
-}
+];
 
-export default async function PacksPage() {
-  const packs = await getPacks();
+export default function PacksPage() {
+  const [packs] = useState(mockPacks);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+
+  const filteredPacks = packs.filter(pack => {
+    const matchesSearch = !searchTerm || 
+      pack.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      pack.description.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = !statusFilter || pack.status === statusFilter;
+    
+    return matchesSearch && matchesStatus;
+  });
 
   const stats = {
     total: packs.length,
@@ -48,7 +96,7 @@ export default async function PacksPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-white">Gestion des Packs</h1>
-        <button className="bg-[#00D2FF] text-black px-4 py-2 rounded-lg font-semibold hover:bg-[#00B8E6] transition-colors flex items-center gap-2">
+        <button className="bg-[#ff0033] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors flex items-center gap-2">
           <Plus className="w-4 h-4" />
           Nouveau Pack
         </button>
@@ -91,7 +139,33 @@ export default async function PacksPage() {
         </div>
       </div>
 
-      {/* Liste des packs simplifiée */}
+      {/* Filtres et recherche */}
+      <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Rechercher un pack..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-[#1a1a1a] text-white pl-10 pr-4 py-2 rounded-lg border border-[#232323] focus:outline-none focus:border-[#ff0033]"
+            />
+          </div>
+          <select 
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="bg-[#1a1a1a] text-white px-4 py-2 rounded-lg border border-[#232323] focus:outline-none focus:border-[#ff0033]"
+          >
+            <option value="">Tous les statuts</option>
+            <option value="ACTIVE">Actif</option>
+            <option value="DRAFT">Brouillon</option>
+            <option value="ARCHIVED">Archivé</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Liste des packs */}
       <div className="bg-[#111111] rounded-xl border border-[#232323] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -106,7 +180,7 @@ export default async function PacksPage() {
               </tr>
             </thead>
             <tbody>
-              {packs.map((pack) => (
+              {filteredPacks.map((pack) => (
                 <tr key={pack.id} className="border-b border-[#232323] hover:bg-[#18181b]/50">
                   <td className="p-4">
                     <div className="flex items-center gap-3">
@@ -164,10 +238,10 @@ export default async function PacksPage() {
                   </td>
                 </tr>
               ))}
-              {packs.length === 0 && (
+              {filteredPacks.length === 0 && (
                 <tr>
                   <td colSpan={6} className="text-center text-gray-400 py-8">
-                    Aucun pack trouvé
+                    {searchTerm || statusFilter ? 'Aucun pack ne correspond à vos critères' : 'Aucun pack trouvé'}
                   </td>
                 </tr>
               )}

@@ -26,7 +26,7 @@ model User {
   lastName  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+  
   // Relations
   createdPacks Pack[]     @relation("PackCreator")
   userPacks    UserPack[]
@@ -34,7 +34,7 @@ model User {
   aiUsage      AiUsage[]
   adminLogs    AdminLog[]
   profile      Profile?
-
+  
   @@map("users")
 }
 
@@ -60,10 +60,10 @@ model Category {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+  
   // Relations
   packs Pack[]
-
+  
   @@map("categories")
 }
 
@@ -76,7 +76,7 @@ model Pack {
   status      PackStatus @default(DRAFT)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-
+  
   // Relations
   creatorId  String
   creator    User     @relation("PackCreator", fields: [creatorId], references: [id])
@@ -87,7 +87,7 @@ model Pack {
   userPacks UserPack[]
   favorites Favorite[]
   stats     PackStats?
-
+  
   @@map("packs")
 }
 
@@ -115,7 +115,7 @@ model UserPack {
   user   User   @relation(fields: [userId], references: [id])
   packId String
   pack   Pack   @relation(fields: [packId], references: [id])
-
+  
   @@unique([userId, packId])
   @@map("user_packs")
 }
@@ -123,7 +123,7 @@ model UserPack {
 model Favorite {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-
+  
   // Relations
   userId String
   user   User   @relation(fields: [userId], references: [id])
@@ -164,7 +164,7 @@ model AiTool {
   isActive    Boolean    @default(true)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-
+  
   // Relations
   aiUsage AiUsage[]
 
@@ -199,7 +199,7 @@ model AdminLog {
   // Relations
   adminId String
   admin   User   @relation(fields: [adminId], references: [id])
-
+  
   @@map("admin_logs")
 }
 

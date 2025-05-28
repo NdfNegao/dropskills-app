@@ -1,0 +1,16 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "installCommand": "npm install",
+  "env": {
+    "NEXTAUTH_URL": "https://dropskills-app.vercel.app",
+    "NEXTAUTH_SECRET": "dropskills-v2-secret-key-2024-production"
+  },
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  },
+  "regions": ["fra1"]
+} 

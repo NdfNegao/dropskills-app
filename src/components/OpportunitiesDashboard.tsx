@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { RefreshCw, ArrowLeft, Filter, TrendingUp, AlertCircle, Bookmark, Bell, Share2, FileText, ExternalLink, ChevronDown, ChevronUp, Target, DollarSign, Activity, Award, X, Save, BarChart2, Play } from 'lucide-react';
 import { VeilleAnalysis, Opportunity } from '@/app/outils/agent-veille/page';
 
@@ -31,6 +32,9 @@ export function OpportunitiesDashboard({
   const [expandedOpportunity, setExpandedOpportunity] = useState<string | null>(null);
   const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
   const [view, setView] = useState<'cards' | 'list'>('cards');
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   // Filtrer les opportunités
   const filteredOpportunities = useMemo(() => {
@@ -70,10 +74,8 @@ export function OpportunitiesDashboard({
     alert('Opportunité copiée dans le presse-papier !');
   };
 
-  const handleGenerateActionPlan = (opportunity: Opportunity) => {
-    // Rediriger vers ICP Maker avec les données pré-remplies
-    localStorage.setItem('dropskills_opportunity_data', JSON.stringify(opportunity));
-    window.location.href = '/outils/icp-maker';
+  const handleStartAnalysis = () => {
+    router.push('/outils/icp-maker');
   };
 
   const handleOpportunityClick = (opportunity: Opportunity) => {
@@ -281,7 +283,7 @@ export function OpportunitiesDashboard({
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    // TODO: Implement analyze
+                    handleStartAnalysis();
                   }}
                   className="p-2 rounded-lg bg-[#232323] text-gray-400 hover:text-white"
                 >
