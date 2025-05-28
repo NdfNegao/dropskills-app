@@ -14,11 +14,31 @@ console.log('Avant createClient:')
 console.log('- URL:', safeSupabaseUrl, 'Type:', typeof safeSupabaseUrl, 'Length:', safeSupabaseUrl.length)
 console.log('- Key:', safeSupabaseAnonKey ? safeSupabaseAnonKey.slice(0, 8) + '...' : 'undefined', 'Type:', typeof safeSupabaseAnonKey, 'Length:', safeSupabaseAnonKey.length)
 
+// Test supplémentaire pour comprendre le problème
+console.log('Test de validation Supabase:')
+console.log('- !safeSupabaseUrl:', !safeSupabaseUrl)
+console.log('- !safeSupabaseAnonKey:', !safeSupabaseAnonKey)
+console.log('- safeSupabaseAnonKey === "":', safeSupabaseAnonKey === '')
+console.log('- safeSupabaseAnonKey === undefined:', safeSupabaseAnonKey === undefined)
+console.log('- safeSupabaseAnonKey === null:', safeSupabaseAnonKey === null)
+
 if (!safeSupabaseUrl || !safeSupabaseAnonKey) {
   throw new Error(`Variables Supabase manquantes: URL=${!!safeSupabaseUrl}, KEY=${!!safeSupabaseAnonKey}`)
 }
 
-export const supabase = createClient(safeSupabaseUrl, safeSupabaseAnonKey)
+// Initialisation lazy pour éviter les problèmes de timing
+let supabaseClient: ReturnType<typeof createClient> | null = null
+
+export const getSupabase = () => {
+  if (!supabaseClient) {
+    console.log('Création du client Supabase...')
+    supabaseClient = createClient(safeSupabaseUrl, safeSupabaseAnonKey)
+  }
+  return supabaseClient
+}
+
+// Export pour compatibilité avec le code existant
+export const supabase = getSupabase()
 
 // Client avec service role pour les opérations admin
 export const supabaseAdmin = createClient(
