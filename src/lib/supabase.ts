@@ -6,15 +6,23 @@ const supabaseAnonKey = process.env.SUPABASE_ANON_KEY2 || process.env.SUPABASE_A
 console.log('SUPABASE_URL:', supabaseUrl)
 console.log('SUPABASE_ANON_KEY:', supabaseAnonKey ? supabaseAnonKey.slice(0, 8) + '...' : undefined)
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Supabase URL et clé ANON sont requis')
+// Nettoyer et valider les variables
+const safeSupabaseUrl = (supabaseUrl || '').trim()
+const safeSupabaseAnonKey = (supabaseAnonKey || '').trim()
+
+console.log('Avant createClient:')
+console.log('- URL:', safeSupabaseUrl, 'Type:', typeof safeSupabaseUrl, 'Length:', safeSupabaseUrl.length)
+console.log('- Key:', safeSupabaseAnonKey ? safeSupabaseAnonKey.slice(0, 8) + '...' : 'undefined', 'Type:', typeof safeSupabaseAnonKey, 'Length:', safeSupabaseAnonKey.length)
+
+if (!safeSupabaseUrl || !safeSupabaseAnonKey) {
+  throw new Error(`Variables Supabase manquantes: URL=${!!safeSupabaseUrl}, KEY=${!!safeSupabaseAnonKey}`)
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(safeSupabaseUrl, safeSupabaseAnonKey)
 
 // Client avec service role pour les opérations admin
 export const supabaseAdmin = createClient(
-  supabaseUrl,
+  safeSupabaseUrl,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
   {
     auth: {
