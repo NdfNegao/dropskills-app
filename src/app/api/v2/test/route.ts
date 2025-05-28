@@ -63,13 +63,13 @@ export async function POST(request: NextRequest) {
     const sample = await SupabaseHelper.createSample({
       title: 'Sample de test Supabase',
       description: 'Sample créé pour tester Supabase',
-      pack_id: pack.id,
+      pack_id: pack.id as string,
       file_url: 'https://example.com/sample.pdf'
     })
 
     // Test de création de stats
     const stats = await SupabaseHelper.createPackStats({
-      pack_id: pack.id,
+      pack_id: pack.id as string,
       views_count: 0,
       favorites_count: 0,
       purchases_count: 0
