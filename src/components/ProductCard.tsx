@@ -1,5 +1,5 @@
 "use client";
-import { Bookmark, BookOpen, Headphones, Video, FileDown, Heart } from "lucide-react";
+import { Bookmark, BookOpen, Headphones, Video, FileDown, Heart, ExternalLink } from "lucide-react";
 import { useSavedProducts } from "@/context/SavedProductsContext";
 import { Product } from "@/data/products";
 import { useState } from "react";
@@ -8,17 +8,34 @@ import { useRouter } from "next/navigation";
 function getFormatIcon(format: string) {
   switch (format) {
     case "ebook":
-      return <BookOpen className="w-6 h-6 text-black" />;
+      return <BookOpen className="w-5 h-5 text-blue-400" />;
     case "audio":
-      return <Headphones className="w-6 h-6 text-black" />;
+      return <Headphones className="w-5 h-5 text-purple-400" />;
     case "video":
-      return <Video className="w-6 h-6 text-black" />;
+      return <Video className="w-5 h-5 text-green-400" />;
     case "template":
-      return <FileDown className="w-6 h-6 text-black" />;
+      return <FileDown className="w-5 h-5 text-orange-400" />;
     case "tool":
-      return <FileDown className="w-6 h-6 text-black" />;
+      return <FileDown className="w-5 h-5 text-pink-400" />;
     default:
-      return <BookOpen className="w-6 h-6 text-black" />;
+      return <BookOpen className="w-5 h-5 text-blue-400" />;
+  }
+}
+
+function getFormatColor(format: string) {
+  switch (format) {
+    case "ebook":
+      return "from-blue-500 to-blue-600";
+    case "audio":
+      return "from-purple-500 to-purple-600";
+    case "video":
+      return "from-green-500 to-green-600";
+    case "template":
+      return "from-orange-500 to-orange-600";
+    case "tool":
+      return "from-pink-500 to-pink-600";
+    default:
+      return "from-blue-500 to-blue-600";
   }
 }
 
@@ -48,60 +65,117 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
   };
 
   return (
-    <div className="relative bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-[#232323] group transition-all hover:shadow-2xl">
-      {/* Icône format (coin sup gauche) */}
-      <div className="absolute top-4 left-4 z-10 bg-[#f3f3f3] rounded-full p-2 shadow border border-gray-200 flex items-center justify-center">
-        {getFormatIcon(product.format)}
+    <div className="relative bg-[#111111] border border-[#232323] rounded-xl overflow-hidden group transition-all hover:border-[#333] hover:shadow-lg">
+      {/* Badge format (coin sup gauche) */}
+      <div className="absolute top-3 left-3 z-10">
+        <div className={`bg-gradient-to-r ${getFormatColor(product.format)} rounded-lg p-2 shadow-md flex items-center justify-center`}>
+          {getFormatIcon(product.format)}
+        </div>
       </div>
+
       {/* Actions en haut à droite */}
-      <div className="absolute top-4 right-4 z-10 flex gap-2">
+      <div className="absolute top-3 right-3 z-10 flex gap-2">
         {/* Like */}
         <button
           onClick={() => { setLiked(!liked); setLikes(likes + (liked ? -1 : 1)); }}
-          className="bg-white rounded-full p-2 shadow border border-gray-200 hover:bg-gray-100 transition-colors flex items-center justify-center"
+          className="bg-[#1a1a1a] border border-[#333] rounded-lg p-2 hover:bg-[#232323] transition-colors flex items-center justify-center"
           aria-label="J'aime"
         >
           <Heart
-            className={`w-6 h-6 ${liked ? 'fill-red-500 text-red-500' : 'text-black'}`}
+            className={`w-4 h-4 ${liked ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-400'}`}
           />
         </button>
+        
         {/* Bookmark */}
         <button
           onClick={handleBookmark}
-          className="bg-white rounded-full p-2 shadow border border-gray-200 hover:bg-gray-100 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-[#1a1a1a] border border-[#333] rounded-lg p-2 hover:bg-[#232323] transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Sauvegarder"
           disabled={!!bookmarkDisabled}
         >
           <Bookmark
-            className={`w-6 h-6 ${bookmarked ? 'fill-black text-black' : 'text-black'}`}
+            className={`w-4 h-4 ${bookmarked ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400 hover:text-yellow-400'}`}
           />
         </button>
       </div>
+
       {/* Image de fond */}
-      <div className="w-full aspect-video bg-[#18181b] flex items-center justify-center">
-        <img src={product.image} alt={product.title} className="object-contain h-full w-full" />
+      <div className="w-full aspect-video bg-[#1a1a1a] flex items-center justify-center overflow-hidden">
+        <img 
+          src={product.image} 
+          alt={product.title} 
+          className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300" 
+        />
       </div>
-      {/* Titre & sous-titre */}
-      <div className="p-6 pb-4">
-        <h3 className="font-bold text-xl text-[#111] mb-1 truncate">{product.title}</h3>
-        <p className="text-gray-500 text-sm truncate mb-2">{product.subtitle}</p>
-      </div>
-      {/* Bas du bloc */}
-      <div className="flex items-center border-t border-gray-100">
-        {/* Ouvrir */}
-        <button
-          onClick={handleOpen}
-          className="flex-1 py-3 border-x border-gray-100 font-semibold text-[#111] hover:bg-gray-50 transition-colors"
-        >
-          Ouvrir
-        </button>
-        {/* Download */}
-        <button
-          onClick={onDownload}
-          className="flex-1 flex items-center justify-center py-3 rounded-br-2xl text-[#111] hover:text-[#ff0033] transition-colors"
-        >
-          <FileDown className="w-5 h-5" />
-        </button>
+
+      {/* Contenu */}
+      <div className="p-4">
+        {/* Titre & sous-titre */}
+        <div className="mb-4">
+          <h3 className="font-bold text-lg text-white mb-1 line-clamp-2 leading-tight">
+            {product.title}
+          </h3>
+          <p className="text-gray-400 text-sm line-clamp-2 leading-relaxed">
+            {product.subtitle}
+          </p>
+        </div>
+
+        {/* Tags */}
+        {product.tags && product.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-4">
+            {product.tags.slice(0, 2).map((tag, index) => (
+              <span 
+                key={index}
+                className="text-xs bg-[#232323] text-gray-300 px-2 py-1 rounded-full"
+              >
+                {tag}
+              </span>
+            ))}
+            {product.tags.length > 2 && (
+              <span className="text-xs text-gray-500">
+                +{product.tags.length - 2}
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Stats */}
+        <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1">
+              <Heart className="w-3 h-3" />
+              {likes}
+            </span>
+            <span className="flex items-center gap-1">
+              <Bookmark className="w-3 h-3" />
+              {savedProducts.includes(product.id) ? 'Sauvé' : 'Sauver'}
+            </span>
+          </div>
+          <span className="capitalize text-gray-500">
+            {product.format}
+          </span>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-2">
+          <button
+            onClick={handleOpen}
+            className="flex-1 bg-[#ff0033] text-white py-2.5 px-4 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors flex items-center justify-center gap-2"
+          >
+            <ExternalLink className="w-4 h-4" />
+            Ouvrir
+          </button>
+          
+          {onDownload && (
+            <button
+              onClick={onDownload}
+              className="bg-[#1a1a1a] border border-[#333] text-gray-300 p-2.5 rounded-lg hover:bg-[#232323] hover:text-white transition-colors flex items-center justify-center"
+              aria-label="Télécharger"
+            >
+              <FileDown className="w-4 h-4" />
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
