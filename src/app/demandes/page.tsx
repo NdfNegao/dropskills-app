@@ -1,7 +1,18 @@
 "use client";
 import { useState } from "react";
 import LayoutWithSidebar from "@/components/LayoutWithSidebar";
-import { ArrowUp, X } from "lucide-react";
+import { 
+  ArrowUp, 
+  X, 
+  Plus, 
+  MessageSquare, 
+  TrendingUp, 
+  Users, 
+  CheckCircle,
+  Clock,
+  XCircle,
+  Lightbulb
+} from "lucide-react";
 
 const TABS = [
   { label: "Idées", value: "idee" },
@@ -68,7 +79,6 @@ export default function DemandesPage() {
   const [formError, setFormError] = useState("");
   const [formSuccess, setFormSuccess] = useState("");
   const [demandes, setDemandes] = useState(DEMANDES_INIT);
-  // votes: { [id]: true/false }
   const [votes, setVotes] = useState<{ [id: string]: boolean }>(() => {
     if (typeof window !== "undefined") {
       return JSON.parse(localStorage.getItem("votes") || "{}");
@@ -127,72 +137,228 @@ export default function DemandesPage() {
   // Filtrage dynamique selon l'onglet
   const filteredDemandes = demandes.filter((d) => d.status === TABS[activeTab].value);
 
+  const stats = {
+    totalDemandes: demandes.length,
+    enCours: demandes.filter(d => d.status === 'prevu').length,
+    terminees: demandes.filter(d => d.status === 'termine').length,
+    totalVotes: demandes.reduce((sum, d) => sum + d.votes, 0)
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'idee': return <Lightbulb className="w-4 h-4" />;
+      case 'prevu': return <Clock className="w-4 h-4" />;
+      case 'termine': return <CheckCircle className="w-4 h-4" />;
+      case 'rejete': return <XCircle className="w-4 h-4" />;
+      default: return <MessageSquare className="w-4 h-4" />;
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'idee': return 'text-blue-400';
+      case 'prevu': return 'text-yellow-400';
+      case 'termine': return 'text-green-400';
+      case 'rejete': return 'text-red-400';
+      default: return 'text-gray-400';
+    }
+  };
+
   return (
     <LayoutWithSidebar>
-      <div className="max-w-4xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-1">Tableau des demandes de produits</h1>
-            <p className="text-gray-400 text-base">Votez ou suggérez de nouveaux produits à ajouter à la DropSkills Library !</p>
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
+              <MessageSquare className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-white">Demandes de Produits</h1>
+              <p className="text-gray-400">Votez ou suggérez de nouveaux produits à ajouter à la DropSkills Library</p>
+            </div>
           </div>
-          <button
-            onClick={() => setModalOpen(true)}
-            className="bg-[#ff0033] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors shadow-md"
-          >
-            Suggérer une idée
-          </button>
-        </div>
-        {/* Tabs */}
-        <div className="flex gap-2 mb-8">
-          {TABS.map((tab, i) => (
+
+          {/* Statistiques */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+              <div className="flex items-center gap-2 text-blue-400 mb-1">
+                <MessageSquare className="w-4 h-4" />
+                <span className="text-sm font-medium">Total</span>
+              </div>
+              <div className="text-2xl font-bold text-white">{stats.totalDemandes}</div>
+              <div className="text-xs text-gray-400">demandes soumises</div>
+            </div>
+            
+            <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+              <div className="flex items-center gap-2 text-yellow-400 mb-1">
+                <Clock className="w-4 h-4" />
+                <span className="text-sm font-medium">En cours</span>
+              </div>
+              <div className="text-2xl font-bold text-white">{stats.enCours}</div>
+              <div className="text-xs text-gray-400">en développement</div>
+            </div>
+            
+            <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+              <div className="flex items-center gap-2 text-green-400 mb-1">
+                <CheckCircle className="w-4 h-4" />
+                <span className="text-sm font-medium">Terminées</span>
+              </div>
+              <div className="text-2xl font-bold text-white">{stats.terminees}</div>
+              <div className="text-xs text-gray-400">produits livrés</div>
+            </div>
+            
+            <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+              <div className="flex items-center gap-2 text-purple-400 mb-1">
+                <TrendingUp className="w-4 h-4" />
+                <span className="text-sm font-medium">Votes</span>
+              </div>
+              <div className="text-2xl font-bold text-white">{stats.totalVotes}</div>
+              <div className="text-xs text-gray-400">votes communauté</div>
+            </div>
+          </div>
+
+          {/* Action Button */}
+          <div className="flex justify-end">
             <button
-              key={tab.label}
-              onClick={() => setActiveTab(i)}
-              className={`px-4 py-2 rounded-lg font-semibold text-sm border transition-all ${activeTab === i ? "bg-white text-[#111] shadow border-gray-200" : "bg-[#18181b] text-gray-400 border-transparent hover:bg-[#232323]"}`}
+              onClick={() => setModalOpen(true)}
+              className="bg-[#ff0033] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors shadow-md flex items-center gap-2"
             >
-              {tab.label} <span className="ml-1 text-xs text-gray-500">({demandes.filter((d) => d.status === tab.value).length})</span>
+              <Plus className="w-5 h-5" />
+              Suggérer une idée
             </button>
-          ))}
+          </div>
         </div>
-        {/* List */}
-        <div className="flex flex-col gap-4">
-          {filteredDemandes.length === 0 && (
-            <div className="text-center text-gray-500 py-12">Aucune suggestion pour cette catégorie.</div>
-          )}
-          {filteredDemandes.map((demande) => (
-            <div key={demande.id} className="bg-white rounded-2xl shadow-md p-6 flex items-start gap-4 border border-gray-100">
+
+        {/* Tabs */}
+        <div className="bg-[#111111] border border-[#232323] rounded-xl p-6 mb-8">
+          <div className="flex flex-wrap gap-2">
+            {TABS.map((tab, i) => (
               <button
-                onClick={() => handleVote(demande.id)}
-                className={`flex flex-col items-center px-3 py-2 rounded-lg border ${votes[demande.id] ? "bg-[#ff0033] text-white border-[#ff0033]" : "bg-gray-50 text-[#111] border-gray-200 hover:bg-gray-200"} transition-all mr-2`}
+                key={tab.label}
+                onClick={() => setActiveTab(i)}
+                className={`px-4 py-2 rounded-lg font-semibold text-sm border transition-all flex items-center gap-2 ${
+                  activeTab === i 
+                    ? "bg-[#ff0033] text-white border-[#ff0033] shadow-md" 
+                    : "bg-[#1a1a1a] text-gray-400 border-[#333] hover:bg-[#232323] hover:text-white"
+                }`}
               >
-                <ArrowUp className="w-5 h-5 mb-1" />
-                <span className="font-bold text-lg">{demande.votes}</span>
+                <span className={getStatusColor(tab.value)}>
+                  {getStatusIcon(tab.value)}
+                </span>
+                {tab.label}
+                <span className="ml-1 text-xs bg-black/20 px-2 py-1 rounded-full">
+                  {demandes.filter((d) => d.status === tab.value).length}
+                </span>
               </button>
-              <div>
-                <h3 className="font-bold text-lg text-[#111] mb-1">{demande.title}</h3>
-                <p className="text-gray-600 text-sm">{demande.description}</p>
+            ))}
+          </div>
+        </div>
+
+        {/* Liste des demandes */}
+        <div className="space-y-4">
+          {filteredDemandes.length === 0 && (
+            <div className="bg-[#111111] border border-[#232323] rounded-xl p-12 text-center">
+              <div className="w-16 h-16 bg-gray-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <MessageSquare className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">Aucune suggestion</h3>
+              <p className="text-gray-400">Aucune suggestion pour cette catégorie pour le moment.</p>
+            </div>
+          )}
+          
+          {filteredDemandes.map((demande) => (
+            <div key={demande.id} className="bg-[#111111] border border-[#232323] rounded-xl p-6 hover:border-[#333] transition-colors">
+              <div className="flex items-start gap-4">
+                {/* Vote Button */}
+                <button
+                  onClick={() => handleVote(demande.id)}
+                  className={`flex flex-col items-center px-3 py-2 rounded-lg border transition-all ${
+                    votes[demande.id] 
+                      ? "bg-[#ff0033] text-white border-[#ff0033] shadow-md" 
+                      : "bg-[#1a1a1a] text-gray-300 border-[#333] hover:bg-[#232323] hover:border-[#ff0033]"
+                  }`}
+                >
+                  <ArrowUp className="w-5 h-5 mb-1" />
+                  <span className="font-bold text-lg">{demande.votes}</span>
+                </button>
+
+                {/* Content */}
+                <div className="flex-1">
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="font-bold text-lg text-white">{demande.title}</h3>
+                    <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(demande.status)} bg-current/10`}>
+                      {getStatusIcon(demande.status)}
+                      <span className="capitalize">{TABS.find(t => t.value === demande.status)?.label}</span>
+                    </div>
+                  </div>
+                  <p className="text-gray-400 text-sm leading-relaxed">{demande.description}</p>
+                </div>
               </div>
             </div>
           ))}
         </div>
+
         {/* Modal */}
         {modalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-            <div className="bg-[#18181b] rounded-2xl p-6 w-full max-w-md mx-2 relative animate-fadeIn shadow-xl">
-              <button onClick={() => setModalOpen(false)} className="absolute top-3 right-3 text-gray-400 hover:text-[#ff0033]"><X size={22} /></button>
-              <h2 className="text-xl font-bold text-white mb-4">Suggérer une nouvelle idée de produit</h2>
-              <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <div className="bg-[#111111] border border-[#232323] rounded-xl p-6 w-full max-w-md mx-4 relative shadow-2xl">
+              <button 
+                onClick={() => setModalOpen(false)} 
+                className="absolute top-4 right-4 text-gray-400 hover:text-[#ff0033] transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-white mb-2">Suggérer une nouvelle idée</h2>
+                <p className="text-gray-400 text-sm">Partagez votre idée de produit avec la communauté</p>
+              </div>
+              
+              <form onSubmit={handleFormSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-gray-400 mb-1">Titre</label>
-                  <input name="title" value={form.title} onChange={handleFormChange} className="w-full bg-[#232323] text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff0033]" required />
+                  <label className="block text-gray-300 font-medium mb-2">Titre du produit</label>
+                  <input 
+                    name="title" 
+                    value={form.title} 
+                    onChange={handleFormChange} 
+                    className="w-full bg-[#1a1a1a] border border-[#333] text-white p-3 rounded-lg focus:outline-none focus:border-[#ff0033] transition-colors" 
+                    placeholder="Ex: Pack Business Complet"
+                    required 
+                  />
                 </div>
+                
                 <div>
-                  <label className="block text-gray-400 mb-1">Description</label>
-                  <textarea name="description" value={form.description} onChange={handleFormChange} className="w-full bg-[#232323] text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff0033] min-h-[80px]" required />
+                  <label className="block text-gray-300 font-medium mb-2">Description détaillée</label>
+                  <textarea 
+                    name="description" 
+                    value={form.description} 
+                    onChange={handleFormChange} 
+                    className="w-full bg-[#1a1a1a] border border-[#333] text-white p-3 rounded-lg focus:outline-none focus:border-[#ff0033] transition-colors min-h-[100px] resize-none" 
+                    placeholder="Décrivez votre idée en détail..."
+                    required 
+                  />
                 </div>
-                {formError && <div className="bg-red-500/10 border border-red-500 text-red-500 p-2 rounded">{formError}</div>}
-                {formSuccess && <div className="bg-green-500/10 border border-green-500 text-green-500 p-2 rounded">{formSuccess}</div>}
-                <button type="submit" className="w-full bg-[#ff0033] text-white py-3 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors">Envoyer</button>
+                
+                {formError && (
+                  <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-lg text-sm">
+                    {formError}
+                  </div>
+                )}
+                
+                {formSuccess && (
+                  <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-3 rounded-lg text-sm">
+                    {formSuccess}
+                  </div>
+                )}
+                
+                <button 
+                  type="submit" 
+                  className="w-full bg-[#ff0033] text-white py-3 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors flex items-center justify-center gap-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  Envoyer la suggestion
+                </button>
               </form>
             </div>
           </div>

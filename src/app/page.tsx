@@ -1,106 +1,152 @@
 'use client';
-import Image from 'next/image';
-import DropskillsSidebar from '../components/DropskillsSidebar';
 import { useState } from 'react';
+import LayoutWithSidebar from '@/components/LayoutWithSidebar';
 import ProductCard from "@/components/ProductCard";
 import { SavedProductsProvider } from "@/context/SavedProductsContext";
 import { PRODUCTS } from '@/data/products';
+import { 
+  Sparkles, 
+  Star, 
+  TrendingUp, 
+  Users, 
+  Zap,
+  ArrowRight,
+  CheckCircle,
+  Crown
+} from 'lucide-react';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
-      {/* Bannière promotionnelle */}
-      <div className="bg-[#ff0033] text-white text-center py-2 text-sm">
-        🎉 Offre de lancement 2025 ➜ -50% sur le Plan Pro
-      </div>
+    <LayoutWithSidebar>
+      <div className="max-w-7xl mx-auto">
+        {/* Bannière promotionnelle */}
+        <div className="bg-gradient-to-r from-[#ff0033] to-[#cc0029] rounded-xl p-4 mb-8 text-center">
+          <div className="flex items-center justify-center gap-2 text-white">
+            <Sparkles className="w-5 h-5" />
+            <span className="font-semibold">🎉 Offre de lancement 2025 ➜ -50% sur le Plan Pro</span>
+          </div>
+        </div>
 
-      {/* Nouvelle Sidebar Dropskills */}
-      <DropskillsSidebar />
+        {/* Header */}
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-xl flex items-center justify-center">
+              <Zap className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold text-white">
+                Revendez des Produits Digitaux
+              </h1>
+              <h2 className="text-2xl font-bold text-[#ff0033]">
+                Sans Devoir les Créer
+              </h2>
+            </div>
+          </div>
 
-      {/* Contenu principal */}
-      <main className="ml-0 md:ml-64">
-        {/* Hero Section */}
-        <section className="text-center px-4 sm:px-8 py-8 sm:py-16">
-          {/* <p className="text-gray-400 mb-4">DropSkills, Leader du Digital Dropshipping en France 🇫🇷</p> */}
-          <h2 className="text-2xl sm:text-5xl font-bold text-white mb-4">
-            Revendez des Produits Digitaux
-          </h2>
-          <h3 className="text-xl sm:text-4xl font-bold text-[#ff0033] mb-8">
-            Sans Devoir les Créer
-          </h3>
-          <p className="text-gray-300 max-w-3xl mx-auto mb-8">
+          <p className="text-gray-300 text-lg max-w-4xl mb-8">
             Imaginez disposer <span className="text-white font-semibold">instantanément</span> de vos propres produits digitaux : e-books, cours vidéo, templates et bien plus encore.
             Rebrandez-les, revendez-les ou utilisez-les comme bon vous semble, sans gros investissements ni mois de création.
           </p>
 
-          {/* Features */}
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-12 mb-12">
-            <div className="flex items-center">
-              <div className="w-3 h-3 bg-[#ff0033] rounded-full mr-2"></div>
-              <span className="text-gray-300">Ressources premium</span>
+          {/* Statistiques */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+              <div className="flex items-center gap-2 text-green-400 mb-1">
+                <CheckCircle className="w-4 h-4" />
+                <span className="text-sm font-medium">Ressources premium</span>
+              </div>
+              <div className="text-2xl font-bold text-white">500+</div>
+              <div className="text-xs text-gray-400">produits disponibles</div>
             </div>
-            <div className="flex items-center">
-              <div className="w-3 h-3 bg-[#ff0033] rounded-full mr-2"></div>
-              <span className="text-gray-300">Mises à jour à vie</span>
+            
+            <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+              <div className="flex items-center gap-2 text-blue-400 mb-1">
+                <TrendingUp className="w-4 h-4" />
+                <span className="text-sm font-medium">Mises à jour</span>
+              </div>
+              <div className="text-2xl font-bold text-white">À vie</div>
+              <div className="text-xs text-gray-400">contenu toujours frais</div>
             </div>
-            <div className="flex items-center">
-              <div className="w-3 h-3 bg-[#ff0033] rounded-full mr-2"></div>
-              <span className="text-gray-300">100 % de profit pour vous</span>
+            
+            <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+              <div className="flex items-center gap-2 text-purple-400 mb-1">
+                <Crown className="w-4 h-4" />
+                <span className="text-sm font-medium">Profit</span>
+              </div>
+              <div className="text-2xl font-bold text-white">100%</div>
+              <div className="text-xs text-gray-400">pour vous</div>
             </div>
           </div>
 
           {/* Social Proof */}
-          <div className="flex flex-col sm:flex-row justify-center items-center mb-12 gap-4 sm:gap-0">
-            <div className="flex -space-x-4 justify-center">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="w-10 h-10 rounded-full bg-gray-600 border-2 border-[#0a0a0a]"></div>
-              ))}
-            </div>
-            <div className="sm:ml-4 mt-4 sm:mt-0">
-              <div className="flex text-yellow-400">
-                {'★'.repeat(5)}
+          <div className="bg-[#111111] border border-[#232323] rounded-xl p-6 mb-8">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="flex -space-x-2">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div key={i} className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 border-2 border-[#111111] flex items-center justify-center text-white text-sm font-bold">
+                      {String.fromCharCode(64 + i)}
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <div className="flex text-yellow-400 mb-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-current" />
+                    ))}
+                  </div>
+                  <p className="text-gray-300 text-sm">Validé par +300 entrepreneurs</p>
+                </div>
               </div>
-              <p className="text-gray-300">Validé par +300 entrepreneurs</p>
+              <div className="flex items-center gap-2 text-green-400">
+                <Users className="w-5 h-5" />
+                <span className="font-semibold">Communauté active</span>
+              </div>
             </div>
           </div>
-
-          {/* CTA Button */}
-          <button className="bg-[#ff0033] text-white px-8 py-4 rounded-full text-base sm:text-lg font-semibold hover:bg-red-600 transition-colors">
-            Commander Maintenant
-          </button>
-        </section>
+        </div>
 
         {/* Bannière outils IA */}
-        <div className="max-w-5xl mx-auto mb-12">
-          <div className="bg-[#18181b] rounded-2xl flex flex-col sm:flex-row items-center justify-between px-8 py-6 shadow-lg">
+        <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl p-6 mb-12">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-[#ff0033] text-2xl">🤖</span>
+                <span className="text-2xl">🤖</span>
                 <span className="text-white text-lg font-semibold">Découvrez nos 6 Outils IA Premium</span>
               </div>
-              <p className="text-gray-300 text-base">ICP Maker, Générateur d'Offre, Tunnel de Vente IA et plus encore pour booster votre business.</p>
+              <p className="text-white/90 text-base">ICP Maker, Générateur d'Offre, Tunnel de Vente IA et plus encore pour booster votre business.</p>
             </div>
             <a
               href="/outils"
-              className="mt-4 sm:mt-0 sm:ml-8 bg-[#ff0033] hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors text-base shadow-md flex items-center gap-2"
+              className="bg-white text-purple-600 font-semibold px-6 py-3 rounded-lg transition-colors text-base shadow-md flex items-center gap-2 hover:bg-gray-100"
             >
               Voir les outils IA
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L21 12m0 0l-3.75 5.25M21 12H3" />
-              </svg>
+              <ArrowRight className="w-5 h-5" />
             </a>
           </div>
         </div>
 
-        {/* Resource Grid - style maquette */}
-        <section className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16">
-          <h2 className="text-3xl font-bold text-white mb-8">Tous les produits</h2>
+        {/* Section Produits */}
+        <section className="mb-12">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-3xl font-bold text-white mb-2">Tous les produits</h2>
+              <p className="text-gray-400">Découvrez notre bibliothèque complète de ressources digitales</p>
+            </div>
+            <a
+              href="/catalogue"
+              className="bg-[#ff0033] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors flex items-center gap-2"
+            >
+              Voir tout
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
 
-          {/* Filtres et recherche simplifiés */}
+          {/* Grille de produits */}
           <ProductGridSimplified />
         </section>
-      </main>
-    </div>
+      </div>
+    </LayoutWithSidebar>
   );
 }
 
