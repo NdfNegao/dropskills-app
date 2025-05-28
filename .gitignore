@@ -36,16 +36,71 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Prisma
-/prisma/migrations
+# ============================================================================
+# FICHIERS OBSOLÈTES POST-MIGRATION PRISMA → SUPABASE
+# ============================================================================
 
-# Generated Prisma clients (volumineux)
+# Prisma (complètement obsolète)
+/prisma/
+prisma/
+
+# Generated Prisma clients (volumineux - 20MB+)
 /src/generated/
+src/generated/
 
-# Logs de migration
+# Logs de migration et développement
 /logs/
+logs/
+*.log
 
-# Fichiers de sauvegarde SQL volumineux
+# Fichiers de migration SQL (obsolètes)
 *.sql
-!database_schema_v2.sql
-!migration_plan.md
+migration*.sql
+supabase_migration*.sql
+create_v2_schema.sql
+database_schema_v2.sql
+migrate_*.sql
+backup_*.sql
+audit_*.sql
+cleanup_*.sql
+fix_*.sql
+systeme_io_tables.sql
+supabase_auth_policies.sql
+recreate_rls_policies.sql
+check_data_consistency.sql
+
+# Scripts de migration (obsolètes)
+migrate_*.sh
+cleanup-obsolete-files.sh
+
+# Documentation de migration (obsolète)
+MIGRATION*.md
+migration*.md
+*migration*.md
+cleanup*.md
+phase*.md
+SYSTEME_IO_INTEGRATION.md
+
+# Sauvegardes temporaires
+backup-before-cleanup-*.tar.gz
+
+# Fichiers système
+.DS_Store
+**/.DS_Store
+Thumbs.db
+
+# ============================================================================
+# EXCEPTIONS - Fichiers à garder
+# ============================================================================
+# Garder la documentation fonctionnelle
+!docs/
+!README.md
+!env.example
+
+# Garder les scripts utilitaires
+!scripts/
+!scripts/*.js
+
+# Garder la config Supabase
+!supabase/
+!supabase/migrations/
