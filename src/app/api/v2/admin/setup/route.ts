@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     // Vérifier si l'utilisateur existe dans auth.users
     const { data: authUsers } = await supabase.auth.admin.listUsers()
-    let authUser = authUsers.users.find(u => u.email === email)
+    let authUser = authUsers?.users?.find((u: any) => u.email === email)
 
     let userId: string
 
