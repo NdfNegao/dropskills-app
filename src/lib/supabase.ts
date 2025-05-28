@@ -1,26 +1,11 @@
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY2 || process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-console.log('SUPABASE_URL:', supabaseUrl)
-console.log('SUPABASE_ANON_KEY:', supabaseAnonKey ? supabaseAnonKey.slice(0, 8) + '...' : undefined)
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 // Nettoyer et valider les variables
 const safeSupabaseUrl = (supabaseUrl || '').trim()
 const safeSupabaseAnonKey = (supabaseAnonKey || '').trim()
-
-console.log('Avant createClient:')
-console.log('- URL:', safeSupabaseUrl, 'Type:', typeof safeSupabaseUrl, 'Length:', safeSupabaseUrl.length)
-console.log('- Key:', safeSupabaseAnonKey ? safeSupabaseAnonKey.slice(0, 8) + '...' : 'undefined', 'Type:', typeof safeSupabaseAnonKey, 'Length:', safeSupabaseAnonKey.length)
-
-// Test supplémentaire pour comprendre le problème
-console.log('Test de validation Supabase:')
-console.log('- !safeSupabaseUrl:', !safeSupabaseUrl)
-console.log('- !safeSupabaseAnonKey:', !safeSupabaseAnonKey)
-console.log('- safeSupabaseAnonKey === "":', safeSupabaseAnonKey === '')
-console.log('- safeSupabaseAnonKey === undefined:', safeSupabaseAnonKey === undefined)
-console.log('- safeSupabaseAnonKey === null:', safeSupabaseAnonKey === null)
 
 if (!safeSupabaseUrl || !safeSupabaseAnonKey) {
   throw new Error(`Variables Supabase manquantes: URL=${!!safeSupabaseUrl}, KEY=${!!safeSupabaseAnonKey}`)
@@ -31,29 +16,7 @@ let supabaseClient: any = null
 
 export const getSupabase = () => {
   if (!supabaseClient) {
-    console.log('Création du client Supabase...')
-    console.log('Arguments pour createClient:')
-    console.log('- Arg 1 (URL):', JSON.stringify(safeSupabaseUrl))
-    console.log('- Arg 2 (KEY):', JSON.stringify(safeSupabaseAnonKey))
-    console.log('- typeof Arg 1:', typeof safeSupabaseUrl)
-    console.log('- typeof Arg 2:', typeof safeSupabaseAnonKey)
-    
-    // Test avec des valeurs hardcodées pour isoler le problème
-    try {
-      console.log('Test avec valeurs hardcodées...')
-      const testClient = createClient(
-        'https://qlpaxyrebidvxizpxdym.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFscGF4eXJlYmlkdnhpenB4ZHltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyNjgwMzYsImV4cCI6MjA2Mzg0NDAzNn0.J1vEzUSYCkCZg-9JQDTdFQ2BDVr6iwcjutcFyctnWRU'
-      )
-      console.log('✅ Test hardcodé réussi')
-      supabaseClient = testClient
-    } catch (hardcodedError) {
-      console.log('❌ Test hardcodé échoué:', hardcodedError)
-      
-      // Fallback avec les variables
-      console.log('Tentative avec variables...')
-      supabaseClient = createClient(safeSupabaseUrl, safeSupabaseAnonKey)
-    }
+    supabaseClient = createClient(safeSupabaseUrl, safeSupabaseAnonKey)
   }
   return supabaseClient
 }
