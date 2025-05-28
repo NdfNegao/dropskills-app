@@ -29,7 +29,16 @@ export const getSupabaseAdmin = () => {
 
     const safeSupabaseUrl = (supabaseUrl || '').trim()
 
-    if (!safeSupabaseUrl || !serviceRoleKey) {
+    if (!safeSupabaseUrl) {
+      throw new Error(`Variables Supabase Admin manquantes: URL=${!!safeSupabaseUrl}, SERVICE_KEY=${!!serviceRoleKey}`)
+    }
+
+    if (!serviceRoleKey) {
+      // En mode build/production sans service key, retourner un mock
+      if (process.env.NODE_ENV === 'production' || process.env.NEXT_PHASE === 'phase-production-build') {
+        console.warn('⚠️ SUPABASE_SERVICE_ROLE_KEY manquante, utilisation d\'un mock pour le build')
+        return createMockSupabaseAdmin()
+      }
       throw new Error(`Variables Supabase Admin manquantes: URL=${!!safeSupabaseUrl}, SERVICE_KEY=${!!serviceRoleKey}`)
     }
 
@@ -45,6 +54,26 @@ export const getSupabaseAdmin = () => {
     )
   }
   return supabaseAdminClient
+}
+
+// Mock pour éviter les erreurs de build
+function createMockSupabaseAdmin() {
+  return {
+    from: () => ({
+      select: () => ({ single: () => Promise.resolve({ data: null, error: new Error('Mock: Service key manquante') }) }),
+      insert: () => ({ select: () => ({ single: () => Promise.resolve({ data: null, error: new Error('Mock: Service key manquante') }) }) }),
+      update: () => ({ eq: () => ({ select: () => ({ single: () => Promise.resolve({ data: null, error: new Error('Mock: Service key manquante') }) }) }) }),
+      delete: () => ({ eq: () => Promise.resolve({ error: new Error('Mock: Service key manquante') }) }),
+      upsert: () => ({ select: () => ({ single: () => Promise.resolve({ data: null, error: new Error('Mock: Service key manquante') }) }) })
+    }),
+    rpc: () => Promise.resolve({ data: null, error: new Error('Mock: Service key manquante') }),
+    auth: {
+      admin: {
+        createUser: () => Promise.resolve({ data: null, error: new Error('Mock: Service key manquante') }),
+        listUsers: () => Promise.resolve({ data: null, error: new Error('Mock: Service key manquante') })
+      }
+    }
+  }
 }
 
 // Export pour compatibilité avec le code existant
