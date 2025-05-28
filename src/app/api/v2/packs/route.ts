@@ -206,7 +206,7 @@ export async function POST(request: NextRequest) {
 
     // Création des stats initiales
     await SupabaseHelper.createPackStats({
-      pack_id: newPack.id,
+      pack_id: newPack.id as string,
       views_count: 0,
       favorites_count: 0,
       purchases_count: 0
