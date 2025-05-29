@@ -64,7 +64,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
                   </button>
                   <hr className="my-2 border-[#232323]" />
                   <button
-                    onClick={() => signOut({ callbackUrl: '/admin/login' })}
+                    onClick={() => signOut({ callbackUrl: '/auth/signin' })}
                     className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-[#232323] rounded"
                   >
                     <LogOut className="w-4 h-4" />

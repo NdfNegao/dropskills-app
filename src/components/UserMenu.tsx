@@ -65,7 +65,7 @@ export default function UserMenu({ user }: UserMenuProps) {
 
   const handleSignOut = async () => {
     await signOut({ redirect: false });
-    router.push("/login");
+    router.push("/auth/signin");
   };
 
   const menuItems = [

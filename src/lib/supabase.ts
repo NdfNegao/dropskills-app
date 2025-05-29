@@ -173,6 +173,30 @@ export interface AdminLog {
   created_at: string
 }
 
+// Interfaces pour les demandes de produits
+export interface ProductRequest {
+  id: string
+  title: string
+  description: string
+  status: 'pending' | 'in_progress' | 'completed' | 'rejected'
+  votes_count: number
+  user_id: string
+  user_email: string
+  admin_notes?: string
+  priority: 'low' | 'medium' | 'high'
+  estimated_completion?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface ProductRequestVote {
+  id: string
+  request_id: string
+  user_id: string
+  user_email: string
+  created_at: string
+}
+
 // Helpers pour remplacer les opérations Prisma courantes
 export class SupabaseHelper {
   
@@ -500,5 +524,176 @@ export class SupabaseHelper {
     
     if (error) throw error
     return count || 0
+  }
+
+  // Admin Logs
+  static async createAdminLog(logData: Partial<AdminLog>) {
+    const supabase = getSupabase()
+    const { data, error } = await supabase
+      .from('admin_logs')
+      .insert(logData)
+      .select()
+      .single()
+    
+    if (error) throw error
+    return data
+  }
+
+  static async getAdminLogs(limit = 50) {
+    const supabase = getSupabase()
+    const { data, error } = await supabase
+      .from('admin_logs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(limit)
+    
+    if (error) throw error
+    return data
+  }
+
+  // Product Requests
+  static async getAllProductRequests() {
+    const supabase = getSupabase()
+    const { data, error } = await supabase
+      .from('product_requests')
+      .select('*')
+      .order('created_at', { ascending: false })
+    
+    if (error) throw error
+    return data
+  }
+
+  static async getProductRequestsByStatus(status: string) {
+    const supabase = getSupabase()
+    const { data, error } = await supabase
+      .from('product_requests')
+      .select('*')
+      .eq('status', status)
+      .order('votes_count', { ascending: false })
+    
+    if (error) throw error
+    return data
+  }
+
+  static async createProductRequest(requestData: Partial<ProductRequest>) {
+    const supabase = getSupabase()
+    const { data, error } = await supabase
+      .from('product_requests')
+      .insert({
+        ...requestData,
+        votes_count: 0,
+        priority: 'medium',
+        status: 'pending'
+      })
+      .select()
+      .single()
+    
+    if (error) throw error
+    return data
+  }
+
+  static async updateProductRequest(id: string, updates: Partial<ProductRequest>) {
+    const supabase = getSupabase()
+    const { data, error } = await supabase
+      .from('product_requests')
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .select()
+      .single()
+    
+    if (error) throw error
+    return data
+  }
+
+  static async deleteProductRequest(id: string) {
+    const supabase = getSupabase()
+    const { error } = await supabase
+      .from('product_requests')
+      .delete()
+      .eq('id', id)
+    
+    if (error) throw error
+    return true
+  }
+
+  // Product Request Votes
+  static async getUserVoteForRequest(requestId: string, userId: string) {
+    const supabase = getSupabase()
+    const { data, error } = await supabase
+      .from('product_request_votes')
+      .select('*')
+      .eq('request_id', requestId)
+      .eq('user_id', userId)
+      .single()
+    
+    if (error && error.code !== 'PGRST116') throw error
+    return data
+  }
+
+  static async addVoteToRequest(requestId: string, userId: string, userEmail: string) {
+    const supabase = getSupabase()
+    
+    // Vérifier si l'utilisateur a déjà voté
+    const existingVote = await this.getUserVoteForRequest(requestId, userId)
+    if (existingVote) {
+      throw new Error('Vous avez déjà voté pour cette demande')
+    }
+
+    // Ajouter le vote
+    const { data: voteData, error: voteError } = await supabase
+      .from('product_request_votes')
+      .insert({
+        request_id: requestId,
+        user_id: userId,
+        user_email: userEmail
+      })
+      .select()
+      .single()
+    
+    if (voteError) throw voteError
+
+    // Incrémenter le compteur de votes
+    const { data: requestData, error: updateError } = await supabase
+      .rpc('increment_request_votes', { request_id: requestId })
+    
+    if (updateError) throw updateError
+
+    return voteData
+  }
+
+  static async removeVoteFromRequest(requestId: string, userId: string) {
+    const supabase = getSupabase()
+    
+    // Supprimer le vote
+    const { error: deleteError } = await supabase
+      .from('product_request_votes')
+      .delete()
+      .eq('request_id', requestId)
+      .eq('user_id', userId)
+    
+    if (deleteError) throw deleteError
+
+    // Décrémenter le compteur de votes
+    const { data: requestData, error: updateError } = await supabase
+      .rpc('decrement_request_votes', { request_id: requestId })
+    
+    if (updateError) throw updateError
+
+    return true
+  }
+
+  static async getRequestVotes(requestId: string) {
+    const supabase = getSupabase()
+    const { data, error } = await supabase
+      .from('product_request_votes')
+      .select('*')
+      .eq('request_id', requestId)
+      .order('created_at', { ascending: false })
+    
+    if (error) throw error
+    return data
   }
 } 

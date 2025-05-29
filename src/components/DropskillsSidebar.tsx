@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { signOut } from 'next-auth/react';
 import { useAuth } from "@/hooks/useAuth";
 import {
   Home, Lock, BookOpen, User, Settings, LogOut, 
@@ -212,7 +213,7 @@ export default function DropskillsSidebar({
         <button
           onClick={() => {
             // Logique de déconnexion
-            router.push('/auth/logout');
+            signOut({ callbackUrl: '/' });
           }}
           className={`group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-900/50 transition font-medium relative text-left w-full`}
         >

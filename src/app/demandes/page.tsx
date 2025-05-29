@@ -1,5 +1,8 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import LayoutWithSidebar from "@/components/LayoutWithSidebar";
 import { 
   ArrowUp, 
@@ -15,154 +18,241 @@ import {
 } from "lucide-react";
 
 const TABS = [
-  { label: "Idées", value: "idee" },
-  { label: "Prévu", value: "prevu" },
-  { label: "Terminé", value: "termine" },
-  { label: "Rejeté", value: "rejete" },
+  { label: "Idées", value: "pending" },
+  { label: "En cours", value: "in_progress" },
+  { label: "Terminé", value: "completed" },
+  { label: "Rejeté", value: "rejected" },
 ];
 
-const DEMANDES_INIT = [
-  {
-    id: "1",
-    title: "Ultimate Survival Prepper",
-    description:
-      "Pack complet avec contenus détaillés, checklists et guides sur la survie, la préparation aux urgences, le stockage alimentaire, l'auto-défense, et plus encore.",
-    votes: 19,
-    status: "idee",
-  },
-  {
-    id: "2",
-    title: "Bonnes pratiques de sécurité pour le business en ligne",
-    description:
-      "Gardez votre activité et vos données en sécurité sur internet. Options gratuites et payantes pour la cybersécurité – soyez prudent, soyez protégé.",
-    votes: 31,
-    status: "prevu",
-  },
-  {
-    id: "3",
-    title: "Clés pour humaniser vos textes marketing IA",
-    description:
-      "Des astuces pour rendre vos textes IA plus humains, plus rapides à produire, tout en gardant votre identité de marque !",
-    votes: 39,
-    status: "idee",
-  },
-  {
-    id: "4",
-    title: "Restez motivé pour garder la forme et la santé",
-    description:
-      "Un workbook motivationnel pour celles et ceux qui peinent à garder de bonnes habitudes pour rester en forme et en bonne santé.",
-    votes: 29,
-    status: "termine",
-  },
-  {
-    id: "5",
-    title: "Leadership sécurité : construire une culture de responsabilité",
-    description:
-      "Guide pratique pour les leaders afin d'instaurer une culture sécurité forte par l'exemple, la communication et l'engagement quotidien.",
-    votes: 24,
-    status: "rejete",
-  },
-  {
-    id: "6",
-    title: "Travailler avec des assistants virtuels (VA)",
-    description:
-      "Comment collaborer efficacement avec un VA à distance. SOPs, KPIs, suivi des tâches et reporting.",
-    votes: 28,
-    status: "idee",
-  },
-];
+interface ProductRequest {
+  id: string;
+  title: string;
+  description: string;
+  status: 'pending' | 'in_progress' | 'completed' | 'rejected';
+  votes_count: number;
+  user_id: string;
+  user_email: string;
+  admin_notes?: string;
+  priority: 'low' | 'medium' | 'high';
+  estimated_completion?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface UserVote {
+  [requestId: string]: boolean;
+}
 
 export default function DemandesPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState({ title: "", description: "" });
   const [formError, setFormError] = useState("");
   const [formSuccess, setFormSuccess] = useState("");
-  const [demandes, setDemandes] = useState(DEMANDES_INIT);
-  const [votes, setVotes] = useState<{ [id: string]: boolean }>(() => {
-    if (typeof window !== "undefined") {
-      return JSON.parse(localStorage.getItem("votes") || "{}");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [requests, setRequests] = useState<ProductRequest[]>([]);
+  const [userVotes, setUserVotes] = useState<UserVote>({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Charger les demandes
+  useEffect(() => {
+    const loadRequests = async () => {
+      try {
+        const response = await fetch('/api/product-requests');
+        if (response.ok) {
+          const data = await response.json();
+          setRequests(data);
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des demandes:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadRequests();
+  }, []);
+
+  // Charger les votes de l'utilisateur
+  useEffect(() => {
+    const loadUserVotes = async () => {
+      if (!session?.user?.email) return;
+
+      const votes: UserVote = {};
+      for (const request of requests) {
+        try {
+          const response = await fetch(`/api/product-requests/${request.id}/vote`);
+          if (response.ok) {
+            const data = await response.json();
+            votes[request.id] = data.hasVoted;
+          }
+        } catch (error) {
+          console.error('Erreur lors du chargement des votes:', error);
+        }
+      }
+      setUserVotes(votes);
+    };
+
+    if (requests.length > 0) {
+      loadUserVotes();
     }
-    return {};
-  });
+  }, [requests, session]);
 
   // Vote ou dé-vote
-  const handleVote = (id: string) => {
-    const newVotes = { ...votes };
-    let newDemandes = [...demandes];
-    const idx = newDemandes.findIndex((d) => d.id === id);
-    if (votes[id]) {
-      // Dé-vote
-      delete newVotes[id];
-      newDemandes[idx].votes = Math.max(0, newDemandes[idx].votes - 1);
-    } else {
-      // Vote
-      newVotes[id] = true;
-      newDemandes[idx].votes = newDemandes[idx].votes + 1;
+  const handleVote = async (requestId: string) => {
+    if (!session?.user?.email) {
+      router.push('/auth/signin');
+      return;
     }
-    setVotes(newVotes);
-    setDemandes(newDemandes);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("votes", JSON.stringify(newVotes));
+
+    try {
+      const response = await fetch(`/api/product-requests/${requestId}/vote`, {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        
+        // Mettre à jour l'état local
+        setUserVotes(prev => ({
+          ...prev,
+          [requestId]: result.action === 'added'
+        }));
+
+        // Mettre à jour le compteur de votes
+        setRequests(prev => 
+          prev.map(req => 
+            req.id === requestId 
+              ? { 
+                  ...req, 
+                  votes_count: result.action === 'added' 
+                    ? req.votes_count + 1 
+                    : Math.max(0, req.votes_count - 1)
+                }
+              : req
+          )
+        );
+      } else {
+        const error = await response.json();
+        console.error('Erreur lors du vote:', error.error);
+      }
+    } catch (error) {
+      console.error('Erreur lors du vote:', error);
     }
   };
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-  const handleFormSubmit = (e: React.FormEvent) => {
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError("");
     setFormSuccess("");
-    if (!form.title || !form.description) {
-      setFormError("Tous les champs sont obligatoires.");
+    setIsSubmitting(true);
+
+    if (!session?.user?.email) {
+      router.push('/auth/signin');
       return;
     }
-    // Ajout côté front, status par défaut "idee"
-    setDemandes([
-      ...demandes,
-      {
-        id: (demandes.length + 1).toString(),
-        title: form.title,
-        description: form.description,
-        votes: 0,
-        status: "idee",
-      },
-    ]);
-    setFormSuccess("Merci pour votre suggestion ! (simulation)");
-    setForm({ title: "", description: "" });
-    setTimeout(() => setModalOpen(false), 1200);
+
+    if (!form.title || !form.description) {
+      setFormError("Tous les champs sont obligatoires.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (form.title.length < 10 || form.title.length > 255) {
+      setFormError("Le titre doit contenir entre 10 et 255 caractères.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (form.description.length < 20 || form.description.length > 2000) {
+      setFormError("La description doit contenir entre 20 et 2000 caractères.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/product-requests', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(form),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setRequests(prev => [result.request, ...prev]);
+        setFormSuccess("Merci pour votre suggestion ! Elle a été soumise avec succès.");
+        setForm({ title: "", description: "" });
+        setTimeout(() => {
+          setModalOpen(false);
+          setFormSuccess("");
+        }, 2000);
+      } else {
+        const error = await response.json();
+        setFormError(error.error || "Erreur lors de la soumission");
+      }
+    } catch (error) {
+      setFormError("Erreur lors de la soumission de votre demande");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Filtrage dynamique selon l'onglet
-  const filteredDemandes = demandes.filter((d) => d.status === TABS[activeTab].value);
+  const filteredRequests = requests.filter((d) => d.status === TABS[activeTab].value);
 
   const stats = {
-    totalDemandes: demandes.length,
-    enCours: demandes.filter(d => d.status === 'prevu').length,
-    terminees: demandes.filter(d => d.status === 'termine').length,
-    totalVotes: demandes.reduce((sum, d) => sum + d.votes, 0)
+    totalDemandes: requests.length,
+    enCours: requests.filter(d => d.status === 'in_progress').length,
+    terminees: requests.filter(d => d.status === 'completed').length,
+    totalVotes: requests.reduce((sum, d) => sum + d.votes_count, 0)
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'idee': return <Lightbulb className="w-4 h-4" />;
-      case 'prevu': return <Clock className="w-4 h-4" />;
-      case 'termine': return <CheckCircle className="w-4 h-4" />;
-      case 'rejete': return <XCircle className="w-4 h-4" />;
+      case 'pending': return <Lightbulb className="w-4 h-4" />;
+      case 'in_progress': return <Clock className="w-4 h-4" />;
+      case 'completed': return <CheckCircle className="w-4 h-4" />;
+      case 'rejected': return <XCircle className="w-4 h-4" />;
       default: return <MessageSquare className="w-4 h-4" />;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'idee': return 'text-blue-400';
-      case 'prevu': return 'text-yellow-400';
-      case 'termine': return 'text-green-400';
-      case 'rejete': return 'text-red-400';
+      case 'pending': return 'text-blue-400';
+      case 'in_progress': return 'text-yellow-400';
+      case 'completed': return 'text-green-400';
+      case 'rejected': return 'text-red-400';
       default: return 'text-gray-400';
     }
   };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <LayoutWithSidebar>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff0033]"></div>
+          <span className="ml-2 text-gray-300">Chargement des demandes...</span>
+        </div>
+      </LayoutWithSidebar>
+    );
+  }
 
   return (
     <LayoutWithSidebar>
@@ -173,7 +263,7 @@ export default function DemandesPage() {
             <div className="w-12 h-12 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
               <MessageSquare className="w-6 h-6 text-white" />
             </div>
-          <div>
+            <div>
               <h1 className="text-3xl font-bold text-white">Demandes de Produits</h1>
               <p className="text-gray-400">Votez ou suggérez de nouveaux produits à ajouter à la DropSkills Library</p>
             </div>
@@ -220,44 +310,50 @@ export default function DemandesPage() {
 
           {/* Action Button */}
           <div className="flex justify-end">
-          <button
-            onClick={() => setModalOpen(true)}
+            <button
+              onClick={() => {
+                if (!session?.user?.email) {
+                  router.push('/auth/signin');
+                  return;
+                }
+                setModalOpen(true);
+              }}
               className="bg-[#ff0033] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors shadow-md flex items-center gap-2"
-          >
+            >
               <Plus className="w-5 h-5" />
-            Suggérer une idée
-          </button>
+              Suggérer une idée
+            </button>
           </div>
         </div>
 
         {/* Tabs */}
         <div className="bg-[#111111] border border-[#232323] rounded-xl p-6 mb-8">
           <div className="flex flex-wrap gap-2">
-          {TABS.map((tab, i) => (
-            <button
-              key={tab.label}
-              onClick={() => setActiveTab(i)}
+            {TABS.map((tab, i) => (
+              <button
+                key={tab.label}
+                onClick={() => setActiveTab(i)}
                 className={`px-4 py-2 rounded-lg font-semibold text-sm border transition-all flex items-center gap-2 ${
                   activeTab === i 
                     ? "bg-[#ff0033] text-white border-[#ff0033] shadow-md" 
                     : "bg-[#1a1a1a] text-gray-400 border-[#333] hover:bg-[#232323] hover:text-white"
                 }`}
-            >
+              >
                 <span className={getStatusColor(tab.value)}>
                   {getStatusIcon(tab.value)}
                 </span>
                 {tab.label}
                 <span className="ml-1 text-xs bg-black/20 px-2 py-1 rounded-full">
-                  {demandes.filter((d) => d.status === tab.value).length}
+                  {requests.filter((d) => d.status === tab.value).length}
                 </span>
-            </button>
-          ))}
+              </button>
+            ))}
           </div>
         </div>
 
         {/* Liste des demandes */}
         <div className="space-y-4">
-          {filteredDemandes.length === 0 && (
+          {filteredRequests.length === 0 && (
             <div className="bg-[#111111] border border-[#232323] rounded-xl p-12 text-center">
               <div className="w-16 h-16 bg-gray-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <MessageSquare className="w-8 h-8 text-gray-400" />
@@ -267,21 +363,22 @@ export default function DemandesPage() {
             </div>
           )}
           
-          {filteredDemandes.map((demande) => (
+          {filteredRequests.map((demande) => (
             <div key={demande.id} className="bg-[#111111] border border-[#232323] rounded-xl p-6 hover:border-[#333] transition-colors">
               <div className="flex items-start gap-4">
                 {/* Vote Button */}
-              <button
-                onClick={() => handleVote(demande.id)}
+                <button
+                  onClick={() => handleVote(demande.id)}
+                  disabled={!session?.user?.email}
                   className={`flex flex-col items-center px-3 py-2 rounded-lg border transition-all ${
-                    votes[demande.id] 
+                    userVotes[demande.id] 
                       ? "bg-[#ff0033] text-white border-[#ff0033] shadow-md" 
                       : "bg-[#1a1a1a] text-gray-300 border-[#333] hover:bg-[#232323] hover:border-[#ff0033]"
-                  }`}
-              >
-                <ArrowUp className="w-5 h-5 mb-1" />
-                <span className="font-bold text-lg">{demande.votes}</span>
-              </button>
+                  } ${!session?.user?.email ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  <ArrowUp className="w-5 h-5 mb-1" />
+                  <span className="font-bold text-lg">{demande.votes_count}</span>
+                </button>
 
                 {/* Content */}
                 <div className="flex-1">
@@ -292,7 +389,24 @@ export default function DemandesPage() {
                       <span className="capitalize">{TABS.find(t => t.value === demande.status)?.label}</span>
                     </div>
                   </div>
-                  <p className="text-gray-400 text-sm leading-relaxed">{demande.description}</p>
+                  <p className="text-gray-400 text-sm leading-relaxed mb-3">{demande.description}</p>
+                  
+                  <div className="flex items-center gap-4 text-xs text-gray-500">
+                    <span>Créée le {formatDate(demande.created_at)}</span>
+                    {demande.estimated_completion && (
+                      <span className="text-blue-400">
+                        Livraison estimée: {formatDate(demande.estimated_completion)}
+                      </span>
+                    )}
+                  </div>
+
+                  {demande.admin_notes && (
+                    <div className="mt-3 p-3 bg-[#1a1a1a] rounded-lg border border-[#333]">
+                      <p className="text-gray-300 text-sm">
+                        <span className="font-medium text-yellow-400">Note de l'équipe:</span> {demande.admin_notes}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -325,7 +439,10 @@ export default function DemandesPage() {
                     className="w-full bg-[#1a1a1a] border border-[#333] text-white p-3 rounded-lg focus:outline-none focus:border-[#ff0033] transition-colors" 
                     placeholder="Ex: Pack Business Complet"
                     required 
+                    minLength={10}
+                    maxLength={255}
                   />
+                  <p className="text-xs text-gray-500 mt-1">{form.title.length}/255 caractères</p>
                 </div>
                 
                 <div>
@@ -337,7 +454,10 @@ export default function DemandesPage() {
                     className="w-full bg-[#1a1a1a] border border-[#333] text-white p-3 rounded-lg focus:outline-none focus:border-[#ff0033] transition-colors min-h-[100px] resize-none" 
                     placeholder="Décrivez votre idée en détail..."
                     required 
+                    minLength={20}
+                    maxLength={2000}
                   />
+                  <p className="text-xs text-gray-500 mt-1">{form.description.length}/2000 caractères</p>
                 </div>
                 
                 {formError && (
@@ -354,10 +474,20 @@ export default function DemandesPage() {
                 
                 <button 
                   type="submit" 
-                  className="w-full bg-[#ff0033] text-white py-3 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors flex items-center justify-center gap-2"
+                  disabled={isSubmitting}
+                  className="w-full bg-[#ff0033] text-white py-3 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Plus className="w-4 h-4" />
-                  Envoyer la suggestion
+                  {isSubmitting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      Envoi en cours...
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-4 h-4" />
+                      Envoyer la suggestion
+                    </>
+                  )}
                 </button>
               </form>
             </div>

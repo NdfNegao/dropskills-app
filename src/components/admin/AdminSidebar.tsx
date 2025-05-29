@@ -35,6 +35,7 @@ const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Utilisateurs', href: '/admin/utilisateurs', icon: Users },
   { name: 'Affiliés', href: '/admin/affiliates', icon: UserCheck },
+  { name: 'Demandes Produits', href: '/admin/product-requests', icon: MessageSquare },
   { name: 'Packs', href: '/admin/packs', icon: Package },
   { name: 'Outils IA', href: '/admin/outils-ia', icon: Bot },
   { name: 'Prompts IA', href: '/admin/prompts', icon: BrainCircuit },
