@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -22,9 +23,17 @@ export default function Sidebar() {
   // Fermer la sidebar au clic sur un lien (mobile)
   const handleLinkClick = () => setSidebarOpen(false);
 
-  const handleLogout = () => {
-    // Logique de déconnexion
-    router.push('/login');
+  const handleLogout = async () => {
+    try {
+      await signOut({ 
+        callbackUrl: '/',
+        redirect: true 
+      });
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error);
+      // Fallback en cas d'erreur
+      router.push('/');
+    }
   };
 
   const handleUnlockProducts = () => {
