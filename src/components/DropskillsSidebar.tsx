@@ -272,12 +272,12 @@ function SidebarCTA({ icon, label, cta, collapsed, href }: SidebarCTAProps) {
     <div className={`relative bg-gradient-to-br from-[#18181b] to-[#232323] rounded-xl p-4 shadow-lg border border-[#232323] flex flex-col items-start justify-between w-full mb-2`}> 
       <div className="flex items-center gap-2 mb-2">
         <span className="text-2xl text-[#ff0033]">{icon}</span>
-        <span className="font-bold text-white text-lg">Débloquez Premium</span>
+        <span className="font-bold text-white text-[14px]">Débloquez Premium</span>
       </div>
-      <span className="text-white text-sm mb-4 block opacity-80">Passez à la version premium pour débloquer tout le contenu et les outils.</span>
+      <span className="text-white text-[12px] mb-4 block opacity-80">Passez à la version premium pour débloquer tout le contenu et les outils.</span>
       <Link href={href} className="w-full">
         <button className="w-full flex items-center justify-center gap-2 bg-[#ff0033] hover:bg-[#cc0029] text-white py-2.5 rounded-lg font-semibold text-base transition-all duration-200 shadow-md">
-          Upgrade Now <span className="ml-1">→</span>
+          Go Premium <span className="ml-1">→</span>
         </button>
       </Link>
       {/* Effet de lumière */}
