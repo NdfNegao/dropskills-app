@@ -16,7 +16,8 @@ import {
   Shield,
   Activity,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  BrainCircuit
 } from 'lucide-react';
 
 interface AdminSidebarProps {
@@ -34,6 +35,7 @@ const navigation = [
   { name: 'Utilisateurs', href: '/admin/utilisateurs', icon: Users },
   { name: 'Packs', href: '/admin/packs', icon: Package },
   { name: 'Outils IA', href: '/admin/outils-ia', icon: Bot },
+  { name: 'Prompts IA', href: '/admin/prompts', icon: BrainCircuit },
   { name: 'Support', href: '/admin/support', icon: MessageSquare },
   { name: 'Webhooks', href: '/admin/webhooks', icon: Webhook },
   { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },

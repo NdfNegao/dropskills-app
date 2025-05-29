@@ -1,21 +1,108 @@
 import OpenAI from 'openai';
 
-// Initialisation conditionnelle pour éviter les erreurs de build
-let openai: OpenAI | null = null;
+// Configuration OpenAI
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-function getOpenAIClient(): OpenAI {
-  if (!openai) {
-    if (!process.env.OPENAI_API_KEY) {
-      throw new Error('OPENAI_API_KEY is required');
-    }
-    openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
-  }
-  return openai;
+// Types pour les réponses
+export interface AIResponse {
+  content: string;
+  usage?: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
 }
 
-export { getOpenAIClient as openai };
+// Configuration des modèles par outil
+export const AI_MODELS = {
+  icp: 'gpt-4o-mini', // Analyse complexe
+  titles: 'gpt-3.5-turbo', // Génération rapide
+  descriptions: 'gpt-3.5-turbo', // Textes courts
+  emails: 'gpt-4o-mini', // Copywriting avancé
+  offers: 'gpt-4o-mini', // Stratégie commerciale
+  content: 'gpt-4o-mini', // Planning complexe
+  usp: 'gpt-3.5-turbo', // Propositions courtes
+} as const;
+
+// Fonction générique de génération
+export async function generateAIContent(
+  prompt: string,
+  model: keyof typeof AI_MODELS | string = 'titles',
+  temperature: number = 0.7,
+  maxTokens: number = 1000
+): Promise<AIResponse> {
+  try {
+    const modelName = typeof model === 'string' && model in AI_MODELS 
+      ? AI_MODELS[model as keyof typeof AI_MODELS]
+      : model;
+
+    const response = await openai.chat.completions.create({
+      model: modelName,
+      messages: [
+        {
+          role: 'system',
+          content: 'Tu es un expert en marketing digital et copywriting. Réponds toujours en français avec un ton professionnel et engageant.'
+        },
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      temperature,
+      max_tokens: maxTokens,
+    });
+
+    return {
+      content: response.choices[0]?.message?.content || '',
+      usage: response.usage ? {
+        prompt_tokens: response.usage.prompt_tokens,
+        completion_tokens: response.usage.completion_tokens,
+        total_tokens: response.usage.total_tokens,
+      } : undefined
+    };
+  } catch (error) {
+    console.error('Erreur OpenAI:', error);
+    throw new Error('Erreur lors de la génération IA');
+    }
+}
+
+// Fonction avec streaming (pour l'affichage en temps réel)
+export async function generateAIContentStream(
+  prompt: string,
+  model: keyof typeof AI_MODELS | string = 'titles',
+  temperature: number = 0.7
+) {
+  try {
+    const modelName = typeof model === 'string' && model in AI_MODELS 
+      ? AI_MODELS[model as keyof typeof AI_MODELS]
+      : model;
+
+    const stream = await openai.chat.completions.create({
+      model: modelName,
+      messages: [
+        {
+          role: 'system',
+          content: 'Tu es un expert en marketing digital et copywriting. Réponds toujours en français avec un ton professionnel et engageant.'
+        },
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      temperature,
+      stream: true,
+    });
+
+    return stream;
+  } catch (error) {
+    console.error('Erreur OpenAI Stream:', error);
+    throw new Error('Erreur lors de la génération IA');
+  }
+}
+
+export default openai;
 
 export interface IdeaGenerationRequest {
   targetAudience: string;
@@ -38,7 +125,7 @@ export interface GeneratedIdea {
 }
 
 export async function generateProductIdeas(request: IdeaGenerationRequest): Promise<GeneratedIdea[]> {
-  const client = getOpenAIClient();
+  const client = openai;
   const { targetAudience, topic, formats } = request;
   
   // Construction du prompt optimisé

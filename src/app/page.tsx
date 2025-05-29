@@ -12,20 +12,26 @@ import {
   Zap,
   ArrowRight,
   CheckCircle,
-  Crown
+  Crown,
+  Target,
+  Rocket,
+  FolderKanban,
+  Mail,
+  Eye,
+  Lightbulb
 } from 'lucide-react';
 
 export default function Home() {
   return (
     <LayoutWithSidebar>
       <div className="max-w-7xl mx-auto">
-        {/* Bannière promotionnelle */}
+      {/* Bannière promotionnelle */}
         <div className="bg-gradient-to-r from-[#ff0033] to-[#cc0029] rounded-xl p-4 mb-8 text-center">
           <div className="flex items-center justify-center gap-2 text-white">
             <Sparkles className="w-5 h-5" />
             <span className="font-semibold">🎉 Offre de lancement 2025 ➜ -50% sur le Plan Pro</span>
           </div>
-        </div>
+      </div>
 
         {/* Header */}
         <div className="mb-12">
@@ -35,11 +41,11 @@ export default function Home() {
             </div>
             <div>
               <h1 className="text-4xl font-bold text-white">
-                Revendez des Produits Digitaux
+            Revendez des Produits Digitaux
               </h1>
               <h2 className="text-2xl font-bold text-[#ff0033]">
                 Sans Devoir les Créer
-              </h2>
+          </h2>
             </div>
           </div>
 
@@ -83,7 +89,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="flex -space-x-2">
-                  {[1, 2, 3, 4, 5].map((i) => (
+              {[1, 2, 3, 4, 5].map((i) => (
                     <div key={i} className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 border-2 border-[#111111] flex items-center justify-center text-white text-sm font-bold">
                       {String.fromCharCode(64 + i)}
                     </div>
@@ -93,8 +99,8 @@ export default function Home() {
                   <div className="flex text-yellow-400 mb-1">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} className="w-4 h-4 fill-current" />
-                    ))}
-                  </div>
+              ))}
+            </div>
                   <p className="text-gray-300 text-sm">Validé par +300 entrepreneurs</p>
                 </div>
               </div>
@@ -106,23 +112,62 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Bannière outils IA */}
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl p-6 mb-12">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        {/* Bannière outils IA - Flow Stratégique */}
+        <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-xl p-8 mb-12">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-2xl">🤖</span>
-                <span className="text-white text-lg font-semibold">Découvrez nos 6 Outils IA Premium</span>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                  <Lightbulb className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <span className="text-white text-2xl font-bold">12 Outils IA Stratégiques</span>
+                  <p className="text-white/80 text-sm">Flow entrepreneurial complet</p>
+                </div>
               </div>
-              <p className="text-white/90 text-base">ICP Maker, Générateur d'Offre, Tunnel de Vente IA et plus encore pour booster votre business.</p>
+              <p className="text-white/90 text-base mb-4">
+                Suivez notre <strong>parcours entrepreneurial structuré</strong> : de la définition de votre cible jusqu'à la croissance continue.
+                Chaque outil démultiplie l'efficacité du précédent.
+              </p>
+              
+              {/* Mini flow visuel */}
+              <div className="flex flex-wrap items-center gap-2 mb-4">
+                <div className="flex items-center gap-1 bg-white/10 rounded-lg px-3 py-1">
+                  <Target className="w-4 h-4 text-blue-300" />
+                  <span className="text-white text-xs font-medium">CIBLE</span>
+                </div>
+                <ArrowRight className="w-3 h-3 text-white/60" />
+                <div className="flex items-center gap-1 bg-white/10 rounded-lg px-3 py-1">
+                  <Rocket className="w-4 h-4 text-purple-300" />
+                  <span className="text-white text-xs font-medium">OFFRE</span>
+                </div>
+                <ArrowRight className="w-3 h-3 text-white/60" />
+                <div className="flex items-center gap-1 bg-white/10 rounded-lg px-3 py-1">
+                  <FolderKanban className="w-4 h-4 text-orange-300" />
+                  <span className="text-white text-xs font-medium">CONVERSION</span>
+                </div>
+                <ArrowRight className="w-3 h-3 text-white/60" />
+                <div className="flex items-center gap-1 bg-white/10 rounded-lg px-3 py-1">
+                  <Mail className="w-4 h-4 text-pink-300" />
+                  <span className="text-white text-xs font-medium">ACTIVATION</span>
+                </div>
+                <ArrowRight className="w-3 h-3 text-white/60" />
+                <div className="flex items-center gap-1 bg-white/10 rounded-lg px-3 py-1">
+                  <Eye className="w-4 h-4 text-red-300" />
+                  <span className="text-white text-xs font-medium">CROISSANCE</span>
+                </div>
+              </div>
             </div>
-            <a
-              href="/outils"
-              className="bg-white text-purple-600 font-semibold px-6 py-3 rounded-lg transition-colors text-base shadow-md flex items-center gap-2 hover:bg-gray-100"
-            >
-              Voir les outils IA
-              <ArrowRight className="w-5 h-5" />
-            </a>
+            <div className="flex flex-col gap-3">
+              <a
+                href="/outils"
+                className="bg-white text-purple-600 font-semibold px-8 py-4 rounded-lg transition-colors text-base shadow-md flex items-center gap-2 hover:bg-gray-100"
+              >
+                Découvrir le Flow IA
+                <ArrowRight className="w-5 h-5" />
+              </a>
+              <p className="text-white/70 text-xs text-center">12,847 créations IA générées</p>
+            </div>
           </div>
         </div>
 
@@ -145,7 +190,7 @@ export default function Home() {
           {/* Grille de produits */}
           <ProductGridSimplified />
         </section>
-      </div>
+    </div>
     </LayoutWithSidebar>
   );
 }

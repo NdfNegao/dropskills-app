@@ -104,13 +104,13 @@ export async function PUT(
     // Ajouter les informations utilisateur pour la compatibilité
     const responseProfile = {
       ...updatedProfile,
-      user: {
+        user: {
         id: updatedProfile.user_id,
         email: data.email || `user-${updatedProfile.user_id}@example.com`,
         userPacks: [],
         favorites: []
+        }
       }
-    }
 
     return NextResponse.json(responseProfile)
 

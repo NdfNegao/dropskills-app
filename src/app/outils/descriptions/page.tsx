@@ -27,9 +27,10 @@ export default function DescriptionsPage() {
 
   const tones = [
     { id: 'professionnel', label: 'Professionnel' },
-    { id: 'amical', label: 'Amical' },
-    { id: 'persuasif', label: 'Persuasif' },
-    { id: 'technique', label: 'Technique' }
+    { id: 'commercial', label: 'Commercial' },
+    { id: 'emotionnel', label: 'Émotionnel' },
+    { id: 'technique', label: 'Technique' },
+    { id: 'casual', label: 'Casual' }
   ];
 
   const handleGenerate = async () => {
@@ -40,19 +41,27 @@ export default function DescriptionsPage() {
 
     setIsGenerating(true);
     
-    // Simulation de génération IA
-    setTimeout(() => {
-      const mockResults = [
-        `${formData.productName} - La solution ${formData.category.toLowerCase()} qui révolutionne votre quotidien. Découvrez ${formData.features || 'des fonctionnalités innovantes'} conçues spécialement pour ${formData.targetAudience || 'vous'}.`,
-        `Transformez votre expérience avec ${formData.productName}. Cette ${formData.category.toLowerCase()} exceptionnelle combine performance et simplicité pour offrir des résultats remarquables.`,
-        `${formData.productName} : l'innovation au service de ${formData.targetAudience || 'votre réussite'}. Une ${formData.category.toLowerCase()} pensée pour dépasser vos attentes avec ${formData.features || 'des caractéristiques uniques'}.`,
-        `Découvrez ${formData.productName}, la ${formData.category.toLowerCase()} nouvelle génération. Conçue pour ${formData.targetAudience || 'les exigeants'}, elle intègre ${formData.features || 'les dernières technologies'}.`,
-        `${formData.productName} redéfinit les standards de la ${formData.category.toLowerCase()}. Une solution complète qui allie ${formData.features || 'efficacité et élégance'} pour ${formData.targetAudience || 'tous les utilisateurs'}.`
-      ];
-      
-      setResults(mockResults);
+    try {
+      const response = await fetch('/api/ai/descriptions/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la génération');
+      }
+
+      const data = await response.json();
+      setResults(data.descriptions || []);
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert('Erreur lors de la génération des descriptions');
+    } finally {
       setIsGenerating(false);
-    }, 2000);
+    }
   };
 
   const copyToClipboard = (text: string) => {
@@ -241,6 +250,34 @@ export default function DescriptionsPage() {
                 ))}
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Conseils */}
+        <div className="mt-8 bg-purple-900/20 border border-purple-500/30 rounded-xl p-6">
+          <h3 className="text-purple-400 font-semibold mb-4 flex items-center gap-2">
+            <Lightbulb className="w-5 h-5" />
+            💡 Conseils pour des descriptions efficaces
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-purple-300 text-sm">
+            <div>
+              <h4 className="font-medium mb-3 text-purple-200">✨ Rédaction optimisée</h4>
+              <ul className="space-y-2 text-purple-300">
+                <li>• <strong>Mots-clés stratégiques :</strong> Intégrez naturellement vos mots-clés SEO</li>
+                <li>• <strong>Bénéfices avant fonctionnalités :</strong> Mettez en avant ce que ça apporte</li>
+                <li>• <strong>Émojis pertinents :</strong> 2-3 émojis pour capter l'attention</li>
+                <li>• <strong>Longueur optimale :</strong> 80-150 mots pour un bon équilibre</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-3 text-purple-200">🎯 Conversion et engagement</h4>
+              <ul className="space-y-2 text-purple-300">
+                <li>• <strong>Adaptez le ton :</strong> Choisissez le ton selon votre audience</li>
+                <li>• <strong>Créez de l'émotion :</strong> Utilisez des mots qui touchent</li>
+                <li>• <strong>Preuve sociale :</strong> Mentionnez avis, témoignages ou chiffres</li>
+                <li>• <strong>Call-to-action :</strong> Terminez par une incitation à l'action</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

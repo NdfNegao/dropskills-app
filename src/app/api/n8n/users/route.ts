@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
           .eq('user_id', profile.user_id)
 
         return {
-          ...profile,
+      ...profile,
           user: {
             id: profile.user_id,
             email: `user-${profile.user_id}@example.com`, // Placeholder

@@ -69,7 +69,7 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
       {/* Badge format (coin sup gauche) */}
       <div className="absolute top-3 left-3 z-10">
         <div className={`bg-gradient-to-r ${getFormatColor(product.format)} rounded-lg p-2 shadow-md flex items-center justify-center`}>
-          {getFormatIcon(product.format)}
+        {getFormatIcon(product.format)}
         </div>
       </div>
 
@@ -110,7 +110,7 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
 
       {/* Contenu */}
       <div className="p-4">
-        {/* Titre & sous-titre */}
+      {/* Titre & sous-titre */}
         <div className="mb-4">
           <h3 className="font-bold text-lg text-white mb-1 line-clamp-2 leading-tight">
             {product.title}
@@ -154,26 +154,26 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
           <span className="capitalize text-gray-500">
             {product.format}
           </span>
-        </div>
+      </div>
 
         {/* Actions */}
         <div className="flex gap-2">
-          <button
-            onClick={handleOpen}
+        <button
+          onClick={handleOpen}
             className="flex-1 bg-[#ff0033] text-white py-2.5 px-4 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors flex items-center justify-center gap-2"
-          >
+        >
             <ExternalLink className="w-4 h-4" />
-            Ouvrir
-          </button>
+          Ouvrir
+        </button>
           
           {onDownload && (
-            <button
-              onClick={onDownload}
+        <button
+          onClick={onDownload}
               className="bg-[#1a1a1a] border border-[#333] text-gray-300 p-2.5 rounded-lg hover:bg-[#232323] hover:text-white transition-colors flex items-center justify-center"
               aria-label="Télécharger"
-            >
+        >
               <FileDown className="w-4 h-4" />
-            </button>
+        </button>
           )}
         </div>
       </div>

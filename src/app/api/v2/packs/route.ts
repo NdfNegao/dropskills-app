@@ -93,12 +93,12 @@ export async function GET(request: NextRequest) {
           .single()
 
         return {
-          id: pack.id,
-          title: pack.title,
-          slug: pack.slug,
-          description: pack.description,
-          price: pack.price,
-          status: pack.status,
+      id: pack.id,
+      title: pack.title,
+      slug: pack.slug,
+      description: pack.description,
+      price: pack.price,
+      status: pack.status,
           category: category,
           creator: creator,
           samples: samples || [],
@@ -106,7 +106,7 @@ export async function GET(request: NextRequest) {
             views: stats.views_count,
             favorites: stats.favorites_count,
             purchases: stats.purchases_count
-          } : null,
+      } : null,
           counts: {
             favorites: stats?.favorites_count || 0,
             userPacks: stats?.purchases_count || 0,

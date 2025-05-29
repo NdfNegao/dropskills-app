@@ -173,7 +173,7 @@ export default function DemandesPage() {
             <div className="w-12 h-12 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
               <MessageSquare className="w-6 h-6 text-white" />
             </div>
-            <div>
+          <div>
               <h1 className="text-3xl font-bold text-white">Demandes de Produits</h1>
               <p className="text-gray-400">Votez ou suggérez de nouveaux produits à ajouter à la DropSkills Library</p>
             </div>
@@ -220,29 +220,29 @@ export default function DemandesPage() {
 
           {/* Action Button */}
           <div className="flex justify-end">
-            <button
-              onClick={() => setModalOpen(true)}
+          <button
+            onClick={() => setModalOpen(true)}
               className="bg-[#ff0033] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors shadow-md flex items-center gap-2"
-            >
+          >
               <Plus className="w-5 h-5" />
-              Suggérer une idée
-            </button>
+            Suggérer une idée
+          </button>
           </div>
         </div>
 
         {/* Tabs */}
         <div className="bg-[#111111] border border-[#232323] rounded-xl p-6 mb-8">
           <div className="flex flex-wrap gap-2">
-            {TABS.map((tab, i) => (
-              <button
-                key={tab.label}
-                onClick={() => setActiveTab(i)}
+          {TABS.map((tab, i) => (
+            <button
+              key={tab.label}
+              onClick={() => setActiveTab(i)}
                 className={`px-4 py-2 rounded-lg font-semibold text-sm border transition-all flex items-center gap-2 ${
                   activeTab === i 
                     ? "bg-[#ff0033] text-white border-[#ff0033] shadow-md" 
                     : "bg-[#1a1a1a] text-gray-400 border-[#333] hover:bg-[#232323] hover:text-white"
                 }`}
-              >
+            >
                 <span className={getStatusColor(tab.value)}>
                   {getStatusIcon(tab.value)}
                 </span>
@@ -250,8 +250,8 @@ export default function DemandesPage() {
                 <span className="ml-1 text-xs bg-black/20 px-2 py-1 rounded-full">
                   {demandes.filter((d) => d.status === tab.value).length}
                 </span>
-              </button>
-            ))}
+            </button>
+          ))}
           </div>
         </div>
 
@@ -271,17 +271,17 @@ export default function DemandesPage() {
             <div key={demande.id} className="bg-[#111111] border border-[#232323] rounded-xl p-6 hover:border-[#333] transition-colors">
               <div className="flex items-start gap-4">
                 {/* Vote Button */}
-                <button
-                  onClick={() => handleVote(demande.id)}
+              <button
+                onClick={() => handleVote(demande.id)}
                   className={`flex flex-col items-center px-3 py-2 rounded-lg border transition-all ${
                     votes[demande.id] 
                       ? "bg-[#ff0033] text-white border-[#ff0033] shadow-md" 
                       : "bg-[#1a1a1a] text-gray-300 border-[#333] hover:bg-[#232323] hover:border-[#ff0033]"
                   }`}
-                >
-                  <ArrowUp className="w-5 h-5 mb-1" />
-                  <span className="font-bold text-lg">{demande.votes}</span>
-                </button>
+              >
+                <ArrowUp className="w-5 h-5 mb-1" />
+                <span className="font-bold text-lg">{demande.votes}</span>
+              </button>
 
                 {/* Content */}
                 <div className="flex-1">

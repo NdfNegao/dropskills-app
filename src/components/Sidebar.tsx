@@ -1,6 +1,6 @@
 'use client';
 
-import { Home, Star, MessageSquarePlus, FileText, Bookmark, GraduationCap, Layout, FileCode, BrainCircuit, Calculator, Lock, Sparkles, BookOpen, User, Download, Gift, Users, LogOut, ChevronDown, ChevronUp, Menu } from 'lucide-react';
+import { Home, Star, MessageSquarePlus, FileText, Bookmark, GraduationCap, Layout, FileCode, BrainCircuit, Calculator, Lock, Sparkles, BookOpen, User, Download, Gift, Users, LogOut, ChevronDown, ChevronUp, Menu, Target, Rocket, FolderKanban, Mail, CalendarCheck, PenTool, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -9,6 +9,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [toolsMenuOpen, setToolsMenuOpen] = useState(true);
   const user = {
     name: 'cyril.iriebi',
     email: 'cyril.iriebi@gmail.com',
@@ -18,6 +19,71 @@ export default function Sidebar() {
 
   // Fermer la sidebar au clic sur un lien (mobile)
   const handleLinkClick = () => setSidebarOpen(false);
+
+  // Outils organisés par flow stratégique
+  const toolsFlow = [
+    {
+      step: 1,
+      title: "CIBLE",
+      color: "text-blue-400",
+      tools: [
+        { name: "ICP Maker", href: "/outils/icp-maker", icon: <Target size={16} />, isPremium: true }
+      ]
+    },
+    {
+      step: 2,
+      title: "OFFRE",
+      color: "text-purple-400",
+      tools: [
+        { name: "USP Maker", href: "/outils/usp-maker", icon: <Rocket size={16} />, isPremium: true },
+        { name: "Générateur d'Offre", href: "/outils/generateur-offre", icon: <Sparkles size={16} />, isPremium: true }
+      ]
+    },
+    {
+      step: 3,
+      title: "CONVERSION",
+      color: "text-orange-400",
+      tools: [
+        { name: "Tunnel Maker", href: "/outils/tunnel-maker", icon: <FolderKanban size={16} />, isPremium: true }
+      ]
+    },
+    {
+      step: 4,
+      title: "ACTIVATION",
+      color: "text-pink-400",
+      tools: [
+        { name: "CopyMoneyMail", href: "/outils/copymoneymail", icon: <Mail size={16} />, isPremium: true },
+        { name: "Lead Magnet", href: "/outils/lead-magnet", icon: <Users size={16} />, isPremium: true }
+      ]
+    },
+    {
+      step: 5,
+      title: "TRAFIC",
+      color: "text-indigo-400",
+      tools: [
+        { name: "Content System 90J", href: "/outils/content-system", icon: <CalendarCheck size={16} />, isPremium: true },
+        { name: "Générateur de Titres", href: "/outils/titres", icon: <PenTool size={16} />, isPremium: false },
+        { name: "Générateur Descriptions", href: "/outils/descriptions", icon: <FileText size={16} />, isPremium: false }
+      ]
+    },
+    {
+      step: 6,
+      title: "AUTOMATISATION",
+      color: "text-violet-400",
+      tools: [
+        { name: "PDF Rebrander", href: "/outils/pdf-rebrander", icon: <BookOpen size={16} />, isPremium: true },
+        { name: "Calculateur ROI", href: "/outils/calculateur", icon: <Calculator size={16} />, isPremium: true }
+      ]
+    },
+    {
+      step: 7,
+      title: "CROISSANCE",
+      color: "text-red-400",
+      tools: [
+        { name: "Agent Veille IA", href: "/outils/agent-veille", icon: <Eye size={16} />, isPremium: true }
+      ]
+    }
+  ];
 
   return (
     <>
@@ -128,9 +194,18 @@ export default function Sidebar() {
           </Link>
         </div>
 
-        {/* Section Outils */}
-        <div className="space-y-1 mb-6">
-          <h2 className="text-[11px] font-extrabold tracking-widest text-gray-300 uppercase mb-3">OUTILS IA</h2>
+        {/* Section Outils IA - Flow Stratégique */}
+        <div className="space-y-1 mb-6 flex-1">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-[11px] font-extrabold tracking-widest text-gray-300 uppercase">OUTILS IA DROPSKILLS</h2>
+            <button
+              onClick={() => setToolsMenuOpen(!toolsMenuOpen)}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              {toolsMenuOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            </button>
+          </div>
+          
           <Link 
             href="/outils" 
             onClick={handleLinkClick}
@@ -139,18 +214,43 @@ export default function Sidebar() {
             }`}
           >
             <Sparkles size={20} className={`mr-3 ${isActive('/outils') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
-            <span className="group-hover:translate-x-1 transition-transform font-bold">Tous les Outils</span>
+            <span className="group-hover:translate-x-1 transition-transform font-bold">📊 Tous les Outils</span>
           </Link>
-          <Link 
-            href="/outils/titres" 
-            onClick={handleLinkClick}
-            className={`flex items-center text-gray-300 hover:text-white py-2 px-3 rounded-lg transition-all duration-200 hover:bg-[#1a1a1a] group ${
-              isActive('/outils/titres') ? 'bg-[#1a1a1a] text-white' : ''
-            }`}
-          >
-            <BookOpen size={20} className={`mr-3 ${isActive('/outils/titres') ? 'text-[#ff0033]' : 'group-hover:text-[#ff0033]'} transition-colors`} />
-            <span className="group-hover:translate-x-1 transition-transform">Générateur de Titres</span>
-          </Link>
+
+          {toolsMenuOpen && (
+            <div className="ml-2 space-y-3 mt-3">
+              {toolsFlow.map((category) => (
+                <div key={category.step} className="space-y-1">
+                  <div className="flex items-center gap-2 px-3 py-1">
+                    <span className="text-xs font-bold text-gray-500">{category.step}.</span>
+                    <span className={`text-xs font-bold ${category.color} uppercase tracking-wide`}>
+                      {category.title}
+                    </span>
+                  </div>
+                  {category.tools.map((tool) => (
+                    <Link
+                      key={tool.href}
+                      href={tool.href}
+                      onClick={handleLinkClick}
+                      className={`flex items-center text-gray-400 hover:text-white py-1.5 px-3 ml-4 rounded-lg transition-all duration-200 hover:bg-[#1a1a1a] group text-sm ${
+                        isActive(tool.href) ? 'bg-[#1a1a1a] text-white' : ''
+                      }`}
+                    >
+                      <span className={`mr-2 ${isActive(tool.href) ? category.color : 'group-hover:' + category.color} transition-colors`}>
+                        {tool.icon}
+                      </span>
+                      <span className="group-hover:translate-x-1 transition-transform flex-1">
+                        {tool.name}
+                      </span>
+                      {tool.isPremium && (
+                        <span className="text-yellow-400 text-xs">👑</span>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Footer latéral moderne */}
