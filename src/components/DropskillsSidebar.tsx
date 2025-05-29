@@ -157,7 +157,7 @@ export default function DropskillsSidebar({
 
         {/* Section Aide & Personnalisation */}
         <div className="mb-2">
-          <div className={collapsed ? 'space-y-1' : 'ml-4 space-y-1'}>
+          <div className="space-y-1">
             {helpNavigation.map((item, idx) => (
               <SidebarLink
                 key={item.label}
@@ -242,7 +242,7 @@ function SidebarLink({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <span className={`text-xl relative transition-all duration-200 ${isHovered ? 'scale-110' : ''} group-hover:text-[#ff0033]`}>
+      <span className={`text-xl w-5 h-5 flex items-center justify-center relative transition-all duration-200 ${isHovered ? 'scale-110' : ''} group-hover:text-[#ff0033]`}>
         {icon}
       </span>
       {!collapsed && (
