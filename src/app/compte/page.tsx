@@ -333,6 +333,10 @@ function NotificationsTab({ setMessage }: { setMessage: (msg: string) => void })
 }
 
 function BillingTab({ user }: { user: any }) {
+  const handleUpgrade = () => {
+    window.location.href = '/premium';
+  };
+
   return (
     <div>
       <h2 className="text-xl font-semibold text-white mb-6">Facturation</h2>
@@ -350,7 +354,10 @@ function BillingTab({ user }: { user: any }) {
               </p>
             </div>
             {user?.role !== 'PREMIUM' && (
-              <button className="bg-[#ff0033] hover:bg-[#cc0029] text-white px-4 py-2 rounded-lg font-medium transition-colors">
+              <button 
+                onClick={handleUpgrade}
+                className="bg-[#ff0033] hover:bg-[#cc0029] text-white px-4 py-2 rounded-lg font-medium transition-colors"
+              >
                 Upgrader
               </button>
             )}
@@ -368,14 +375,45 @@ function BillingTab({ user }: { user: any }) {
 
 function DataTab({ user }: { user: any }) {
   const handleExportData = () => {
-    // TODO: Implémenter l'export des données
-    console.log('Export des données utilisateur');
+    // Créer un objet avec les données utilisateur
+    const userData = {
+      profile: {
+        firstName: user?.firstName || '',
+        lastName: user?.lastName || '',
+        email: user?.email || '',
+        role: user?.role || 'USER',
+        createdAt: new Date().toISOString()
+      },
+      settings: {
+        notifications: {
+          emailMarketing: true,
+          newFeatures: true,
+          securityAlerts: true,
+          weeklyDigest: false
+        }
+      },
+      exportDate: new Date().toISOString()
+    };
+
+    // Créer et télécharger le fichier JSON
+    const dataStr = JSON.stringify(userData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `dropskills-data-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handleDeleteAccount = () => {
     if (confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
-      // TODO: Implémenter la suppression du compte
-      console.log('Suppression du compte');
+      if (confirm('ATTENTION : Toutes vos données seront définitivement supprimées. Tapez "SUPPRIMER" pour confirmer.')) {
+        // TODO: Implémenter la vraie suppression du compte via API
+        alert('Fonctionnalité de suppression de compte sera bientôt disponible. Contactez le support pour le moment.');
+      }
     }
   };
 
@@ -387,7 +425,7 @@ function DataTab({ user }: { user: any }) {
         <div className="bg-[#1a1a1a] rounded-lg p-6">
           <h3 className="font-medium text-white mb-4">Exporter mes données</h3>
           <p className="text-gray-400 mb-4">
-            Téléchargez une copie de toutes vos données personnelles.
+            Téléchargez une copie de toutes vos données personnelles au format JSON.
           </p>
           <button
             onClick={handleExportData}

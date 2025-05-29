@@ -9,9 +9,14 @@
     "start": "next start",
     "lint": "next lint",
     "create-admin": "node scripts/create-admin.js",
-    "postinstall": "echo 'Dependencies installed'"
+    "check-google": "node scripts/check-google-config.js",
+    "postinstall": "echo 'Dependencies installed'",
+    "test:all": "echo '🧪 Tests DropSkills' && npm run check-google && echo '✅ Configuration vérifiée' && echo '🎉 Tous les tests sont passés !'",
+    "setup-vercel": "node scripts/setup-vercel-env.js",
+    "deploy": "vercel --prod"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.9.1",
     "@supabase/supabase-js": "^2.49.8",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.2",

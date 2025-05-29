@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import Link from 'next/link';
 import { 
   Play, 
   BookOpen, 
@@ -14,7 +15,10 @@ import {
   Award,
   Target,
   Zap,
-  Download
+  Download,
+  ExternalLink,
+  PlayCircle,
+  FileText
 } from 'lucide-react';
 
 interface Tutorial {
@@ -31,6 +35,7 @@ interface Tutorial {
   studentsCount: number;
   isPremium: boolean;
   tags: string[];
+  url?: string; // URL vers le tutoriel ou produit
 }
 
 const TUTORIALS: Tutorial[] = [
@@ -47,7 +52,8 @@ const TUTORIALS: Tutorial[] = [
     rating: 4.9,
     studentsCount: 1247,
     isPremium: false,
-    tags: ['dropshipping', 'débutant', 'plateforme']
+    tags: ['dropshipping', 'débutant', 'plateforme'],
+    url: '/universite'
   },
   {
     id: '2',
@@ -62,12 +68,13 @@ const TUTORIALS: Tutorial[] = [
     rating: 4.8,
     studentsCount: 892,
     isPremium: true,
-    tags: ['IA', 'outils', 'premium', 'marketing']
+    tags: ['IA', 'outils', 'premium', 'marketing'],
+    url: '/outils'
   },
   {
     id: '3',
-    title: 'Stratégies de Rebranding Avancées',
-    description: 'Techniques professionnelles pour personnaliser et adapter les produits à votre marque.',
+    title: 'The 6-Day YouTube Accelerator',
+    description: 'Email course designed to help you provide expert guidance on YouTube ads while upselling your services.',
     category: 'Marketing',
     level: 'Avancé',
     duration: '1h 15min',
@@ -77,7 +84,8 @@ const TUTORIALS: Tutorial[] = [
     rating: 4.7,
     studentsCount: 634,
     isPremium: true,
-    tags: ['rebranding', 'marque', 'design']
+    tags: ['youtube', 'ads', 'email', 'marketing'],
+    url: '/produits/youtube-accelerator'
   },
   {
     id: '4',
@@ -92,12 +100,13 @@ const TUTORIALS: Tutorial[] = [
     rating: 4.9,
     studentsCount: 1156,
     isPremium: false,
-    tags: ['tunnel', 'conversion', 'vente']
+    tags: ['tunnel', 'conversion', 'vente'],
+    url: '/outils/tunnel-maker'
   },
   {
     id: '5',
-    title: 'Automatisation Marketing avec l\'IA',
-    description: 'Automatisez votre marketing digital grâce aux outils IA et gagnez du temps précieux.',
+    title: 'Email Marketing Mastery Course',
+    description: 'Formation complète pour maîtriser l\'email marketing et créer des campagnes qui convertissent.',
     category: 'Automatisation',
     level: 'Avancé',
     duration: '3h 00min',
@@ -107,7 +116,8 @@ const TUTORIALS: Tutorial[] = [
     rating: 4.8,
     studentsCount: 743,
     isPremium: true,
-    tags: ['automatisation', 'IA', 'marketing', 'productivité']
+    tags: ['email', 'marketing', 'automation'],
+    url: '/produits/email-marketing-mastery'
   },
   {
     id: '6',
@@ -122,7 +132,8 @@ const TUTORIALS: Tutorial[] = [
     rating: 4.6,
     studentsCount: 567,
     isPremium: false,
-    tags: ['analytics', 'KPI', 'performance']
+    tags: ['analytics', 'KPI', 'performance'],
+    url: '/outils/calculateur'
   }
 ];
 
@@ -202,83 +213,91 @@ export default function TutorielsPage() {
           </div>
         </div>
 
-        {/* Filtres et recherche */}
+        {/* Filtres */}
         <div className="bg-[#111111] border border-[#232323] rounded-xl p-6 mb-8">
-          <div className="flex flex-col lg:flex-row gap-4">
-            {/* Barre de recherche */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <div className="flex items-center gap-2 mb-4">
+            <Filter className="w-5 h-5 text-[#ff0033]" />
+            <h2 className="text-lg font-semibold text-white">Filtres</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* Recherche */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
-                placeholder="Rechercher un tutoriel..."
+                placeholder="Rechercher..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-white focus:outline-none focus:border-[#ff0033]"
+                className="w-full pl-10 pr-4 py-2 bg-[#1a1a1a] border border-[#333] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#ff0033] transition-colors"
               />
             </div>
 
-            {/* Filtres */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
-              >
-                {CATEGORIES.map(category => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
+            {/* Catégorie */}
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="w-full px-4 py-2 bg-[#1a1a1a] border border-[#333] rounded-lg text-white focus:outline-none focus:border-[#ff0033] transition-colors"
+            >
+              {CATEGORIES.map(category => (
+                <option key={category} value={category}>{category}</option>
+              ))}
+            </select>
 
-              <select
-                value={selectedLevel}
-                onChange={(e) => setSelectedLevel(e.target.value)}
-                className="bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
-              >
-                {LEVELS.map(level => (
-                  <option key={level} value={level}>{level}</option>
-                ))}
-              </select>
+            {/* Niveau */}
+            <select
+              value={selectedLevel}
+              onChange={(e) => setSelectedLevel(e.target.value)}
+              className="w-full px-4 py-2 bg-[#1a1a1a] border border-[#333] rounded-lg text-white focus:outline-none focus:border-[#ff0033] transition-colors"
+            >
+              {LEVELS.map(level => (
+                <option key={level} value={level}>{level}</option>
+              ))}
+            </select>
 
-              <select
-                value={selectedFormat}
-                onChange={(e) => setSelectedFormat(e.target.value)}
-                className="bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
-              >
-                {FORMATS.map(format => (
-                  <option key={format} value={format}>{format}</option>
-                ))}
-              </select>
-            </div>
+            {/* Format */}
+            <select
+              value={selectedFormat}
+              onChange={(e) => setSelectedFormat(e.target.value)}
+              className="w-full px-4 py-2 bg-[#1a1a1a] border border-[#333] rounded-lg text-white focus:outline-none focus:border-[#ff0033] transition-colors"
+            >
+              {FORMATS.map(format => (
+                <option key={format} value={format}>{format}</option>
+              ))}
+            </select>
           </div>
         </div>
 
-        {/* Parcours recommandés */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-white mb-6">Parcours recommandés</h2>
+        {/* Parcours d'apprentissage recommandés */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-white mb-6">Parcours Recommandés</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <LearningPath
               title="Débutant Complet"
-              description="De zéro à vos premiers profits"
+              description="Commencez votre aventure dropshipping digital"
               duration="8h"
               courses={4}
               icon={<Target className="w-6 h-6" />}
               color="green"
+              url="/universite"
             />
             <LearningPath
               title="Maître des Outils IA"
-              description="Exploitez la puissance de l'IA"
-              duration="12h"
-              courses={6}
+              description="Devenez expert en automatisation IA"
+              duration="15h"
+              courses={8}
               icon={<Zap className="w-6 h-6" />}
               color="blue"
+              url="/outils"
             />
             <LearningPath
               title="Expert Marketing"
               description="Stratégies avancées de conversion"
-              duration="15h"
-              courses={8}
+              duration="24h"
+              courses={12}
               icon={<Award className="w-6 h-6" />}
               color="purple"
+              url="/premium"
             />
           </div>
         </div>
@@ -287,23 +306,23 @@ export default function TutorielsPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-white">
-              Tous les tutoriels ({filteredTutorials.length})
+              Tous les Tutoriels ({filteredTutorials.length})
             </h2>
           </div>
 
-          {filteredTutorials.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredTutorials.map(tutorial => (
-                <TutorialCard key={tutorial.id} tutorial={tutorial} />
-              ))}
+          {filteredTutorials.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-[#1a1a1a] rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-medium text-white mb-2">Aucun tutoriel trouvé</h3>
+              <p className="text-gray-400">Essayez de modifier vos filtres de recherche.</p>
             </div>
           ) : (
-            <div className="bg-[#111111] border border-[#232323] rounded-xl p-12 text-center">
-              <BookOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-400 mb-2">Aucun tutoriel trouvé</p>
-              <p className="text-gray-500 text-sm">
-                Essayez de modifier vos filtres ou votre recherche
-              </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredTutorials.map((tutorial) => (
+                <TutorialCard key={tutorial.id} tutorial={tutorial} />
+              ))}
             </div>
           )}
         </div>
@@ -319,31 +338,34 @@ interface LearningPathProps {
   courses: number;
   icon: React.ReactNode;
   color: 'green' | 'blue' | 'purple';
+  url: string;
 }
 
-function LearningPath({ title, description, duration, courses, icon, color }: LearningPathProps) {
+function LearningPath({ title, description, duration, courses, icon, color, url }: LearningPathProps) {
   const colorClasses = {
-    green: 'from-green-500 to-green-600',
-    blue: 'from-blue-500 to-blue-600',
-    purple: 'from-purple-500 to-purple-600'
+    green: 'from-green-500 to-emerald-500',
+    blue: 'from-blue-500 to-cyan-500',
+    purple: 'from-purple-500 to-pink-500'
   };
 
   return (
-    <div className="bg-[#111111] border border-[#232323] rounded-xl p-6 hover:border-[#ff0033]/30 transition-colors cursor-pointer">
-      <div className={`w-12 h-12 bg-gradient-to-br ${colorClasses[color]} rounded-lg flex items-center justify-center text-white mb-4`}>
-        {icon}
+    <Link href={url}>
+      <div className="bg-[#111111] border border-[#232323] rounded-xl p-6 hover:border-[#ff0033]/30 transition-all duration-200 hover:scale-105 cursor-pointer">
+        <div className={`w-12 h-12 bg-gradient-to-br ${colorClasses[color]} rounded-lg flex items-center justify-center text-white mb-4`}>
+          {icon}
+        </div>
+        <h3 className="text-lg font-semibold text-white mb-2">{title}</h3>
+        <p className="text-gray-400 text-sm mb-4">{description}</p>
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-gray-300">{courses} cours</span>
+          <span className="text-gray-300">{duration}</span>
+        </div>
+        <div className="flex items-center justify-between mt-4">
+          <span className="text-[#ff0033] font-medium">Commencer →</span>
+          <ChevronRight className="w-4 h-4 text-[#ff0033]" />
+        </div>
       </div>
-      <h3 className="text-white font-semibold mb-2">{title}</h3>
-      <p className="text-gray-400 text-sm mb-4">{description}</p>
-      <div className="flex items-center justify-between text-sm">
-        <span className="text-gray-300">{courses} cours</span>
-        <span className="text-gray-300">{duration}</span>
-      </div>
-      <button className="w-full mt-4 bg-[#ff0033] text-white py-2 rounded-lg font-medium hover:bg-[#cc0029] transition-colors flex items-center justify-center gap-2">
-        Commencer
-        <ChevronRight className="w-4 h-4" />
-      </button>
-    </div>
+    </Link>
   );
 }
 
@@ -353,69 +375,93 @@ interface TutorialCardProps {
 
 function TutorialCard({ tutorial }: TutorialCardProps) {
   const formatIcon = {
-    'Vidéo': <Play className="w-4 h-4" />,
-    'Article': <BookOpen className="w-4 h-4" />,
+    'Vidéo': <PlayCircle className="w-4 h-4" />,
+    'Article': <FileText className="w-4 h-4" />,
     'Guide PDF': <Download className="w-4 h-4" />,
     'Webinaire': <Users className="w-4 h-4" />
   };
 
-  const levelColors = {
-    'Débutant': 'text-green-400 bg-green-400/10',
-    'Intermédiaire': 'text-yellow-400 bg-yellow-400/10',
-    'Avancé': 'text-red-400 bg-red-400/10'
+  const levelColor = {
+    'Débutant': 'text-green-400 bg-green-500/10',
+    'Intermédiaire': 'text-yellow-400 bg-yellow-500/10',
+    'Avancé': 'text-red-400 bg-red-500/10'
+  };
+
+  const handleCardClick = () => {
+    if (tutorial.url) {
+      window.location.href = tutorial.url;
+    }
   };
 
   return (
-    <div className="bg-[#111111] border border-[#232323] rounded-xl overflow-hidden hover:border-[#ff0033]/30 transition-colors cursor-pointer">
+    <div 
+      onClick={handleCardClick}
+      className="bg-[#111111] border border-[#232323] rounded-xl overflow-hidden hover:border-[#ff0033]/30 transition-all duration-200 hover:scale-105 cursor-pointer"
+    >
       {/* Thumbnail */}
-      <div className="relative h-48 bg-gradient-to-br from-[#ff0033]/20 to-[#cc0029]/20 flex items-center justify-center">
-        <div className="w-16 h-16 bg-[#ff0033] rounded-full flex items-center justify-center">
-          {formatIcon[tutorial.format]}
+      <div className="relative aspect-video bg-gradient-to-br from-gray-800 to-gray-900">
+        <img 
+          src={tutorial.thumbnail} 
+          alt={tutorial.title}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute top-3 left-3">
+          <span className={`px-2 py-1 rounded-full text-xs font-medium ${levelColor[tutorial.level]}`}>
+            {tutorial.level}
+          </span>
         </div>
-        {tutorial.isPremium && (
-          <div className="absolute top-3 right-3 bg-[#ff0033] text-white px-2 py-1 rounded-full text-xs font-medium">
-            Premium
-          </div>
-        )}
+        <div className="absolute top-3 right-3">
+          {tutorial.isPremium && (
+            <span className="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-xs font-medium">
+              👑 Premium
+            </span>
+          )}
+        </div>
+        <div className="absolute bottom-3 right-3">
+          <span className="px-2 py-1 bg-black/60 text-white rounded text-xs flex items-center gap-1">
+            <Clock className="w-3 h-3" />
+            {tutorial.duration}
+          </span>
+        </div>
       </div>
 
+      {/* Contenu */}
       <div className="p-6">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${levelColors[tutorial.level]}`}>
-              {tutorial.level}
-            </span>
-            <span className="text-gray-400 text-xs">{tutorial.category}</span>
-          </div>
-          <div className="flex items-center gap-1 text-yellow-400">
-            <Star className="w-4 h-4 fill-current" />
-            <span className="text-xs">{tutorial.rating}</span>
-          </div>
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-[#ff0033]">
+            {formatIcon[tutorial.format]}
+          </span>
+          <span className="text-xs text-gray-400 uppercase tracking-wide">
+            {tutorial.format}
+          </span>
         </div>
 
-        {/* Titre et description */}
-        <h3 className="text-white font-semibold mb-2 line-clamp-2">{tutorial.title}</h3>
-        <p className="text-gray-400 text-sm mb-4 line-clamp-2">{tutorial.description}</p>
+        <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2">
+          {tutorial.title}
+        </h3>
+        
+        <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+          {tutorial.description}
+        </p>
 
-        {/* Métadonnées */}
-        <div className="flex items-center justify-between text-sm text-gray-300 mb-4">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-1">
-            <Clock className="w-4 h-4" />
-            {tutorial.duration}
+            <Star className="w-4 h-4 text-yellow-400 fill-current" />
+            <span className="text-sm text-white font-medium">{tutorial.rating}</span>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 text-gray-400 text-sm">
             <Users className="w-4 h-4" />
             {tutorial.studentsCount.toLocaleString()}
           </div>
         </div>
 
-        {/* Instructeur */}
         <div className="flex items-center justify-between">
-          <span className="text-gray-400 text-sm">Par {tutorial.instructor}</span>
-          <button className="bg-[#ff0033] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#cc0029] transition-colors">
-            Commencer
-          </button>
+          <span className="text-sm text-gray-400">Par {tutorial.instructor}</span>
+          <div className="flex items-center gap-1 text-[#ff0033]">
+            <span className="text-sm font-medium">Voir</span>
+            <ExternalLink className="w-3 h-3" />
+          </div>
         </div>
       </div>
     </div>

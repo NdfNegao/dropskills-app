@@ -1,5 +1,5 @@
 "use client";
-import { Bookmark, BookOpen, Headphones, Video, FileDown, Heart, ExternalLink } from "lucide-react";
+import { Bookmark, BookOpen, Headphones, Video, FileDown, Heart, ExternalLink, MessageSquare, Layout, CheckSquare, PenTool, Bot, FileText, Play } from "lucide-react";
 import { useSavedProducts } from "@/context/SavedProductsContext";
 import { Product } from "@/data/products";
 import { useState } from "react";
@@ -8,15 +8,33 @@ import { useRouter } from "next/navigation";
 function getFormatIcon(format: string) {
   switch (format) {
     case "ebook":
+    case "Book":
       return <BookOpen className="w-5 h-5 text-blue-400" />;
     case "audio":
+    case "Audio":
       return <Headphones className="w-5 h-5 text-purple-400" />;
     case "video":
+    case "Video":
+    case "Formation":
+    case "Course":
       return <Video className="w-5 h-5 text-green-400" />;
     case "template":
+    case "Template":
       return <FileDown className="w-5 h-5 text-orange-400" />;
     case "tool":
       return <FileDown className="w-5 h-5 text-pink-400" />;
+    case "Prompt Pack":
+      return <MessageSquare className="w-5 h-5 text-cyan-400" />;
+    case "Notion Template":
+      return <Layout className="w-5 h-5 text-indigo-400" />;
+    case "Checklist":
+      return <CheckSquare className="w-5 h-5 text-emerald-400" />;
+    case "Workbook":
+      return <PenTool className="w-5 h-5 text-amber-400" />;
+    case "GPT":
+      return <Bot className="w-5 h-5 text-violet-400" />;
+    case "Guide":
+      return <FileText className="w-5 h-5 text-slate-400" />;
     default:
       return <BookOpen className="w-5 h-5 text-blue-400" />;
   }
@@ -25,15 +43,33 @@ function getFormatIcon(format: string) {
 function getFormatColor(format: string) {
   switch (format) {
     case "ebook":
+    case "Book":
       return "from-blue-500 to-blue-600";
     case "audio":
+    case "Audio":
       return "from-purple-500 to-purple-600";
     case "video":
+    case "Video":
+    case "Formation":
+    case "Course":
       return "from-green-500 to-green-600";
     case "template":
+    case "Template":
       return "from-orange-500 to-orange-600";
     case "tool":
       return "from-pink-500 to-pink-600";
+    case "Prompt Pack":
+      return "from-cyan-500 to-cyan-600";
+    case "Notion Template":
+      return "from-indigo-500 to-indigo-600";
+    case "Checklist":
+      return "from-emerald-500 to-emerald-600";
+    case "Workbook":
+      return "from-amber-500 to-amber-600";
+    case "GPT":
+      return "from-violet-500 to-violet-600";
+    case "Guide":
+      return "from-slate-500 to-slate-600";
     default:
       return "from-blue-500 to-blue-600";
   }
@@ -72,6 +108,15 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
         {getFormatIcon(product.format)}
         </div>
       </div>
+
+      {/* Badge Premium */}
+      {product.isPremium && (
+        <div className="absolute top-3 left-16 z-10">
+          <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg px-2 py-1 shadow-md">
+            <span className="text-xs font-bold text-white">👑</span>
+          </div>
+        </div>
+      )}
 
       {/* Actions en haut à droite */}
       <div className="absolute top-3 right-3 z-10 flex gap-2">
@@ -146,12 +191,19 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
               <Heart className="w-3 h-3" />
               {likes}
             </span>
-            <span className="flex items-center gap-1">
-              <Bookmark className="w-3 h-3" />
-              {savedProducts.includes(product.id) ? 'Sauvé' : 'Sauver'}
-            </span>
+            {product.downloads && (
+              <span className="flex items-center gap-1">
+                <FileDown className="w-3 h-3" />
+                {product.downloads}
+              </span>
+            )}
+            {product.rating && (
+              <span className="flex items-center gap-1">
+                ⭐ {product.rating}
+              </span>
+            )}
           </div>
-          <span className="capitalize text-gray-500">
+          <span className="capitalize text-gray-500 text-xs">
             {product.format}
           </span>
       </div>
@@ -163,7 +215,7 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
             className="flex-1 bg-[#ff0033] text-white py-2.5 px-4 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors flex items-center justify-center gap-2"
         >
             <ExternalLink className="w-4 h-4" />
-          Ouvrir
+          Voir
         </button>
           
           {onDownload && (

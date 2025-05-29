@@ -37,7 +37,7 @@ export default function Sidebar() {
   };
 
   const handleUnlockProducts = () => {
-    router.push('/unlock-products');
+    router.push('/premium');
   };
 
   const handleAffiliate = () => {

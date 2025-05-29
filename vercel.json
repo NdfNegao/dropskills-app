@@ -2,15 +2,49 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "framework": "nextjs",
-  "installCommand": "npm install",
-  "env": {
-    "NEXTAUTH_URL": "https://dropskills-app.vercel.app",
-    "NEXTAUTH_SECRET": "dropskills-v2-secret-key-2024-production"
-  },
+  "regions": ["fra1"],
   "functions": {
     "src/app/api/**/*.ts": {
       "maxDuration": 30
     }
   },
-  "regions": ["fra1"]
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/outils/tunnel-vente",
+      "destination": "/outils/tunnel-maker",
+      "permanent": true
+    },
+    {
+      "source": "/outils/copy-money-mail",
+      "destination": "/outils/copymoneymail",
+      "permanent": true
+    },
+    {
+      "source": "/outils/titre",
+      "destination": "/outils/titres",
+      "permanent": true
+    }
+  ]
 } 

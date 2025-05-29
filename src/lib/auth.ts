@@ -1,9 +1,14 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
 import bcrypt from 'bcryptjs';
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
     CredentialsProvider({
       name: 'credentials',
       credentials: {
@@ -81,11 +86,31 @@ export const authOptions: NextAuthOptions = {
     error: '/auth/error',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async signIn({ user, account, profile }) {
+      // Permettre la connexion Google
+      if (account?.provider === 'google') {
+        // TODO: Créer ou mettre à jour l'utilisateur en base de données
+        // const existingUser = await getUserByEmail(user.email);
+        // if (!existingUser) {
+        //   await createUser({
+        //     email: user.email,
+        //     name: user.name,
+        //     firstName: user.name?.split(' ')[0] || '',
+        //     lastName: user.name?.split(' ').slice(1).join(' ') || '',
+        //     role: 'USER',
+        //     provider: 'google',
+        //     providerId: account.providerAccountId
+        //   });
+        // }
+        return true;
+      }
+      return true;
+    },
+    async jwt({ token, user, account }) {
       if (user) {
-        token.role = (user as any).role;
-        token.firstName = (user as any).firstName;
-        token.lastName = (user as any).lastName;
+        token.role = (user as any).role || 'USER';
+        token.firstName = (user as any).firstName || user.name?.split(' ')[0] || '';
+        token.lastName = (user as any).lastName || user.name?.split(' ').slice(1).join(' ') || '';
       }
       return token;
     },
