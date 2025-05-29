@@ -9,6 +9,8 @@ import {
   Sparkles, BrainCog, Rocket, FolderKanban, Mail, 
   CalendarCheck, LineChart, GraduationCap, Target, X, Users
 } from "lucide-react";
+import { useRouter } from 'next/router';
+import { signOut } from 'next-auth/react';
 
 // Outils IA pour mobile
 const IA_TOOLS = [
@@ -32,6 +34,12 @@ export default function LayoutWithSidebar({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, canAccessPremium, isLoading } = useAuth();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    router.push("/auth/signin");
+  };
 
   if (!showSidebar) {
     return <>{children}</>;
@@ -133,7 +141,7 @@ export default function LayoutWithSidebar({
           <button
             onClick={() => {
               setMobileMenuOpen(false);
-              // Logique de déconnexion
+              handleSignOut();
             }}
             className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-900/50 transition font-medium w-full text-left"
           >

@@ -3,6 +3,7 @@
 import { signOut } from 'next-auth/react';
 import { Bell, LogOut, User, Settings } from 'lucide-react';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 interface AdminHeaderProps {
   user: {
@@ -16,8 +17,14 @@ interface AdminHeaderProps {
 
 export default function AdminHeader({ user }: AdminHeaderProps) {
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const router = useRouter();
 
   const displayName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email;
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    router.push("/auth/signin");
+  };
 
   return (
     <header className="bg-[#111111] border-b border-[#232323] px-6 py-4">
@@ -64,7 +71,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
                   </button>
                   <hr className="my-2 border-[#232323]" />
                   <button
-                    onClick={() => signOut({ callbackUrl: '/auth/signin' })}
+                    onClick={handleSignOut}
                     className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-[#232323] rounded"
                   >
                     <LogOut className="w-4 h-4" />
