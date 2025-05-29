@@ -35,8 +35,8 @@ export const getSupabaseAdmin = () => {
 
     if (!serviceRoleKey) {
       // En mode build/production sans service key, retourner un mock
-      if (process.env.NODE_ENV === 'production' || process.env.NEXT_PHASE === 'phase-production-build') {
-        console.warn('⚠️ SUPABASE_SERVICE_ROLE_KEY manquante, utilisation d\'un mock pour le build')
+      if (process.env.NODE_ENV === 'production' || process.env.NEXT_PHASE === 'phase-production-build' || process.env.NODE_ENV === 'development') {
+        console.warn('⚠️ SUPABASE_SERVICE_ROLE_KEY manquante, utilisation d\'un mock pour le développement')
         return createMockSupabaseAdmin()
       }
       throw new Error(`Variables Supabase Admin manquantes: URL=${!!safeSupabaseUrl}, SERVICE_KEY=${!!serviceRoleKey}`)
@@ -58,19 +58,103 @@ export const getSupabaseAdmin = () => {
 
 // Mock pour éviter les erreurs de build
 function createMockSupabaseAdmin() {
+  const mockProductRequests = [
+    {
+      id: '1',
+      title: 'Outil de génération de scripts vidéo',
+      description: 'Un outil IA pour créer des scripts de vidéos marketing engageants',
+      status: 'pending',
+      votes_count: 15,
+      user_id: 'user1',
+      user_email: 'user1@example.com',
+      priority: 'high',
+      created_at: '2024-01-15T10:00:00Z',
+      updated_at: '2024-01-15T10:00:00Z'
+    },
+    {
+      id: '2',
+      title: 'Template de landing page e-commerce',
+      description: 'Des templates prêts à utiliser pour les boutiques en ligne',
+      status: 'in_progress',
+      votes_count: 23,
+      user_id: 'user2',
+      user_email: 'user2@example.com',
+      priority: 'medium',
+      admin_notes: 'En cours de développement',
+      estimated_completion: '2024-02-15',
+      created_at: '2024-01-10T14:30:00Z',
+      updated_at: '2024-01-14T09:15:00Z'
+    },
+    {
+      id: '3',
+      title: 'Calculateur de ROI marketing',
+      description: 'Un outil pour calculer le retour sur investissement des campagnes marketing',
+      status: 'completed',
+      votes_count: 8,
+      user_id: 'user3',
+      user_email: 'user3@example.com',
+      priority: 'low',
+      admin_notes: 'Terminé et disponible',
+      created_at: '2024-01-05T11:20:00Z',
+      updated_at: '2024-01-12T16:45:00Z'
+    }
+  ];
+
   return {
-    from: () => ({
-      select: () => ({ single: () => Promise.resolve({ data: null, error: new Error('Mock: Service key manquante') }) }),
-      insert: () => ({ select: () => ({ single: () => Promise.resolve({ data: null, error: new Error('Mock: Service key manquante') }) }) }),
-      update: () => ({ eq: () => ({ select: () => ({ single: () => Promise.resolve({ data: null, error: new Error('Mock: Service key manquante') }) }) }) }),
-      delete: () => ({ eq: () => Promise.resolve({ error: new Error('Mock: Service key manquante') }) }),
-      upsert: () => ({ select: () => ({ single: () => Promise.resolve({ data: null, error: new Error('Mock: Service key manquante') }) }) })
+    from: (table: string) => ({
+      select: (columns?: string) => ({
+        single: () => Promise.resolve({ 
+          data: table === 'product_requests' ? mockProductRequests[0] : null, 
+          error: null 
+        }),
+        order: () => ({
+          then: (callback: any) => callback({ data: mockProductRequests, error: null })
+        }),
+        then: (callback: any) => callback({ data: mockProductRequests, error: null })
+      }),
+      insert: (data: any) => ({
+        select: () => ({
+          single: () => Promise.resolve({ 
+            data: { id: 'new-id', ...data, created_at: new Date().toISOString() }, 
+            error: null 
+          })
+        })
+      }),
+      update: (data: any) => ({
+        eq: () => ({
+          select: () => ({
+            single: () => Promise.resolve({ 
+              data: { ...mockProductRequests[0], ...data, updated_at: new Date().toISOString() }, 
+              error: null 
+            })
+          })
+        })
+      }),
+      delete: () => ({
+        eq: () => Promise.resolve({ error: null })
+      }),
+      upsert: (data: any) => ({
+        select: () => ({
+          single: () => Promise.resolve({ 
+            data: { id: 'upsert-id', ...data }, 
+            error: null 
+          })
+        })
+      })
     }),
-    rpc: () => Promise.resolve({ data: null, error: new Error('Mock: Service key manquante') }),
+    rpc: (functionName: string) => {
+      if (functionName === 'increment_request_votes') {
+        return Promise.resolve({ data: null, error: null });
+      }
+      if (functionName === 'decrement_request_votes') {
+        return Promise.resolve({ data: null, error: null });
+      }
+      return Promise.resolve({ data: null, error: null });
+    },
     auth: {
       admin: {
-        createUser: () => Promise.resolve({ data: null, error: new Error('Mock: Service key manquante') }),
-        listUsers: () => Promise.resolve({ data: null, error: new Error('Mock: Service key manquante') })
+        createUser: () => Promise.resolve({ data: { user: { id: 'mock-user' } }, error: null }),
+        listUsers: () => Promise.resolve({ data: { users: [] }, error: null })
       }
     }
   }
