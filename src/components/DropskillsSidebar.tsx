@@ -192,10 +192,10 @@ export default function DropskillsSidebar({
           ))}
           <button
             onClick={handleSignOut}
-            className={`group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-900/50 transition-all duration-200 font-medium relative text-left w-full hover:scale-105 mt-2`}
+            className={`group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 font-medium relative text-left w-full hover:scale-105 mt-2 hover:bg-[#1a1a1a]`}
           >
-            <LogOut size={20} className="group-hover:rotate-12 transition-transform duration-200" />
-            {!collapsed && <span>Déconnexion</span>}
+            <LogOut size={20} className="transition-transform duration-200 group-hover:rotate-12 group-hover:text-[#ff0033]" />
+            {!collapsed && <span className="group-hover:text-[#ff0033]">Déconnexion</span>}
             {collapsed && (
               <span className="absolute left-20 bg-black text-white rounded px-2 py-1 shadow-lg text-xs opacity-0 group-hover:opacity-100 z-50 transition-all duration-200 whitespace-nowrap border border-gray-700">
                 Déconnexion
