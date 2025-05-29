@@ -13,6 +13,7 @@
     "postinstall": "echo 'Dependencies installed'",
     "test:all": "echo '🧪 Tests DropSkills' && npm run check-google && echo '✅ Configuration vérifiée' && echo '🎉 Tous les tests sont passés !'",
     "setup-vercel": "node scripts/setup-vercel-env.js",
+    "setup-git-deployment": "node scripts/setup-git-deployment.js",
     "deploy": "vercel --prod"
   },
   "dependencies": {
