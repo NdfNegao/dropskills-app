@@ -269,19 +269,21 @@ interface SidebarCTAProps {
 
 function SidebarCTA({ icon, label, cta, collapsed, href }: SidebarCTAProps) {
   return (
-    <Link
-      href={href}
-      className={`flex items-center gap-2 bg-gradient-to-r from-[#ff0033] to-red-600 text-white font-semibold px-3 py-2 rounded-xl shadow-lg transition-all duration-200 hover:opacity-90 hover:shadow-xl ${
-        collapsed ? 'justify-center' : ''
-      }`}
-    >
-      <span className="transition-transform duration-200 hover:rotate-12">{icon}</span>
-      {!collapsed && <span className="flex-1">{label}</span>}
-      {!collapsed && (
-        <span className="bg-black/20 text-xs rounded px-2 py-1">
-          {cta}
-        </span>
-      )}
-    </Link>
+    <div className={`relative bg-gradient-to-br from-[#18181b] to-[#232323] rounded-xl p-4 shadow-lg border border-[#232323] flex flex-col items-start justify-between w-full mb-2`}> 
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-2xl text-[#ff0033]">{icon}</span>
+        <span className="font-bold text-white text-lg">Unlock Full Library</span>
+      </div>
+      <span className="text-white text-sm mb-4 block opacity-80">Upgrade to access all premium content and tools.</span>
+      <Link href={href} className="w-full">
+        <button className="w-full flex items-center justify-center gap-2 bg-[#ff0033] hover:bg-[#cc0029] text-white py-2.5 rounded-lg font-semibold text-base transition-all duration-200 shadow-md">
+          Upgrade Now <span className="ml-1">→</span>
+        </button>
+      </Link>
+      {/* Effet de lumière */}
+      <span className="absolute top-2 right-2 w-2 h-2 bg-white/30 rounded-full blur-sm animate-pulse" />
+      <span className="absolute top-6 right-8 w-1.5 h-1.5 bg-white/20 rounded-full blur-sm animate-pulse" />
+      <span className="absolute top-8 right-4 w-1 h-1 bg-white/10 rounded-full blur-sm animate-pulse" />
+    </div>
   );
 } 
