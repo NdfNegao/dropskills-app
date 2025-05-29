@@ -4,9 +4,7 @@ import { useRouter } from "next/navigation";
 import { signOut } from 'next-auth/react';
 import { useAuth } from "@/hooks/useAuth";
 import {
-  Home, Lock, GraduationCap, FolderOpen, Sparkles, 
-  Settings, LogOut, ChevronLeft, ChevronRight, 
-  BrainCog, Users, HelpCircle, User, Rocket, FolderKanban, Mail, CalendarCheck, Target, MessageSquarePlus, PenTool, FileText, BookOpen, Calculator, Eye
+  Home, Lock, GraduationCap, FolderOpen, Settings, LogOut, ChevronLeft, ChevronRight, Users, HelpCircle, User, MessageSquarePlus
 } from "lucide-react";
 
 interface DropskillsSidebarProps {
@@ -36,25 +34,9 @@ export default function DropskillsSidebar({
   const mainNavigation = [
     { icon: <Home />, label: "Accueil", href: "/", tooltip: "Accueil" },
     { icon: <FolderOpen />, label: "Catalogue", href: "/catalogue", tooltip: "Catalogue IA" },
-    { icon: <GraduationCap />, label: "Université", href: "/universite", tooltip: "Centre de formation" },
+    { icon: <GraduationCap />, label: "Centre de formation", href: "/universite", tooltip: "Centre de formation" },
     { icon: <FolderOpen />, label: "Mon Coffre", href: "/coffre", tooltip: "Mes ressources IA" },
-    { icon: <Sparkles />, label: "Outils IA", href: "/outils", tooltip: "Tous les outils IA" }
-  ];
-
-  // Outils IA Dropskills (menu déroulant)
-  const iaTools = [
-    { icon: <BrainCog />, label: "ICP Maker", href: "/outils/icp-maker" },
-    { icon: <Rocket />, label: "USP Maker", href: "/outils/usp-maker" },
-    { icon: <Sparkles />, label: "Générateur d'Offre", href: "/outils/generateur-offre" },
-    { icon: <FolderKanban />, label: "Tunnel Maker IA", href: "/outils/tunnel-maker" },
-    { icon: <Mail />, label: "CopyMoneyMail", href: "/outils/copymoneymail" },
-    { icon: <Users />, label: "Lead Magnet Creator", href: "/outils/lead-magnet" },
-    { icon: <CalendarCheck />, label: "Content System 90J", href: "/outils/content-system" },
-    { icon: <PenTool />, label: "Générateur de Titres", href: "/outils/titres" },
-    { icon: <FileText />, label: "Générateur de Descriptions", href: "/outils/descriptions" },
-    { icon: <BookOpen />, label: "PDF Rebrander", href: "/outils/pdf-rebrander" },
-    { icon: <Calculator />, label: "Calculateur ROI", href: "/outils/calculateur" },
-    { icon: <Eye />, label: "Agent Veille IA", href: "/outils/agent-veille" }
+    { icon: <FolderOpen />, label: "Outils IA", href: "/outils", tooltip: "Tous les outils IA" }
   ];
 
   // Section Aide & Personnalisation
