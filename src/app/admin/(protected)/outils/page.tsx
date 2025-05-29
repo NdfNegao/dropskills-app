@@ -1,36 +1,53 @@
-import React from 'react';
+'use client';
 
-export default function OutilsAdmin() {
+import { useRouter } from 'next/navigation';
+
+export default function AdminOutilsPage() {
+  const router = useRouter();
+
+  const handleAddTool = () => {
+    router.push('/admin/outils/nouveau');
+  };
+
+  const handleViewTool = (toolId: number) => {
+    router.push(`/admin/outils/${toolId}`);
+  };
+
   return (
     <div>
-      <h1 className="text-2xl font-bold text-white mb-6">Gestion des outils</h1>
-      <button className="mb-4 px-4 py-2 bg-[#ff0033] text-white rounded hover:bg-[#cc0029] transition-colors">Ajouter un outil</button>
-      <div className="bg-[#111111] rounded-xl p-6">
-        <table className="w-full text-left text-white">
-          <thead>
-            <tr className="border-b border-gray-700">
-              <th className="py-2">Nom</th>
-              <th className="py-2">Type</th>
-              <th className="py-2">Statut</th>
-              <th className="py-2">Actions</th>
+      <h1 className="text-2xl font-bold text-white mb-6">Gestion des Outils</h1>
+      <button 
+        onClick={handleAddTool}
+        className="mb-4 px-4 py-2 bg-[#ff0033] text-white rounded hover:bg-[#cc0029] transition-colors"
+      >
+        Ajouter un outil
+      </button>
+      
+      <div className="bg-[#1a1a1a] rounded-lg overflow-hidden">
+        <table className="w-full">
+          <thead className="bg-[#333]">
+            <tr>
+              <th className="text-left p-4 text-white">Nom</th>
+              <th className="text-left p-4 text-white">Type</th>
+              <th className="text-left p-4 text-white">Statut</th>
+              <th className="text-left p-4 text-white">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b border-gray-800">
-              <td>PDF Rebrander</td>
-              <td>Générateur</td>
-              <td><span className="text-green-400">Actif</span></td>
-              <td><button className="text-[#ff0033] hover:underline">Voir</button></td>
+            <tr className="border-b border-[#333]">
+              <td className="p-4 text-white">Générateur de Titres</td>
+              <td className="p-4 text-neutral-400">IA</td>
+              <td className="p-4 text-green-400">Actif</td>
+              <td><button onClick={() => handleViewTool(1)} className="text-[#ff0033] hover:underline">Voir</button></td>
             </tr>
-            <tr>
-              <td>Générateur de titres</td>
-              <td>IA</td>
-              <td><span className="text-yellow-400">Brouillon</span></td>
-              <td><button className="text-[#ff0033] hover:underline">Voir</button></td>
+            <tr className="border-b border-[#333]">
+              <td className="p-4 text-white">ICP Maker</td>
+              <td className="p-4 text-neutral-400">IA</td>
+              <td className="p-4 text-green-400">Actif</td>
+              <td><button onClick={() => handleViewTool(2)} className="text-[#ff0033] hover:underline">Voir</button></td>
             </tr>
           </tbody>
         </table>
-        <p className="text-gray-400 mt-6">(Affichage fictif, à connecter à la base de données)</p>
       </div>
     </div>
   );

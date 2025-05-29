@@ -5,6 +5,9 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// Export nommé pour compatibilité
+export { openai };
+
 // Types pour les réponses
 export interface AIResponse {
   content: string;

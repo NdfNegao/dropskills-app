@@ -4,9 +4,11 @@ import { Home, Star, MessageSquarePlus, FileText, Bookmark, GraduationCap, Layou
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [toolsMenuOpen, setToolsMenuOpen] = useState(true);
@@ -19,6 +21,23 @@ export default function Sidebar() {
 
   // Fermer la sidebar au clic sur un lien (mobile)
   const handleLinkClick = () => setSidebarOpen(false);
+
+  const handleLogout = () => {
+    // Logique de déconnexion
+    router.push('/login');
+  };
+
+  const handleUnlockProducts = () => {
+    router.push('/unlock-products');
+  };
+
+  const handleAffiliate = () => {
+    router.push('/affiliate');
+  };
+
+  const handleGift = () => {
+    router.push('/gift');
+  };
 
   // Nouvelle organisation par catégories logiques
   const toolsCategories = [
@@ -301,11 +320,12 @@ export default function Sidebar() {
             </button>
             {userMenuOpen && (
               <div className="w-full px-3 pb-2 pt-1 flex flex-col gap-2 border-t border-[#232323] bg-[#191919] rounded-b-2xl animate-fade-in">
-                <button className="flex items-center gap-2 text-[13px] text-white hover:text-[#ff0033] transition"><Sparkles size={14} /> Débloquer tous les produits</button>
-                <button className="flex items-center gap-2 text-[13px] text-white hover:text-[#ff0033] transition"><Users size={14} /> Devenir affilié</button>
-                <button className="flex items-center gap-2 text-[13px] text-white hover:text-[#ff0033] transition"><Gift size={14} /> Obtenir un cadeau</button>
+                <button onClick={handleUnlockProducts} className="flex items-center gap-2 text-[13px] text-white hover:text-[#ff0033] transition"><Sparkles size={14} /> Débloquer tous les produits</button>
+                <button onClick={handleAffiliate} className="flex items-center gap-2 text-[13px] text-white hover:text-[#ff0033] transition"><Users size={14} /> Devenir affilié</button>
+                <button onClick={handleGift} className="flex items-center gap-2 text-[13px] text-white hover:text-[#ff0033] transition"><Gift size={14} /> Obtenir un cadeau</button>
                 <Link href="/compte" onClick={handleLinkClick} className="flex items-center gap-2 text-[13px] text-white hover:text-[#ff0033] transition"><User size={14} /> Mon compte</Link>
-                <button className="flex items-center gap-2 text-[13px] text-white hover:text-[#ff0033] transition"><LogOut size={14} /> Déconnexion</button>
+                <div className="border-t border-neutral-700 my-2"></div>
+                <button onClick={handleLogout} className="flex items-center gap-2 text-[13px] text-white hover:text-[#ff0033] transition"><LogOut size={14} /> Déconnexion</button>
               </div>
             )}
           </div>
