@@ -3,7 +3,7 @@
   "outputDirectory": ".next",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "regions": ["cdg1", "fra1"],
+  "regions": ["cdg1"],
   "functions": {
     "src/app/api/**/*.ts": {
       "maxDuration": 30
