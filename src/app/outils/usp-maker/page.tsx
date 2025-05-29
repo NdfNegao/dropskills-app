@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import PremiumGuard from '@/components/auth/PremiumGuard';
 import { USPWizard } from '@/components/USPWizard';
 import { USPResult } from '@/components/USPResult';
 
@@ -40,7 +42,7 @@ export interface USPAnalysis {
   };
 }
 
-export default function USPMakerPage() {
+function USPMakerContent() {
   const [currentStep, setCurrentStep] = useState<'wizard' | 'result'>('wizard');
   const [uspResult, setUSPResult] = useState<USPAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -119,43 +121,51 @@ export default function USPMakerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">
-            ⚡ USP Maker IA
-          </h1>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Créez votre proposition de valeur unique en 8 étapes avec l'IA
-          </p>
-          
-          {icpData && (
-            <div className="mt-4 inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm">
-              <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-              Données ICP détectées - Génération optimisée
-            </div>
-          )}
-        </div>
-
-        {/* Content */}
-        {currentStep === 'wizard' && (
-          <USPWizard 
-            onComplete={handleWizardComplete}
-            isLoading={isLoading}
-            icpData={icpData}
-          />
-        )}
-
-        {currentStep === 'result' && uspResult && (
-          <USPResult 
-            analysis={uspResult}
-            onBackToWizard={handleBackToWizard}
-            onReformulate={handleReformulate}
-            isReformulating={isLoading}
-          />
+    <div className="max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold text-white mb-4">
+          ⚡ USP Maker IA
+        </h1>
+        <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+          Créez votre proposition de valeur unique en 8 étapes avec l'IA
+        </p>
+        
+        {icpData && (
+          <div className="mt-4 inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm">
+            <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+            Données ICP détectées - Génération optimisée
+          </div>
         )}
       </div>
+
+      {/* Content */}
+      {currentStep === 'wizard' && (
+        <USPWizard 
+          onComplete={handleWizardComplete}
+          isLoading={isLoading}
+          icpData={icpData}
+        />
+      )}
+
+      {currentStep === 'result' && uspResult && (
+        <USPResult 
+          analysis={uspResult}
+          onBackToWizard={handleBackToWizard}
+          onReformulate={handleReformulate}
+          isReformulating={isLoading}
+        />
+      )}
     </div>
+  );
+}
+
+export default function USPMakerPage() {
+  return (
+    <LayoutWithSidebar>
+      <PremiumGuard feature="USP Maker IA">
+        <USPMakerContent />
+      </PremiumGuard>
+    </LayoutWithSidebar>
   );
 } 

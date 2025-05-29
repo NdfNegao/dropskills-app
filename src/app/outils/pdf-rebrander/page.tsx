@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import PremiumGuard from '@/components/auth/PremiumGuard';
 import { 
   Palette, 
   Upload, 
@@ -16,7 +17,7 @@ import {
   Zap
 } from 'lucide-react';
 
-export default function PDFRebranderPage() {
+function PDFRebranderContent() {
   const [file, setFile] = useState<File | null>(null);
   const [settings, setSettings] = useState({
     primaryColor: '#ff0033',
@@ -48,187 +49,185 @@ export default function PDFRebranderPage() {
   };
 
   return (
-    <LayoutWithSidebar>
-      <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl">
-                <Palette className="w-8 h-8 text-white" />
-              </div>
+    <div className="max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl">
+            <Palette className="w-8 h-8 text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-white">PDF Rebrander</h1>
+            <p className="text-gray-400">Personnalisez vos PDFs avec votre identité de marque</p>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
+            <div className="flex items-center gap-3">
+              <FileText className="w-5 h-5 text-orange-400" />
               <div>
-              <h1 className="text-3xl font-bold text-white">PDF Rebrander</h1>
-              <p className="text-gray-400">Personnalisez vos PDFs avec votre identité de marque</p>
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
-              <div className="flex items-center gap-3">
-                <FileText className="w-5 h-5 text-orange-400" />
-                <div>
-                  <p className="text-white font-semibold">2,847</p>
-                  <p className="text-gray-400 text-sm">PDFs rebrandés</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
-              <div className="flex items-center gap-3">
-                <TrendingUp className="w-5 h-5 text-green-400" />
-                <div>
-                  <p className="text-white font-semibold">+45%</p>
-                  <p className="text-gray-400 text-sm">Reconnaissance de marque</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
-              <div className="flex items-center gap-3">
-                <Users className="w-5 h-5 text-blue-400" />
-                <div>
-                  <p className="text-white font-semibold">892</p>
-                  <p className="text-gray-400 text-sm">Utilisateurs actifs</p>
-                </div>
-              </div>
+                <p className="text-white font-semibold">2,847</p>
+                <p className="text-gray-400 text-sm">PDFs rebrandés</p>
               </div>
             </div>
           </div>
+          <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
+            <div className="flex items-center gap-3">
+              <TrendingUp className="w-5 h-5 text-green-400" />
+              <div>
+                <p className="text-white font-semibold">+45%</p>
+                <p className="text-gray-400 text-sm">Reconnaissance de marque</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
+            <div className="flex items-center gap-3">
+              <Users className="w-5 h-5 text-blue-400" />
+              <div>
+                <p className="text-white font-semibold">892</p>
+                <p className="text-gray-400 text-sm">Utilisateurs actifs</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Upload et paramètres */}
-            <div className="space-y-6">
-              {/* Upload de fichier */}
-              <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Upload et paramètres */}
+          <div className="space-y-6">
+            {/* Upload de fichier */}
+            <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
               <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
                 <Upload className="w-5 h-5 text-orange-400" />
-                  Fichier PDF
+                Fichier PDF
               </h2>
-                
+              
               <div className="border-2 border-dashed border-[#333] rounded-lg p-8 text-center hover:border-[#00D2FF] transition-colors">
-                  {file ? (
-                    <div className="space-y-4">
-                      <FileText className="w-12 h-12 text-green-400 mx-auto" />
-                      <div>
-                        <p className="text-white font-medium">{file.name}</p>
-                        <p className="text-gray-400 text-sm">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                      </div>
-                      <button
-                        onClick={() => setFile(null)}
-                        className="text-[#ff0033] hover:text-[#cc0029] transition-colors"
-                      >
-                        Changer de fichier
-                      </button>
+                {file ? (
+                  <div className="space-y-4">
+                    <FileText className="w-12 h-12 text-green-400 mx-auto" />
+                    <div>
+                      <p className="text-white font-medium">{file.name}</p>
+                      <p className="text-gray-400 text-sm">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                     </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <Upload className="w-12 h-12 text-gray-400 mx-auto" />
-                      <div>
-                        <p className="text-gray-400 mb-2">Glissez-déposez votre PDF ici ou cliquez pour sélectionner</p>
-                        <input
-                          type="file"
-                          accept=".pdf"
-                          onChange={handleFileUpload}
-                          className="hidden"
-                          id="pdf-upload"
-                        />
-                        <label
-                          htmlFor="pdf-upload"
+                    <button
+                      onClick={() => setFile(null)}
+                      className="text-[#ff0033] hover:text-[#cc0029] transition-colors"
+                    >
+                      Changer de fichier
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <Upload className="w-12 h-12 text-gray-400 mx-auto" />
+                    <div>
+                      <p className="text-gray-400 mb-2">Glissez-déposez votre PDF ici ou cliquez pour sélectionner</p>
+                      <input
+                        type="file"
+                        accept=".pdf"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                        id="pdf-upload"
+                      />
+                      <label
+                        htmlFor="pdf-upload"
                         className="inline-block bg-[#1a1a1a] text-white px-6 py-3 rounded-lg cursor-pointer hover:bg-[#333] transition-colors border border-[#333]"
-                        >
-                          Sélectionner un PDF
-                        </label>
-                      </div>
+                      >
+                        Sélectionner un PDF
+                      </label>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
+            </div>
 
-              {/* Paramètres de branding */}
-              <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
+            {/* Paramètres de branding */}
+            <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
               <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
                 <Settings className="w-5 h-5 text-blue-400" />
-                  Paramètres de marque
+                Paramètres de marque
               </h2>
-                
+              
               <div className="space-y-6">
-                  <div>
+                <div>
                   <label className="block text-white font-medium mb-2">
-                      Couleur principale
-                    </label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="color"
-                        value={settings.primaryColor}
-                        onChange={(e) => setSettings({...settings, primaryColor: e.target.value})}
+                    Couleur principale
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={settings.primaryColor}
+                      onChange={(e) => setSettings({...settings, primaryColor: e.target.value})}
                       className="w-12 h-10 rounded border border-[#333] bg-[#1a1a1a]"
-                      />
-                      <input
-                        type="text"
-                        value={settings.primaryColor}
-                        onChange={(e) => setSettings({...settings, primaryColor: e.target.value})}
-                      className="flex-1 bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:border-[#00D2FF] focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                  <label className="block text-white font-medium mb-2">
-                      Couleur secondaire
-                    </label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="color"
-                        value={settings.secondaryColor}
-                        onChange={(e) => setSettings({...settings, secondaryColor: e.target.value})}
-                      className="w-12 h-10 rounded border border-[#333] bg-[#1a1a1a]"
-                      />
-                      <input
-                        type="text"
-                        value={settings.secondaryColor}
-                        onChange={(e) => setSettings({...settings, secondaryColor: e.target.value})}
-                      className="flex-1 bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:border-[#00D2FF] focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                  <label className="block text-white font-medium mb-2">
-                      Nom de l'entreprise
-                    </label>
+                    />
                     <input
                       type="text"
-                      value={settings.companyName}
-                      onChange={(e) => setSettings({...settings, companyName: e.target.value})}
-                    className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
-                      placeholder="Ex: Mon Entreprise"
+                      value={settings.primaryColor}
+                      onChange={(e) => setSettings({...settings, primaryColor: e.target.value})}
+                      className="flex-1 bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:border-[#00D2FF] focus:outline-none"
                     />
                   </div>
+                </div>
 
-                  <div>
+                <div>
                   <label className="block text-white font-medium mb-2">
-                      Site web
-                    </label>
+                    Couleur secondaire
+                  </label>
+                  <div className="flex items-center gap-3">
                     <input
-                      type="url"
-                      value={settings.website}
-                      onChange={(e) => setSettings({...settings, website: e.target.value})}
-                    className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
-                      placeholder="https://monsite.com"
+                      type="color"
+                      value={settings.secondaryColor}
+                      onChange={(e) => setSettings({...settings, secondaryColor: e.target.value})}
+                      className="w-12 h-10 rounded border border-[#333] bg-[#1a1a1a]"
+                    />
+                    <input
+                      type="text"
+                      value={settings.secondaryColor}
+                      onChange={(e) => setSettings({...settings, secondaryColor: e.target.value})}
+                      className="flex-1 bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:border-[#00D2FF] focus:outline-none"
                     />
                   </div>
+                </div>
 
-                  <div>
+                <div>
                   <label className="block text-white font-medium mb-2">
-                      URL du logo
-                    </label>
-                    <input
-                      type="url"
-                      value={settings.logoUrl}
-                      onChange={(e) => setSettings({...settings, logoUrl: e.target.value})}
+                    Nom de l'entreprise
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.companyName}
+                    onChange={(e) => setSettings({...settings, companyName: e.target.value})}
                     className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
-                      placeholder="https://monsite.com/logo.png"
-                    />
-                  </div>
+                    placeholder="Ex: Mon Entreprise"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">
+                    Site web
+                  </label>
+                  <input
+                    type="url"
+                    value={settings.website}
+                    onChange={(e) => setSettings({...settings, website: e.target.value})}
+                    className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
+                    placeholder="https://monsite.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">
+                    URL du logo
+                  </label>
+                  <input
+                    type="url"
+                    value={settings.logoUrl}
+                    onChange={(e) => setSettings({...settings, logoUrl: e.target.value})}
+                    className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
+                    placeholder="https://monsite.com/logo.png"
+                  />
+                </div>
 
                 <button
                   onClick={handleProcess}
@@ -247,12 +246,12 @@ export default function PDFRebranderPage() {
                     </>
                   )}
                 </button>
-                </div>
               </div>
             </div>
+          </div>
 
           {/* Résultats et aperçu */}
-            <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
+          <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
             <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
               <Zap className="w-5 h-5 text-orange-400" />
               Résultat
@@ -272,7 +271,7 @@ export default function PDFRebranderPage() {
                 </div>
               </div>
             ) : (
-                <div className="space-y-6">
+              <div className="space-y-6">
                 <div className="bg-[#1a1a1a] p-6 rounded-lg border border-[#333]">
                   <div className="flex items-center gap-3 mb-4">
                     <CheckCircle className="w-6 h-6 text-green-400" />
@@ -298,13 +297,13 @@ export default function PDFRebranderPage() {
                         <span className="text-white">{settings.primaryColor}</span>
                       </div>
                     </div>
-                        {settings.companyName && (
+                    {settings.companyName && (
                       <div className="flex items-center justify-between">
                         <span className="text-gray-400">Entreprise :</span>
                         <span className="text-white">{settings.companyName}</span>
-                    </div>
-                  )}
-                </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <button
@@ -330,39 +329,49 @@ export default function PDFRebranderPage() {
                 >
                   Rebrander un autre PDF
                 </button>
-                </div>
-              )}
+              </div>
+            )}
           </div>
         </div>
+      </div>
 
-        {/* Conseils */}
-        <div className="mt-8 bg-orange-900/20 border border-orange-500/30 rounded-xl p-6">
-          <h3 className="text-orange-400 font-semibold mb-4 flex items-center gap-2">
-            <Lightbulb className="w-5 h-5" />
-            💡 Conseils pour un rebranding efficace
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-orange-300 text-sm">
-            <div>
-              <h4 className="font-medium mb-3 text-orange-200">✨ Préparation optimale</h4>
-              <ul className="space-y-2 text-orange-300">
-                <li>• <strong>Logo haute qualité :</strong> Utilisez un format PNG avec fond transparent</li>
-                <li>• <strong>Couleurs cohérentes :</strong> Respectez votre charte graphique</li>
-                <li>• <strong>PDF source :</strong> Privilégiez des fichiers de bonne qualité</li>
-                <li>• <strong>Informations complètes :</strong> Préparez nom, site web et coordonnées</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-medium mb-3 text-orange-200">🎯 Utilisation stratégique</h4>
-              <ul className="space-y-2 text-orange-300">
-                <li>• <strong>Lead magnets :</strong> Rebrandez vos guides et ebooks gratuits</li>
-                <li>• <strong>Formations :</strong> Personnalisez vos supports de cours</li>
-                <li>• <strong>Rapports :</strong> Ajoutez votre marque aux études et analyses</li>
-                <li>• <strong>Cohérence :</strong> Gardez le même style sur tous vos documents</li>
-              </ul>
-            </div>
+      {/* Conseils */}
+      <div className="mt-8 bg-orange-900/20 border border-orange-500/30 rounded-xl p-6">
+        <h3 className="text-orange-400 font-semibold mb-4 flex items-center gap-2">
+          <Lightbulb className="w-5 h-5" />
+          💡 Conseils pour un rebranding efficace
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-orange-300 text-sm">
+          <div>
+            <h4 className="font-medium mb-3 text-orange-200">✨ Préparation optimale</h4>
+            <ul className="space-y-2 text-orange-300">
+              <li>• <strong>Logo haute qualité :</strong> Utilisez un format PNG avec fond transparent</li>
+              <li>• <strong>Couleurs cohérentes :</strong> Respectez votre charte graphique</li>
+              <li>• <strong>PDF source :</strong> Privilégiez des fichiers de bonne qualité</li>
+              <li>• <strong>Informations complètes :</strong> Préparez nom, site web et coordonnées</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-3 text-orange-200">🎯 Utilisation stratégique</h4>
+            <ul className="space-y-2 text-orange-300">
+              <li>• <strong>Lead magnets :</strong> Rebrandez vos guides et ebooks gratuits</li>
+              <li>• <strong>Formations :</strong> Personnalisez vos supports de cours</li>
+              <li>• <strong>Rapports :</strong> Ajoutez votre marque aux études et analyses</li>
+              <li>• <strong>Cohérence :</strong> Gardez le même style sur tous vos documents</li>
+            </ul>
           </div>
         </div>
+      </div>
     </div>
+  );
+}
+
+export default function PDFRebranderPage() {
+  return (
+    <LayoutWithSidebar>
+      <PremiumGuard feature="PDF Rebrander">
+        <PDFRebranderContent />
+      </PremiumGuard>
     </LayoutWithSidebar>
   );
-} 
+}

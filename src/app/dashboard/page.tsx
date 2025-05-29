@@ -121,14 +121,14 @@ export default function DashboardPage() {
             <QuickActionCard
               title="Créer un ICP"
               description="Analyser votre client idéal"
-              href="/outils/icp-maker"
+              href="/outils#icp-maker"
               color="blue"
               icon={<Target className="w-5 h-5" />}
             />
             <QuickActionCard
               title="Générer une Offre"
               description="Créer une offre irrésistible"
-              href="/outils/generateur-offre"
+              href="/outils#generateur-offre"
               color="green"
               icon={<Zap className="w-5 h-5" />}
             />
@@ -151,9 +151,12 @@ export default function DashboardPage() {
             Commencez toujours par définir votre ICP (Ideal Customer Persona) avant de créer votre offre. 
             Cela vous permettra de créer des messages plus percutants et d'augmenter vos conversions.
           </p>
-          <button className="bg-[#ff0033] hover:bg-[#cc0029] text-white px-4 py-2 rounded-lg font-medium transition-colors">
+          <a 
+            href="/outils#icp-maker"
+            className="inline-block bg-[#ff0033] hover:bg-[#cc0029] text-white px-4 py-2 rounded-lg font-medium transition-colors"
+          >
             Créer mon ICP
-          </button>
+          </a>
         </div>
       </div>
     </LayoutWithSidebar>

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import PremiumGuard from '@/components/auth/PremiumGuard';
 import { VeilleWizard } from '@/components/VeilleWizard';
 import { OpportunitiesDashboard } from '@/components/OpportunitiesDashboard';
 
@@ -59,7 +61,7 @@ export interface VeilleAnalysis {
   outilsRecommandes: string[];
 }
 
-export default function AgentVeillePage() {
+function AgentVeilleContent() {
   const [currentStep, setCurrentStep] = useState<'wizard' | 'dashboard'>('wizard');
   const [veilleResult, setVeilleResult] = useState<VeilleAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -163,47 +165,55 @@ export default function AgentVeillePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] py-8">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">
-            🦾 Agent IA Veille & Opportunités
-          </h1>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Détectez automatiquement les opportunités business et tendances de votre marché. 
-            L'IA analyse et score chaque opportunité pour vous.
-          </p>
-          
-          {savedOpportunities.length > 0 && (
-            <div className="mt-4 inline-flex items-center px-4 py-2 bg-[#ff0033]/10 text-[#ff0033] rounded-lg text-sm border border-[#ff0033]/20">
-              <span className="w-2 h-2 bg-[#ff0033] rounded-full mr-2 animate-pulse"></span>
-              {savedOpportunities.length} opportunité{savedOpportunities.length > 1 ? 's' : ''} sauvegardée{savedOpportunities.length > 1 ? 's' : ''}
-            </div>
-          )}
-        </div>
-
-        {/* Content */}
-        {currentStep === 'wizard' && (
-          <VeilleWizard 
-            onComplete={handleWizardComplete}
-            isLoading={isLoading}
-          />
-        )}
-
-        {currentStep === 'dashboard' && veilleResult && (
-          <OpportunitiesDashboard 
-            analysis={veilleResult}
-            onBackToWizard={handleBackToWizard}
-            onRefresh={handleRefreshAnalysis}
-            isRefreshing={isLoading}
-            savedOpportunities={savedOpportunities}
-            onSaveOpportunity={handleSaveOpportunity}
-            alerts={alerts}
-            onToggleAlert={handleToggleAlert}
-          />
+    <div className="max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold text-white mb-4">
+          🦾 Agent IA Veille & Opportunités
+        </h1>
+        <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+          Détectez automatiquement les opportunités business et tendances de votre marché. 
+          L'IA analyse et score chaque opportunité pour vous.
+        </p>
+        
+        {savedOpportunities.length > 0 && (
+          <div className="mt-4 inline-flex items-center px-4 py-2 bg-[#ff0033]/10 text-[#ff0033] rounded-lg text-sm border border-[#ff0033]/20">
+            <span className="w-2 h-2 bg-[#ff0033] rounded-full mr-2 animate-pulse"></span>
+            {savedOpportunities.length} opportunité{savedOpportunities.length > 1 ? 's' : ''} sauvegardée{savedOpportunities.length > 1 ? 's' : ''}
+          </div>
         )}
       </div>
+
+      {/* Content */}
+      {currentStep === 'wizard' && (
+        <VeilleWizard 
+          onComplete={handleWizardComplete}
+          isLoading={isLoading}
+        />
+      )}
+
+      {currentStep === 'dashboard' && veilleResult && (
+        <OpportunitiesDashboard 
+          analysis={veilleResult}
+          onBackToWizard={handleBackToWizard}
+          onRefresh={handleRefreshAnalysis}
+          isRefreshing={isLoading}
+          savedOpportunities={savedOpportunities}
+          onSaveOpportunity={handleSaveOpportunity}
+          alerts={alerts}
+          onToggleAlert={handleToggleAlert}
+        />
+      )}
     </div>
+  );
+}
+
+export default function AgentVeillePage() {
+  return (
+    <LayoutWithSidebar>
+      <PremiumGuard feature="Agent Veille IA">
+        <AgentVeilleContent />
+      </PremiumGuard>
+    </LayoutWithSidebar>
   );
 } 

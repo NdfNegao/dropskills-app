@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import LayoutWithSidebar from '@/components/LayoutWithSidebar';
-import PremiumGuard from '@/components/auth/PremiumGuard';
 import { 
   Sparkles, 
   Type, 
@@ -291,9 +290,7 @@ function GenerateurTitresContent() {
 export default function GenerateurTitresPage() {
   return (
     <LayoutWithSidebar>
-      <PremiumGuard feature="Générateur de Titres IA">
-        <GenerateurTitresContent />
-      </PremiumGuard>
+      <GenerateurTitresContent />
     </LayoutWithSidebar>
   );
 } 
