@@ -1,5 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import bcrypt from 'bcryptjs';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -14,51 +15,70 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        // Authentification simplifiée pour le développement
-        // TODO: Remplacer par une vraie authentification en production
-        
-        // Admin principal
-        if (credentials.email === 'admin@dropskills.com' && credentials.password === 'admin123') {
-          return {
-            id: '1',
-            email: credentials.email,
-            name: 'Admin DropSkills',
-            role: 'SUPER_ADMIN',
-            firstName: 'Admin',
-            lastName: 'DropSkills'
-          };
+        // TODO: Remplacer par une vraie authentification avec base de données
+        // const user = await getUserByEmail(credentials.email);
+        // if (!user || !await bcrypt.compare(credentials.password, user.password)) {
+        //   return null;
+        // }
+
+        // Comptes de test sécurisés (uniquement en développement)
+        if (process.env.NODE_ENV === 'development') {
+          const testAccounts = [
+            {
+              email: process.env.TEST_ADMIN_EMAIL || 'admin@dropskills.com',
+              password: process.env.TEST_ADMIN_PASSWORD || 'admin123',
+              user: {
+                id: '1',
+                email: process.env.TEST_ADMIN_EMAIL || 'admin@dropskills.com',
+                name: 'Admin DropSkills',
+                role: 'SUPER_ADMIN',
+                firstName: 'Admin',
+                lastName: 'DropSkills'
+              }
+            },
+            {
+              email: process.env.TEST_PREMIUM_EMAIL || 'premium@dropskills.com',
+              password: process.env.TEST_PREMIUM_PASSWORD || 'premium123',
+              user: {
+                id: '2',
+                email: process.env.TEST_PREMIUM_EMAIL || 'premium@dropskills.com',
+                name: 'Premium User',
+                role: 'PREMIUM',
+                firstName: 'Premium',
+                lastName: 'User'
+              }
+            },
+            {
+              email: process.env.TEST_USER_EMAIL || 'user@dropskills.com',
+              password: process.env.TEST_USER_PASSWORD || 'user123',
+              user: {
+                id: '3',
+                email: process.env.TEST_USER_EMAIL || 'user@dropskills.com',
+                name: 'Standard User',
+                role: 'USER',
+                firstName: 'Standard',
+                lastName: 'User'
+              }
+            }
+          ];
+
+          const testAccount = testAccounts.find(
+            account => account.email === credentials.email && account.password === credentials.password
+          );
+
+          if (testAccount) {
+            return testAccount.user;
+          }
         }
 
-        // Utilisateur premium de test
-        if (credentials.email === 'premium@dropskills.com' && credentials.password === 'premium123') {
-          return {
-            id: '2',
-            email: credentials.email,
-            name: 'Premium User',
-            role: 'PREMIUM',
-            firstName: 'Premium',
-            lastName: 'User'
-          };
-        }
-
-        // Utilisateur standard de test
-        if (credentials.email === 'user@dropskills.com' && credentials.password === 'user123') {
-          return {
-            id: '3',
-            email: credentials.email,
-            name: 'Standard User',
-            role: 'USER',
-            firstName: 'Standard',
-            lastName: 'User'
-          };
-        }
-
+        // En production, seule l'authentification par base de données est autorisée
         return null;
       }
     })
   ],
   pages: {
     signIn: '/auth/signin',
+    error: '/auth/error',
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -77,11 +97,21 @@ export const authOptions: NextAuthOptions = {
         (session.user as any).lastName = token.lastName;
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // Redirection sécurisée
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     }
   },
-  secret: process.env.NEXTAUTH_SECRET || process.env.VERCEL_URL || 'dropskills-v2-secret-key-2024',
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 jours
+  },
+  jwt: {
+    maxAge: 30 * 24 * 60 * 60, // 30 jours
   },
   debug: process.env.NODE_ENV === 'development',
 }; 

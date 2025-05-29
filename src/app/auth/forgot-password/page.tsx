@@ -51,8 +51,8 @@ export default function ForgotPasswordPage() {
               Vérifiez votre boîte de réception.
             </p>
             <Link
-              href="/login"
-              className="inline-flex items-center gap-2 text-[#00D2FF] hover:text-[#00B8E6] transition-colors"
+              href="/auth/signin"
+              className="inline-flex items-center gap-2 text-[#ff0033] hover:text-[#cc0029] transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Retour à la connexion
@@ -70,7 +70,7 @@ export default function ForgotPasswordPage() {
           {/* Logo */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-white tracking-tight">
-              DROP<span className="text-[#00D2FF]">SKILLS</span>
+              DROP<span className="text-[#ff0033]">SKILLS</span>
             </h1>
             <p className="text-gray-400 mt-2">Réinitialiser votre mot de passe</p>
           </div>
@@ -109,7 +109,7 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-[#00D2FF] to-[#3A7BD5] text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-[#ff0033] to-[#cc0029] text-white py-3 rounded-lg font-semibold hover:from-[#cc0029] hover:to-[#990022] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "Envoi en cours..." : "Envoyer le lien de réinitialisation"}
             </button>
@@ -118,8 +118,8 @@ export default function ForgotPasswordPage() {
           {/* Retour connexion */}
           <div className="mt-6 text-center">
             <Link
-              href="/login"
-              className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+              href="/auth/signin"
+              className="inline-flex items-center gap-2 text-[#ff0033] hover:text-[#cc0029] transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Retour à la connexion

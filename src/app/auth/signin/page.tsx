@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -37,7 +38,7 @@ export default function SignInPage() {
           if (userRole === "ADMIN" || userRole === "SUPER_ADMIN") {
             router.push("/admin");
           } else {
-            router.push("/");
+            router.push("/dashboard");
           }
         }
       }
@@ -46,32 +47,6 @@ export default function SignInPage() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const testAccounts = [
-    {
-      email: "admin@dropskills.com",
-      password: "admin123",
-      role: "Super Admin",
-      description: "Accès complet admin + premium"
-    },
-    {
-      email: "premium@dropskills.com",
-      password: "premium123",
-      role: "Premium",
-      description: "Accès aux outils IA premium"
-    },
-    {
-      email: "user@dropskills.com",
-      password: "user123",
-      role: "Utilisateur",
-      description: "Accès limité, doit upgrader"
-    }
-  ];
-
-  const quickLogin = (testEmail: string, testPassword: string) => {
-    setEmail(testEmail);
-    setPassword(testPassword);
   };
 
   return (
@@ -140,55 +115,40 @@ export default function SignInPage() {
             </div>
           </div>
 
+          {/* Mot de passe oublié */}
+          <div className="flex justify-end">
+            <Link 
+              href="/auth/forgot-password" 
+              className="text-sm text-[#ff0033] hover:text-[#cc0029] transition-colors"
+            >
+              Mot de passe oublié ?
+            </Link>
+          </div>
+
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-[#ff0033] to-[#cc0029] text-white py-3 px-4 rounded-lg font-semibold hover:from-[#cc0029] hover:to-[#990022] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-[#ff0033] to-[#cc0029] text-white py-3 px-4 rounded-lg font-semibold hover:from-[#cc0029] hover:to-[#990022] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            {isLoading ? "Connexion..." : "Se connecter"}
+            {isLoading ? (
+              "Connexion..."
+            ) : (
+              <>
+                Se connecter
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
           </button>
         </form>
 
-        {/* Comptes de test */}
-        <div className="mt-8">
-          <h3 className="text-lg font-semibold text-white mb-4 text-center">
-            Comptes de test disponibles
-          </h3>
-          <div className="space-y-3">
-            {testAccounts.map((account, index) => (
-              <div 
-                key={index}
-                className="bg-[#111111] border border-[#232323] rounded-lg p-4 hover:border-[#ff0033]/30 transition-colors cursor-pointer"
-                onClick={() => quickLogin(account.email, account.password)}
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <User className="w-4 h-4 text-[#ff0033]" />
-                      <span className="font-medium text-white">{account.role}</span>
-                    </div>
-                    <p className="text-sm text-gray-400">{account.description}</p>
-                    <p className="text-xs text-gray-500 mt-1">{account.email}</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      quickLogin(account.email, account.password);
-                    }}
-                    className="text-[#ff0033] hover:text-[#cc0029] text-sm font-medium"
-                  >
-                    Utiliser
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Footer */}
         <div className="text-center text-sm text-gray-400">
-          <p>Pas encore de compte ? <span className="text-[#ff0033]">Créer un compte</span></p>
+          <p>
+            Pas encore de compte ?{" "}
+            <Link href="/auth/signup" className="text-[#ff0033] hover:text-[#cc0029] font-medium transition-colors">
+              Créer un compte
+            </Link>
+          </p>
         </div>
       </div>
     </div>
