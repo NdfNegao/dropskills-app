@@ -7,7 +7,7 @@ import Link from 'next/link';
 import {
   Home, Lock, BookOpen, User, Settings, LogOut, 
   Sparkles, BrainCog, Rocket, FolderKanban, Mail, 
-  CalendarCheck, LineChart, GraduationCap, Target, X
+  CalendarCheck, LineChart, GraduationCap, Target, X, Users
 } from "lucide-react";
 
 // Outils IA pour mobile
@@ -123,6 +123,7 @@ export default function LayoutWithSidebar({
           
           <MobileNavLink icon={<GraduationCap />} label="Tutoriels" href="/tutoriels" onClick={() => setMobileMenuOpen(false)} />
           <MobileNavLink icon={<LineChart />} label="Demandes de Produits" href="/demandes" onClick={() => setMobileMenuOpen(false)} />
+          <MobileNavLink icon={<Users />} label="Programme d'affiliation" href="/affiliate" onClick={() => setMobileMenuOpen(false)} />
         </nav>
 
         {/* Footer mobile */}

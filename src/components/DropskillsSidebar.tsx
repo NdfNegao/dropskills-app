@@ -6,7 +6,7 @@ import {
   Home, Lock, BookOpen, User, Settings, LogOut, 
   Sparkles, BrainCog, Rocket, FolderKanban, Mail, 
   CalendarCheck, LineChart, GraduationCap, ChevronLeft, ChevronRight,
-  Target, Zap
+  Target, Zap, Users
 } from "lucide-react";
 
 // Outils IA mappés sur votre schéma V2 (6 outils comme demandé)
@@ -180,6 +180,14 @@ export default function DropskillsSidebar({
           label="Demandes de Produits" 
           href="/demandes"
           tooltip="Suggère ou vote pour de nouveaux contenus" 
+        />
+
+        <SidebarLink 
+          collapsed={collapsed} 
+          icon={<Users />} 
+          label="Programme d'affiliation" 
+          href="/affiliate"
+          tooltip="Gagnez de l'argent en recommandant DropSkills" 
         />
       </nav>
 
