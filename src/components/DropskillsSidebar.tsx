@@ -83,10 +83,11 @@ export default function DropskillsSidebar({
   }
 
   return (
-    <aside className={`flex flex-col h-screen bg-black text-white transition-all duration-300 shadow-xl
+    <aside className={`flex flex-col h-screen bg-black text-white shadow-xl
       ${collapsed ? "w-20" : "w-64"} 
       hidden lg:flex
       fixed top-0 left-0 z-30
+      transition-all duration-300
       ${className}
       `}>
       
@@ -156,11 +157,6 @@ export default function DropskillsSidebar({
 
         {/* Section Aide & Personnalisation */}
         <div className="mb-2">
-          {!collapsed && (
-            <div className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-[#ff0033] uppercase tracking-wide">
-              <Settings size={16} /> Aide & Personnalisation
-            </div>
-          )}
           <div className={collapsed ? 'space-y-1' : 'ml-4 space-y-1'}>
             {helpNavigation.map((item, idx) => (
               <SidebarLink
@@ -246,8 +242,12 @@ function SidebarLink({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <span className={`text-xl relative transition-all duration-200 ${isHovered ? 'scale-110' : ''}`}>{icon}</span>
-      {!collapsed && (<span className="flex-1 transition-all duration-200">{label}</span>)}
+      <span className={`text-xl relative transition-all duration-200 ${isHovered ? 'scale-110' : ''} group-hover:text-[#ff0033]`}>
+        {icon}
+      </span>
+      {!collapsed && (
+        <span className="flex-1 transition-all duration-200 group-hover:text-[#ff0033]">{label}</span>
+      )}
       {collapsed && (tooltip || label) && (
         <span className={`absolute left-20 bg-black text-white rounded px-2 py-1 shadow-lg text-xs transition-all duration-200 whitespace-nowrap border border-gray-700 z-50 ${isHovered ? 'opacity-100 translate-x-2' : 'opacity-0'}`}>{tooltip || label}</span>
       )}
