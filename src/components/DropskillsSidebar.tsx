@@ -136,14 +136,9 @@ export default function DropskillsSidebar({
           ))}
         </div>
 
-        {/* Séparateur */}
-        <div className={`my-4 px-2 ${collapsed ? 'mx-auto w-6' : ''}`}>
-          <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent"></div>
-        </div>
-
-        {/* Bouton Débloquer Premium toujours visible */}
+        {/* Bouton Débloquer Premium */}
         {!canAccessPremium && (
-          <div className="mt-2 px-2">
+          <div className="mt-4 px-2">
             <SidebarCTA 
               collapsed={collapsed} 
               icon={<Lock />} 
@@ -155,8 +150,8 @@ export default function DropskillsSidebar({
         )}
 
         {/* Séparateur */}
-        <div className={`my-4 px-2 ${collapsed ? 'mx-auto w-6' : ''}`}>
-          <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent"></div>
+        <div className={`my-4 ${collapsed ? 'mx-2' : 'mx-2'}`}>
+          <div className="h-px bg-gray-800"></div>
         </div>
 
         {/* Section Aide & Personnalisation */}
@@ -166,7 +161,7 @@ export default function DropskillsSidebar({
               <Settings size={16} /> Aide & Personnalisation
             </div>
           )}
-          <div className="ml-4 space-y-1">
+          <div className={collapsed ? 'space-y-1' : 'ml-4 space-y-1'}>
             {helpNavigation.map((item, idx) => (
               <SidebarLink
                 key={item.label}
@@ -182,8 +177,8 @@ export default function DropskillsSidebar({
         </div>
 
         {/* Séparateur */}
-        <div className="my-4 px-2">
-          <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent"></div>
+        <div className={`my-4 ${collapsed ? 'mx-2' : 'mx-2'}`}>
+          <div className="h-px bg-gray-800"></div>
         </div>
 
         {/* Section compte et autres */}
