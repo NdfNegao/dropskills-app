@@ -1,79 +1,64 @@
 import { useSession } from 'next-auth/react';
-import { useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
-export type UserRole = 'USER' | 'PREMIUM' | 'ADMIN' | 'SUPER_ADMIN';
-
-export interface AuthUser {
+interface User {
   id: string;
   email: string;
+  name?: string;
   firstName?: string;
   lastName?: string;
-  role: UserRole;
-  isPremium: boolean;
-  isAdmin: boolean;
-  isSuperAdmin: boolean;
+  role: 'USER' | 'PREMIUM' | 'ADMIN' | 'SUPER_ADMIN';
+  isDevAccount?: boolean;
 }
 
-export interface UseAuthReturn {
-  user: AuthUser | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  isPremium: boolean;
-  isAdmin: boolean;
-  isSuperAdmin: boolean;
-  hasRole: (role: UserRole) => boolean;
-  hasAnyRole: (roles: UserRole[]) => boolean;
-  canAccessPremium: boolean;
-  canAccessAdmin: boolean;
-}
-
-export function useAuth(): UseAuthReturn {
+export function useAuth() {
   const { data: session, status } = useSession();
+  const [devUser, setDevUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const user = useMemo((): AuthUser | null => {
-    if (!session?.user) return null;
+  // Vérifier s'il y a un utilisateur de développement
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const devUserData = localStorage.getItem('dev-user');
+      const devSession = localStorage.getItem('dev-session');
+      
+      if (devUserData && devSession) {
+        try {
+          const userData = JSON.parse(devUserData);
+          setDevUser(userData);
+        } catch (error) {
+          console.error('Erreur parsing dev user:', error);
+          localStorage.removeItem('dev-user');
+          localStorage.removeItem('dev-session');
+        }
+      }
+    }
+    setIsLoading(false);
+  }, []);
 
-    const sessionUser = session.user as any;
-    const role = sessionUser.role || 'USER';
-    
-    return {
-      id: sessionUser.id,
-      email: sessionUser.email,
-      firstName: sessionUser.firstName,
-      lastName: sessionUser.lastName,
-      role,
-      isPremium: role === 'PREMIUM' || role === 'ADMIN' || role === 'SUPER_ADMIN',
-      isAdmin: role === 'ADMIN' || role === 'SUPER_ADMIN',
-      isSuperAdmin: role === 'SUPER_ADMIN'
-    };
-  }, [session]);
+  // Utiliser l'utilisateur de dev si disponible, sinon l'utilisateur de session
+  const user = devUser || (session?.user as User) || null;
+  
+  // Déterminer si l'utilisateur peut accéder au contenu premium
+  const canAccessPremium = user?.role === 'PREMIUM' || 
+                          user?.role === 'ADMIN' || 
+                          user?.role === 'SUPER_ADMIN';
 
-  const hasRole = (role: UserRole): boolean => {
-    return user?.role === role;
-  };
+  // Déterminer si l'utilisateur est admin
+  const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
+  const isSuperAdmin = user?.role === 'SUPER_ADMIN';
 
-  const hasAnyRole = (roles: UserRole[]): boolean => {
-    return user ? roles.includes(user.role) : false;
-  };
-
-  const canAccessPremium = useMemo(() => {
-    return user?.isPremium || user?.isAdmin || false;
-  }, [user]);
-
-  const canAccessAdmin = useMemo(() => {
-    return user?.isAdmin || false;
-  }, [user]);
+  // État de chargement global
+  const loading = devUser ? false : (status === 'loading' || isLoading);
 
   return {
     user,
+    isLoading: loading,
     isAuthenticated: !!user,
-    isLoading: status === 'loading',
-    isPremium: user?.isPremium || false,
-    isAdmin: user?.isAdmin || false,
-    isSuperAdmin: user?.isSuperAdmin || false,
-    hasRole,
-    hasAnyRole,
     canAccessPremium,
-    canAccessAdmin
+    isAdmin,
+    isSuperAdmin,
+    session: devUser ? { user: devUser } : session,
+    status: devUser ? 'authenticated' : status
   };
 } 

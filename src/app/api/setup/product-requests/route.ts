@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
     console.log('🔧 Configuration des tables Product Requests...');
 
+    // Import dynamique pour éviter l'erreur au build
+    const { getSupabase } = await import('@/lib/supabase');
     const supabase = getSupabase();
 
     // Insérer des données de test directement

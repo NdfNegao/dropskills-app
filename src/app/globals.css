@@ -2,55 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Variables CSS pour le thème */
 :root {
-  --background: #0a0a0a;
-  --foreground: #ffffff;
-  --primary: #ff0033;
-  --primary-hover: #e60000;
-  --secondary: #171717;
+  --primary-red: #ff0033;
+  --primary-red-dark: #cc0029;
+  --background-dark: #000000;
+  --background-card: #111111;
+  --border-color: #232323;
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Styles de base */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ffffff;
-  }
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: var(--background-dark);
+  color: var(--text-primary);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@layer base {
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-bold;
-  }
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-@layer components {
-  .btn-primary {
-    @apply bg-[#ff0033] text-white px-6 py-2 rounded-full hover:bg-[#e60000] transition-colors;
-  }
-  
-  .card {
-    @apply bg-[#111111] rounded-xl p-6 hover:bg-[#1a1a1a] transition-colors;
-  }
-}
-
-/* Animations */
+/* Animations de base nécessaires */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -58,38 +52,97 @@ body {
   }
 }
 
-.animate-fadeIn {
-  animation: fadeIn 0.5s ease-out forwards;
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Styles pour le slider du simulateur */
-.slider::-webkit-slider-thumb {
-  appearance: none;
-  height: 20px;
-  width: 20px;
-  border-radius: 50%;
-  background: #ff0033;
-  cursor: pointer;
-  border: 2px solid #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+/* Classes d'animation de base */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
 }
 
-.slider::-moz-range-thumb {
-  height: 20px;
-  width: 20px;
-  border-radius: 50%;
-  background: #ff0033;
-  cursor: pointer;
-  border: 2px solid #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+.animate-slide-up {
+  animation: slideUp 0.6s ease-out forwards;
 }
 
-.slider::-webkit-slider-track {
-  height: 8px;
+/* Scrollbar personnalisée */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
   border-radius: 4px;
 }
 
-.slider::-moz-range-track {
-  height: 8px;
-  border-radius: 4px;
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-red);
+}
+
+/* Sélection de texte */
+::selection {
+  background: var(--primary-red);
+  color: white;
+}
+
+::-moz-selection {
+  background: var(--primary-red);
+  color: white;
+}
+
+/* Focus states */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 0, 51, 0.3);
+}
+
+/* Card hover effects simples */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Button styles simples */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-red), var(--primary-red-dark));
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(255, 0, 51, 0.4);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .animate-fade-in,
+  .animate-slide-up {
+    animation-duration: 0.4s;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

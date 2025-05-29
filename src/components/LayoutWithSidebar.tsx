@@ -9,7 +9,7 @@ import {
   Sparkles, BrainCog, Rocket, FolderKanban, Mail, 
   CalendarCheck, LineChart, GraduationCap, Target, X, Users
 } from "lucide-react";
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 
 // Outils IA pour mobile
