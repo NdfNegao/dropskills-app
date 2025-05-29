@@ -14,12 +14,15 @@
     "test:all": "echo '🧪 Tests DropSkills' && npm run check-google && echo '✅ Configuration vérifiée' && echo '🎉 Tous les tests sont passés !'",
     "setup-vercel": "node scripts/setup-vercel-env.js",
     "setup-git-deployment": "node scripts/setup-git-deployment.js",
-    "deploy": "vercel --prod"
+    "deploy": "vercel --prod",
+    "deploy:analytics": "node scripts/deploy-with-analytics.js"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.9.1",
     "@supabase/supabase-js": "^2.49.8",
     "@types/bcryptjs": "^2.4.6",
+    "@vercel/analytics": "^1.4.1",
+    "@vercel/speed-insights": "^1.1.0",
     "bcryptjs": "^3.0.2",
     "date-fns": "^4.1.0",
     "framer-motion": "^10.16.4",

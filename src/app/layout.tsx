@@ -6,6 +6,9 @@ import Script from "next/script";
 import { SavedProductsProvider } from "@/context/SavedProductsContext";
 import PageTransitionClient from "@/components/PageTransitionClient";
 import PostHogProvider from "@/components/PostHogProvider";
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/react';
+import PerformanceTracker from '@/components/PerformanceTracker';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -57,6 +60,8 @@ export default function RootLayout({
             </PageTransitionClient>
           </SavedProductsProvider>
         </SessionWrapper>
+        
+        {/* Analytics Scripts */}
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-7QK9KQKQKQ" strategy="afterInteractive" />
         <Script id="gtag-init" strategy="afterInteractive">
           {`
@@ -66,6 +71,11 @@ export default function RootLayout({
             gtag('config', 'G-7QK9KQKQKQ');
           `}
         </Script>
+        
+        {/* Vercel Analytics & Performance Monitoring */}
+        <Analytics />
+        <SpeedInsights />
+        <PerformanceTracker />
       </body>
     </html>
   );

@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { BarChart3, TrendingUp, Users, Package, DollarSign, Activity } from 'lucide-react';
+import PerformanceMetrics from '@/components/PerformanceMetrics';
 
 export const metadata: Metadata = {
   title: 'Analytics | Admin DropSkills',
@@ -20,6 +21,9 @@ export default function AnalyticsPage() {
           </select>
         </div>
       </div>
+
+      {/* Métriques de Performance Vercel */}
+      <PerformanceMetrics />
 
       {/* Métriques principales */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
