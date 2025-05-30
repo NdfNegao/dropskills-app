@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabase } from '@/lib/supabase'
+import { supabase } from '../../../../../lib/supabase'
 
 // Middleware d'authentification pour n8n
 function authenticateN8N(request: NextRequest) {
@@ -17,7 +17,7 @@ export async function GET(
   }
 
   try {
-    const supabase = getSupabase()
+    // Utiliser directement l'import supabase
     
     // Récupérer le profil
     const { data: profile, error } = await supabase
@@ -80,7 +80,7 @@ export async function PUT(
 
   try {
     const data = await request.json()
-    const supabase = getSupabase()
+    // Utiliser directement l'import supabase
 
     // Mettre à jour le profil
     const { data: updatedProfile, error } = await supabase
@@ -130,7 +130,7 @@ export async function DELETE(
   }
 
   try {
-    const supabase = getSupabase()
+    // Utiliser directement l'import supabase
     
     // Supprimer le profil (les relations seront supprimées en cascade)
     const { error } = await supabase

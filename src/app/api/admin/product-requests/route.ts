@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
-import { SupabaseHelper } from '@/lib/supabase';
+import { supabase } from '../../../../lib/supabase';
 
 export async function GET(request: NextRequest) {
   try {
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const requests = await SupabaseHelper.getAllProductRequests();
+    const requests = await supabase.from('product_requests').select('*');
 
     return NextResponse.json(requests);
 
@@ -95,10 +95,10 @@ export async function PUT(request: NextRequest) {
       updates.estimated_completion = estimated_completion;
     }
 
-    const updatedRequest = await SupabaseHelper.updateProductRequest(id, updates);
+    const updatedRequest = await supabase.from('product_requests').update(updates).eq('id', id).select();
 
     // Log de l'action admin
-    await SupabaseHelper.createAdminLog({
+    await supabase.from('admin_logs').insert({
       admin_id: user.id || user.email,
       action: 'UPDATE_PRODUCT_REQUEST',
       resource_type: 'product_request',
@@ -150,10 +150,10 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    await SupabaseHelper.deleteProductRequest(id);
+    await supabase.from('product_requests').delete().eq('id', id);
 
     // Log de l'action admin
-    await SupabaseHelper.createAdminLog({
+    await supabase.from('admin_logs').insert({
       admin_id: user.id || user.email,
       action: 'DELETE_PRODUCT_REQUEST',
       resource_type: 'product_request',
