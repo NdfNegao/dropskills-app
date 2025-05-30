@@ -1,22 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
-import { SupabaseHelper } from '@/lib/supabase';
+import { supabase } from '../../../lib/supabase';
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
 
-    let requests;
+    let query = supabase.from('product_requests').select('*');
     if (status) {
-      requests = await SupabaseHelper.getProductRequestsByStatus(status);
-    } else {
-      requests = await SupabaseHelper.getAllProductRequests();
+      query = query.eq('status', status);
     }
-
+    const { data: requests, error } = await query;
+    if (error) {
+      throw error;
+    }
     return NextResponse.json(requests);
-
   } catch (error) {
     console.error('Erreur API product-requests GET:', error);
     return NextResponse.json(
@@ -61,19 +61,20 @@ export async function POST(request: NextRequest) {
     }
 
     const user = session.user as any;
-    const newRequest = await SupabaseHelper.createProductRequest({
+    const { data: newRequest, error } = await supabase.from('product_requests').insert({
       title: title.trim(),
       description: description.trim(),
       user_id: user.id || user.email,
       user_email: user.email
-    });
-
+    }).select().single();
+    if (error) {
+      throw error;
+    }
     return NextResponse.json({
       success: true,
       message: 'Demande créée avec succès',
       request: newRequest
     });
-
   } catch (error) {
     console.error('Erreur API product-requests POST:', error);
     return NextResponse.json(

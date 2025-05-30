@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
+import { supabaseAdmin } from '../../../../lib/supabase';
 
 // Configuration Systeme.io API
 const SYSTEME_IO_API_BASE = 'https://api.systeme.io/v1';
