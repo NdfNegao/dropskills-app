@@ -20,64 +20,36 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        // TODO: Remplacer par une vraie authentification avec base de données
-        // const user = await getUserByEmail(credentials.email);
-        // if (!user || !await bcrypt.compare(credentials.password, user.password)) {
-        //   return null;
-        // }
+        // Authentification réelle via Supabase Auth
+        const { createClient } = await import('@supabase/supabase-js');
+        const supabase = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        );
 
-        // Comptes de test sécurisés (uniquement en développement)
-        if (process.env.NODE_ENV === 'development') {
-          const testAccounts = [
-            {
-              email: process.env.TEST_ADMIN_EMAIL || 'admin@dropskills.com',
-              password: process.env.TEST_ADMIN_PASSWORD || 'admin123',
-              user: {
-                id: '1',
-                email: process.env.TEST_ADMIN_EMAIL || 'admin@dropskills.com',
-                name: 'Admin DropSkills',
-                role: 'SUPER_ADMIN',
-                firstName: 'Admin',
-                lastName: 'DropSkills'
-              }
-            },
-            {
-              email: process.env.TEST_PREMIUM_EMAIL || 'premium@dropskills.com',
-              password: process.env.TEST_PREMIUM_PASSWORD || 'premium123',
-              user: {
-                id: '2',
-                email: process.env.TEST_PREMIUM_EMAIL || 'premium@dropskills.com',
-                name: 'Premium User',
-                role: 'PREMIUM',
-                firstName: 'Premium',
-                lastName: 'User'
-              }
-            },
-            {
-              email: process.env.TEST_USER_EMAIL || 'user@dropskills.com',
-              password: process.env.TEST_USER_PASSWORD || 'user123',
-              user: {
-                id: '3',
-                email: process.env.TEST_USER_EMAIL || 'user@dropskills.com',
-                name: 'Standard User',
-                role: 'USER',
-                firstName: 'Standard',
-                lastName: 'User'
-              }
-            }
-          ];
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: credentials.email,
+          password: credentials.password,
+        });
 
-          const testAccount = testAccounts.find(
-            account => account.email === credentials.email && account.password === credentials.password
-          );
-
-          if (testAccount) {
-            return testAccount.user;
-          }
+        if (error || !data?.user) {
+          return null;
         }
 
-        // En production, seule l'authentification par base de données est autorisée
-        return null;
+        // Récupérer le profil (optionnel)
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', data.user.id)
+          .single();
+
+        return {
+          id: data.user.id,
+          email: data.user.email,
+          role: profile?.role || 'USER',
+          firstName: profile?.first_name || '',
+          lastName: profile?.last_name || '',
+        };
       }
     })
   ],
