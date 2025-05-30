@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { openai } from '@/lib/openai';
 import { ICPFormData } from '@/app/outils/icp-maker/page';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

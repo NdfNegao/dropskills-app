@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { SupabaseHelper, supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 // Outils IA par défaut à créer si la table est vide
 const DEFAULT_AI_TOOLS = [
@@ -60,19 +60,16 @@ export async function GET(request: NextRequest) {
     const isActive = searchParams.get('active')
     
     // Construire les options de filtre
-    const whereOptions: any = {}
+    let query = supabase.from('ai_tools').select('*')
     if (isActive !== null) {
-      whereOptions.is_active = isActive === 'true'
+      query = query.eq('is_active', isActive === 'true')
     }
-
-    const aiTools = await SupabaseHelper.findManyAiTools({
-      where: whereOptions
-    })
+    const { data: aiTools = [], error } = await query
+    if (error) throw error
 
     // Si usage demandé, on peut ajouter le count d'utilisation
     let toolsWithUsage = aiTools
     if (includeUsage) {
-      // Pour chaque outil, compter les utilisations
       toolsWithUsage = await Promise.all(
         aiTools.map(async (tool) => {
           const { count } = await supabase
@@ -114,21 +111,30 @@ export async function POST(request: NextRequest) {
     
     // Action spéciale pour initialiser les outils par défaut
     if (body.action === 'init_default_tools') {
-      const existingToolsCount = await SupabaseHelper.countAiTools()
-      
-      if (existingToolsCount > 0) {
+      const { count: existingToolsCount } = await supabase
+        .from('ai_tools')
+        .select('*', { count: 'exact', head: true })
+
+      if ((existingToolsCount || 0) > 0) {
+        const { data: allTools } = await supabase
+          .from('ai_tools')
+          .select('*')
         return NextResponse.json({
           success: false,
           message: 'Les outils IA existent déjà',
-          data: await SupabaseHelper.findManyAiTools()
+          data: allTools
         })
       }
 
       // Créer tous les outils par défaut
       const createdTools = []
       for (const toolData of DEFAULT_AI_TOOLS) {
-        const tool = await SupabaseHelper.createAiTool(toolData)
-        createdTools.push(tool)
+        const { data: tool, error } = await supabase
+          .from('ai_tools')
+          .insert([toolData])
+          .select()
+          .single()
+        if (tool) createdTools.push(tool)
       }
 
       return NextResponse.json({
@@ -146,12 +152,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const aiTool = await SupabaseHelper.createAiTool({
-      name: body.name,
-      description: body.description,
-      tool_type: body.tool_type,
-      is_active: body.is_active !== undefined ? body.is_active : true
-    })
+    const { data: aiTool, error: insertError } = await supabase
+      .from('ai_tools')
+      .insert([{
+        name: body.name,
+        description: body.description,
+        tool_type: body.tool_type,
+        is_active: body.is_active !== undefined ? body.is_active : true
+      }])
+      .select()
+      .single()
+
+    if (insertError) throw insertError
 
     return NextResponse.json({
       success: true,

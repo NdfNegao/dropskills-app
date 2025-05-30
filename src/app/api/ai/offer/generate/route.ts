@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 // Fonction utilitaire pour vérifier l'accès premium
 async function checkPremiumAccess() {
   const session = await getServerSession(authOptions);

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase, SupabaseHelper } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import bcrypt from 'bcryptjs'
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
@@ -80,12 +82,12 @@ export async function POST(request: NextRequest) {
       profile = updatedProfile
     } else {
       // Créer un nouveau profil
-      const { data: newProfile, error: createError } = await SupabaseHelper.createProfile({
+      const { data: newProfile, error: createError } = await supabase.from('profiles').insert({
         user_id: userId,
         role: role,
         first_name: firstName,
         last_name: lastName
-      })
+      }).select().single()
 
       if (createError) throw createError
       profile = newProfile

@@ -9,6 +9,7 @@ import PostHogProvider from "@/components/PostHogProvider";
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/react';
 import PerformanceTracker from '@/components/PerformanceTracker';
+import { LikedProductsProvider } from '@/context/LikedProductsContext';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -54,11 +55,13 @@ export default function RootLayout({
           ></iframe>
         </noscript>
         <SessionWrapper>
-          <SavedProductsProvider>
-            <PageTransitionClient>
-              {children}
-            </PageTransitionClient>
-          </SavedProductsProvider>
+          <LikedProductsProvider>
+            <SavedProductsProvider>
+              <PageTransitionClient>
+                {children}
+              </PageTransitionClient>
+            </SavedProductsProvider>
+          </LikedProductsProvider>
         </SessionWrapper>
         
         {/* Analytics Scripts */}

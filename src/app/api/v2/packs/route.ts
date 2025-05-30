@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase, SupabaseHelper } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 // GET /api/v2/packs - Récupérer tous les packs
 export async function GET(request: NextRequest) {
@@ -157,7 +157,7 @@ export async function POST(request: NextRequest) {
     const slug = body.slug || body.title
       .toLowerCase()
       .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\u0300-\u036f/g, '')
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '')
 
@@ -205,7 +205,7 @@ export async function POST(request: NextRequest) {
     if (error) throw error
 
     // Création des stats initiales
-    await SupabaseHelper.createPackStats({
+    await supabase.from('pack_stats').insert({
       pack_id: newPack.id as string,
       views_count: 0,
       favorites_count: 0,

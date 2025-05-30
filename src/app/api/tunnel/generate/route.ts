@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { openai } from '@/lib/openai';
 import { TunnelFormData } from '@/app/outils/tunnel-maker/page';
 
+export const dynamic = 'force-dynamic';
+
 interface TunnelRequestData extends TunnelFormData {
   icpData?: any;
   uspData?: any;

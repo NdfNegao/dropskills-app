@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase, SupabaseHelper } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 export async function GET(request: NextRequest) {
   try {
@@ -50,30 +50,33 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     
     // Test de création d'un pack avec Supabase
-    const pack = await SupabaseHelper.createPack({
+    const { data: pack, error: packError } = await supabase.from('packs').insert({
       title: body.title || 'Pack de test Supabase',
       slug: body.slug || `pack-test-supabase-${Date.now()}`,
       description: body.description || 'Pack créé pour tester Supabase',
       price: body.price || 99.99,
       status: 'DRAFT',
       creator_id: body.creator_id || '00000000-0000-0000-0000-000000000000' // ID par défaut pour test
-    })
+    }).select().single()
+    if (packError) throw packError
 
     // Test de création d'un sample associé
-    const sample = await SupabaseHelper.createSample({
+    const { data: sample, error: sampleError } = await supabase.from('samples').insert({
       title: 'Sample de test Supabase',
       description: 'Sample créé pour tester Supabase',
       pack_id: pack.id as string,
       file_url: 'https://example.com/sample.pdf'
-    })
+    }).select().single()
+    if (sampleError) throw sampleError
 
     // Test de création de stats
-    const stats = await SupabaseHelper.createPackStats({
+    const { data: stats, error: statsError } = await supabase.from('pack_stats').insert({
       pack_id: pack.id as string,
       views_count: 0,
       favorites_count: 0,
       purchases_count: 0
-    })
+    }).select().single()
+    if (statsError) throw statsError
 
     return NextResponse.json({
       success: true,

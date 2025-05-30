@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { openai } from '@/lib/openai';
 import { EmailFormData } from '@/app/outils/copymoneymail/page';
 
+export const dynamic = 'force-dynamic';
+
 interface EmailRequestData extends EmailFormData {
   icpData?: any;
   uspData?: any;

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { SupabaseHelper, supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 // GET /api/v2/categories - Récupérer toutes les catégories
 export async function GET(request: NextRequest) {
@@ -7,9 +7,11 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const includeStats = searchParams.get('stats') === 'true'
     
-    const categories = await SupabaseHelper.findManyCategories({
-      where: { is_active: true }
-    })
+    const { data: categories = [], error } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('is_active', true)
+    if (error) throw error
 
     // Si stats demandées, on peut ajouter le count des packs par catégorie
     let categoriesWithStats = categories
@@ -74,11 +76,17 @@ export async function POST(request: NextRequest) {
       .replace(/-+/g, '-') // Éviter les tirets multiples
       .trim()
 
-    const category = await SupabaseHelper.createCategory({
-      name: body.name,
-      slug: slug,
-      is_active: body.is_active !== undefined ? body.is_active : true
-    })
+    const { data: category, error: insertError } = await supabase
+      .from('categories')
+      .insert({
+        name: body.name,
+        slug: slug,
+        is_active: body.is_active !== undefined ? body.is_active : true
+      })
+      .select()
+      .single()
+
+    if (insertError) throw insertError
 
     return NextResponse.json({
       success: true,

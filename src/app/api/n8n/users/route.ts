@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabase, SupabaseHelper } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
+
+export const dynamic = 'force-dynamic';
 
 // Middleware d'authentification pour n8n
 function authenticateN8N(request: NextRequest) {
@@ -14,7 +16,6 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const supabase = getSupabase()
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '50')
@@ -111,7 +112,6 @@ export async function POST(request: NextRequest) {
 
   try {
     const data = await request.json()
-    const supabase = getSupabase()
     
     // Avec Supabase, nous devons d'abord créer l'utilisateur dans auth.users
     // puis créer le profil associé

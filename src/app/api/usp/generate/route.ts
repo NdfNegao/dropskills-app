@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { openai } from '@/lib/openai';
 import { USPFormData } from '@/app/outils/usp-maker/page';
 
+export const dynamic = 'force-dynamic';
+
 interface USPRequestData extends USPFormData {
   icpData?: any;
 }

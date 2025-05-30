@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '../../../../../lib/supabase'
 
+export const dynamic = 'force-dynamic';
+
 // Middleware d'authentification pour n8n
 function authenticateN8N(request: NextRequest) {
   const apiKey = request.headers.get('x-api-key')

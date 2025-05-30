@@ -26,9 +26,11 @@ import {
   Crown,
   Bookmark
 } from "lucide-react";
-import { useSavedProducts } from '@/context/SavedProductsContext';
-import { useLikedProducts } from '@/context/LikedProductsContext';
+import { useSavedProducts, SavedProductsProvider } from '@/context/SavedProductsContext';
+import { useLikedProducts, LikedProductsProvider } from '@/context/LikedProductsContext';
 import { PRODUCTS } from '@/data/products';
+
+export const dynamic = 'force-dynamic';
 
 // Types pour les ressources
 interface Resource {
@@ -195,196 +197,200 @@ export default function CoffrePage() {
   }
 
   return (
-    <LayoutWithSidebar>
-      <div className="max-w-7xl mx-auto">
-        {/* Header avec animation */}
-        <div className="mb-8 animate-fade-in">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-xl flex items-center justify-center shadow-lg">
-              <FolderOpen className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-4xl font-bold text-white mb-2">
-                Mon Coffre
-              </h1>
-              <p className="text-gray-400 text-lg">
-                Vos ressources personnelles, favoris et outputs IA
-              </p>
-            </div>
-          </div>
-
-          {/* Section Favoris (produits bookmarkés) */}
-          {uniqueBookmarked.length > 0 && (
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                <Bookmark className="w-6 h-6 text-yellow-400" /> Favoris
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {uniqueBookmarked.map(product => (
-                  <div key={product.id} className="relative bg-[#111111] border border-[#232323] rounded-xl overflow-hidden group transition-all hover:border-[#333] hover:shadow-lg">
-                    <img
-                      src={(!product.image || product.image.includes('/api/placeholder')) ?
-                        (product.format === 'ebook' || product.format === 'Book' ? 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80'
-                        : product.format === 'audio' || product.format === 'Audio' ? 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80'
-                        : product.format === 'video' || product.format === 'Video' || product.format === 'Formation' || product.format === 'Course' ? 'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80'
-                        : 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80')
-                        : product.image}
-                      alt={product.title}
-                      className="object-cover h-40 w-full"
-                    />
-                    <div className="absolute top-3 left-3 z-10">
-                      <span className="px-3 py-1 rounded-full text-xs font-bold shadow bg-yellow-500/20 text-yellow-400">Favori</span>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-bold text-lg text-white mb-1 line-clamp-2 leading-tight">{product.title}</h3>
-                      <p className="text-gray-400 text-sm line-clamp-2 leading-relaxed">{product.subtitle}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Section Produits Likés */}
-          {uniqueLiked.length > 0 && (
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                <Heart className="w-6 h-6 text-red-400" /> Produits Likés
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {uniqueLiked.map(product => (
-                  <div key={product.id} className="relative bg-[#111111] border border-[#232323] rounded-xl overflow-hidden group transition-all hover:border-[#333] hover:shadow-lg">
-                    <img
-                      src={(!product.image || product.image.includes('/api/placeholder')) ?
-                        (product.format === 'ebook' || product.format === 'Book' ? 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80'
-                        : product.format === 'audio' || product.format === 'Audio' ? 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80'
-                        : product.format === 'video' || product.format === 'Video' || product.format === 'Formation' || product.format === 'Course' ? 'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80'
-                        : 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80')
-                        : product.image}
-                      alt={product.title}
-                      className="object-cover h-40 w-full"
-                    />
-                    <div className="absolute top-3 left-3 z-10">
-                      <span className="px-3 py-1 rounded-full text-xs font-bold shadow bg-red-500/20 text-red-400">Liké</span>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-bold text-lg text-white mb-1 line-clamp-2 leading-tight">{product.title}</h3>
-                      <p className="text-gray-400 text-sm line-clamp-2 leading-relaxed">{product.subtitle}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Badge Premium avec animation */}
-          <div className="flex items-center gap-4 mb-6">
-            <div className="px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-400">
-              <Crown className="w-4 h-4" />
-              <span>Espace Personnel Sécurisé</span>
-            </div>
-            
-            <button
-              onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-              className="bg-[#111111] border border-[#333] text-white px-4 py-2 rounded-lg hover:border-[#ff0033] transition-all duration-200"
-            >
-              {viewMode === 'grid' ? 'Vue Liste' : 'Vue Grille'}
-            </button>
-          </div>
-
-          {/* Statistiques avec animations */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
-            {[
-              { label: "Total", value: stats.total, icon: FolderOpen, color: "text-blue-400" },
-              { label: "Favoris", value: stats.favorites, icon: Heart, color: "text-red-400" },
-              { label: "Outputs IA", value: stats.aiOutputs, icon: Sparkles, color: "text-purple-400" },
-              { label: "Téléchargements", value: stats.downloads, icon: Download, color: "text-green-400" },
-              { label: "Étoilés", value: stats.starred, icon: Star, color: "text-yellow-400" }
-            ].map((stat, index) => (
-              <div 
-                key={stat.label}
-                className="bg-[#111111] border border-[#232323] rounded-xl p-4 hover:border-[#333] transition-all duration-200"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className={`flex items-center gap-2 ${stat.color} mb-2`}>
-                  <stat.icon className="w-4 h-4" />
-                  <span className="text-sm font-medium">{stat.label}</span>
+    <LikedProductsProvider>
+      <SavedProductsProvider>
+        <LayoutWithSidebar>
+          <div className="max-w-7xl mx-auto">
+            {/* Header avec animation */}
+            <div className="mb-8 animate-fade-in">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-xl flex items-center justify-center shadow-lg">
+                  <FolderOpen className="w-8 h-8 text-white" />
                 </div>
-                <div className="text-2xl font-bold text-white">{stat.value}</div>
+                <div>
+                  <h1 className="text-4xl font-bold text-white mb-2">
+                    Mon Coffre
+                  </h1>
+                  <p className="text-gray-400 text-lg">
+                    Vos ressources personnelles, favoris et outputs IA
+                  </p>
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Filtres avec animations */}
-        <div className="bg-[#111111] border border-[#232323] rounded-xl p-6 mb-8 animate-slide-up">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Rechercher dans vos ressources..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#ff0033] transition-all duration-200 focus:scale-105"
-              />
+              {/* Section Favoris (produits bookmarkés) */}
+              {uniqueBookmarked.length > 0 && (
+                <div className="mb-8">
+                  <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                    <Bookmark className="w-6 h-6 text-yellow-400" /> Favoris
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    {uniqueBookmarked.map(product => (
+                      <div key={product.id} className="relative bg-[#111111] border border-[#232323] rounded-xl overflow-hidden group transition-all hover:border-[#333] hover:shadow-lg">
+                        <img
+                          src={(!product.image || product.image.includes('/api/placeholder')) ?
+                            (product.format === 'ebook' || product.format === 'Book' ? 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80'
+                            : product.format === 'audio' || product.format === 'Audio' ? 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80'
+                            : product.format === 'video' || product.format === 'Video' || product.format === 'Formation' || product.format === 'Course' ? 'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80'
+                            : 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80')
+                            : product.image}
+                          alt={product.title}
+                          className="object-cover h-40 w-full"
+                        />
+                        <div className="absolute top-3 left-3 z-10">
+                          <span className="px-3 py-1 rounded-full text-xs font-bold shadow bg-yellow-500/20 text-yellow-400">Favori</span>
+                        </div>
+                        <div className="p-4">
+                          <h3 className="font-bold text-lg text-white mb-1 line-clamp-2 leading-tight">{product.title}</h3>
+                          <p className="text-gray-400 text-sm line-clamp-2 leading-relaxed">{product.subtitle}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Section Produits Likés */}
+              {uniqueLiked.length > 0 && (
+                <div className="mb-8">
+                  <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                    <Heart className="w-6 h-6 text-red-400" /> Produits Likés
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    {uniqueLiked.map(product => (
+                      <div key={product.id} className="relative bg-[#111111] border border-[#232323] rounded-xl overflow-hidden group transition-all hover:border-[#333] hover:shadow-lg">
+                        <img
+                          src={(!product.image || product.image.includes('/api/placeholder')) ?
+                            (product.format === 'ebook' || product.format === 'Book' ? 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80'
+                            : product.format === 'audio' || product.format === 'Audio' ? 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80'
+                            : product.format === 'video' || product.format === 'Video' || product.format === 'Formation' || product.format === 'Course' ? 'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80'
+                            : 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80')
+                            : product.image}
+                          alt={product.title}
+                          className="object-cover h-40 w-full"
+                        />
+                        <div className="absolute top-3 left-3 z-10">
+                          <span className="px-3 py-1 rounded-full text-xs font-bold shadow bg-red-500/20 text-red-400">Liké</span>
+                        </div>
+                        <div className="p-4">
+                          <h3 className="font-bold text-lg text-white mb-1 line-clamp-2 leading-tight">{product.title}</h3>
+                          <p className="text-gray-400 text-sm line-clamp-2 leading-relaxed">{product.subtitle}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Badge Premium avec animation */}
+              <div className="flex items-center gap-4 mb-6">
+                <div className="px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-400">
+                  <Crown className="w-4 h-4" />
+                  <span>Espace Personnel Sécurisé</span>
+                </div>
+                
+                <button
+                  onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
+                  className="bg-[#111111] border border-[#333] text-white px-4 py-2 rounded-lg hover:border-[#ff0033] transition-all duration-200"
+                >
+                  {viewMode === 'grid' ? 'Vue Liste' : 'Vue Grille'}
+                </button>
+              </div>
+
+              {/* Statistiques avec animations */}
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+                {[
+                  { label: "Total", value: stats.total, icon: FolderOpen, color: "text-blue-400" },
+                  { label: "Favoris", value: stats.favorites, icon: Heart, color: "text-red-400" },
+                  { label: "Outputs IA", value: stats.aiOutputs, icon: Sparkles, color: "text-purple-400" },
+                  { label: "Téléchargements", value: stats.downloads, icon: Download, color: "text-green-400" },
+                  { label: "Étoilés", value: stats.starred, icon: Star, color: "text-yellow-400" }
+                ].map((stat, index) => (
+                  <div 
+                    key={stat.label}
+                    className="bg-[#111111] border border-[#232323] rounded-xl p-4 hover:border-[#333] transition-all duration-200"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <div className={`flex items-center gap-2 ${stat.color} mb-2`}>
+                      <stat.icon className="w-4 h-4" />
+                      <span className="text-sm font-medium">{stat.label}</span>
+                    </div>
+                    <div className="text-2xl font-bold text-white">{stat.value}</div>
+                  </div>
+                ))}
+              </div>
             </div>
-            
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033] transition-all duration-200 hover:scale-105"
-            >
-              {CATEGORIES.map(category => (
-                <option key={category} value={category}>{category}</option>
-              ))}
-            </select>
-            
-            <select
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
-              className="bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033] transition-all duration-200 hover:scale-105"
-            >
-              {TYPES.map(type => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </select>
-          </div>
-        </div>
 
-        {/* Grille/Liste de ressources */}
-        <div className={viewMode === 'grid' 
-          ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" 
-          : "space-y-4"
-        }>
-          {filteredResources.map((resource, index) => (
-            <ResourceCard
-              key={resource.id}
-              resource={resource}
-              viewMode={viewMode}
-              onStarToggle={() => handleStarToggle(resource.id)}
-              onDelete={() => handleDelete(resource.id)}
-              index={index}
-            />
-          ))}
-        </div>
+            {/* Filtres avec animations */}
+            <div className="bg-[#111111] border border-[#232323] rounded-xl p-6 mb-8 animate-slide-up">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <input
+                    type="text"
+                    placeholder="Rechercher dans vos ressources..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#ff0033] transition-all duration-200 focus:scale-105"
+                  />
+                </div>
+                
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033] transition-all duration-200 hover:scale-105"
+                >
+                  {CATEGORIES.map(category => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </select>
+                
+                <select
+                  value={selectedType}
+                  onChange={(e) => setSelectedType(e.target.value)}
+                  className="bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033] transition-all duration-200 hover:scale-105"
+                >
+                  {TYPES.map(type => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
 
-        {filteredResources.length === 0 && (
-          <div className="text-center py-12 animate-fade-in">
-            <FolderOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">Aucune ressource trouvée</h3>
-            <p className="text-gray-400 mb-6">Commencez à utiliser les outils IA pour générer du contenu</p>
-            <button
-              onClick={() => router.push('/outils')}
-              className="bg-gradient-to-r from-[#ff0033] to-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:scale-105 transition-all duration-200 flex items-center gap-2 mx-auto"
-            >
-              <Sparkles className="w-4 h-4" />
-              Découvrir les Outils IA
-            </button>
+            {/* Grille/Liste de ressources */}
+            <div className={viewMode === 'grid' 
+              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" 
+              : "space-y-4"
+            }>
+              {filteredResources.map((resource, index) => (
+                <ResourceCard
+                  key={resource.id}
+                  resource={resource}
+                  viewMode={viewMode}
+                  onStarToggle={() => handleStarToggle(resource.id)}
+                  onDelete={() => handleDelete(resource.id)}
+                  index={index}
+                />
+              ))}
+            </div>
+
+            {filteredResources.length === 0 && (
+              <div className="text-center py-12 animate-fade-in">
+                <FolderOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-white mb-2">Aucune ressource trouvée</h3>
+                <p className="text-gray-400 mb-6">Commencez à utiliser les outils IA pour générer du contenu</p>
+                <button
+                  onClick={() => router.push('/outils')}
+                  className="bg-gradient-to-r from-[#ff0033] to-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:scale-105 transition-all duration-200 flex items-center gap-2 mx-auto"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  Découvrir les Outils IA
+                </button>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </LayoutWithSidebar>
+        </LayoutWithSidebar>
+      </SavedProductsProvider>
+    </LikedProductsProvider>
   );
 }
 

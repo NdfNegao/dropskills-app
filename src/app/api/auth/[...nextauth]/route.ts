@@ -2,6 +2,8 @@ import NextAuth from 'next-auth';
 import { NextRequest } from 'next/server';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 const handler = NextAuth(authOptions);
 
 export async function GET(request: NextRequest, context: any) {
