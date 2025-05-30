@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Erreur API product-requests POST:', error);
     return NextResponse.json(
-      { error: 'Erreur lors de la création de la demande' },
+      { error: 'Erreur lors de la création de la demande', details: JSON.stringify(error) },
       { status: 500 }
     );
   }

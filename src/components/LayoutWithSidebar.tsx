@@ -88,7 +88,13 @@ export default function LayoutWithSidebar({
             badge={0}
             onClick={() => setMobileMenuOpen(false)} 
           />
-          <MobileNavLink icon={<BookOpen />} label="Catalogue" href="/catalogue" onClick={() => setMobileMenuOpen(false)} />
+          <MobileNavLink 
+            icon={<Lock />} 
+            label="Catalogue" 
+            href="/catalogue" 
+            isPremium={!canAccessPremium}
+            onClick={() => setMobileMenuOpen(false)} 
+          />
           
           {/* Divider */}
           <div className="my-4 border-t border-gray-800"></div>

@@ -23,8 +23,12 @@ import {
   Archive,
   BookOpen,
   Zap,
-  Crown
+  Crown,
+  Bookmark
 } from "lucide-react";
+import { useSavedProducts } from '@/context/SavedProductsContext';
+import { useLikedProducts } from '@/context/LikedProductsContext';
+import { PRODUCTS } from '@/data/products';
 
 // Types pour les ressources
 interface Resource {
@@ -45,7 +49,7 @@ interface Resource {
 const MOCK_RESOURCES: Resource[] = [
   {
     id: "1",
-    title: "Stratégie Marketing Digital 2024",
+    title: "Stratégie Marketing Digital 2025",
     type: "ai_output",
     content: "Plan marketing complet généré par l'IA pour une startup tech...",
     category: "Marketing",
@@ -113,6 +117,18 @@ export default function CoffrePage() {
   const [selectedType, setSelectedType] = useState("Tous");
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const { savedProducts } = useSavedProducts();
+  const { likedProducts } = useLikedProducts();
+
+  // Récupérer les produits favoris (bookmarkés)
+  const bookmarkedProducts = PRODUCTS.filter(p => savedProducts.includes(p.id));
+  // Récupérer les produits likés
+  const likedProductsList = PRODUCTS.filter(p => likedProducts.includes(p.id));
+  // Éviter les doublons avec les ressources déjà présentes
+  const resourceUrls = resources.map(r => r.url).filter(Boolean);
+  const uniqueBookmarked = bookmarkedProducts.filter(p => !resourceUrls.includes(`/produits/${p.id}`));
+  // Éviter les doublons entre favoris et likes
+  const uniqueLiked = likedProductsList.filter(p => !savedProducts.includes(p.id) && !resourceUrls.includes(`/produits/${p.id}`));
 
   // Redirection si non connecté
   useEffect(() => {
@@ -196,6 +212,70 @@ export default function CoffrePage() {
               </p>
             </div>
           </div>
+
+          {/* Section Favoris (produits bookmarkés) */}
+          {uniqueBookmarked.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                <Bookmark className="w-6 h-6 text-yellow-400" /> Favoris
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {uniqueBookmarked.map(product => (
+                  <div key={product.id} className="relative bg-[#111111] border border-[#232323] rounded-xl overflow-hidden group transition-all hover:border-[#333] hover:shadow-lg">
+                    <img
+                      src={(!product.image || product.image.includes('/api/placeholder')) ?
+                        (product.format === 'ebook' || product.format === 'Book' ? 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80'
+                        : product.format === 'audio' || product.format === 'Audio' ? 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80'
+                        : product.format === 'video' || product.format === 'Video' || product.format === 'Formation' || product.format === 'Course' ? 'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80'
+                        : 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80')
+                        : product.image}
+                      alt={product.title}
+                      className="object-cover h-40 w-full"
+                    />
+                    <div className="absolute top-3 left-3 z-10">
+                      <span className="px-3 py-1 rounded-full text-xs font-bold shadow bg-yellow-500/20 text-yellow-400">Favori</span>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-bold text-lg text-white mb-1 line-clamp-2 leading-tight">{product.title}</h3>
+                      <p className="text-gray-400 text-sm line-clamp-2 leading-relaxed">{product.subtitle}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Section Produits Likés */}
+          {uniqueLiked.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                <Heart className="w-6 h-6 text-red-400" /> Produits Likés
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {uniqueLiked.map(product => (
+                  <div key={product.id} className="relative bg-[#111111] border border-[#232323] rounded-xl overflow-hidden group transition-all hover:border-[#333] hover:shadow-lg">
+                    <img
+                      src={(!product.image || product.image.includes('/api/placeholder')) ?
+                        (product.format === 'ebook' || product.format === 'Book' ? 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80'
+                        : product.format === 'audio' || product.format === 'Audio' ? 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80'
+                        : product.format === 'video' || product.format === 'Video' || product.format === 'Formation' || product.format === 'Course' ? 'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80'
+                        : 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80')
+                        : product.image}
+                      alt={product.title}
+                      className="object-cover h-40 w-full"
+                    />
+                    <div className="absolute top-3 left-3 z-10">
+                      <span className="px-3 py-1 rounded-full text-xs font-bold shadow bg-red-500/20 text-red-400">Liké</span>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-bold text-lg text-white mb-1 line-clamp-2 leading-tight">{product.title}</h3>
+                      <p className="text-gray-400 text-sm line-clamp-2 leading-relaxed">{product.subtitle}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Badge Premium avec animation */}
           <div className="flex items-center gap-4 mb-6">
@@ -420,95 +500,51 @@ function ResourceCard({ resource, viewMode, onStarToggle, onDelete, index }: Res
     <div
       className="bg-[#111111] border border-[#232323] rounded-xl overflow-hidden transition-all duration-300 hover:border-[#333] hover:scale-105 hover:shadow-xl"
       style={{ animationDelay: `${index * 100}ms` }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Header */}
-      <div className="p-4 border-b border-[#232323]">
-        <div className="flex items-center justify-between mb-2">
-          <div className={`flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(resource.type)}`}>
-            {getTypeIcon(resource.type)}
-            <span className="capitalize">{resource.type.replace('_', ' ')}</span>
+      <div className="flex items-center gap-4">
+        {/* Type Icon */}
+        <div className={`p-2 rounded-lg ${getTypeColor(resource.type)}`}>
+          {getTypeIcon(resource.type)}
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="font-semibold text-white truncate">{resource.title}</h3>
+            {resource.isStarred && (
+              <Star className="w-4 h-4 text-yellow-500 fill-current animate-pulse" />
+            )}
           </div>
-          
+          <div className="flex items-center gap-4 text-sm text-gray-400">
+            <span>{resource.source}</span>
+            <span>{formatDate(resource.createdAt)}</span>
+            <span>{resource.category}</span>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className={`flex items-center gap-2 transition-all duration-200 ${
+          isHovered ? 'opacity-100' : 'opacity-0'
+        }`}>
           <button
             onClick={onStarToggle}
-            className="p-1 hover:scale-110 transition-transform duration-200"
+            className="p-2 hover:bg-[#1a1a1a] rounded-lg transition-colors"
           >
-            <Star className={`w-4 h-4 ${resource.isStarred ? 'text-yellow-500 fill-current animate-pulse' : 'text-gray-400'}`} />
+            <Star className={`w-4 h-4 ${resource.isStarred ? 'text-yellow-500 fill-current' : 'text-gray-400'}`} />
           </button>
-        </div>
-
-        <h3 className="font-bold text-white mb-2 line-clamp-2">{resource.title}</h3>
-        
-        <div className="flex items-center gap-2 text-xs text-gray-400">
-          <Calendar className="w-3 h-3" />
-          <span>{formatDate(resource.createdAt)}</span>
-          <span>•</span>
-          <span>{resource.source}</span>
-        </div>
-      </div>
-
-      {/* Content Preview */}
-      {resource.content && (
-        <div className="p-4">
-          <p className="text-gray-400 text-sm line-clamp-3 mb-3">
-            {resource.content}
-          </p>
           
-          {resource.content.length > 100 && (
-            <button
-              onClick={() => setShowContent(!showContent)}
-              className="text-[#ff0033] text-xs hover:underline"
-            >
-              {showContent ? 'Voir moins' : 'Voir plus'}
-            </button>
-          )}
-        </div>
-      )}
-
-      {/* Tags */}
-      <div className="px-4 pb-4">
-        <div className="flex flex-wrap gap-1">
-          {resource.tags.slice(0, 3).map(tag => (
-            <span key={tag} className="bg-[#1a1a1a] text-gray-400 text-xs px-2 py-1 rounded">
-              {tag}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Actions */}
-      <div className={`p-4 border-t border-[#232323] flex items-center justify-between transition-all duration-200 ${
-        isHovered ? 'bg-[#0a0a0a]' : ''
-      }`}>
-        <span className="text-xs text-gray-500">{resource.category}</span>
-        
-        <div className="flex items-center gap-2">
           {resource.content && (
             <button
               onClick={handleCopy}
-              className="p-2 hover:bg-[#1a1a1a] rounded-lg transition-all duration-200 hover:scale-110"
-              title="Copier le contenu"
+              className="p-2 hover:bg-[#1a1a1a] rounded-lg transition-colors"
             >
               <Copy className="w-4 h-4 text-gray-400" />
             </button>
           )}
           
-          {resource.url && (
-            <button
-              onClick={() => window.open(resource.url, '_blank')}
-              className="p-2 hover:bg-[#1a1a1a] rounded-lg transition-all duration-200 hover:scale-110"
-              title="Ouvrir"
-            >
-              <ExternalLink className="w-4 h-4 text-gray-400" />
-            </button>
-          )}
-          
           <button
             onClick={onDelete}
-            className="p-2 hover:bg-red-500/10 rounded-lg transition-all duration-200 hover:scale-110"
-            title="Supprimer"
+            className="p-2 hover:bg-red-500/10 rounded-lg transition-colors"
           >
             <Trash2 className="w-4 h-4 text-red-400" />
           </button>
@@ -516,4 +552,4 @@ function ResourceCard({ resource, viewMode, onStarToggle, onDelete, index }: Res
       </div>
     </div>
   );
-} 
+}

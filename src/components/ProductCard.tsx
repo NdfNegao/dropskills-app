@@ -1,6 +1,7 @@
 "use client";
-import { Bookmark, BookOpen, Headphones, Video, FileDown, Heart, ExternalLink, MessageSquare, Layout, CheckSquare, PenTool, Bot, FileText, Play } from "lucide-react";
+import { Bookmark, BookOpen, Headphones, Video, FileDown, Heart, ExternalLink, MessageSquare, Layout, CheckSquare, PenTool, Bot, FileText, Play, Crown } from "lucide-react";
 import { useSavedProducts } from "@/context/SavedProductsContext";
+import { useLikedProducts } from '@/context/LikedProductsContext';
 import { Product } from "@/data/products";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -75,6 +76,76 @@ function getFormatColor(format: string) {
   }
 }
 
+function getFormatBadge(format: string) {
+  switch (format) {
+    case "ebook":
+    case "Book":
+      return { label: "Ebook", color: "bg-blue-500/20 text-blue-400" };
+    case "audio":
+    case "Audio":
+      return { label: "Audio", color: "bg-purple-500/20 text-purple-400" };
+    case "video":
+    case "Video":
+    case "Formation":
+    case "Course":
+      return { label: "Vidéo", color: "bg-green-500/20 text-green-400" };
+    case "template":
+    case "Template":
+      return { label: "Template", color: "bg-orange-500/20 text-orange-400" };
+    case "tool":
+      return { label: "Outil", color: "bg-pink-500/20 text-pink-400" };
+    case "Prompt Pack":
+      return { label: "Prompts", color: "bg-cyan-500/20 text-cyan-400" };
+    case "Notion Template":
+      return { label: "Notion", color: "bg-indigo-500/20 text-indigo-400" };
+    case "Checklist":
+      return { label: "Checklist", color: "bg-emerald-500/20 text-emerald-400" };
+    case "Workbook":
+      return { label: "Workbook", color: "bg-amber-500/20 text-amber-400" };
+    case "GPT":
+      return { label: "GPT", color: "bg-violet-500/20 text-violet-400" };
+    case "Guide":
+      return { label: "Guide", color: "bg-slate-500/20 text-slate-400" };
+    default:
+      return { label: "Ebook", color: "bg-blue-500/20 text-blue-400" };
+  }
+}
+
+function getDefaultImage(format: string) {
+  switch (format) {
+    case "ebook":
+    case "Book":
+      return "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80";
+    case "audio":
+    case "Audio":
+      return "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80";
+    case "video":
+    case "Video":
+    case "Formation":
+    case "Course":
+      return "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80";
+    case "template":
+    case "Template":
+      return "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80";
+    case "tool":
+      return "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80";
+    case "Prompt Pack":
+      return "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=400&q=80";
+    case "Notion Template":
+      return "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80";
+    case "Checklist":
+      return "https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=400&q=80";
+    case "Workbook":
+      return "https://images.unsplash.com/photo-1515168833906-d2a3b82b302b?auto=format&fit=crop&w=400&q=80";
+    case "GPT":
+      return "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80";
+    case "Guide":
+      return "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80";
+    default:
+      return "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80";
+  }
+}
+
 export default function ProductCard({ product, onOpen, onDownload, bookmarkDisabled }: {
   product: Product;
   onOpen?: () => void;
@@ -83,9 +154,10 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
 }) {
   const router = useRouter();
   const { savedProducts, toggleBookmark } = useSavedProducts();
+  const { likedProducts, toggleLike } = useLikedProducts();
   const [likes, setLikes] = useState(product.likes);
-  const [liked, setLiked] = useState(false);
   const bookmarked = savedProducts.includes(product.id);
+  const liked = likedProducts.includes(product.id);
 
   const handleBookmark = () => {
     if (bookmarkDisabled) return;
@@ -102,27 +174,47 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
 
   return (
     <div className="relative bg-[#111111] border border-[#232323] rounded-xl overflow-hidden group transition-all hover:border-[#333] hover:shadow-lg">
-      {/* Badge format (coin sup gauche) */}
-      <div className="absolute top-3 left-3 z-10">
-        <div className={`bg-gradient-to-r ${getFormatColor(product.format)} rounded-lg p-2 shadow-md flex items-center justify-center`}>
-        {getFormatIcon(product.format)}
-        </div>
-      </div>
-
-      {/* Badge Premium */}
-      {product.isPremium && (
-        <div className="absolute top-3 left-16 z-10">
-          <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg px-2 py-1 shadow-md">
-            <span className="text-xs font-bold text-white">👑</span>
+      {/* Image de fond */}
+      <div className="w-full aspect-video bg-[#1a1a1a] flex items-center justify-center overflow-hidden relative">
+        {/* Badge Premium en bas à droite de l'image */}
+        {product.isPremium && (
+          <div className="absolute bottom-3 right-3 z-10">
+            <span className="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-xs font-medium flex items-center gap-1 shadow">
+              <Crown className="w-4 h-4" /> Premium
+            </span>
           </div>
+        )}
+        {/* Badge format texte en haut à gauche de l'image */}
+        <div className="absolute top-3 left-3 z-10">
+          {(() => {
+            const badge = getFormatBadge(product.format);
+            return (
+              <span className={`px-3 py-1 rounded-full text-xs font-bold shadow ${badge.color}`}>
+                {badge.label}
+              </span>
+            );
+          })()}
         </div>
-      )}
+        {(!product.image || product.image.includes('/api/placeholder')) ? (
+          <img
+            src={getDefaultImage(product.format)}
+            alt={product.title}
+            className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <img 
+            src={product.image} 
+            alt={product.title} 
+            className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300" 
+          />
+        )}
+      </div>
 
       {/* Actions en haut à droite */}
       <div className="absolute top-3 right-3 z-10 flex gap-2">
         {/* Like */}
         <button
-          onClick={() => { setLiked(!liked); setLikes(likes + (liked ? -1 : 1)); }}
+          onClick={() => toggleLike(product.id)}
           className="bg-[#1a1a1a] border border-[#333] rounded-lg p-2 hover:bg-[#232323] transition-colors flex items-center justify-center"
           aria-label="J'aime"
         >
@@ -144,18 +236,9 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
         </button>
       </div>
 
-      {/* Image de fond */}
-      <div className="w-full aspect-video bg-[#1a1a1a] flex items-center justify-center overflow-hidden">
-        <img 
-          src={product.image} 
-          alt={product.title} 
-          className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300" 
-        />
-      </div>
-
       {/* Contenu */}
       <div className="p-4">
-      {/* Titre & sous-titre */}
+        {/* Titre & sous-titre */}
         <div className="mb-4">
           <h3 className="font-bold text-lg text-white mb-1 line-clamp-2 leading-tight">
             {product.title}
@@ -197,16 +280,8 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
                 {product.downloads}
               </span>
             )}
-            {product.rating && (
-              <span className="flex items-center gap-1">
-                ⭐ {product.rating}
-              </span>
-            )}
           </div>
-          <span className="capitalize text-gray-500 text-xs">
-            {product.format}
-          </span>
-      </div>
+        </div>
 
         {/* Actions */}
         <div className="flex gap-2">

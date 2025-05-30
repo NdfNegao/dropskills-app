@@ -39,15 +39,23 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
           <h1 className="text-3xl font-bold text-white mb-2">
-            Bienvenue, {user?.firstName || user?.name || 'Utilisateur'} !
+            Bienvenue, {user?.firstName || (user?.name?.split(' ')[0]) || 'Utilisateur'} !
           </h1>
-          <p className="text-gray-400">
-            Votre tableau de bord DropSkills - Accédez à vos outils IA et suivez vos progrès
+          <p className="text-gray-400 mb-2">
+            Prêt à passer à la vitesse supérieure aujourd'hui ? Utilise la puissance de l'IA pour gagner du temps et booster tes résultats.
           </p>
-          <div className="mt-4 inline-flex items-center gap-2 bg-[#ff0033]/10 text-[#ff0033] px-3 py-1 rounded-full text-sm">
-            <span className="w-2 h-2 bg-[#ff0033] rounded-full"></span>
-            Statut: {user?.role === 'PREMIUM' ? 'Premium' : user?.role === 'SUPER_ADMIN' ? 'Admin' : 'Standard'}
-          </div>
+          <a
+            href="/outils"
+            className="inline-block mt-2 bg-[#ff0033] hover:bg-[#cc0029] text-white px-5 py-2 rounded-lg font-semibold transition-colors shadow"
+          >
+            🚀 Découvrir les Outils IA
+          </a>
+          {(user?.role === 'PREMIUM' || user?.role === 'SUPER_ADMIN') && (
+            <div className="mt-4 inline-flex items-center gap-2 bg-[#ff0033]/10 text-[#ff0033] px-3 py-1 rounded-full text-sm">
+              <span className="w-2 h-2 bg-[#ff0033] rounded-full"></span>
+              Statut: {user?.role === 'PREMIUM' ? 'Premium' : 'Admin'}
+            </div>
+          )}
         </div>
 
         {/* Stats Cards */}
@@ -83,6 +91,10 @@ export default function DashboardPage() {
             description="Outils sauvegardés"
             color="yellow"
           />
+        </div>
+        {/* Micro-feedback personnalisé */}
+        <div className="text-center text-sm text-gray-400 mb-2">
+          🎉 Tu as déjà généré 47 contenus ce mois-ci. Continue comme ça !
         </div>
 
         {/* Outils Récents */}
@@ -143,20 +155,23 @@ export default function DashboardPage() {
         </div>
 
         {/* Conseils du jour */}
-        <div className="bg-gradient-to-r from-[#ff0033]/10 to-[#cc0029]/10 rounded-xl p-6 border border-[#ff0033]/20">
-          <h2 className="text-xl font-semibold text-white mb-4">
-            💡 Conseil du Jour
-          </h2>
-          <p className="text-gray-300 mb-4">
-            Commencez toujours par définir votre ICP (Ideal Customer Persona) avant de créer votre offre. 
-            Cela vous permettra de créer des messages plus percutants et d'augmenter vos conversions.
-          </p>
-          <a 
-            href="/outils#icp-maker"
-            className="inline-block bg-[#ff0033] hover:bg-[#cc0029] text-white px-4 py-2 rounded-lg font-medium transition-colors"
-          >
-            Créer mon ICP
-          </a>
+        <div className="bg-gradient-to-r from-[#ff0033]/10 to-[#cc0029]/10 rounded-xl p-6 border border-[#ff0033]/20 flex items-start gap-4">
+          <div className="text-3xl">💡</div>
+          <div>
+            <h2 className="text-xl font-semibold text-white mb-2">
+              Astuce du jour
+            </h2>
+            <p className="text-gray-300 mb-4">
+              Commence toujours par définir ton ICP (Ideal Customer Persona) avant de créer une offre.<br />
+              C'est la clé pour des messages percutants et des conversions qui explosent !
+            </p>
+            <a 
+              href="/outils#icp-maker"
+              className="inline-block bg-[#ff0033] hover:bg-[#cc0029] text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            >
+              Créer mon ICP
+            </a>
+          </div>
         </div>
       </div>
     </LayoutWithSidebar>

@@ -19,11 +19,16 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.9.1",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-select": "^2.2.5",
+    "@radix-ui/react-slot": "^1.2.3",
     "@supabase/supabase-js": "^2.49.8",
     "@types/bcryptjs": "^2.4.6",
     "@vercel/analytics": "^1.4.1",
     "@vercel/speed-insights": "^1.1.0",
     "bcryptjs": "^3.0.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^10.16.4",
     "lucide-react": "^0.278.0",
@@ -33,7 +38,9 @@
     "openai": "^4.103.0",
     "posthog-js": "^1.246.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "sonner": "^2.0.3",
+    "tailwind-merge": "^3.3.0"
   },
   "devDependencies": {
     "@types/node": "^22.15.21",

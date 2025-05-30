@@ -32,9 +32,8 @@ export default function DropskillsSidebar({
 
   // Nouvelle organisation de la sidebar
   const mainNavigation = [
-    { icon: <Home />, label: "Accueil", href: "/", tooltip: "Accueil" },
-    { icon: <FolderOpen />, label: "Catalogue", href: "/catalogue", tooltip: "Catalogue IA" },
-    { icon: <GraduationCap />, label: "Centre de formation", href: "/universite", tooltip: "Centre de formation" },
+    { icon: <Home />, label: "Accueil", href: "/dashboard", tooltip: "Accueil" },
+    { icon: <GraduationCap />, label: "Centre de Formation", href: "/universite", tooltip: "Centre de formation" },
     { icon: <FolderOpen />, label: "Mon Coffre", href: "/coffre", tooltip: "Mes ressources IA" },
     { icon: <FolderOpen />, label: "Outils IA", href: "/outils", tooltip: "Tous les outils IA" }
   ];

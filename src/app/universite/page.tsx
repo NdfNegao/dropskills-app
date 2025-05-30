@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 
 const FORMATS = [
-  'Tous',
+  'Tous les formats',
   'Book',
   'Video',
   'Audio',
@@ -34,7 +34,7 @@ const FORMATS = [
 ];
 
 const CATEGORIES = [
-  'Tous',
+  'Toutes les catégories',
   'Marketing Digital',
   'Entrepreneuriat',
   'Productivité',
@@ -111,8 +111,8 @@ export default function UniversitePage() {
                 <Package className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white">Université</h1>
-                <p className="text-gray-400">Formations, cours et ressources pour progresser sur tous les sujets</p>
+                <h1 className="text-3xl font-bold text-white">Centre de formation</h1>
+                <p className="text-gray-400">Formez-vous sur les sujets qui comptent vraiment pour votre business</p>
               </div>
             </div>
 
@@ -252,7 +252,7 @@ export default function UniversitePage() {
             ) : (
               <div className={
                 viewMode === 'grid' 
-                  ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                  ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
                   : "space-y-4"
               }>
                 {sortedProducts.map((product) => (
