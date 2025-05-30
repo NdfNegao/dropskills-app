@@ -42,13 +42,13 @@ export default function DropskillsSidebar({
   // Section Aide & Personnalisation
   const helpNavigation = [
     { icon: <HelpCircle />, label: "Tutoriels", href: "/tutoriels", tooltip: "Guides et tutoriels" },
-    { icon: <MessageSquarePlus />, label: "Demandes de Produits", href: "/demandes", tooltip: "Proposer un outil ou une amélioration" }
+    { icon: <MessageSquarePlus />, label: "Proposer un outil", href: "/demandes", tooltip: "Proposer un outil ou une amélioration" }
   ];
 
   // Section compte et autres
   const accountNavigation = [
     { icon: <User />, label: "Mon Compte", href: "/compte", tooltip: "Profil et paramètres" },
-    { icon: <Users />, label: "Programme d'affiliation", href: "/affiliate", tooltip: "Gagnez de l'argent en recommandant DropSkills" },
+    { icon: <Users />, label: "Affiliation", href: "/affiliate", tooltip: "Gagnez de l'argent en recommandant DropSkills" },
     { icon: <HelpCircle />, label: "Support", href: "/support", tooltip: "Aide et support" },
     { icon: <Settings />, label: "Paramètres", href: "/parametres", tooltip: "Configuration" }
   ];
