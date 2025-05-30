@@ -65,3 +65,4 @@ Pull requests bienvenues ! Pour toute suggestion, ouvre une issue ou contacte 
 
 © 2024 DropSkills. Tous droits réservés.
 # test workflow trigger
+# relance workflow supabase vars
