@@ -341,21 +341,6 @@ function SecurityTab({ user, showMessage }: {
     <div>
       <h2 className="text-xl font-semibold text-white mb-6">Sécurité</h2>
       
-      {isGoogleAuth && (
-        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 mb-6">
-          <div className="flex items-start gap-3">
-            <Shield className="w-5 h-5 text-blue-400 mt-0.5" />
-            <div>
-              <h3 className="text-blue-400 font-medium mb-1">Connexion Google</h3>
-              <p className="text-blue-300 text-sm">
-                Votre compte utilise l'authentification Google. Vous pouvez définir un mot de passe 
-                supplémentaire pour vous connecter directement avec votre email.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-      
       <form onSubmit={isGoogleAuth ? handleSetPassword : handlePasswordChange} className="space-y-6">
         {!isGoogleAuth && (
           <div>
