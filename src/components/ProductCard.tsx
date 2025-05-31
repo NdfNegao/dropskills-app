@@ -6,6 +6,8 @@ import { Product } from "@/data/products";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import ProductActions from './ProductActions';
+import Link from 'next/link';
 
 function getFormatIcon(format: string) {
   switch (format) {
@@ -176,83 +178,119 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
 
   return (
     variant === 'grid' ? (
-      <div className="bg-card border border-border rounded-xl overflow-hidden hover:border-[#ff0033] transition-colors">
-        <div className="relative">
-          <Image
-            src={product.image}
-            alt={product.title}
-            width={400}
-            height={225}
-            className="w-full h-48 object-cover"
-          />
-          {product.isPremium && (
-            <div className="absolute top-2 right-2 bg-[#ff0033] text-white px-2 py-1 rounded text-xs font-medium">
-              Premium
-            </div>
-          )}
-        </div>
-        <div className="p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
-              <Package className="w-4 h-4 text-white" />
-            </div>
-            <h3 className="text-lg font-semibold text-foreground">{product.title}</h3>
+      <Link href={`/produits/${product.id}`} className="block group">
+        <div className="bg-card border border-border rounded-xl overflow-hidden hover:border-[#ff0033] transition-colors group-hover:shadow-lg">
+          <div className="relative">
+            <Image
+              src={product.image}
+              alt={product.title}
+              width={400}
+              height={225}
+              className="w-full h-48 object-cover transition-transform group-hover:scale-105"
+              onError={(e) => { e.currentTarget.src = '/formations/default.png'; }}
+            />
+            {product.isPremium && (
+              <div className="absolute top-2 right-2 bg-[#ff0033] text-white px-2 py-1 rounded text-xs font-medium">
+                Premium
+              </div>
+            )}
           </div>
-          <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-            {product.description}
-          </p>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">{product.duration}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">{product.students} étudiants</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    ) : (
-      <div className="bg-card border border-border rounded-xl flex overflow-hidden hover:border-[#ff0033] transition-colors">
-        <div className="relative w-48 min-w-[12rem] h-32 flex-shrink-0">
-          <Image
-            src={product.image}
-            alt={product.title}
-            width={192}
-            height={128}
-            className="w-full h-full object-cover"
-          />
-          {product.isPremium && (
-            <div className="absolute top-2 right-2 bg-[#ff0033] text-white px-2 py-1 rounded text-xs font-medium">
-              Premium
-            </div>
-          )}
-        </div>
-        <div className="flex-1 p-4 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
+          <div className="p-4 flex flex-col gap-2">
+            <div className="flex items-center gap-2 mb-2">
               <div className="w-8 h-8 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
                 <Package className="w-4 h-4 text-white" />
               </div>
-              <h3 className="text-lg font-semibold text-foreground line-clamp-1">{product.title}</h3>
+              <h3 className="text-lg font-semibold text-foreground">{product.title}</h3>
             </div>
-            <p className="text-muted-foreground text-sm mb-2 line-clamp-1">
+            <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
               {product.description}
             </p>
-          </div>
-          <div className="flex items-center gap-6 text-xs">
-            <div className="flex items-center gap-1">
-              <Clock className="w-4 h-4 text-muted-foreground" />
-              <span className="text-muted-foreground">{product.duration}</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">{product.duration}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">{product.students} étudiants</span>
+              </div>
             </div>
-            <div className="flex items-center gap-1">
-              <Users className="w-4 h-4 text-muted-foreground" />
-              <span className="text-muted-foreground">{product.students} étudiants</span>
+            <div className="flex justify-end mt-2">
+              <ProductActions product={product} />
             </div>
+            <button
+              type="button"
+              className="mt-3 w-full bg-[#ff0033] hover:bg-[#cc0029] text-white py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#ff0033]"
+              onClick={e => {
+                e.preventDefault();
+                window.location.href = `/produits/${product.id}`;
+              }}
+              tabIndex={0}
+            >
+              <ExternalLink className="w-4 h-4" />
+              Voir
+            </button>
           </div>
         </div>
-      </div>
+      </Link>
+    ) : (
+      <Link href={`/produits/${product.id}`} className="block group">
+        <div className="bg-card border border-border rounded-xl flex overflow-hidden hover:border-[#ff0033] transition-colors group-hover:shadow-lg">
+          <div className="relative w-48 min-w-[12rem] h-32 flex-shrink-0">
+            <Image
+              src={product.image}
+              alt={product.title}
+              width={192}
+              height={128}
+              className="w-full h-full object-cover transition-transform group-hover:scale-105"
+              onError={(e) => { e.currentTarget.src = '/formations/default.png'; }}
+            />
+            {product.isPremium && (
+              <div className="absolute top-2 right-2 bg-[#ff0033] text-white px-2 py-1 rounded text-xs font-medium">
+                Premium
+              </div>
+            )}
+          </div>
+          <div className="flex-1 p-4 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-8 h-8 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
+                  <Package className="w-4 h-4 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground line-clamp-1">{product.title}</h3>
+              </div>
+              <p className="text-muted-foreground text-sm mb-2 line-clamp-1">
+                {product.description}
+              </p>
+            </div>
+            <div className="flex items-center gap-6 text-xs">
+              <div className="flex items-center gap-1">
+                <Clock className="w-4 h-4 text-muted-foreground" />
+                <span className="text-muted-foreground">{product.duration}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Users className="w-4 h-4 text-muted-foreground" />
+                <span className="text-muted-foreground">{product.students} étudiants</span>
+              </div>
+              <div className="flex-1 flex justify-end">
+                <ProductActions product={product} />
+              </div>
+            </div>
+            <button
+              type="button"
+              className="mt-3 w-full bg-[#ff0033] hover:bg-[#cc0029] text-white py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#ff0033]"
+              onClick={e => {
+                e.preventDefault();
+                window.location.href = `/produits/${product.id}`;
+              }}
+              tabIndex={0}
+            >
+              <ExternalLink className="w-4 h-4" />
+              Voir
+            </button>
+          </div>
+        </div>
+      </Link>
     )
   );
 }
