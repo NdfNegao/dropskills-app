@@ -14,17 +14,22 @@ const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>('dark');
 
+  // Toujours forcer la classe sur le body
+  useEffect(() => {
+    document.body.classList.remove('theme-dark', 'theme-light');
+    document.body.classList.add(`theme-${theme}`);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('theme', theme);
+    }
+  }, [theme]);
+
   // Charger le thème depuis localStorage au montage
   useEffect(() => {
     const stored = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
     if (stored === 'light' || stored === 'dark') {
       setThemeState(stored);
-      document.body.classList.remove('theme-dark', 'theme-light');
-      document.body.classList.add(`theme-${stored}`);
     } else {
       setThemeState('dark');
-      document.body.classList.remove('theme-dark', 'theme-light');
-      document.body.classList.add('theme-dark');
     }
   }, []);
 

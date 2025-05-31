@@ -87,21 +87,6 @@ export default function DropskillsSidebar({
         </button>
       </div>
 
-      {/* Badge utilisateur avec animation */}
-      {!collapsed && user && (
-        <div className="px-4 py-3 border-b border-gray-800">
-          <div className="flex items-center gap-2 bg-gradient-to-r from-[#ff0033]/10 to-transparent p-2 rounded-lg">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-xs text-gray-400 uppercase tracking-wide font-semibold">
-              {user.role === 'PREMIUM' && '👑 Premium'}
-              {user.role === 'ADMIN' && '🛡️ Admin'}
-              {user.role === 'SUPER_ADMIN' && '⚡ Super Admin'}
-              {user.role === 'USER' && '🌟 Membre'}
-            </span>
-          </div>
-        </div>
-      )}
-
       {/* Navigation principale */}
       <nav className="flex-1 flex flex-col gap-1 px-2 py-4 overflow-y-auto">
         {/* Menu principal */}
