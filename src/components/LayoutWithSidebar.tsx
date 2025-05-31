@@ -7,7 +7,7 @@ import Link from 'next/link';
 import {
   Home, Lock, BookOpen, User, Settings, LogOut, 
   Sparkles, BrainCog, Rocket, FolderKanban, Mail, 
-  CalendarCheck, LineChart, GraduationCap, Target, X, Users
+  CalendarCheck, LineChart, GraduationCap, Target, X, Users, HelpCircle
 } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
@@ -131,12 +131,13 @@ export default function LayoutWithSidebar({
           <MobileNavLink icon={<GraduationCap />} label="Centre de formation" href="/universite" onClick={() => setMobileMenuOpen(false)} />
           <MobileNavLink icon={<LineChart />} label="Demandes de Produits" href="/demandes" onClick={() => setMobileMenuOpen(false)} />
           <MobileNavLink icon={<Users />} label="Programme d'affiliation" href="/affiliate" onClick={() => setMobileMenuOpen(false)} />
+          <MobileNavLink icon={<HelpCircle />} label="Support" href="/support" onClick={() => setMobileMenuOpen(false)} />
         </nav>
 
         {/* Footer mobile */}
         <div className="mt-auto p-4 border-t border-gray-800">
           <MobileNavLink icon={<User />} label="Mon Compte" href="/compte" onClick={() => setMobileMenuOpen(false)} />
-          <MobileNavLink icon={<Settings />} label="Paramètres" href="/parametres" onClick={() => setMobileMenuOpen(false)} />
+          <MobileNavLink icon={<Settings />} label="Paramètres" href="/compte" onClick={() => setMobileMenuOpen(false)} />
           <button
             onClick={() => {
               setMobileMenuOpen(false);

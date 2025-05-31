@@ -41,7 +41,6 @@ export default function DropskillsSidebar({
 
   // Section Aide & Personnalisation
   const helpNavigation = [
-    { icon: <HelpCircle />, label: "Centre de formation", href: "/universite", tooltip: "Formations et tutoriels" },
     { icon: <MessageSquarePlus />, label: "Proposer un outil", href: "/demandes", tooltip: "Proposer un outil ou une amélioration" }
   ];
 
@@ -50,7 +49,7 @@ export default function DropskillsSidebar({
     { icon: <User />, label: "Mon Compte", href: "/compte", tooltip: "Profil et paramètres" },
     { icon: <Users />, label: "Affiliation", href: "/affiliate", tooltip: "Gagnez de l'argent en recommandant DropSkills" },
     { icon: <HelpCircle />, label: "Support", href: "/support", tooltip: "Aide et support" },
-    { icon: <Settings />, label: "Paramètres", href: "/parametres", tooltip: "Configuration" }
+    { icon: <Settings />, label: "Paramètres", href: "/compte", tooltip: "Configuration" }
   ];
 
   if (isLoading) {

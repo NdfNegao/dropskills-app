@@ -5,8 +5,10 @@ import LayoutWithSidebar from '@/components/LayoutWithSidebar';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { User, Mail, Lock, Shield, Bell, CreditCard, Download, Trash2, Save, Eye, EyeOff, AlertTriangle, ExternalLink } from 'lucide-react';
+import { User, Mail, Lock, Shield, Bell, CreditCard, Download, Trash2, Save, Eye, EyeOff, AlertTriangle, ExternalLink, Palette } from 'lucide-react';
 import PageBentoLayout from '@/components/PageBentoLayout';
+import { useTheme } from '@/context/ThemeContext';
+import { Moon, Sun } from 'lucide-react';
 
 export default function ComptePage() {
   const { data: session, status, update } = useSession();
@@ -50,6 +52,7 @@ export default function ComptePage() {
     { id: 'notifications', label: 'Notifications', icon: <Bell className="w-4 h-4" /> },
     { id: 'billing', label: 'Facturation', icon: <CreditCard className="w-4 h-4" /> },
     { id: 'data', label: 'Mes Données', icon: <Download className="w-4 h-4" /> },
+    { id: 'preferences', label: 'Préférences', icon: <Palette className="w-4 h-4" /> },
   ];
 
   return (
@@ -101,6 +104,7 @@ export default function ComptePage() {
               {activeTab === 'notifications' && <NotificationsTab user={user} showMessage={showMessage} />}
               {activeTab === 'billing' && <BillingTab user={user} />}
               {activeTab === 'data' && <DataTab user={user} showMessage={showMessage} />}
+              {activeTab === 'preferences' && <PreferencesTab />}
             </div>
           </div>
         </div>
@@ -781,6 +785,95 @@ function DataTab({ user, showMessage }: {
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+function PreferencesTab() {
+  const { theme, setTheme } = useTheme();
+  const [preferences, setPreferences] = useState({
+    language: 'fr',
+    timezone: 'Europe/Paris'
+  });
+
+  const handleSave = async () => {
+    // TODO: Implémenter la sauvegarde des préférences
+    console.log('Sauvegarde des préférences:', preferences);
+  };
+
+  return (
+    <div className="space-y-6">
+      <h2 className="text-xl font-semibold text-white mb-4">Préférences</h2>
+      
+      {/* Thème */}
+      <div>
+        <label className="block text-sm font-medium text-gray-300 mb-4">
+          Thème
+        </label>
+        <div className="flex gap-4">
+          <button
+            onClick={() => setTheme('light')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${
+              theme === 'light'
+                ? 'bg-white text-black border-white'
+                : 'bg-[#1a1a1a] text-white border-[#333] hover:bg-[#222]'
+            }`}
+          >
+            <Sun className="w-4 h-4" />
+            <span>Clair</span>
+          </button>
+          <button
+            onClick={() => setTheme('dark')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${
+              theme === 'dark'
+                ? 'bg-[#1a1a1a] text-white border-[#333]'
+                : 'bg-[#1a1a1a] text-white border-[#333] hover:bg-[#222]'
+            }`}
+          >
+            <Moon className="w-4 h-4" />
+            <span>Sombre</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Langue */}
+      <div>
+        <label className="block text-sm font-medium text-gray-300 mb-2">
+          Langue
+        </label>
+        <select
+          value={preferences.language}
+          onChange={(e) => setPreferences({...preferences, language: e.target.value})}
+          className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
+        >
+          <option value="fr">Français</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+
+      {/* Fuseau horaire */}
+      <div>
+        <label className="block text-sm font-medium text-gray-300 mb-2">
+          Fuseau horaire
+        </label>
+        <select
+          value={preferences.timezone}
+          onChange={(e) => setPreferences({...preferences, timezone: e.target.value})}
+          className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
+        >
+          <option value="Europe/Paris">Paris (UTC+1)</option>
+          <option value="Europe/London">Londres (UTC+0)</option>
+          <option value="America/New_York">New York (UTC-5)</option>
+        </select>
+      </div>
+
+      <button
+        onClick={handleSave}
+        className="flex items-center gap-2 bg-[#ff0033] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors"
+      >
+        <Save className="w-4 h-4" />
+        Sauvegarder
+      </button>
     </div>
   );
 } 

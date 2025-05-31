@@ -120,7 +120,7 @@ export default function HomePage() {
         <CTASection />
         
         {/* Lien de développement (visible uniquement en dev) */}
-        {process.env.NODE_ENV === 'development' && (
+        {/* {process.env.NODE_ENV === 'development' && (
           <div className="fixed bottom-4 right-4 z-50">
             <Link
               href="/dev-login"
@@ -131,7 +131,7 @@ export default function HomePage() {
               Dev Login
             </Link>
           </div>
-        )}
+        )} */}
       </div>
     </LayoutWithSidebar>
   );
