@@ -1,5 +1,5 @@
 import React from "react";
-import { Search, Filter, Grid3X3, List } from "lucide-react";
+import { Search, Filter, Grid3X3, List, Crown } from "lucide-react";
 
 interface ProductFiltersProps {
   search: string;
@@ -109,14 +109,17 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
             <option key={fmt} value={fmt}>{fmt}</option>
           ))}
         </select>
-        <label className="flex items-center gap-2 bg-card border border-border rounded-lg px-4 py-3 cursor-pointer hover:border-[#ff0033]">
+        <label className="flex items-center gap-2 bg-card border border-border rounded-lg px-4 py-3 cursor-pointer hover:border-[#ff0033] focus-within:border-[#ff0033]">
           <input
             type="checkbox"
             checked={showPremiumOnly}
             onChange={e => setShowPremiumOnly(e.target.checked)}
             className="w-4 h-4 text-[#ff0033] bg-transparent border-gray-300 rounded focus:ring-[#ff0033]"
           />
-          <span className="text-foreground text-sm">{labels.premiumOnly || "Premium uniquement"}</span>
+          <span className="flex items-center gap-1">
+            <Crown className="w-4 h-4 text-yellow-400 flex-shrink-0" />
+            <span className="text-foreground text-sm">{labels.premiumOnly || "Premium uniquement"}</span>
+          </span>
         </label>
       </div>
     </div>

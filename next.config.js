@@ -15,6 +15,16 @@ const nextConfig = {
     // Ignorer les erreurs ESLint pendant le build en production
     ignoreDuringBuilds: process.env.NODE_ENV === 'production',
   },
+  images: {
+    domains: [
+      'images.unsplash.com',
+      'cdn.jsdelivr.net',
+      'placehold.co',
+      'dummyimage.com',
+      'res.cloudinary.com',
+      // Ajoute ici d'autres domaines si besoin
+    ],
+  },
 };
 
 module.exports = nextConfig;

@@ -39,6 +39,8 @@ import {
   Brain
 } from 'lucide-react';
 import Link from 'next/link';
+import ProductActions from './ProductActions';
+import { Product } from '@/data/products';
 
 // Fonction pour convertir les noms d'icônes en composants
 function getIconComponent(iconName: string) {
@@ -82,31 +84,8 @@ interface ProductFeature {
   description: string;
 }
 
-interface ProductPageData {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  tags: string[];
-  stats: {
-    pages?: number;
-    words?: number;
-    size: string;
-    fileType: string;
-  };
-  features: ProductFeature[];
-  permissions: string[];
-  previewImages: string[];
-  downloadUrl: string;
-  isPremium: boolean;
-  rating?: number;
-  downloads?: number;
-  instructor?: string;
-  duration?: string;
-}
-
 interface ProductPageTemplateProps {
-  product: ProductPageData;
+  product: Product;
   backUrl?: string;
   backLabel?: string;
 }
@@ -198,6 +177,7 @@ export default function ProductPageTemplate({
 
             {/* Actions */}
             <div className="flex items-center gap-3">
+              <ProductActions product={product} onDownload={handleDownload} showPremium />
               <button
                 onClick={handleSave}
                 className={`p-3 rounded-lg border transition-all duration-200 ${
@@ -220,41 +200,42 @@ export default function ProductPageTemplate({
 
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {product.stats.pages && (
+            {product.pages && (
               <div className="flex items-center gap-3 p-4 bg-[#111111] border border-[#232323] rounded-lg">
                 <FileText className="w-5 h-5 text-blue-400" />
                 <div>
                   <div className="text-sm text-gray-400">Pages</div>
-                  <div className="text-xl font-bold text-white">{product.stats.pages}</div>
+                  <div className="text-xl font-bold text-white">{product.pages}</div>
                 </div>
               </div>
             )}
-            
-            {product.stats.words && (
+            {product.words && (
               <div className="flex items-center gap-3 p-4 bg-[#111111] border border-[#232323] rounded-lg">
                 <FileText className="w-5 h-5 text-green-400" />
                 <div>
                   <div className="text-sm text-gray-400">Words</div>
-                  <div className="text-xl font-bold text-white">{product.stats.words.toLocaleString()}</div>
+                  <div className="text-xl font-bold text-white">{product.words.toLocaleString()}</div>
                 </div>
               </div>
             )}
-            
-            <div className="flex items-center gap-3 p-4 bg-[#111111] border border-[#232323] rounded-lg">
-              <Download className="w-5 h-5 text-purple-400" />
-              <div>
-                <div className="text-sm text-gray-400">Size</div>
-                <div className="text-xl font-bold text-white">{product.stats.size}</div>
+            {product.size && (
+              <div className="flex items-center gap-3 p-4 bg-[#111111] border border-[#232323] rounded-lg">
+                <Download className="w-5 h-5 text-purple-400" />
+                <div>
+                  <div className="text-sm text-gray-400">Size</div>
+                  <div className="text-xl font-bold text-white">{product.size}</div>
+                </div>
               </div>
-            </div>
-            
-            <div className="flex items-center gap-3 p-4 bg-[#111111] border border-[#232323] rounded-lg">
-              <FileText className="w-5 h-5 text-orange-400" />
-              <div>
-                <div className="text-sm text-gray-400">File Type</div>
-                <div className="text-xl font-bold text-white">{product.stats.fileType}</div>
+            )}
+            {product.fileType && (
+              <div className="flex items-center gap-3 p-4 bg-[#111111] border border-[#232323] rounded-lg">
+                <FileText className="w-5 h-5 text-orange-400" />
+                <div>
+                  <div className="text-sm text-gray-400">File Type</div>
+                  <div className="text-xl font-bold text-white">{product.fileType}</div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 

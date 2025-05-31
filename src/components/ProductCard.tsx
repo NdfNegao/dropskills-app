@@ -178,7 +178,7 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
 
   return (
     variant === 'grid' ? (
-      <Link href={`/produits/${product.id}`} className="block group">
+      <div className="block group">
         <div className="bg-card border border-border rounded-xl overflow-hidden hover:border-[#ff0033] transition-colors group-hover:shadow-lg">
           <div className="relative">
             <Image
@@ -218,23 +218,15 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
             <div className="flex justify-end mt-2">
               <ProductActions product={product} />
             </div>
-            <button
-              type="button"
-              className="mt-3 w-full bg-[#ff0033] hover:bg-[#cc0029] text-white py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#ff0033]"
-              onClick={e => {
-                e.preventDefault();
-                window.location.href = `/produits/${product.id}`;
-              }}
-              tabIndex={0}
-            >
+            <Link href={`/produits/${product.id}`} className="mt-3 w-full bg-[#ff0033] hover:bg-[#cc0029] text-white py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#ff0033]">
               <ExternalLink className="w-4 h-4" />
               Voir
-            </button>
+            </Link>
           </div>
         </div>
-      </Link>
+      </div>
     ) : (
-      <Link href={`/produits/${product.id}`} className="block group">
+      <div className="block group">
         <div className="bg-card border border-border rounded-xl flex overflow-hidden hover:border-[#ff0033] transition-colors group-hover:shadow-lg">
           <div className="relative w-48 min-w-[12rem] h-32 flex-shrink-0">
             <Image
@@ -276,21 +268,13 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
                 <ProductActions product={product} />
               </div>
             </div>
-            <button
-              type="button"
-              className="mt-3 w-full bg-[#ff0033] hover:bg-[#cc0029] text-white py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#ff0033]"
-              onClick={e => {
-                e.preventDefault();
-                window.location.href = `/produits/${product.id}`;
-              }}
-              tabIndex={0}
-            >
+            <Link href={`/produits/${product.id}`} className="mt-3 w-full bg-[#ff0033] hover:bg-[#cc0029] text-white py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#ff0033]">
               <ExternalLink className="w-4 h-4" />
               Voir
-            </button>
+            </Link>
           </div>
         </div>
-      </Link>
+      </div>
     )
   );
 }
