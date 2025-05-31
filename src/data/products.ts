@@ -863,7 +863,6 @@ export const PRODUCTS: Product[] = [
     downloadUrl: "/downloads/productivity-masterclass.zip",
     students: 0
   },
-  // --- NOUVELLES FORMATIONS 2025 ---
   {
     id: "affiliation-2025",
     title: "Affiliation 2025",
@@ -930,98 +929,6 @@ export const PRODUCTS: Product[] = [
     features: [
       { icon: "Phone", title: "Scripts de closing", description: "Scripts prêts à l'emploi" },
       { icon: "UserCheck", title: "Coaching", description: "Accompagnement inclus" }
-    ],
-    students: 0
-  },
-  {
-    id: "shopify-2025",
-    title: "Créer un site Shopify qui convertit",
-    subtitle: "Apprenez à créer une boutique optimisée sur Shopify.",
-    format: "Formation",
-    image: '/formations/shopify-2025.png',
-    description: "Toutes les étapes pour lancer un site Shopify performant et rentable.",
-    shortDescription: "Formation Shopify complète.",
-    likes: 0,
-    fileUrl: "",
-    tags: ["Shopify", "E-commerce", "2025"],
-    isPremium: true,
-    downloads: 0,
-    rating: 4.8,
-    category: "E-commerce",
-    instructor: "Equipe Dropskills",
-    duration: "8 modules",
-    features: [
-      { icon: "ShoppingCart", title: "Optimisation", description: "Boutique qui convertit" },
-      { icon: "Zap", title: "Automatisation", description: "Apps recommandées" }
-    ],
-    students: 0
-  },
-  {
-    id: "personal-branding-2025",
-    title: "Personal Branding",
-    subtitle: "Explosez sur les réseaux sociaux grâce à une stratégie d'image de marque.",
-    format: "Formation",
-    image: '/formations/personal-branding-2025.png',
-    description: "Construisez une marque personnelle forte et visible en 2025.",
-    shortDescription: "Stratégies de personal branding.",
-    likes: 0,
-    fileUrl: "",
-    tags: ["Personal Branding", "Réseaux Sociaux", "2025"],
-    isPremium: true,
-    downloads: 0,
-    rating: 4.7,
-    category: "Marketing",
-    instructor: "Equipe Dropskills",
-    duration: "6 modules",
-    features: [
-      { icon: "User", title: "Image de marque", description: "Développez votre présence" },
-      { icon: "Camera", title: "Contenu", description: "Stratégie réseaux sociaux" }
-    ],
-    students: 0
-  },
-  {
-    id: "tunnels-vente-2025",
-    title: "Tunnels de Vente 2.0",
-    subtitle: "Apprenez à créer des tunnels de vente performants.",
-    format: "Formation",
-    image: '/formations/tunnels-vente-2025.png',
-    description: "Toutes les étapes pour créer un tunnel de vente qui convertit en 2025.",
-    shortDescription: "Tunnel de vente nouvelle génération.",
-    likes: 0,
-    fileUrl: "",
-    tags: ["Tunnel de vente", "Conversion", "2025"],
-    isPremium: true,
-    downloads: 0,
-    rating: 4.8,
-    category: "Vente",
-    instructor: "Equipe Dropskills",
-    duration: "7 modules",
-    features: [
-      { icon: "Layers", title: "Tunnel complet", description: "Étapes détaillées" },
-      { icon: "Zap", title: "Automatisation", description: "Outils inclus" }
-    ],
-    students: 0
-  },
-  {
-    id: "google-ads-2025",
-    title: "Google Ads 2025",
-    subtitle: "Créez des campagnes Search & Shopping, ciblez les bons mots-clés.",
-    format: "Formation",
-    image: '/formations/google-ads-2025.png',
-    description: "Maîtrisez Google Ads avec les dernières stratégies et optimisations.",
-    shortDescription: "Formation Google Ads à jour.",
-    likes: 0,
-    fileUrl: "",
-    tags: ["Google Ads", "SEA", "2025"],
-    isPremium: true,
-    downloads: 0,
-    rating: 4.7,
-    category: "Marketing",
-    instructor: "Equipe Dropskills",
-    duration: "9 modules",
-    features: [
-      { icon: "Search", title: "SEA", description: "Campagnes Search & Shopping" },
-      { icon: "TrendingUp", title: "Optimisation", description: "Stratégies avancées" }
     ],
     students: 0
   },

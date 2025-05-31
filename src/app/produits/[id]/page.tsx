@@ -83,49 +83,21 @@ export default function ProductPage() {
           <h1 className="text-2xl font-bold text-white mb-4">Produit non trouvé</h1>
           <p className="text-gray-400 mb-6">Le produit que vous recherchez n'existe pas.</p>
           <a 
-            href="/catalogue"
+            href="/universite"
             className="bg-[#ff0033] hover:bg-[#cc0029] text-white px-6 py-3 rounded-lg font-medium transition-colors"
           >
-            Retour au catalogue
+            Retour au centre de formation
           </a>
         </div>
       </div>
     );
   }
 
-  // Convertir le produit au format attendu par le template
-  const templateProduct = {
-    id: product.id,
-    title: product.title,
-    description: product.description,
-    category: product.category || 'Non catégorisé',
-    tags: product.tags,
-    stats: {
-      pages: product.pages,
-      words: product.words,
-      size: product.size || 'N/A',
-      fileType: product.fileType || 'N/A'
-    },
-    features: product.features?.map(feature => ({
-      icon: getIconComponent(feature.icon),
-      title: feature.title,
-      description: feature.description
-    })) || [],
-    permissions: product.permissions || product.rights || [],
-    previewImages: product.previewImages || product.images || [product.image],
-    downloadUrl: product.downloadUrl || product.fileUrl,
-    isPremium: product.isPremium || false,
-    rating: product.rating,
-    downloads: product.downloads,
-    instructor: product.instructor,
-    duration: product.duration
-  };
-
   return (
     <ProductPageTemplate 
-      product={templateProduct}
-      backUrl="/catalogue"
-      backLabel="Retour au catalogue"
+      product={product}
+      backUrl="/universite"
+      backLabel="Retour au centre de formation"
     />
   );
 } 
