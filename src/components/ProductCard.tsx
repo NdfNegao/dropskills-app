@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ProductActions from './ProductActions';
 import Link from 'next/link';
+import ImageWithFallback from './ImageWithFallback';
 
 function getFormatIcon(format: string) {
   switch (format) {
@@ -181,13 +182,12 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
       <div className="block group">
         <div className="bg-card border border-border rounded-xl overflow-hidden hover:border-[#ff0033] transition-colors group-hover:shadow-lg">
           <div className="relative">
-            <Image
+            <ImageWithFallback
               src={product.image}
               alt={product.title}
               width={400}
               height={225}
-              className="w-full h-48 object-cover transition-transform group-hover:scale-105"
-              onError={(e) => { e.currentTarget.src = '/formations/default.png'; }}
+              className="w-full h-48 object-cover rounded-t-lg"
             />
             {product.isPremium && (
               <div className="absolute top-2 right-2 bg-[#ff0033] text-white px-2 py-1 rounded text-xs font-medium">
@@ -229,13 +229,12 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
       <div className="block group">
         <div className="bg-card border border-border rounded-xl flex overflow-hidden hover:border-[#ff0033] transition-colors group-hover:shadow-lg">
           <div className="relative w-48 min-w-[12rem] h-32 flex-shrink-0">
-            <Image
+            <ImageWithFallback
               src={product.image}
               alt={product.title}
               width={192}
               height={128}
-              className="w-full h-full object-cover transition-transform group-hover:scale-105"
-              onError={(e) => { e.currentTarget.src = '/formations/default.png'; }}
+              className="w-full h-full object-cover rounded-t-lg"
             />
             {product.isPremium && (
               <div className="absolute top-2 right-2 bg-[#ff0033] text-white px-2 py-1 rounded text-xs font-medium">
