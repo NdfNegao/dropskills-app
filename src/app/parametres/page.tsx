@@ -17,6 +17,8 @@ import {
   Settings
 } from 'lucide-react';
 import PageBentoLayout from '@/components/PageBentoLayout';
+import { useTheme } from '@/context/ThemeContext';
+import { Moon, Sun } from 'lucide-react';
 
 export default function ParametresPage() {
   const { user } = useAuth();
@@ -24,6 +26,8 @@ export default function ParametresPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const { theme, setTheme } = useTheme();
+  const [glitch, setGlitch] = useState(false);
 
   const [profileData, setProfileData] = useState({
     firstName: user?.firstName || '',
@@ -282,54 +286,69 @@ export default function ParametresPage() {
                 {/* Onglet Préférences */}
                 {activeTab === 'preferences' && (
                   <div className="space-y-6">
-                    <h2 className="text-xl font-semibold text-white mb-4">Préférences générales</h2>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Langue
-                        </label>
-                        <select
-                          value={preferences.language}
-                          onChange={(e) => setPreferences({...preferences, language: e.target.value})}
-                          className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
-                        >
-                          <option value="fr">Français</option>
-                          <option value="en">English</option>
-                          <option value="es">Español</option>
-                        </select>
+                    <h2 className="text-xl font-semibold text-white mb-4">Préférences</h2>
+                    {/* Choix de la langue */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Langue</label>
+                      <select
+                        value={preferences.language}
+                        onChange={e => setPreferences({ ...preferences, language: e.target.value })}
+                        className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
+                      >
+                        <option value="fr">Français</option>
+                        <option value="en">English</option>
+                      </select>
+                    </div>
+                    {/* Switch de thème */}
+                    <div className={`transition-colors duration-500 relative ${glitch ? 'glitch-effect' : ''}`}>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Thème</label>
+                      <div className="flex gap-8 items-center">
+                        <RadioTheme
+                          checked={theme === "dark"}
+                          onClick={() => { if (theme !== 'dark') { setGlitch(true); setTimeout(() => setGlitch(false), 600); setTimeout(() => setTheme('dark'), 200); }}}
+                          icon={<Moon className="w-6 h-6" />}
+                          label="Sombre"
+                        />
+                        <RadioTheme
+                          checked={theme === "light"}
+                          onClick={() => { if (theme !== 'light') { setGlitch(true); setTimeout(() => setGlitch(false), 600); setTimeout(() => setTheme('light'), 200); }}}
+                          icon={<Sun className="w-6 h-6" />}
+                          label="Clair"
+                        />
                       </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Thème
-                        </label>
-                        <select
-                          value={preferences.theme}
-                          onChange={(e) => setPreferences({...preferences, theme: e.target.value})}
-                          className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
-                        >
-                          <option value="dark">Sombre</option>
-                          <option value="light">Clair</option>
-                          <option value="auto">Automatique</option>
-                        </select>
-                      </div>
-
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Fuseau horaire
-                        </label>
-                        <select
-                          value={preferences.timezone}
-                          onChange={(e) => setPreferences({...preferences, timezone: e.target.value})}
-                          className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
-                        >
-                          <option value="Europe/Paris">Europe/Paris (UTC+1)</option>
-                          <option value="Europe/London">Europe/London (UTC+0)</option>
-                          <option value="America/New_York">America/New_York (UTC-5)</option>
-                          <option value="America/Los_Angeles">America/Los_Angeles (UTC-8)</option>
-                        </select>
-                      </div>
+                      <style jsx global>{`
+                        .glitch-effect {
+                          animation: glitchy 0.6s cubic-bezier(.25,.46,.45,.94) both;
+                        }
+                        @keyframes glitchy {
+                          0% { filter: none; transform: none; }
+                          10% { filter: contrast(1.2) brightness(1.1) hue-rotate(10deg); transform: skewX(-2deg) scale(1.01); }
+                          20% { filter: contrast(1.5) brightness(1.2) hue-rotate(-10deg); transform: skewX(2deg) scale(1.02); }
+                          30% { filter: contrast(1.2) brightness(1.1) hue-rotate(5deg); transform: skewX(-1deg) scale(1.01); }
+                          40% { filter: contrast(1.5) brightness(1.2) hue-rotate(-5deg); transform: skewX(1deg) scale(1.02); }
+                          50% { filter: contrast(1.2) brightness(1.1) hue-rotate(0deg); transform: none; }
+                          60% { filter: contrast(1.5) brightness(1.2) hue-rotate(0deg); transform: skewX(2deg) scale(1.01); }
+                          70% { filter: contrast(1.2) brightness(1.1) hue-rotate(-10deg); transform: skewX(-2deg) scale(1.02); }
+                          80% { filter: contrast(1.5) brightness(1.2) hue-rotate(10deg); transform: skewX(1deg) scale(1.01); }
+                          90% { filter: none; transform: none; }
+                          100% { filter: none; transform: none; }
+                        }
+                      `}</style>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Fuseau horaire
+                      </label>
+                      <select
+                        value={preferences.timezone}
+                        onChange={(e) => setPreferences({...preferences, timezone: e.target.value})}
+                        className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
+                      >
+                        <option value="Europe/Paris">Europe/Paris (UTC+1)</option>
+                        <option value="Europe/London">Europe/London (UTC+0)</option>
+                        <option value="America/New_York">America/New_York (UTC-5)</option>
+                        <option value="America/Los_Angeles">America/Los_Angeles (UTC-8)</option>
+                      </select>
                     </div>
 
                     <button
@@ -348,5 +367,20 @@ export default function ParametresPage() {
         </div>
       </PageBentoLayout>
     </LayoutWithSidebar>
+  );
+}
+
+function RadioTheme({ checked, onClick, icon, label }: { checked: boolean; onClick: () => void; icon: React.ReactNode; label: string }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex flex-col items-center gap-2 px-6 py-4 rounded-xl border-2 transition-all duration-300 shadow-lg
+        ${checked ? "border-[#ff0033] bg-[#ff0033]/10 scale-105" : "border-gray-700 bg-[#111111] hover:border-[#ff0033] hover:bg-[#ff0033]/5"}
+        focus:outline-none focus:ring-2 focus:ring-[#ff0033]`}
+      aria-pressed={checked}
+    >
+      <span className={`text-2xl ${checked ? "text-[#ff0033]" : "text-gray-400"}`}>{icon}</span>
+      <span className={`font-semibold ${checked ? "text-[#ff0033]" : "text-gray-300"}`}>{label}</span>
+    </button>
   );
 } 
