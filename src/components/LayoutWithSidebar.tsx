@@ -137,7 +137,6 @@ export default function LayoutWithSidebar({
         {/* Footer mobile */}
         <div className="mt-auto p-4 border-t border-gray-800">
           <MobileNavLink icon={<User />} label="Mon Compte" href="/compte" onClick={() => setMobileMenuOpen(false)} />
-          <MobileNavLink icon={<Settings />} label="Paramètres" href="/compte" onClick={() => setMobileMenuOpen(false)} />
           <button
             onClick={() => {
               setMobileMenuOpen(false);

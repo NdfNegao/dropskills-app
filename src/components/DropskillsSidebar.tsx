@@ -48,8 +48,7 @@ export default function DropskillsSidebar({
   const accountNavigation = [
     { icon: <User />, label: "Mon Compte", href: "/compte", tooltip: "Profil et paramètres" },
     { icon: <Users />, label: "Affiliation", href: "/affiliate", tooltip: "Gagnez de l'argent en recommandant DropSkills" },
-    { icon: <HelpCircle />, label: "Support", href: "/support", tooltip: "Aide et support" },
-    { icon: <Settings />, label: "Paramètres", href: "/compte", tooltip: "Configuration" }
+    { icon: <HelpCircle />, label: "Support", href: "/support", tooltip: "Aide et support" }
   ];
 
   if (isLoading) {
