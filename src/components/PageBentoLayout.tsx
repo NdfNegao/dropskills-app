@@ -28,8 +28,8 @@ const PageBentoLayout: React.FC<PageBentoLayoutProps> = ({ icon, title, subtitle
             {icon}
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-white">{title}</h1>
-            <p className="text-gray-400">{subtitle}</p>
+            <h1 className="text-3xl font-bold text-foreground">{title}</h1>
+            <p className="text-muted-foreground">{subtitle}</p>
           </div>
         </div>
       </div>
@@ -37,10 +37,10 @@ const PageBentoLayout: React.FC<PageBentoLayoutProps> = ({ icon, title, subtitle
       {stats && stats.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {stats.map((stat, idx) => (
-            <div key={idx} className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+            <div key={idx} className="bg-card border border-border rounded-lg p-4">
               <div className={`flex items-center gap-2 mb-1 ${stat.color || 'text-blue-400'}`}>{stat.icon}<span className="text-sm font-medium">{stat.label}</span></div>
-              <div className="text-2xl font-bold text-white">{stat.value}</div>
-              {stat.description && <div className="text-xs text-gray-400">{stat.description}</div>}
+              <div className="text-2xl font-bold text-foreground">{stat.value}</div>
+              {stat.description && <div className="text-xs text-muted-foreground">{stat.description}</div>}
             </div>
           ))}
         </div>

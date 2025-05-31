@@ -1,10 +1,11 @@
 "use client";
-import { Bookmark, BookOpen, Headphones, Video, FileDown, Heart, ExternalLink, MessageSquare, Layout, CheckSquare, PenTool, Bot, FileText, Play, Crown } from "lucide-react";
+import { Bookmark, BookOpen, Headphones, Video, FileDown, Heart, ExternalLink, MessageSquare, Layout, CheckSquare, PenTool, Bot, FileText, Play, Crown, Package, Clock, Users } from "lucide-react";
 import { useSavedProducts } from "@/context/SavedProductsContext";
 import { useLikedProducts } from '@/context/LikedProductsContext';
 import { Product } from "@/data/products";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 function getFormatIcon(format: string) {
   switch (format) {
@@ -173,135 +174,43 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
   };
 
   return (
-    <div className="relative bg-[#111111] border border-[#232323] rounded-xl overflow-hidden group transition-all hover:border-[#333] hover:shadow-lg">
-      {/* Image de fond */}
-      <div className="w-full aspect-video bg-[#1a1a1a] flex items-center justify-center overflow-hidden relative">
-        {/* Badge Premium en bas à droite de l'image */}
+    <div className="bg-card border border-border rounded-xl overflow-hidden hover:border-[#ff0033] transition-colors">
+      <div className="relative">
+        <Image
+          src={product.image}
+          alt={product.title}
+          width={400}
+          height={225}
+          className="w-full h-48 object-cover"
+        />
         {product.isPremium && (
-          <div className="absolute bottom-3 right-3 z-10">
-            <span className="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-xs font-medium flex items-center gap-1 shadow">
-              <Crown className="w-4 h-4" /> Premium
-            </span>
+          <div className="absolute top-2 right-2 bg-[#ff0033] text-white px-2 py-1 rounded text-xs font-medium">
+            Premium
           </div>
         )}
-        {/* Badge format texte en haut à gauche de l'image */}
-        <div className="absolute top-3 left-3 z-10">
-          {(() => {
-            const badge = getFormatBadge(product.format);
-            return (
-              <span className={`px-3 py-1 rounded-full text-xs font-bold shadow ${badge.color}`}>
-                {badge.label}
-              </span>
-            );
-          })()}
-        </div>
-        {(!product.image || product.image.includes('/api/placeholder')) ? (
-          <img
-            src={getDefaultImage(product.format)}
-            alt={product.title}
-            className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300"
-          />
-        ) : (
-          <img 
-            src={product.image} 
-            alt={product.title} 
-            className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300" 
-          />
-        )}
       </div>
-
-      {/* Actions en haut à droite */}
-      <div className="absolute top-3 right-3 z-10 flex gap-2">
-        {/* Like */}
-        <button
-          onClick={() => toggleLike(product.id)}
-          className="bg-[#1a1a1a] border border-[#333] rounded-lg p-2 hover:bg-[#232323] transition-colors flex items-center justify-center"
-          aria-label="J'aime"
-        >
-          <Heart
-            className={`w-4 h-4 ${liked ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-400'}`}
-          />
-        </button>
-        
-        {/* Bookmark */}
-        <button
-          onClick={handleBookmark}
-          className="bg-[#1a1a1a] border border-[#333] rounded-lg p-2 hover:bg-[#232323] transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label="Sauvegarder"
-          disabled={!!bookmarkDisabled}
-        >
-          <Bookmark
-            className={`w-4 h-4 ${bookmarked ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400 hover:text-yellow-400'}`}
-          />
-        </button>
-      </div>
-
-      {/* Contenu */}
+      
       <div className="p-4">
-        {/* Titre & sous-titre */}
-        <div className="mb-4">
-          <h3 className="font-bold text-lg text-white mb-1 line-clamp-2 leading-tight">
-            {product.title}
-          </h3>
-          <p className="text-gray-400 text-sm line-clamp-2 leading-relaxed">
-            {product.subtitle}
-          </p>
-        </div>
-
-        {/* Tags */}
-        {product.tags && product.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-4">
-            {product.tags.slice(0, 2).map((tag, index) => (
-              <span 
-                key={index}
-                className="text-xs bg-[#232323] text-gray-300 px-2 py-1 rounded-full"
-              >
-                {tag}
-              </span>
-            ))}
-            {product.tags.length > 2 && (
-              <span className="text-xs text-gray-500">
-                +{product.tags.length - 2}
-              </span>
-            )}
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-8 h-8 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
+            <Package className="w-4 h-4 text-white" />
           </div>
-        )}
-
-        {/* Stats */}
-        <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1">
-              <Heart className="w-3 h-3" />
-              {likes}
-            </span>
-            {product.downloads && (
-              <span className="flex items-center gap-1">
-                <FileDown className="w-3 h-3" />
-                {product.downloads}
-              </span>
-            )}
-          </div>
+          <h3 className="text-lg font-semibold text-foreground">{product.title}</h3>
         </div>
-
-        {/* Actions */}
-        <div className="flex gap-2">
-        <button
-          onClick={handleOpen}
-            className="flex-1 bg-[#ff0033] text-white py-2.5 px-4 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors flex items-center justify-center gap-2"
-        >
-            <ExternalLink className="w-4 h-4" />
-          Voir
-        </button>
-          
-          {onDownload && (
-        <button
-          onClick={onDownload}
-              className="bg-[#1a1a1a] border border-[#333] text-gray-300 p-2.5 rounded-lg hover:bg-[#232323] hover:text-white transition-colors flex items-center justify-center"
-              aria-label="Télécharger"
-        >
-              <FileDown className="w-4 h-4" />
-        </button>
-          )}
+        
+        <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+          {product.description}
+        </p>
+        
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Clock className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">{product.duration}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Users className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">{product.students} étudiants</span>
+          </div>
         </div>
       </div>
     </div>

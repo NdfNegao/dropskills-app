@@ -32,6 +32,7 @@ export type Product = {
   permissions?: string[];
   previewImages?: string[];
   downloadUrl?: string;
+  students: number;
 };
 
 export const PRODUCTS: Product[] = [
@@ -112,7 +113,8 @@ export const PRODUCTS: Product[] = [
       "/api/placeholder/400/300",
       "/api/placeholder/400/300"
     ],
-    downloadUrl: "/downloads/youtube-accelerator.zip"
+    downloadUrl: "/downloads/youtube-accelerator.zip",
+    students: 0
   },
   {
     id: "psychology-selling",
@@ -186,7 +188,8 @@ export const PRODUCTS: Product[] = [
       "/api/placeholder/400/300",
       "/api/placeholder/400/300"
     ],
-    downloadUrl: "/downloads/psychology-selling.pdf"
+    downloadUrl: "/downloads/psychology-selling.pdf",
+    students: 0
   },
   {
     id: "audio-motivation",
@@ -255,7 +258,8 @@ export const PRODUCTS: Product[] = [
       "/api/placeholder/800/450",
       "/api/placeholder/400/300"
     ],
-    downloadUrl: "/downloads/audio-motivation.mp3"
+    downloadUrl: "/downloads/audio-motivation.mp3",
+    students: 0
   },
   {
     id: "email-marketing-mastery",
@@ -329,7 +333,8 @@ export const PRODUCTS: Product[] = [
       "/api/placeholder/400/300",
       "/api/placeholder/400/300"
     ],
-    downloadUrl: "/downloads/email-marketing-mastery.zip"
+    downloadUrl: "/downloads/email-marketing-mastery.zip",
+    students: 0
   },
   {
     id: "notion-productivity-template",
@@ -404,7 +409,8 @@ export const PRODUCTS: Product[] = [
       "/api/placeholder/400/300",
       "/api/placeholder/400/300"
     ],
-    downloadUrl: "/downloads/notion-productivity-template.zip"
+    downloadUrl: "/downloads/notion-productivity-template.zip",
+    students: 0
   },
   {
     id: "chatgpt-prompts-pack",
@@ -479,7 +485,8 @@ export const PRODUCTS: Product[] = [
       "/api/placeholder/400/300",
       "/api/placeholder/400/300"
     ],
-    downloadUrl: "/downloads/chatgpt-prompts-pack.zip"
+    downloadUrl: "/downloads/chatgpt-prompts-pack.zip",
+    students: 0
   },
   {
     id: "social-media-workbook",
@@ -553,7 +560,8 @@ export const PRODUCTS: Product[] = [
       "/api/placeholder/400/300",
       "/api/placeholder/400/300"
     ],
-    downloadUrl: "/downloads/social-media-workbook.pdf"
+    downloadUrl: "/downloads/social-media-workbook.pdf",
+    students: 0
   },
   {
     id: "startup-checklist",
@@ -627,7 +635,8 @@ export const PRODUCTS: Product[] = [
       "/api/placeholder/400/300",
       "/api/placeholder/400/300"
     ],
-    downloadUrl: "/downloads/startup-checklist.pdf"
+    downloadUrl: "/downloads/startup-checklist.pdf",
+    students: 0
   },
   {
     id: "copywriting-gpt",
@@ -701,7 +710,8 @@ export const PRODUCTS: Product[] = [
       "/api/placeholder/400/300",
       "/api/placeholder/400/300"
     ],
-    downloadUrl: "/downloads/copywriting-gpt.zip"
+    downloadUrl: "/downloads/copywriting-gpt.zip",
+    students: 0
   },
   {
     id: "business-plan-template",
@@ -775,7 +785,8 @@ export const PRODUCTS: Product[] = [
       "/api/placeholder/400/300",
       "/api/placeholder/400/300"
     ],
-    downloadUrl: "/downloads/business-plan-template.zip"
+    downloadUrl: "/downloads/business-plan-template.zip",
+    students: 0
   },
   {
     id: "productivity-masterclass",
@@ -849,7 +860,8 @@ export const PRODUCTS: Product[] = [
       "/api/placeholder/400/300",
       "/api/placeholder/400/300"
     ],
-    downloadUrl: "/downloads/productivity-masterclass.zip"
+    downloadUrl: "/downloads/productivity-masterclass.zip",
+    students: 0
   },
   // --- NOUVELLES FORMATIONS 2025 ---
   {
@@ -872,7 +884,8 @@ export const PRODUCTS: Product[] = [
     features: [
       { icon: "TrendingUp", title: "Nouvelle commission", description: "Système 2025" },
       { icon: "Users", title: "Communauté", description: "Accès privé" }
-    ]
+    ],
+    students: 0
   },
   {
     id: "dropshipping-2025",
@@ -894,7 +907,8 @@ export const PRODUCTS: Product[] = [
     features: [
       { icon: "Box", title: "Stock minimal", description: "Démarrage avec 100€" },
       { icon: "Zap", title: "Automatisation", description: "Outils 2025 inclus" }
-    ]
+    ],
+    students: 0
   },
   {
     id: "closing-mastery",
@@ -916,7 +930,8 @@ export const PRODUCTS: Product[] = [
     features: [
       { icon: "Phone", title: "Scripts de closing", description: "Scripts prêts à l'emploi" },
       { icon: "UserCheck", title: "Coaching", description: "Accompagnement inclus" }
-    ]
+    ],
+    students: 0
   },
   {
     id: "shopify-2025",
@@ -938,7 +953,8 @@ export const PRODUCTS: Product[] = [
     features: [
       { icon: "ShoppingCart", title: "Optimisation", description: "Boutique qui convertit" },
       { icon: "Zap", title: "Automatisation", description: "Apps recommandées" }
-    ]
+    ],
+    students: 0
   },
   {
     id: "personal-branding-2025",
@@ -960,7 +976,8 @@ export const PRODUCTS: Product[] = [
     features: [
       { icon: "User", title: "Image de marque", description: "Développez votre présence" },
       { icon: "Camera", title: "Contenu", description: "Stratégie réseaux sociaux" }
-    ]
+    ],
+    students: 0
   },
   {
     id: "tunnels-vente-2025",
@@ -982,7 +999,8 @@ export const PRODUCTS: Product[] = [
     features: [
       { icon: "Layers", title: "Tunnel complet", description: "Étapes détaillées" },
       { icon: "Zap", title: "Automatisation", description: "Outils inclus" }
-    ]
+    ],
+    students: 0
   },
   {
     id: "google-ads-2025",
@@ -1004,7 +1022,8 @@ export const PRODUCTS: Product[] = [
     features: [
       { icon: "Search", title: "SEA", description: "Campagnes Search & Shopping" },
       { icon: "TrendingUp", title: "Optimisation", description: "Stratégies avancées" }
-    ]
+    ],
+    students: 0
   },
   {
     id: "coaching-high-ticket-2025",
@@ -1026,7 +1045,8 @@ export const PRODUCTS: Product[] = [
     features: [
       { icon: "UserCheck", title: "Coaching", description: "Accompagnement inclus" },
       { icon: "TrendingUp", title: "Ventes", description: "Techniques de closing" }
-    ]
+    ],
+    students: 0
   },
   {
     id: "growth-hacking-2025",
@@ -1048,7 +1068,8 @@ export const PRODUCTS: Product[] = [
     features: [
       { icon: "Zap", title: "Automatisation", description: "Outils inclus" },
       { icon: "Users", title: "Leads", description: "Génération sur TikTok, Insta, etc." }
-    ]
+    ],
+    students: 0
   },
   {
     id: "canva-2025",
@@ -1070,7 +1091,8 @@ export const PRODUCTS: Product[] = [
     features: [
       { icon: "Image", title: "Visuels pros", description: "Templates inclus" },
       { icon: "Sparkles", title: "Astuces", description: "Trucs & hacks Canva" }
-    ]
+    ],
+    students: 0
   },
   {
     id: "capcut-2025",
@@ -1092,7 +1114,8 @@ export const PRODUCTS: Product[] = [
     features: [
       { icon: "Film", title: "Montage vidéo", description: "Techniques pros" },
       { icon: "Zap", title: "Effets", description: "Transitions & effets" }
-    ]
+    ],
+    students: 0
   },
   {
     id: "chatgpt-2025",
@@ -1114,7 +1137,8 @@ export const PRODUCTS: Product[] = [
     features: [
       { icon: "Bot", title: "Prompts avancés", description: "200+ prompts inclus" },
       { icon: "Zap", title: "Automatisation", description: "Workflows IA" }
-    ]
+    ],
+    students: 0
   },
   {
     id: "meta-ads-2025",
@@ -1136,6 +1160,7 @@ export const PRODUCTS: Product[] = [
     features: [
       { icon: "Facebook", title: "Facebook Ads", description: "Stratégies avancées" },
       { icon: "Instagram", title: "Instagram Ads", description: "Optimisation 2025" }
-    ]
+    ],
+    students: 0
   }
 ]; 
