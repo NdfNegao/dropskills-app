@@ -6,6 +6,8 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Package, Users, TrendingUp, Star, Zap, Target, Mail, BarChart3 } from 'lucide-react';
+import PageBentoLayout from '@/components/PageBentoLayout';
+import { LayoutDashboard } from 'lucide-react';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -35,145 +37,129 @@ export default function DashboardPage() {
 
   return (
     <LayoutWithSidebar>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Bienvenue, {user?.firstName || (user?.name?.split(' ')[0]) || 'Utilisateur'} !
-          </h1>
-          <p className="text-gray-400 mb-2">
-            Prêt à passer à la vitesse supérieure aujourd'hui ? Utilise la puissance de l'IA pour gagner du temps et booster tes résultats.
-          </p>
-          <a
-            href="/outils"
-            className="inline-block mt-2 bg-[#ff0033] hover:bg-[#cc0029] text-white px-5 py-2 rounded-lg font-semibold transition-colors shadow"
-          >
-            🚀 Découvrir les Outils IA
-          </a>
-          {(user?.role === 'PREMIUM' || user?.role === 'SUPER_ADMIN') && (
-            <div className="mt-4 inline-flex items-center gap-2 bg-[#ff0033]/10 text-[#ff0033] px-3 py-1 rounded-full text-sm">
-              <span className="w-2 h-2 bg-[#ff0033] rounded-full"></span>
-              Statut: {user?.role === 'PREMIUM' ? 'Premium' : 'Admin'}
-            </div>
-          )}
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatsCard
-            icon={<Zap className="w-8 h-8 text-blue-400" />}
-            title="Outils IA"
-            value="12"
-            description="Outils disponibles"
-            color="blue"
-          />
-          
-          <StatsCard
-            icon={<Target className="w-8 h-8 text-green-400" />}
-            title="Générations"
-            value="47"
-            description="Ce mois-ci"
-            color="green"
-          />
-          
-          <StatsCard
-            icon={<BarChart3 className="w-8 h-8 text-purple-400" />}
-            title="Productivité"
-            value="+127%"
-            description="Amélioration"
-            color="purple"
-          />
-          
-          <StatsCard
-            icon={<Star className="w-8 h-8 text-yellow-400" />}
-            title="Favoris"
-            value="8"
-            description="Outils sauvegardés"
-            color="yellow"
-          />
-        </div>
-        {/* Micro-feedback personnalisé */}
-        <div className="text-center text-sm text-gray-400 mb-2">
-          🎉 Tu as déjà généré 47 contenus ce mois-ci. Continue comme ça !
-        </div>
-
-        {/* Outils Récents */}
-        <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-          <h2 className="text-xl font-semibold text-white mb-4">
-            Outils Récemment Utilisés
-          </h2>
-          <div className="space-y-3">
-            <ActivityItem
-              action="ICP Maker"
-              item="Analyse de persona client"
-              time="Il y a 2 heures"
-              icon={<Target className="w-4 h-4 text-blue-400" />}
-            />
-            <ActivityItem
-              action="Générateur d'Offre"
-              item="Offre formation marketing"
-              time="Il y a 1 jour"
-              icon={<Zap className="w-4 h-4 text-green-400" />}
-            />
-            <ActivityItem
-              action="CopyMoneyMail"
-              item="Séquence email 5 jours"
-              time="Il y a 3 jours"
-              icon={<Mail className="w-4 h-4 text-purple-400" />}
-            />
-          </div>
-        </div>
-
-        {/* Actions Rapides */}
-        <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-          <h2 className="text-xl font-semibold text-white mb-4">
-            Actions Rapides
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <QuickActionCard
-              title="Créer un ICP"
-              description="Analyser votre client idéal"
-              href="/outils#icp-maker"
+      <PageBentoLayout
+        icon={<LayoutDashboard className="w-6 h-6 text-white" />} 
+        title="Dashboard"
+        subtitle="Vue d'ensemble de votre activité"
+      >
+        <div className="space-y-6">
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <StatsCard
+              icon={<Zap className="w-8 h-8 text-blue-400" />}
+              title="Outils IA"
+              value="12"
+              description="Outils disponibles"
               color="blue"
-              icon={<Target className="w-5 h-5" />}
             />
-            <QuickActionCard
-              title="Générer une Offre"
-              description="Créer une offre irrésistible"
-              href="/outils#generateur-offre"
+            
+            <StatsCard
+              icon={<Target className="w-8 h-8 text-green-400" />}
+              title="Générations"
+              value="47"
+              description="Ce mois-ci"
               color="green"
-              icon={<Zap className="w-5 h-5" />}
             />
-            <QuickActionCard
-              title="Tous les Outils"
-              description="Explorer tous les outils IA"
-              href="/outils"
+            
+            <StatsCard
+              icon={<BarChart3 className="w-8 h-8 text-purple-400" />}
+              title="Productivité"
+              value="+127%"
+              description="Amélioration"
               color="purple"
-              icon={<BarChart3 className="w-5 h-5" />}
+            />
+            
+            <StatsCard
+              icon={<Star className="w-8 h-8 text-yellow-400" />}
+              title="Favoris"
+              value="8"
+              description="Outils sauvegardés"
+              color="yellow"
             />
           </div>
-        </div>
+          {/* Micro-feedback personnalisé */}
+          <div className="text-center text-sm text-gray-400 mb-2">
+            🎉 Tu as déjà généré 47 contenus ce mois-ci. Continue comme ça !
+          </div>
 
-        {/* Conseils du jour */}
-        <div className="bg-gradient-to-r from-[#ff0033]/10 to-[#cc0029]/10 rounded-xl p-6 border border-[#ff0033]/20 flex items-start gap-4">
-          <div className="text-3xl">💡</div>
-          <div>
-            <h2 className="text-xl font-semibold text-white mb-2">
-              Astuce du jour
+          {/* Outils Récents */}
+          <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
+            <h2 className="text-xl font-semibold text-white mb-4">
+              Outils Récemment Utilisés
             </h2>
-            <p className="text-gray-300 mb-4">
-              Commence toujours par définir ton ICP (Ideal Customer Persona) avant de créer une offre.<br />
-              C'est la clé pour des messages percutants et des conversions qui explosent !
-            </p>
-            <a 
-              href="/outils#icp-maker"
-              className="inline-block bg-[#ff0033] hover:bg-[#cc0029] text-white px-4 py-2 rounded-lg font-medium transition-colors"
-            >
-              Créer mon ICP
-            </a>
+            <div className="space-y-3">
+              <ActivityItem
+                action="ICP Maker"
+                item="Analyse de persona client"
+                time="Il y a 2 heures"
+                icon={<Target className="w-4 h-4 text-blue-400" />}
+              />
+              <ActivityItem
+                action="Générateur d'Offre"
+                item="Offre formation marketing"
+                time="Il y a 1 jour"
+                icon={<Zap className="w-4 h-4 text-green-400" />}
+              />
+              <ActivityItem
+                action="CopyMoneyMail"
+                item="Séquence email 5 jours"
+                time="Il y a 3 jours"
+                icon={<Mail className="w-4 h-4 text-purple-400" />}
+              />
+            </div>
+          </div>
+
+          {/* Actions Rapides */}
+          <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
+            <h2 className="text-xl font-semibold text-white mb-4">
+              Actions Rapides
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <QuickActionCard
+                title="Créer un ICP"
+                description="Analyser votre client idéal"
+                href="/outils#icp-maker"
+                color="blue"
+                icon={<Target className="w-5 h-5" />}
+              />
+              <QuickActionCard
+                title="Générer une Offre"
+                description="Créer une offre irrésistible"
+                href="/outils#generateur-offre"
+                color="green"
+                icon={<Zap className="w-5 h-5" />}
+              />
+              <QuickActionCard
+                title="Tous les Outils"
+                description="Explorer tous les outils IA"
+                href="/outils"
+                color="purple"
+                icon={<BarChart3 className="w-5 h-5" />}
+              />
+            </div>
+          </div>
+
+          {/* Conseils du jour */}
+          <div className="bg-gradient-to-r from-[#ff0033]/10 to-[#cc0029]/10 rounded-xl p-6 border border-[#ff0033]/20 flex items-start gap-4">
+            <div className="text-3xl">💡</div>
+            <div>
+              <h2 className="text-xl font-semibold text-white mb-2">
+                Astuce du jour
+              </h2>
+              <p className="text-gray-300 mb-4">
+                Commence toujours par définir ton ICP (Ideal Customer Persona) avant de créer une offre.<br />
+                C'est la clé pour des messages percutants et des conversions qui explosent !
+              </p>
+              <a 
+                href="/outils#icp-maker"
+                className="inline-block bg-[#ff0033] hover:bg-[#cc0029] text-white px-4 py-2 rounded-lg font-medium transition-colors"
+              >
+                Créer mon ICP
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      </PageBentoLayout>
     </LayoutWithSidebar>
   );
 }

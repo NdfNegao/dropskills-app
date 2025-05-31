@@ -3,6 +3,7 @@
 import { useState } from "react";
 import LayoutWithSidebar from '@/components/LayoutWithSidebar';
 import { Users, TrendingUp, DollarSign, Gift, Rocket, Check, ArrowRight, Star, Zap, Calculator, Euro } from "lucide-react";
+import PageBentoLayout from '@/components/PageBentoLayout';
 
 export default function AffiliatePage() {
   const [formData, setFormData] = useState({
@@ -130,24 +131,12 @@ export default function AffiliatePage() {
 
   return (
     <LayoutWithSidebar>
+      <PageBentoLayout
+        icon={<Users className="w-6 h-6 text-white" />} 
+        title="Affiliation"
+        subtitle="Gagnez de l'argent en recommandant Dropskills"
+      >
       <div className="space-y-8">
-        {/* Header */}
-        <div className="bg-[#111111] rounded-xl p-8 border border-[#232323]">
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 bg-[#ff0033]/10 text-[#ff0033] px-4 py-2 rounded-full mb-4">
-              <Users className="w-4 h-4" />
-              <span className="text-sm font-medium">Programme d'affiliation</span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Gagnez de l'argent en recommandant
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff0033] to-[#cc0029]"> DropSkills</span>
-            </h1>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Rejoignez notre programme d'affiliation et touchez 40% de commission récurrente sur chaque vente.
-            </p>
-          </div>
-        </div>
-
         {/* Benefits */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {benefits.map((benefit, index) => (
@@ -402,6 +391,7 @@ export default function AffiliatePage() {
           </div>
         </div>
       </div>
+      </PageBentoLayout>
     </LayoutWithSidebar>
   );
 } 

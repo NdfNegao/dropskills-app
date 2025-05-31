@@ -83,13 +83,6 @@ export default function LayoutWithSidebar({
           <MobileNavLink icon={<Home />} label="Accueil" href="/" onClick={() => setMobileMenuOpen(false)} />
           <MobileNavLink 
             icon={<Lock />} 
-            label="Mon Coffre" 
-            href="/coffre" 
-            badge={0}
-            onClick={() => setMobileMenuOpen(false)} 
-          />
-          <MobileNavLink 
-            icon={<Lock />} 
             label="Catalogue" 
             href="/catalogue" 
             isPremium={!canAccessPremium}

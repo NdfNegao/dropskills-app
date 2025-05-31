@@ -43,6 +43,8 @@
 </div>
 ```
 - Grille responsive : 2 colonnes sur mobile, 4 sur desktop
+- **IMPORTANT : Toujours 4 blocs de stats maximum pour garantir l'alignement parfait.**
+- Si tu ajoutes un 5e bloc, la grille se décale et casse le design !
 - Espacement : `gap-4` entre les boîtes, `mb-8` sous la grille
 - Chaque boîte :
   ```jsx

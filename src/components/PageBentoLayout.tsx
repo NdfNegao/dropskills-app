@@ -16,6 +16,8 @@ interface PageBentoLayoutProps {
   children: React.ReactNode;
 }
 
+// ATTENTION : La section stats doit contenir exactement 4 blocs pour garantir l'alignement parfait du gabarit Bento. Ne jamais dépasser 4.
+
 const PageBentoLayout: React.FC<PageBentoLayoutProps> = ({ icon, title, subtitle, stats, children }) => {
   return (
     <div className="max-w-7xl mx-auto">

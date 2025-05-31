@@ -6,6 +6,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { User, Mail, Lock, Shield, Bell, CreditCard, Download, Trash2, Save, Eye, EyeOff, AlertTriangle, ExternalLink } from 'lucide-react';
+import PageBentoLayout from '@/components/PageBentoLayout';
 
 export default function ComptePage() {
   const { data: session, status, update } = useSession();
@@ -53,24 +54,11 @@ export default function ComptePage() {
 
   return (
     <LayoutWithSidebar>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-[#111111] to-[#1a1a1a] rounded-xl p-6 border border-[#232323]">
-          <div className="flex items-center gap-4">
-            <div className="p-2 bg-[#ff0033]/10 rounded-lg">
-              <User className="w-6 h-6 text-[#ff0033]" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-white">
-                Compte
-              </h1>
-              <p className="text-gray-400">
-                Gérez vos informations personnelles et préférences
-              </p>
-            </div>
-          </div>
-        </div>
-
+      <PageBentoLayout
+        icon={<User className="w-6 h-6 text-white" />} 
+        title="Compte"
+        subtitle="Gérez vos informations personnelles et préférences"
+      >
         {/* Message de feedback */}
         {message && (
           <div className={`border rounded-lg p-4 ${
@@ -83,7 +71,6 @@ export default function ComptePage() {
             }`}>{message}</p>
           </div>
         )}
-
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Navigation des onglets */}
           <div className="lg:col-span-1">
@@ -106,7 +93,6 @@ export default function ComptePage() {
               </nav>
             </div>
           </div>
-
           {/* Contenu des onglets */}
           <div className="lg:col-span-3">
             <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
@@ -118,7 +104,7 @@ export default function ComptePage() {
             </div>
           </div>
         </div>
-      </div>
+      </PageBentoLayout>
     </LayoutWithSidebar>
   );
 }

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { signOut } from 'next-auth/react';
 import { useAuth } from "@/hooks/useAuth";
 import {
-  Home, Lock, GraduationCap, FolderOpen, Settings, LogOut, ChevronLeft, ChevronRight, Users, HelpCircle, User, MessageSquarePlus
+  Home, Lock, GraduationCap, FolderOpen, Settings, LogOut, ChevronLeft, ChevronRight, Users, HelpCircle, User, MessageSquarePlus, Heart
 } from "lucide-react";
 
 interface DropskillsSidebarProps {
@@ -34,7 +34,7 @@ export default function DropskillsSidebar({
   const mainNavigation = [
     { icon: <Home />, label: "Accueil", href: "/dashboard", tooltip: "Accueil" },
     { icon: <GraduationCap />, label: "Centre de Formation", href: "/universite", tooltip: "Centre de formation" },
-    { icon: <FolderOpen />, label: "Mon Coffre", href: "/coffre", tooltip: "Mes ressources IA" },
+    { icon: <Heart />, label: "Favoris", href: "/favoris", tooltip: "Formations likées" },
     { icon: <FolderOpen />, label: "Outils IA", href: "/outils", tooltip: "Tous les outils IA" }
   ];
 
