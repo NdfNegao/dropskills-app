@@ -18,6 +18,7 @@ import {
   Crown,
   Sparkles
 } from 'lucide-react';
+import ProductFilters from '@/components/ProductFilters';
 
 const FORMATS = [
   'Tous',
@@ -157,105 +158,28 @@ export default function CataloguePage() {
           </div>
 
           {/* Filtres et contrôles */}
-          <div className="bg-[#111111] border border-[#232323] rounded-xl p-6 mb-8">
-            <div className="flex items-center gap-2 mb-4">
-              <Filter className="w-5 h-5 text-[#ff0033]" />
-              <h2 className="text-lg font-semibold text-white">Filtres et Recherche</h2>
-            </div>
-            
-            {/* Première ligne : Recherche et tri */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <div className="md:col-span-2 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="Rechercher un produit..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#ff0033] transition-colors"
-                />
-              </div>
-              
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-white focus:outline-none focus:border-[#ff0033] transition-colors"
-              >
-                {SORT_OPTIONS.map(option => (
-                  <option key={option.value} value={option.value}>{option.label}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Deuxième ligne : Filtres */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-white focus:outline-none focus:border-[#ff0033] transition-colors"
-              >
-                {CATEGORIES.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-              
-              <select
-                value={format}
-                onChange={(e) => setFormat(e.target.value)}
-                className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-white focus:outline-none focus:border-[#ff0033] transition-colors"
-              >
-                {FORMATS.map(fmt => (
-                  <option key={fmt} value={fmt}>{fmt}</option>
-                ))}
-              </select>
-
-              <div className="flex items-center gap-4">
-                <label className="flex items-center gap-2 text-white cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={showPremiumOnly}
-                    onChange={(e) => setShowPremiumOnly(e.target.checked)}
-                    className="w-4 h-4 text-[#ff0033] bg-[#1a1a1a] border-[#333] rounded focus:ring-[#ff0033] focus:ring-2"
-                  />
-                  <Crown className="w-4 h-4 text-yellow-400" />
-                  <span className="text-sm">Premium uniquement</span>
-                </label>
-              </div>
-            </div>
-
-            {/* Troisième ligne : Mode d'affichage */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-400">
-                  {stats.filtered} produit{stats.filtered > 1 ? 's' : ''} trouvé{stats.filtered > 1 ? 's' : ''}
-                </span>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-400 mr-2">Affichage :</span>
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-lg transition-colors ${
-                    viewMode === 'grid' 
-                      ? 'bg-[#ff0033] text-white' 
-                      : 'bg-[#1a1a1a] text-gray-400 hover:text-white'
-                  }`}
-                >
-                  <Grid3X3 className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-lg transition-colors ${
-                    viewMode === 'list' 
-                      ? 'bg-[#ff0033] text-white' 
-                      : 'bg-[#1a1a1a] text-gray-400 hover:text-white'
-                  }`}
-                >
-                  <List className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
+          <ProductFilters
+            search={search}
+            setSearch={setSearch}
+            format={format}
+            setFormat={setFormat}
+            category={category}
+            setCategory={setCategory}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            showPremiumOnly={showPremiumOnly}
+            setShowPremiumOnly={setShowPremiumOnly}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            formats={FORMATS}
+            categories={CATEGORIES}
+            sortOptions={SORT_OPTIONS}
+            placeholder="Rechercher un produit..."
+            labels={{
+              filtersTitle: "Filtres et Recherche",
+              premiumOnly: "Premium uniquement"
+            }}
+          />
 
           {/* Produits populaires */}
           {search === '' && category === 'Tous' && format === 'Tous' && !showPremiumOnly && (
@@ -315,6 +239,7 @@ export default function CataloguePage() {
                   <ProductCard 
                     key={product.id} 
                     product={product}
+                    variant={viewMode}
                   />
                 ))}
               </div>

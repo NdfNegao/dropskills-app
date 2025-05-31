@@ -147,11 +147,12 @@ function getDefaultImage(format: string) {
   }
 }
 
-export default function ProductCard({ product, onOpen, onDownload, bookmarkDisabled }: {
+export default function ProductCard({ product, onOpen, onDownload, bookmarkDisabled, variant = 'grid' }: {
   product: Product;
   onOpen?: () => void;
   onDownload?: () => void;
   bookmarkDisabled?: boolean;
+  variant?: 'grid' | 'list';
 }) {
   const router = useRouter();
   const { savedProducts, toggleBookmark } = useSavedProducts();
@@ -174,45 +175,84 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
   };
 
   return (
-    <div className="bg-card border border-border rounded-xl overflow-hidden hover:border-[#ff0033] transition-colors">
-      <div className="relative">
-        <Image
-          src={product.image}
-          alt={product.title}
-          width={400}
-          height={225}
-          className="w-full h-48 object-cover"
-        />
-        {product.isPremium && (
-          <div className="absolute top-2 right-2 bg-[#ff0033] text-white px-2 py-1 rounded text-xs font-medium">
-            Premium
-          </div>
-        )}
-      </div>
-      
-      <div className="p-4">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
-            <Package className="w-4 h-4 text-white" />
-          </div>
-          <h3 className="text-lg font-semibold text-foreground">{product.title}</h3>
+    variant === 'grid' ? (
+      <div className="bg-card border border-border rounded-xl overflow-hidden hover:border-[#ff0033] transition-colors">
+        <div className="relative">
+          <Image
+            src={product.image}
+            alt={product.title}
+            width={400}
+            height={225}
+            className="w-full h-48 object-cover"
+          />
+          {product.isPremium && (
+            <div className="absolute top-2 right-2 bg-[#ff0033] text-white px-2 py-1 rounded text-xs font-medium">
+              Premium
+            </div>
+          )}
         </div>
-        
-        <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-          {product.description}
-        </p>
-        
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Clock className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">{product.duration}</span>
+        <div className="p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
+              <Package className="w-4 h-4 text-white" />
+            </div>
+            <h3 className="text-lg font-semibold text-foreground">{product.title}</h3>
           </div>
-          <div className="flex items-center gap-2">
-            <Users className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">{product.students} étudiants</span>
+          <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+            {product.description}
+          </p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">{product.duration}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">{product.students} étudiants</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    ) : (
+      <div className="bg-card border border-border rounded-xl flex overflow-hidden hover:border-[#ff0033] transition-colors">
+        <div className="relative w-48 min-w-[12rem] h-32 flex-shrink-0">
+          <Image
+            src={product.image}
+            alt={product.title}
+            width={192}
+            height={128}
+            className="w-full h-full object-cover"
+          />
+          {product.isPremium && (
+            <div className="absolute top-2 right-2 bg-[#ff0033] text-white px-2 py-1 rounded text-xs font-medium">
+              Premium
+            </div>
+          )}
+        </div>
+        <div className="flex-1 p-4 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-8 h-8 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
+                <Package className="w-4 h-4 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground line-clamp-1">{product.title}</h3>
+            </div>
+            <p className="text-muted-foreground text-sm mb-2 line-clamp-1">
+              {product.description}
+            </p>
+          </div>
+          <div className="flex items-center gap-6 text-xs">
+            <div className="flex items-center gap-1">
+              <Clock className="w-4 h-4 text-muted-foreground" />
+              <span className="text-muted-foreground">{product.duration}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Users className="w-4 h-4 text-muted-foreground" />
+              <span className="text-muted-foreground">{product.students} étudiants</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   );
 }
