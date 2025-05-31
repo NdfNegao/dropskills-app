@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import { useLikedProducts, LikedProductsProvider } from '@/context/LikedProductsContext';
 import { PRODUCTS } from '@/data/products';
