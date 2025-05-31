@@ -215,7 +215,7 @@ export default function CoffrePage() {
             </div>
 
             {/* Statistiques */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
                 <div className="flex items-center gap-2 text-blue-400 mb-1">
                   <FolderOpen className="w-4 h-4" />
@@ -247,14 +247,6 @@ export default function CoffrePage() {
                 </div>
                 <div className="text-2xl font-bold text-white">{stats.aiOutputs}</div>
                 <div className="text-xs text-gray-400">générés</div>
-              </div>
-              <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
-                <div className="flex items-center gap-2 text-green-400 mb-1">
-                  <Download className="w-4 h-4" />
-                  <span className="text-sm font-medium">Téléchargements</span>
-                </div>
-                <div className="text-2xl font-bold text-white">{stats.downloads}</div>
-                <div className="text-xs text-gray-400">fichiers</div>
               </div>
             </div>
 
