@@ -850,5 +850,292 @@ export const PRODUCTS: Product[] = [
       "/api/placeholder/400/300"
     ],
     downloadUrl: "/downloads/productivity-masterclass.zip"
+  },
+  // --- NOUVELLES FORMATIONS 2025 ---
+  {
+    id: "affiliation-2025",
+    title: "Affiliation 2025",
+    subtitle: "Lancez-vous dans l'affiliation et trouvez un programme rentable.",
+    format: "Formation",
+    image: "/formations/affiliation-2025.jpg",
+    description: "Découvrez les stratégies d'affiliation les plus rentables pour 2025 et comment générer des revenus passifs.",
+    shortDescription: "10 modules pour tout comprendre de l'affiliation.",
+    likes: 0,
+    fileUrl: "",
+    tags: ["Affiliation", "Business", "2025"],
+    isPremium: true,
+    downloads: 0,
+    rating: 4.8,
+    category: "Business",
+    instructor: "Equipe Dropskills",
+    duration: "10 modules",
+    features: [
+      { icon: "TrendingUp", title: "Nouvelle commission", description: "Système 2025" },
+      { icon: "Users", title: "Communauté", description: "Accès privé" }
+    ]
+  },
+  {
+    id: "dropshipping-2025",
+    title: "Dropshipping 2025",
+    subtitle: "10 modules pour vous lancer avec un capital de 100€.",
+    format: "Formation",
+    image: "/formations/dropshipping-2025.jpg",
+    description: "Maîtrisez le dropshipping nouvelle génération, sans stock et avec un minimum d'investissement.",
+    shortDescription: "Stratégies dropshipping à jour pour 2025.",
+    likes: 0,
+    fileUrl: "",
+    tags: ["E-commerce", "Dropshipping", "2025"],
+    isPremium: true,
+    downloads: 0,
+    rating: 4.7,
+    category: "E-commerce",
+    instructor: "Equipe Dropskills",
+    duration: "10 modules",
+    features: [
+      { icon: "Box", title: "Stock minimal", description: "Démarrage avec 100€" },
+      { icon: "Zap", title: "Automatisation", description: "Outils 2025 inclus" }
+    ]
+  },
+  {
+    id: "closing-mastery",
+    title: "Closing Mastery",
+    subtitle: "Devenez un closer hors pair grâce à des techniques de vente redoutables.",
+    format: "Formation",
+    image: "/formations/closing-mastery.jpg",
+    description: "Apprenez à closer des ventes à haut ticket avec des scripts et des méthodes éprouvées.",
+    shortDescription: "Techniques de closing professionnel.",
+    likes: 0,
+    fileUrl: "",
+    tags: ["Vente", "Closing", "2025"],
+    isPremium: true,
+    downloads: 0,
+    rating: 4.9,
+    category: "Vente",
+    instructor: "Equipe Dropskills",
+    duration: "7 modules",
+    features: [
+      { icon: "Phone", title: "Scripts de closing", description: "Scripts prêts à l'emploi" },
+      { icon: "UserCheck", title: "Coaching", description: "Accompagnement inclus" }
+    ]
+  },
+  {
+    id: "shopify-2025",
+    title: "Créer un site Shopify qui convertit",
+    subtitle: "Apprenez à créer une boutique optimisée sur Shopify.",
+    format: "Formation",
+    image: "/formations/shopify-2025.jpg",
+    description: "Toutes les étapes pour lancer un site Shopify performant et rentable.",
+    shortDescription: "Formation Shopify complète.",
+    likes: 0,
+    fileUrl: "",
+    tags: ["Shopify", "E-commerce", "2025"],
+    isPremium: true,
+    downloads: 0,
+    rating: 4.8,
+    category: "E-commerce",
+    instructor: "Equipe Dropskills",
+    duration: "8 modules",
+    features: [
+      { icon: "ShoppingCart", title: "Optimisation", description: "Boutique qui convertit" },
+      { icon: "Zap", title: "Automatisation", description: "Apps recommandées" }
+    ]
+  },
+  {
+    id: "personal-branding-2025",
+    title: "Personal Branding",
+    subtitle: "Explosez sur les réseaux sociaux grâce à une stratégie d'image de marque.",
+    format: "Formation",
+    image: "/formations/personal-branding-2025.jpg",
+    description: "Construisez une marque personnelle forte et visible en 2025.",
+    shortDescription: "Stratégies de personal branding.",
+    likes: 0,
+    fileUrl: "",
+    tags: ["Personal Branding", "Réseaux Sociaux", "2025"],
+    isPremium: true,
+    downloads: 0,
+    rating: 4.7,
+    category: "Marketing",
+    instructor: "Equipe Dropskills",
+    duration: "6 modules",
+    features: [
+      { icon: "User", title: "Image de marque", description: "Développez votre présence" },
+      { icon: "Camera", title: "Contenu", description: "Stratégie réseaux sociaux" }
+    ]
+  },
+  {
+    id: "tunnels-vente-2025",
+    title: "Tunnels de Vente 2.0",
+    subtitle: "Apprenez à créer des tunnels de vente performants.",
+    format: "Formation",
+    image: "/formations/tunnels-vente-2025.jpg",
+    description: "Toutes les étapes pour créer un tunnel de vente qui convertit en 2025.",
+    shortDescription: "Tunnel de vente nouvelle génération.",
+    likes: 0,
+    fileUrl: "",
+    tags: ["Tunnel de vente", "Conversion", "2025"],
+    isPremium: true,
+    downloads: 0,
+    rating: 4.8,
+    category: "Vente",
+    instructor: "Equipe Dropskills",
+    duration: "7 modules",
+    features: [
+      { icon: "Layers", title: "Tunnel complet", description: "Étapes détaillées" },
+      { icon: "Zap", title: "Automatisation", description: "Outils inclus" }
+    ]
+  },
+  {
+    id: "google-ads-2025",
+    title: "Google Ads 2025",
+    subtitle: "Créez des campagnes Search & Shopping, ciblez les bons mots-clés.",
+    format: "Formation",
+    image: "/formations/google-ads-2025.jpg",
+    description: "Maîtrisez Google Ads avec les dernières stratégies et optimisations.",
+    shortDescription: "Formation Google Ads à jour.",
+    likes: 0,
+    fileUrl: "",
+    tags: ["Google Ads", "SEA", "2025"],
+    isPremium: true,
+    downloads: 0,
+    rating: 4.7,
+    category: "Marketing",
+    instructor: "Equipe Dropskills",
+    duration: "9 modules",
+    features: [
+      { icon: "Search", title: "SEA", description: "Campagnes Search & Shopping" },
+      { icon: "TrendingUp", title: "Optimisation", description: "Stratégies avancées" }
+    ]
+  },
+  {
+    id: "coaching-high-ticket-2025",
+    title: "Coaching High Ticket",
+    subtitle: "Lancez votre offre coaching High Ticket, scalez jusqu'à +10K/mois.",
+    format: "Formation",
+    image: "/formations/coaching-high-ticket-2025.jpg",
+    description: "Toutes les méthodes pour vendre du coaching haut de gamme.",
+    shortDescription: "Coaching High Ticket, méthodes 2025.",
+    likes: 0,
+    fileUrl: "",
+    tags: ["Coaching", "High Ticket", "2025"],
+    isPremium: true,
+    downloads: 0,
+    rating: 4.8,
+    category: "Coaching",
+    instructor: "Equipe Dropskills",
+    duration: "8 modules",
+    features: [
+      { icon: "UserCheck", title: "Coaching", description: "Accompagnement inclus" },
+      { icon: "TrendingUp", title: "Ventes", description: "Techniques de closing" }
+    ]
+  },
+  {
+    id: "growth-hacking-2025",
+    title: "Growth Hacking 2025",
+    subtitle: "Génération de leads sur les réseaux sociaux.",
+    format: "Formation",
+    image: "/formations/growth-hacking-2025.jpg",
+    description: "Toutes les techniques de growth hacking pour 2025.",
+    shortDescription: "Growth hacking réseaux sociaux.",
+    likes: 0,
+    fileUrl: "",
+    tags: ["Growth Hacking", "Réseaux Sociaux", "2025"],
+    isPremium: true,
+    downloads: 0,
+    rating: 4.7,
+    category: "Marketing",
+    instructor: "Equipe Dropskills",
+    duration: "7 modules",
+    features: [
+      { icon: "Zap", title: "Automatisation", description: "Outils inclus" },
+      { icon: "Users", title: "Leads", description: "Génération sur TikTok, Insta, etc." }
+    ]
+  },
+  {
+    id: "canva-2025",
+    title: "Canva 2025",
+    subtitle: "Découvrez les secrets de Canva.",
+    format: "Formation",
+    image: "/formations/canva-2025.jpg",
+    description: "Maîtrisez Canva et créez des visuels pros en 2025.",
+    shortDescription: "Formation Canva complète.",
+    likes: 0,
+    fileUrl: "",
+    tags: ["Canva", "Design", "2025"],
+    isPremium: true,
+    downloads: 0,
+    rating: 4.8,
+    category: "Design",
+    instructor: "Equipe Dropskills",
+    duration: "6 modules",
+    features: [
+      { icon: "Image", title: "Visuels pros", description: "Templates inclus" },
+      { icon: "Sparkles", title: "Astuces", description: "Trucs & hacks Canva" }
+    ]
+  },
+  {
+    id: "capcut-2025",
+    title: "Capcut 2025",
+    subtitle: "Montez vos vidéos comme un pro.",
+    format: "Formation",
+    image: "/formations/capcut-2025.jpg",
+    description: "Formation complète pour maîtriser Capcut en 2025.",
+    shortDescription: "Capcut, montage vidéo pro.",
+    likes: 0,
+    fileUrl: "",
+    tags: ["Capcut", "Montage", "2025"],
+    isPremium: true,
+    downloads: 0,
+    rating: 4.7,
+    category: "Montage",
+    instructor: "Equipe Dropskills",
+    duration: "7 modules",
+    features: [
+      { icon: "Film", title: "Montage vidéo", description: "Techniques pros" },
+      { icon: "Zap", title: "Effets", description: "Transitions & effets" }
+    ]
+  },
+  {
+    id: "chatgpt-2025",
+    title: "ChatGPT 2025",
+    subtitle: "Prenez en main l'IA générative et boostez votre business.",
+    format: "Formation",
+    image: "/formations/chatgpt-2025.jpg",
+    description: "Formation complète sur ChatGPT et l'IA générative pour entrepreneurs.",
+    shortDescription: "ChatGPT, prompts et automatisations.",
+    likes: 0,
+    fileUrl: "",
+    tags: ["ChatGPT", "IA", "2025"],
+    isPremium: true,
+    downloads: 0,
+    rating: 4.9,
+    category: "IA",
+    instructor: "Equipe Dropskills",
+    duration: "8 modules",
+    features: [
+      { icon: "Bot", title: "Prompts avancés", description: "200+ prompts inclus" },
+      { icon: "Zap", title: "Automatisation", description: "Workflows IA" }
+    ]
+  },
+  {
+    id: "meta-ads-2025",
+    title: "Meta Ads 2025",
+    subtitle: "Maîtrisez la publicité Facebook & Instagram en 2025.",
+    format: "Formation",
+    image: "/formations/meta-ads-2025.jpg",
+    description: "Toutes les stratégies Meta Ads à jour pour 2025.",
+    shortDescription: "Meta Ads, Facebook & Instagram.",
+    likes: 0,
+    fileUrl: "",
+    tags: ["Meta Ads", "Facebook", "Instagram", "2025"],
+    isPremium: true,
+    downloads: 0,
+    rating: 4.8,
+    category: "Publicité",
+    instructor: "Equipe Dropskills",
+    duration: "9 modules",
+    features: [
+      { icon: "Facebook", title: "Facebook Ads", description: "Stratégies avancées" },
+      { icon: "Instagram", title: "Instagram Ads", description: "Optimisation 2025" }
+    ]
   }
 ]; 

@@ -44,7 +44,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={inter.className + " bg-black text-white min-h-screen"}>
+      <body className={inter.className + " min-h-screen"}>
         <PostHogProvider />
         {/* Google Tag Manager (noscript) */}
         <noscript>
