@@ -83,8 +83,8 @@ export default function LayoutWithSidebar({
           <MobileNavLink icon={<Home />} label="Accueil" href="/" onClick={() => setMobileMenuOpen(false)} />
           <MobileNavLink 
             icon={<Lock />} 
-            label="Catalogue" 
-            href="/catalogue" 
+            label="Centre de formation" 
+            href="/universite" 
             isPremium={!canAccessPremium}
             onClick={() => setMobileMenuOpen(false)} 
           />
@@ -128,7 +128,7 @@ export default function LayoutWithSidebar({
             Aide & Support
           </div>
           
-          <MobileNavLink icon={<GraduationCap />} label="Tutoriels" href="/tutoriels" onClick={() => setMobileMenuOpen(false)} />
+          <MobileNavLink icon={<GraduationCap />} label="Centre de formation" href="/universite" onClick={() => setMobileMenuOpen(false)} />
           <MobileNavLink icon={<LineChart />} label="Demandes de Produits" href="/demandes" onClick={() => setMobileMenuOpen(false)} />
           <MobileNavLink icon={<Users />} label="Programme d'affiliation" href="/affiliate" onClick={() => setMobileMenuOpen(false)} />
         </nav>

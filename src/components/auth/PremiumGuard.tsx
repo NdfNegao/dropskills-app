@@ -91,10 +91,10 @@ export default function PremiumGuard({
         
         {user ? (
           <Link
-            href="/catalogue"
+            href="/universite"
             className="flex items-center justify-center gap-2 bg-[#232323] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#333333] transition-colors"
           >
-            Voir le catalogue
+            Voir le centre de formation
           </Link>
         ) : (
           <Link

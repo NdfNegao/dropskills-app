@@ -43,7 +43,7 @@ function CheckoutSuccessContent() {
       title: "Tutoriels de démarrage",
       description: "Apprenez à maximiser votre productivité avec nos guides",
       action: "Apprendre",
-      link: "/tutoriels"
+      link: "/universite"
     }
   ];
 

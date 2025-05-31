@@ -6,6 +6,8 @@ import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { useState, useEffect } from 'react';
 
+const ADMIN_EMAIL = "cyril.iriebi@gmail.com";
+
 export default function AdminLayout({
   children,
 }: {
@@ -16,15 +18,10 @@ export default function AdminLayout({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
-    if (status === 'loading') return; // Encore en cours de chargement
+    if (status === 'loading') return;
 
-    if (!session?.user?.email) {
-      router.push('/admin/login');
-      return;
-    }
-
-    // Vérifier si l'utilisateur a le rôle admin
-    if (session.user.role !== 'ADMIN' && session.user.role !== 'SUPER_ADMIN') {
+    // Vérifie juste l'email
+    if (!session?.user?.email || session.user.email !== ADMIN_EMAIL) {
       router.push('/admin/login?error=unauthorized');
       return;
     }
@@ -41,8 +38,16 @@ export default function AdminLayout({
     );
   }
 
-  if (!session?.user?.email || (session.user.role !== 'ADMIN' && session.user.role !== 'SUPER_ADMIN')) {
-    return null;
+  if (!session?.user?.email || session.user.email !== ADMIN_EMAIL) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-[#ff0033] mb-4">Tu es un petit malin…</h2>
+          <p className="text-white text-lg mb-2">Mais non, tu n'auras pas accès à l'administration 😏</p>
+          <a href="/" className="text-[#ff0033] underline hover:opacity-80">Retour à l'accueil</a>
+        </div>
+      </div>
+    );
   }
 
   // Créer un objet user pour les composants
@@ -53,6 +58,9 @@ export default function AdminLayout({
     lastName: session.user.lastName || null,
     email: session.user.email
   };
+
+  // DEBUG TEMPORAIRE : Affichage de la session
+  console.log('SESSION ADMIN', session);
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex">

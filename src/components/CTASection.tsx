@@ -22,7 +22,7 @@ export default function CTASection() {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
-              href="/catalogue"
+              href="/universite"
               className="bg-gradient-to-r from-[#ff0033] to-red-600 text-white px-8 py-4 rounded-lg font-semibold hover:opacity-90 transition-all duration-200 flex items-center gap-2 shadow-lg"
             >
               <Zap className="w-5 h-5" />

@@ -15,37 +15,19 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
-
-        // Authentification réelle via Supabase Auth
-        const { createClient } = await import('@supabase/supabase-js');
-        const supabase = createClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL!,
-          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-        );
-
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: credentials.email,
-          password: credentials.password,
-        });
-
-        if (error || !data?.user) {
-          return null;
+        // Auth PARETO : email et mot de passe hardcodés
+        if (
+          credentials.email === 'cyril.iriebi@gmail.com' &&
+          credentials.password === 'jjbMMA200587@'
+        ) {
+          return {
+            id: 'admin',
+            email: credentials.email,
+            name: 'Cyril Iriebi',
+            role: 'ADMIN',
+          };
         }
-
-        // Récupérer le profil (optionnel)
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('user_id', data.user.id)
-          .single();
-
-        return {
-          id: data.user.id,
-          email: data.user.email,
-          role: profile?.role || 'USER',
-          firstName: profile?.first_name || '',
-          lastName: profile?.last_name || '',
-        };
+        return null;
       }
     })
   ],
@@ -76,6 +58,8 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user, account }) {
       if (user) {
+        token.email = user.email;
+        token.id = user.id;
         token.role = (user as any).role || 'USER';
         token.firstName = (user as any).firstName || user.name?.split(' ')[0] || '';
         token.lastName = (user as any).lastName || user.name?.split(' ').slice(1).join(' ') || '';
@@ -84,10 +68,11 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session?.user) {
-        (session.user as any).role = token.role;
-        (session.user as any).id = token.sub;
-        (session.user as any).firstName = token.firstName;
-        (session.user as any).lastName = token.lastName;
+        session.user.email = token.email;
+        session.user.id = token.id;
+        session.user.role = token.role;
+        session.user.firstName = token.firstName;
+        session.user.lastName = token.lastName;
       }
       return session;
     },

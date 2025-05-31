@@ -41,7 +41,7 @@ export default function DropskillsSidebar({
 
   // Section Aide & Personnalisation
   const helpNavigation = [
-    { icon: <HelpCircle />, label: "Tutoriels", href: "/tutoriels", tooltip: "Guides et tutoriels" },
+    { icon: <HelpCircle />, label: "Centre de formation", href: "/universite", tooltip: "Formations et tutoriels" },
     { icon: <MessageSquarePlus />, label: "Proposer un outil", href: "/demandes", tooltip: "Proposer un outil ou une amélioration" }
   ];
 

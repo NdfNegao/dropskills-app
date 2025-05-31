@@ -90,7 +90,7 @@ export default function UserMenu({ user }: UserMenuProps) {
     {
       icon: Settings,
       label: "Mon compte",
-      href: "/account",
+      href: "/compte",
       className: "",
     },
   ];
