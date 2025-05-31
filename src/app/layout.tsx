@@ -10,6 +10,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/react';
 import PerformanceTracker from '@/components/PerformanceTracker';
 import { LikedProductsProvider } from '@/context/LikedProductsContext';
+import { ThemeProvider } from "@/context/ThemeContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -54,15 +55,17 @@ export default function RootLayout({
             style={{ display: "none", visibility: "hidden" }}
           ></iframe>
         </noscript>
-        <SessionWrapper>
-          <LikedProductsProvider>
-            <SavedProductsProvider>
-              <PageTransitionClient>
-                {children}
-              </PageTransitionClient>
-            </SavedProductsProvider>
-          </LikedProductsProvider>
-        </SessionWrapper>
+        <ThemeProvider>
+          <SessionWrapper>
+            <LikedProductsProvider>
+              <SavedProductsProvider>
+                <PageTransitionClient>
+                  {children}
+                </PageTransitionClient>
+              </SavedProductsProvider>
+            </LikedProductsProvider>
+          </SessionWrapper>
+        </ThemeProvider>
         
         {/* Analytics Scripts */}
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-7QK9KQKQKQ" strategy="afterInteractive" />

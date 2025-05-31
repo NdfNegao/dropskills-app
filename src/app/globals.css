@@ -146,3 +146,42 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Thème clair très simple */
+.theme-light {
+  --background-dark: #ffffff;
+  --background-card: #f7f7f7;
+  --border-color: #e5e7eb;
+  --text-primary: #111111;
+  --text-secondary: #374151;
+  --primary-red: #ff0033;
+  --primary-red-dark: #cc0029;
+}
+
+.theme-light html,
+.theme-light body {
+  background-color: var(--background-dark) !important;
+  color: var(--text-primary) !important;
+}
+
+.theme-light .btn-primary {
+  background: linear-gradient(135deg, var(--primary-red), var(--primary-red-dark));
+  color: #fff;
+}
+
+.theme-light .card-hover:hover {
+  box-shadow: 0 8px 25px rgba(255, 0, 51, 0.08);
+}
+
+.theme-light ::selection {
+  background: var(--primary-red);
+  color: white;
+}
+
+.theme-light ::-webkit-scrollbar-track {
+  background: var(--background-dark);
+}
+
+.theme-light ::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+}
