@@ -66,9 +66,9 @@ export default function UniversitePage() {
                        product.description?.toLowerCase().includes(search.toLowerCase()) ||
                        product.tags.some(tag => tag.toLowerCase().includes(search.toLowerCase()));
     
-    const matchFormat = format === 'Tous' || product.format === format;
+    const matchFormat = format === 'Tous' || format === 'Tous les formats' || product.format === format;
     
-    const matchCategory = category === 'Tous' || 
+    const matchCategory = category === 'Tous' || category === 'Toutes les catégories' ||
                          product.tags.some(tag => 
                            tag.toLowerCase().includes(category.toLowerCase()) ||
                            category.toLowerCase().includes(tag.toLowerCase())
