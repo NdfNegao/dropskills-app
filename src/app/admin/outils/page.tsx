@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
+import AdminLayout from '../../../components/admin/AdminLayout';
 import { 
   Bot, Plus, Search, Filter, Edit2, Trash2, Copy, 
   X, Check, AlertCircle, Loader2, Crown, Zap
