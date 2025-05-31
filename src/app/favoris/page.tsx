@@ -5,12 +5,15 @@ import { PRODUCTS } from '@/data/products';
 import PageBentoLayout from '@/components/PageBentoLayout';
 import { Heart, Star, BookOpen, Sparkles } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
+import LayoutWithSidebar from '@/components/LayoutWithSidebar';
 
 export default function FavorisPage() {
   return (
-    <LikedProductsProvider>
-      <FavorisContent />
-    </LikedProductsProvider>
+    <LayoutWithSidebar>
+      <LikedProductsProvider>
+        <FavorisContent />
+      </LikedProductsProvider>
+    </LayoutWithSidebar>
   );
 }
 

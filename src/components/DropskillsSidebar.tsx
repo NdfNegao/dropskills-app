@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { signOut } from 'next-auth/react';
 import { useAuth } from "@/hooks/useAuth";
 import {
-  Home, Lock, GraduationCap, FolderOpen, Settings, LogOut, ChevronLeft, ChevronRight, Users, HelpCircle, User, MessageSquarePlus, Heart
+  Home, Lock, GraduationCap, FolderOpen, Settings, LogOut, ChevronLeft, ChevronRight, Users, HelpCircle, User, MessageSquarePlus, Heart, Crown
 } from "lucide-react";
 
 interface DropskillsSidebarProps {
@@ -249,6 +249,15 @@ interface SidebarCTAProps {
 }
 
 function SidebarCTA({ icon, label, cta, collapsed, href }: SidebarCTAProps) {
+  if (collapsed) {
+    // Affichage minimal : couronne blanche sur fond rouge
+    return (
+      <Link href={href} className="flex items-center justify-center w-12 h-12 mx-auto my-2 rounded-full bg-[#ff0033] shadow-lg hover:scale-110 transition-transform">
+        <Crown className="w-7 h-7 text-white" />
+      </Link>
+    );
+  }
+  // Bloc complet en mode étendu
   return (
     <div className={`relative bg-gradient-to-br from-[#18181b] to-[#232323] rounded-xl p-4 shadow-lg border border-[#232323] flex flex-col items-start justify-between w-full mb-2`}> 
       <div className="flex items-center gap-2 mb-2">
