@@ -253,23 +253,28 @@ export default function DemandesPage() {
   return (
     <LayoutWithSidebar>
       <div className="max-w-3xl mx-auto py-8 px-2 md:px-0">
-        {/* Bandeau Statistiques */}
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
+              <Lightbulb className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-white">Demandes</h1>
+              <p className="text-gray-400">Proposez et votez pour les prochaines formations</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Statistiques */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <StatBox icon={<Lightbulb className="w-5 h-5" />} label="Idées" value={stats.pending} color="text-blue-400" />
           <StatBox icon={<Clock className="w-5 h-5" />} label="En cours" value={stats.inProgress} color="text-yellow-400" />
           <StatBox icon={<CheckCircle className="w-5 h-5" />} label="Terminées" value={stats.completed} color="text-green-400" />
           <StatBox icon={<XCircle className="w-5 h-5" />} label="Rejetées" value={stats.rejected} color="text-red-400" />
           <StatBox icon={<TrendingUp className="w-5 h-5" />} label="Votes" value={stats.totalVotes} color="text-pink-400" />
-            </div>
-            
-        {/* Titre et sous-titre */}
-        <div className="mb-6 text-center">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-2 tracking-tight">Product Request Board</h1>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Votez ou proposez de nouvelles idées de formations à ajouter à la Dropskills Library. Les suggestions les plus populaires seront priorisées par notre équipe.
-          </p>
-            </div>
-            
+        </div>
+
         {/* CTA aide */}
         <div className="mb-8 flex flex-col md:flex-row items-center justify-between gap-4 bg-gradient-to-r from-[#ff0033]/10 to-[#232323] border border-[#232323] rounded-xl p-4">
           <div className="text-sm text-gray-300">

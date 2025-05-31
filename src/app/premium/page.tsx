@@ -111,13 +111,11 @@ export default function PremiumPage() {
             </div>
             
             <h1 className="text-5xl font-bold text-white mb-6">
-              Passez au niveau supérieur avec 
-              <span className="text-[#ff0033]"> Premium</span>
+              Premium
             </h1>
             
             <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
-              Débloquez tous les outils IA avancés de Dropskills et transformez votre business 
-              avec des fonctionnalités exclusives conçues pour les entrepreneurs ambitieux.
+              Débloquez tous les outils IA avancés de Dropskills
             </p>
 
             {canAccessPremium && (

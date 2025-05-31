@@ -111,8 +111,8 @@ export default function CataloguePage() {
                 <Package className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white">Catalogue Complet</h1>
-                <p className="text-gray-400">Découvrez tous nos produits digitaux premium</p>
+                <h1 className="text-3xl font-bold text-white">Catalogue</h1>
+                <p className="text-gray-400">Produits digitaux pour votre business</p>
               </div>
             </div>
 

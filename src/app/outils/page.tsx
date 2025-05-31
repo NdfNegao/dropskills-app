@@ -266,11 +266,11 @@ export default function OutilsPage() {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-white" />
+              <Zap className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Outils IA Dropskills</h1>
-              <p className="text-gray-400">12 outils d'intelligence artificielle pour construire votre business étape par étape</p>
+              <h1 className="text-3xl font-bold text-white">Outils IA</h1>
+              <p className="text-gray-400">Automatisez et optimisez votre business</p>
             </div>
           </div>
 

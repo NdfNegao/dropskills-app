@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Mail, ArrowLeft, CheckCircle } from "lucide-react";
+import { Mail, ArrowLeft, CheckCircle, Lock } from "lucide-react";
 import Link from "next/link";
 
 export default function ForgotPasswordPage() {
@@ -69,10 +69,19 @@ export default function ForgotPasswordPage() {
         <div className="bg-[#111111] rounded-xl p-8 border border-[#232323]">
           {/* Logo */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white tracking-tight">
-              DROP<span className="text-[#ff0033]">SKILLS</span>
-            </h1>
-            <p className="text-gray-400 mt-2">Réinitialiser votre mot de passe</p>
+            <div className="inline-flex items-center gap-4 mb-4">
+              <div className="p-2 bg-[#ff0033]/10 rounded-lg">
+                <Lock className="w-6 h-6 text-[#ff0033]" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-white">
+                  Mot de passe oublié
+                </h1>
+                <p className="text-gray-400">
+                  Réinitialisez votre mot de passe
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Formulaire */}

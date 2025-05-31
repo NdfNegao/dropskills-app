@@ -55,13 +55,20 @@ export default function ComptePage() {
     <LayoutWithSidebar>
       <div className="space-y-6">
         {/* Header */}
-        <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Mon Compte
-          </h1>
-          <p className="text-gray-400">
-            Gérez vos informations personnelles et préférences
-          </p>
+        <div className="bg-gradient-to-r from-[#111111] to-[#1a1a1a] rounded-xl p-6 border border-[#232323]">
+          <div className="flex items-center gap-4">
+            <div className="p-2 bg-[#ff0033]/10 rounded-lg">
+              <User className="w-6 h-6 text-[#ff0033]" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-white">
+                Compte
+              </h1>
+              <p className="text-gray-400">
+                Gérez vos informations personnelles et préférences
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Message de feedback */}

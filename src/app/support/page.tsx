@@ -96,11 +96,16 @@ export default function SupportPage() {
       <div className="min-h-screen bg-[#0a0a0a] p-6">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-white mb-4">Centre d'Aide</h1>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Besoin d'aide ? Notre équipe est là pour vous accompagner dans votre parcours DropSkills.
-            </p>
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
+                <MessageCircle className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-white">Support</h1>
+                <p className="text-gray-400">Notre équipe est là pour vous aider</p>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

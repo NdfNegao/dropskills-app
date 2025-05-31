@@ -168,8 +168,8 @@ export default function TutorielsPage() {
               <BookOpen className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Centre de Formation</h1>
-              <p className="text-gray-400">Maîtrisez Dropskills et boostez vos revenus</p>
+              <h1 className="text-3xl font-bold text-white">Tutoriels</h1>
+              <p className="text-gray-400">Apprenez et maîtrisez Dropskills</p>
             </div>
           </div>
 

@@ -70,12 +70,19 @@ export default function SignInPage() {
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-white mb-2">
-            DROP<span className="text-[#ff0033]">SKILLS</span>
-          </h1>
-          <h2 className="text-xl text-gray-300 mb-8">
-            Connexion à votre compte
-          </h2>
+          <div className="inline-flex items-center gap-4 mb-4">
+            <div className="p-2 bg-[#ff0033]/10 rounded-lg">
+              <Lock className="w-6 h-6 text-[#ff0033]" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-white">
+                Connexion
+              </h1>
+              <p className="text-gray-400">
+                Accédez à votre espace personnel
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Formulaire */}

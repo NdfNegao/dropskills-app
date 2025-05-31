@@ -200,124 +200,141 @@ export default function CoffrePage() {
     <LikedProductsProvider>
       <SavedProductsProvider>
         <LayoutWithSidebar>
-          <div className="max-w-7xl mx-auto">
-            {/* Header avec animation */}
-            <div className="mb-8 animate-fade-in">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-xl flex items-center justify-center shadow-lg">
-                  <FolderOpen className="w-8 h-8 text-white" />
+          <div className="max-w-3xl mx-auto py-8 px-2 md:px-0">
+            {/* Header */}
+            <div className="mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
+                  <FolderOpen className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-4xl font-bold text-white mb-2">
-                    Mon Coffre
-                  </h1>
-                  <p className="text-gray-400 text-lg">
-                    Vos ressources personnelles, favoris et outputs IA
-                  </p>
+                  <h1 className="text-3xl font-bold text-white">Coffre</h1>
+                  <p className="text-gray-400">Vos ressources et favoris</p>
                 </div>
               </div>
+            </div>
 
-              {/* Section Favoris (produits bookmarkés) */}
-              {uniqueBookmarked.length > 0 && (
-                <div className="mb-8">
-                  <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                    <Bookmark className="w-6 h-6 text-yellow-400" /> Favoris
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    {uniqueBookmarked.map(product => (
-                      <div key={product.id} className="relative bg-[#111111] border border-[#232323] rounded-xl overflow-hidden group transition-all hover:border-[#333] hover:shadow-lg">
-                        <img
-                          src={(!product.image || product.image.includes('/api/placeholder')) ?
-                            (product.format === 'ebook' || product.format === 'Book' ? 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80'
-                            : product.format === 'audio' || product.format === 'Audio' ? 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80'
-                            : product.format === 'video' || product.format === 'Video' || product.format === 'Formation' || product.format === 'Course' ? 'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80'
-                            : 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80')
-                            : product.image}
-                          alt={product.title}
-                          className="object-cover h-40 w-full"
-                        />
-                        <div className="absolute top-3 left-3 z-10">
-                          <span className="px-3 py-1 rounded-full text-xs font-bold shadow bg-yellow-500/20 text-yellow-400">Favori</span>
-                        </div>
-                        <div className="p-4">
-                          <h3 className="font-bold text-lg text-white mb-1 line-clamp-2 leading-tight">{product.title}</h3>
-                          <p className="text-gray-400 text-sm line-clamp-2 leading-relaxed">{product.subtitle}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+            {/* Statistiques */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+              <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+                <div className="flex items-center gap-2 text-blue-400 mb-1">
+                  <FolderOpen className="w-4 h-4" />
+                  <span className="text-sm font-medium">Total</span>
                 </div>
-              )}
-
-              {/* Section Produits Likés */}
-              {uniqueLiked.length > 0 && (
-                <div className="mb-8">
-                  <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                    <Heart className="w-6 h-6 text-red-400" /> Produits Likés
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    {uniqueLiked.map(product => (
-                      <div key={product.id} className="relative bg-[#111111] border border-[#232323] rounded-xl overflow-hidden group transition-all hover:border-[#333] hover:shadow-lg">
-                        <img
-                          src={(!product.image || product.image.includes('/api/placeholder')) ?
-                            (product.format === 'ebook' || product.format === 'Book' ? 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80'
-                            : product.format === 'audio' || product.format === 'Audio' ? 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80'
-                            : product.format === 'video' || product.format === 'Video' || product.format === 'Formation' || product.format === 'Course' ? 'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80'
-                            : 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80')
-                            : product.image}
-                          alt={product.title}
-                          className="object-cover h-40 w-full"
-                        />
-                        <div className="absolute top-3 left-3 z-10">
-                          <span className="px-3 py-1 rounded-full text-xs font-bold shadow bg-red-500/20 text-red-400">Liké</span>
-                        </div>
-                        <div className="p-4">
-                          <h3 className="font-bold text-lg text-white mb-1 line-clamp-2 leading-tight">{product.title}</h3>
-                          <p className="text-gray-400 text-sm line-clamp-2 leading-relaxed">{product.subtitle}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Badge Premium avec animation */}
-              <div className="flex items-center gap-4 mb-6">
-                <div className="px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-400">
-                  <Crown className="w-4 h-4" />
-                  <span>Espace Personnel Sécurisé</span>
-                </div>
-                
-                <button
-                  onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-                  className="bg-[#111111] border border-[#333] text-white px-4 py-2 rounded-lg hover:border-[#ff0033] transition-all duration-200"
-                >
-                  {viewMode === 'grid' ? 'Vue Liste' : 'Vue Grille'}
-                </button>
+                <div className="text-2xl font-bold text-white">{stats.total}</div>
+                <div className="text-xs text-gray-400">ressources</div>
               </div>
+              <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+                <div className="flex items-center gap-2 text-yellow-400 mb-1">
+                  <Star className="w-4 h-4" />
+                  <span className="text-sm font-medium">Étoilés</span>
+                </div>
+                <div className="text-2xl font-bold text-white">{stats.starred}</div>
+                <div className="text-xs text-gray-400">favoris</div>
+              </div>
+              <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+                <div className="flex items-center gap-2 text-red-400 mb-1">
+                  <Heart className="w-4 h-4" />
+                  <span className="text-sm font-medium">Favoris</span>
+                </div>
+                <div className="text-2xl font-bold text-white">{stats.favorites}</div>
+                <div className="text-xs text-gray-400">produits</div>
+              </div>
+              <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+                <div className="flex items-center gap-2 text-purple-400 mb-1">
+                  <Sparkles className="w-4 h-4" />
+                  <span className="text-sm font-medium">Outputs IA</span>
+                </div>
+                <div className="text-2xl font-bold text-white">{stats.aiOutputs}</div>
+                <div className="text-xs text-gray-400">générés</div>
+              </div>
+              <div className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+                <div className="flex items-center gap-2 text-green-400 mb-1">
+                  <Download className="w-4 h-4" />
+                  <span className="text-sm font-medium">Téléchargements</span>
+                </div>
+                <div className="text-2xl font-bold text-white">{stats.downloads}</div>
+                <div className="text-xs text-gray-400">fichiers</div>
+              </div>
+            </div>
 
-              {/* Statistiques avec animations */}
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
-                {[
-                  { label: "Total", value: stats.total, icon: FolderOpen, color: "text-blue-400" },
-                  { label: "Favoris", value: stats.favorites, icon: Heart, color: "text-red-400" },
-                  { label: "Outputs IA", value: stats.aiOutputs, icon: Sparkles, color: "text-purple-400" },
-                  { label: "Téléchargements", value: stats.downloads, icon: Download, color: "text-green-400" },
-                  { label: "Étoilés", value: stats.starred, icon: Star, color: "text-yellow-400" }
-                ].map((stat, index) => (
-                  <div 
-                    key={stat.label}
-                    className="bg-[#111111] border border-[#232323] rounded-xl p-4 hover:border-[#333] transition-all duration-200"
-                    style={{ animationDelay: `${index * 100}ms` }}
-                  >
-                    <div className={`flex items-center gap-2 ${stat.color} mb-2`}>
-                      <stat.icon className="w-4 h-4" />
-                      <span className="text-sm font-medium">{stat.label}</span>
+            {/* Section Favoris (produits bookmarkés) */}
+            {uniqueBookmarked.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Bookmark className="w-6 h-6 text-yellow-400" /> Favoris
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                  {uniqueBookmarked.map(product => (
+                    <div key={product.id} className="relative bg-[#111111] border border-[#232323] rounded-xl overflow-hidden group transition-all hover:border-[#333] hover:shadow-lg">
+                      <img
+                        src={(!product.image || product.image.includes('/api/placeholder')) ?
+                          (product.format === 'ebook' || product.format === 'Book' ? 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80'
+                          : product.format === 'audio' || product.format === 'Audio' ? 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80'
+                          : product.format === 'video' || product.format === 'Video' || product.format === 'Formation' || product.format === 'Course' ? 'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80'
+                          : 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80')
+                          : product.image}
+                        alt={product.title}
+                        className="object-cover h-40 w-full"
+                      />
+                      <div className="absolute top-3 left-3 z-10">
+                        <span className="px-3 py-1 rounded-full text-xs font-bold shadow bg-yellow-500/20 text-yellow-400">Favori</span>
+                      </div>
+                      <div className="p-4">
+                        <h3 className="font-bold text-lg text-white mb-1 line-clamp-2 leading-tight">{product.title}</h3>
+                        <p className="text-gray-400 text-sm line-clamp-2 leading-relaxed">{product.subtitle}</p>
+                      </div>
                     </div>
-                    <div className="text-2xl font-bold text-white">{stat.value}</div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
+            )}
+
+            {/* Section Produits Likés */}
+            {uniqueLiked.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Heart className="w-6 h-6 text-red-400" /> Produits Likés
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                  {uniqueLiked.map(product => (
+                    <div key={product.id} className="relative bg-[#111111] border border-[#232323] rounded-xl overflow-hidden group transition-all hover:border-[#333] hover:shadow-lg">
+                      <img
+                        src={(!product.image || product.image.includes('/api/placeholder')) ?
+                          (product.format === 'ebook' || product.format === 'Book' ? 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80'
+                          : product.format === 'audio' || product.format === 'Audio' ? 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80'
+                          : product.format === 'video' || product.format === 'Video' || product.format === 'Formation' || product.format === 'Course' ? 'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80'
+                          : 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80')
+                          : product.image}
+                        alt={product.title}
+                        className="object-cover h-40 w-full"
+                      />
+                      <div className="absolute top-3 left-3 z-10">
+                        <span className="px-3 py-1 rounded-full text-xs font-bold shadow bg-red-500/20 text-red-400">Liké</span>
+                      </div>
+                      <div className="p-4">
+                        <h3 className="font-bold text-lg text-white mb-1 line-clamp-2 leading-tight">{product.title}</h3>
+                        <p className="text-gray-400 text-sm line-clamp-2 leading-relaxed">{product.subtitle}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Badge Premium avec animation */}
+            <div className="flex items-center gap-4 mb-6">
+              <div className="px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-400">
+                <Crown className="w-4 h-4" />
+                <span>Espace Personnel Sécurisé</span>
+              </div>
+              
+              <button
+                onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
+                className="bg-[#111111] border border-[#333] text-white px-4 py-2 rounded-lg hover:border-[#ff0033] transition-all duration-200"
+              >
+                {viewMode === 'grid' ? 'Vue Liste' : 'Vue Grille'}
+              </button>
             </div>
 
             {/* Filtres avec animations */}
