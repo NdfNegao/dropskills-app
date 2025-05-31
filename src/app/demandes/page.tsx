@@ -4,14 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import LayoutWithSidebar from "@/components/LayoutWithSidebar";
 import { ArrowUp, Plus, X, Lightbulb, Clock, CheckCircle, XCircle, TrendingUp } from "lucide-react";
 
-const TABS = [
-  { label: "Idées", value: "pending" },
-  { label: "En cours", value: "in_progress" },
-  { label: "Terminé", value: "completed" },
-  { label: "Rejeté", value: "rejected" },
-];
-
-const FAKE_IDEAS = [
+const IDEAS = [
   {
     id: "1",
     title: "Maîtriser n8n (Automatisation No-Code)",
@@ -47,6 +40,146 @@ const FAKE_IDEAS = [
     status: "rejected",
     votes_count: 12,
   },
+  {
+    id: "6",
+    title: "Prompt Engineering pour Entrepreneurs",
+    description: "Maîtrisez l'art de rédiger des prompts efficaces pour ChatGPT et Midjourney.",
+    status: "pending",
+    votes_count: 38,
+  },
+  {
+    id: "7",
+    title: "Créer un SaaS IA sans coder",
+    description: "De l'idée à la mise en ligne d'un SaaS propulsé par l'IA, sans une ligne de code.",
+    status: "pending",
+    votes_count: 29,
+  },
+  {
+    id: "8",
+    title: "Automatiser sa prospection LinkedIn",
+    description: "Scripts, outils et stratégies pour générer des leads en automatique.",
+    status: "in_progress",
+    votes_count: 33,
+  },
+  {
+    id: "9",
+    title: "Créer un podcast à succès en 30 jours",
+    description: "De l'enregistrement à la monétisation, toutes les étapes clés.",
+    status: "pending",
+    votes_count: 21,
+  },
+  {
+    id: "10",
+    title: "Monétiser son audience Instagram",
+    description: "Stratégies avancées pour transformer ses abonnés en clients.",
+    status: "completed",
+    votes_count: 44,
+  },
+  {
+    id: "11",
+    title: "Lancer un business d'affiliation IA",
+    description: "Comment générer des revenus passifs avec l'affiliation et l'IA.",
+    status: "pending",
+    votes_count: 19,
+  },
+  {
+    id: "12",
+    title: "Créer un lead magnet irrésistible",
+    description: "Techniques pour capter des emails qualifiés avec des ressources gratuites.",
+    status: "pending",
+    votes_count: 25,
+  },
+  {
+    id: "13",
+    title: "Growth Hacking pour solopreneurs",
+    description: "Tactiques de croissance rapide à petit budget.",
+    status: "in_progress",
+    votes_count: 36,
+  },
+  {
+    id: "14",
+    title: "Créer une newsletter qui cartonne",
+    description: "Secrets pour fidéliser et monétiser sa liste email.",
+    status: "pending",
+    votes_count: 22,
+  },
+  {
+    id: "15",
+    title: "Lancer un bootcamp en ligne",
+    description: "Organiser et vendre une formation intensive sur 4 semaines.",
+    status: "pending",
+    votes_count: 18,
+  },
+  {
+    id: "16",
+    title: "Automatiser sa gestion client avec Notion",
+    description: "Templates et workflows pour suivre ses clients et projets.",
+    status: "completed",
+    votes_count: 41,
+  },
+  {
+    id: "17",
+    title: "Créer un site de vente de templates IA",
+    description: "Monétiser ses propres prompts et templates auprès d'autres entrepreneurs.",
+    status: "pending",
+    votes_count: 17,
+  },
+  {
+    id: "18",
+    title: "Lancer un membership premium",
+    description: "Créer une communauté payante autour de son expertise.",
+    status: "pending",
+    votes_count: 23,
+  },
+  {
+    id: "19",
+    title: "Vendre des formations sur Udemy/Skillshare",
+    description: "Optimiser ses cours pour toucher un maximum d'élèves.",
+    status: "pending",
+    votes_count: 20,
+  },
+  {
+    id: "20",
+    title: "Créer un chatbot support client IA",
+    description: "Mettre en place un assistant IA pour répondre aux clients 24/7.",
+    status: "in_progress",
+    votes_count: 28,
+  },
+  {
+    id: "21",
+    title: "Automatiser sa facturation et relance",
+    description: "Outils et scripts pour ne plus perdre de temps sur l'administratif.",
+    status: "pending",
+    votes_count: 15,
+  },
+  {
+    id: "22",
+    title: "Créer un funnel evergreen avec l'IA",
+    description: "Automatiser la génération de leads et de ventes en continu.",
+    status: "pending",
+    votes_count: 24,
+  },
+  {
+    id: "23",
+    title: "Lancer un service de consulting IA",
+    description: "Packager et vendre son expertise IA à des PME.",
+    status: "pending",
+    votes_count: 16,
+  },
+  {
+    id: "24",
+    title: "Créer une app mobile sans coder",
+    description: "Utiliser les outils no-code pour lancer son app en 1 semaine.",
+    status: "pending",
+    votes_count: 21,
+  },
+  {
+    id: "25",
+    title: "Optimiser son SEO avec l'IA",
+    description: "Stratégies et outils pour booster son référencement grâce à l'IA.",
+    status: "pending",
+    votes_count: 26,
+  },
 ];
 
 const STATUS_LABELS: Record<string, string> = {
@@ -64,7 +197,6 @@ const STATUS_ICONS: Record<string, any> = {
 };
 
 export default function DemandesPage() {
-  const [activeTab, setActiveTab] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'vote' | 'submit' | null>(null);
   const [showToast, setShowToast] = useState(false);
@@ -72,17 +204,15 @@ export default function DemandesPage() {
 
   // Statistiques calculées
   const stats = {
-    total: FAKE_IDEAS.length,
-    pending: FAKE_IDEAS.filter(i => i.status === 'pending').length,
-    inProgress: FAKE_IDEAS.filter(i => i.status === 'in_progress').length,
-    completed: FAKE_IDEAS.filter(i => i.status === 'completed').length,
-    rejected: FAKE_IDEAS.filter(i => i.status === 'rejected').length,
-    totalVotes: FAKE_IDEAS.reduce((sum, i) => sum + i.votes_count, 0),
+    total: IDEAS.length,
+    pending: IDEAS.filter(i => i.status === 'pending').length,
+    inProgress: IDEAS.filter(i => i.status === 'in_progress').length,
+    completed: IDEAS.filter(i => i.status === 'completed').length,
+    rejected: IDEAS.filter(i => i.status === 'rejected').length,
+    totalVotes: IDEAS.reduce((sum, i) => sum + i.votes_count, 0),
   };
 
-  const filteredIdeas = FAKE_IDEAS.filter(
-    (idea) => idea.status === TABS[activeTab].value
-  );
+  const filteredIdeas = IDEAS;
 
   const openModal = (type: 'vote' | 'submit') => {
     setModalType(type);
@@ -152,23 +282,6 @@ export default function DemandesPage() {
               <Plus className="w-5 h-5" />
             Soumettre une idée
             </button>
-        </div>
-
-        {/* Tabs */}
-        <div className="flex gap-2 mb-8 justify-center">
-          {TABS.map((tab, idx) => (
-              <button
-              key={tab.value}
-              className={`px-4 py-2 rounded-full font-medium transition text-sm focus:outline-none focus:ring-2 focus:ring-[#ff0033] ${
-                activeTab === idx
-                  ? "bg-[#ff0033] text-white shadow-md"
-                  : "bg-[#232323] text-gray-300 hover:bg-[#333]"
-              }`}
-              onClick={() => setActiveTab(idx)}
-            >
-                {tab.label}
-              </button>
-            ))}
         </div>
 
         {/* Liste des idées */}
