@@ -28,6 +28,10 @@ export const authOptions: NextAuthOptions = {
         }
         return null;
       }
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     })
   ],
   pages: {
@@ -38,19 +42,12 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account, profile }) {
       // Permettre la connexion Google
       if (account?.provider === 'google') {
-        // TODO: Créer ou mettre à jour l'utilisateur en base de données
-        // const existingUser = await getUserByEmail(user.email);
-        // if (!existingUser) {
-        //   await createUser({
-        //     email: user.email,
-        //     name: user.name,
-        //     firstName: user.name?.split(' ')[0] || '',
-        //     lastName: user.name?.split(' ').slice(1).join(' ') || '',
-        //     role: 'USER',
-        //     provider: 'google',
-        //     providerId: account.providerAccountId
-        //   });
-        // }
+        // Vérifier si c'est l'email admin
+        if (user.email === 'cyril.iriebi@gmail.com') {
+          // Assurez-vous que l'admin peut se connecter
+          return true;
+        }
+        // Pour les autres utilisateurs Google, on peut les créer
         return true;
       }
       return true;
