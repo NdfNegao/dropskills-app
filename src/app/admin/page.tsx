@@ -1,102 +1,154 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Users, Package, Bot, Activity, LogOut, BarChart3, Settings, FileText } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Users, Package, Bot, Activity, BarChart3, TrendingUp, AlertTriangle } from 'lucide-react';
+import AdminDashboard, { StatCard } from '@/components/admin/AdminDashboard';
 
-export default function AdminDashboard() {
-  const router = useRouter();
+interface DashboardStats {
+  totalUsers: number;
+  totalTools: number;
+  totalRequests: number;
+  successRate: number;
+  trends: {
+    users: number;
+    tools: number;
+    requests: number;
+    successRate: number;
+  };
+}
+
+export default function AdminDashboardPage() {
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Vérifier le cookie côté client
-    const adminCookie = document.cookie.split('; ').find(row => row.startsWith('admin='));
-    if (!adminCookie || adminCookie.split('=')[1] !== 'ok') {
-      router.push('/admin/login');
-    }
-  }, [router]);
+    fetchDashboardStats();
+  }, []);
 
-  const handleLogout = () => {
-    document.cookie = 'admin=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    router.push('/admin/login');
+  const fetchDashboardStats = async () => {
+    try {
+      // Simuler un appel API pour les stats
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setStats({
+        totalUsers: 1234,
+        totalTools: 15,
+        totalRequests: 45200,
+        successRate: 98.5,
+        trends: {
+          users: 12.5,
+          tools: 0,
+          requests: 23.1,
+          successRate: 1.2
+        }
+      });
+    } catch (error) {
+      console.error('Erreur lors du chargement des stats:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return (
-    <div className="min-h-screen bg-[#0a0a0a] flex">
-      {/* Sidebar simple */}
-      <aside className="w-64 bg-[#111] border-r border-[#232323] p-6">
-        <h2 className="text-xl font-bold text-white mb-8">Admin Panel</h2>
-        <nav className="space-y-2">
-          <a href="/admin" className="flex items-center gap-3 p-3 rounded-lg bg-[#ff0033] text-white">
-            <BarChart3 size={20} /> Dashboard
-          </a>
-          <a href="/admin/utilisateurs" className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] text-gray-300">
-            <Users size={20} /> Utilisateurs
-          </a>
-          <a href="/admin/outils" className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] text-gray-300">
-            <Bot size={20} /> Outils IA
-          </a>
-          <a href="/admin/logs" className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] text-gray-300">
-            <FileText size={20} /> Logs
-          </a>
-          <a href="/admin/parametres" className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] text-gray-300">
-            <Settings size={20} /> Paramètres
-          </a>
-        </nav>
-        <button onClick={handleLogout} className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] text-gray-300 mt-8 w-full">
-          <LogOut size={20} /> Déconnexion
-        </button>
-      </aside>
-      
-      {/* Contenu principal */}
-      <main className="flex-1 p-8">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-white mb-2">Dashboard Admin</h1>
-          <p className="text-gray-400 mb-8">Vue d'ensemble de la plateforme DropSkills</p>
-
-          {/* Statistiques */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-              <Users className="w-8 h-8 text-blue-400 mb-4" />
-              <h3 className="text-2xl font-bold text-white">1,234</h3>
-              <p className="text-gray-400 text-sm">Utilisateurs</p>
+  if (loading) {
+    return (
+      <AdminDashboard
+        title="Dashboard"
+        description="Vue d'ensemble de votre plateforme"
+        icon={BarChart3}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="bg-[#111] rounded-xl p-6 border border-[#232323] animate-pulse">
+              <div className="h-4 bg-gray-700 rounded mb-2"></div>
+              <div className="h-8 bg-gray-700 rounded mb-2"></div>
+              <div className="h-3 bg-gray-700 rounded w-1/2"></div>
             </div>
-            <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-              <Package className="w-8 h-8 text-green-400 mb-4" />
-              <h3 className="text-2xl font-bold text-white">567</h3>
-              <p className="text-gray-400 text-sm">Packs Vendus</p>
-            </div>
-            <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-              <Bot className="w-8 h-8 text-purple-400 mb-4" />
-              <h3 className="text-2xl font-bold text-white">6</h3>
-              <p className="text-gray-400 text-sm">Outils IA</p>
-            </div>
-            <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-              <Activity className="w-8 h-8 text-[#ff0033] mb-4" />
-              <h3 className="text-2xl font-bold text-white">89%</h3>
-              <p className="text-gray-400 text-sm">Activité</p>
-            </div>
-          </div>
-
-          {/* Actions rapides */}
-          <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-            <h2 className="text-xl font-semibold text-white mb-4">Actions Rapides</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <a href="/admin/utilisateurs/nouveau" className="block p-4 bg-[#1a1a1a] rounded-lg border border-[#232323] hover:border-[#ff0033] transition-colors">
-                <h3 className="text-white font-medium">Créer un utilisateur</h3>
-                <p className="text-gray-400 text-sm mt-1">Ajouter un nouvel utilisateur</p>
-              </a>
-              <a href="/admin/outils/nouveau" className="block p-4 bg-[#1a1a1a] rounded-lg border border-[#232323] hover:border-[#ff0033] transition-colors">
-                <h3 className="text-white font-medium">Nouvel outil IA</h3>
-                <p className="text-gray-400 text-sm mt-1">Ajouter un outil IA</p>
-              </a>
-              <a href="/admin/logs" className="block p-4 bg-[#1a1a1a] rounded-lg border border-[#232323] hover:border-[#ff0033] transition-colors">
-                <h3 className="text-white font-medium">Voir les logs</h3>
-                <p className="text-gray-400 text-sm mt-1">Consulter l'activité système</p>
-              </a>
-            </div>
-          </div>
+          ))}
         </div>
-      </main>
-    </div>
+      </AdminDashboard>
+    );
+  }
+
+  return (
+    <AdminDashboard
+      title="Dashboard"
+      description="Vue d'ensemble de votre plateforme"
+      icon={BarChart3}
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <StatCard
+          title="Utilisateurs totaux"
+          value={stats?.totalUsers.toLocaleString() || '0'}
+          icon={Users}
+          color="text-blue-400"
+          trend={{
+            value: stats?.trends.users || 0,
+            isPositive: (stats?.trends.users || 0) > 0
+          }}
+        />
+        <StatCard
+          title="Outils IA"
+          value={stats?.totalTools || 0}
+          icon={Bot}
+          color="text-green-400"
+          trend={{
+            value: stats?.trends.tools || 0,
+            isPositive: (stats?.trends.tools || 0) >= 0
+          }}
+        />
+        <StatCard
+          title="Requêtes API"
+          value={stats?.totalRequests.toLocaleString() || '0'}
+          icon={Activity}
+          color="text-purple-400"
+          trend={{
+            value: stats?.trends.requests || 0,
+            isPositive: (stats?.trends.requests || 0) > 0
+          }}
+        />
+        <StatCard
+          title="Taux de succès"
+          value={`${stats?.successRate || 0}%`}
+          icon={TrendingUp}
+          color="text-yellow-400"
+          trend={{
+            value: stats?.trends.successRate || 0,
+            isPositive: (stats?.trends.successRate || 0) > 0
+          }}
+        />
+      </div>
+
+      {/* Actions rapides */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="/admin/utilisateurs" className="bg-[#111] rounded-xl p-6 border border-[#232323] hover:border-blue-500 transition-colors group">
+          <div className="flex items-center gap-4">
+            <Users className="h-8 w-8 text-blue-400 group-hover:scale-110 transition-transform" />
+            <div>
+              <h3 className="text-lg font-semibold text-white">Gérer les utilisateurs</h3>
+              <p className="text-gray-400">Voir et modifier les comptes utilisateurs</p>
+            </div>
+          </div>
+        </a>
+        
+        <a href="/admin/outils" className="bg-[#111] rounded-xl p-6 border border-[#232323] hover:border-green-500 transition-colors group">
+          <div className="flex items-center gap-4">
+            <Bot className="h-8 w-8 text-green-400 group-hover:scale-110 transition-transform" />
+            <div>
+              <h3 className="text-lg font-semibold text-white">Outils IA</h3>
+              <p className="text-gray-400">Configurer les outils d'intelligence artificielle</p>
+            </div>
+          </div>
+        </a>
+        
+        <a href="/admin/analytics" className="bg-[#111] rounded-xl p-6 border border-[#232323] hover:border-purple-500 transition-colors group">
+          <div className="flex items-center gap-4">
+            <Activity className="h-8 w-8 text-purple-400 group-hover:scale-110 transition-transform" />
+            <div>
+              <h3 className="text-lg font-semibold text-white">Analytics</h3>
+              <p className="text-gray-400">Voir les statistiques détaillées</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </AdminDashboard>
   );
-} 
+}

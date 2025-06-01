@@ -1,74 +1,183 @@
-"use client";
-import { Users, UserPlus } from 'lucide-react';
+'use client';
 
-export default function AdminUtilisateurs() {
+import { useState, useEffect } from 'react';
+import { Users, UserPlus, Eye, Edit, Trash2 } from 'lucide-react';
+import AdminLayout from '@/components/admin/AdminLayout';
+import DataTable from '@/components/admin/DataTable';
+import { StatCard } from '@/components/admin/AdminDashboard';
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  status: 'active' | 'inactive';
+  joinDate: string;
+  plan: string;
+}
+
+export default function AdminUsersPage() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    total: 1234,
+    active: 1156,
+    inactive: 78,
+    newThisWeek: 23
+  });
+
+  useEffect(() => {
+    // Simuler le chargement des données
+    setTimeout(() => {
+      setUsers([
+        { id: 1, name: 'John Doe', email: 'john@example.com', status: 'active', joinDate: '2024-01-15', plan: 'Pro' },
+        { id: 2, name: 'Jane Smith', email: 'jane@example.com', status: 'active', joinDate: '2024-01-10', plan: 'Basic' },
+        { id: 3, name: 'Bob Johnson', email: 'bob@example.com', status: 'inactive', joinDate: '2024-01-05', plan: 'Pro' },
+        { id: 4, name: 'Alice Brown', email: 'alice@example.com', status: 'active', joinDate: '2024-01-20', plan: 'Premium' },
+        { id: 5, name: 'Charlie Wilson', email: 'charlie@example.com', status: 'inactive', joinDate: '2024-01-08', plan: 'Basic' },
+      ]);
+      setLoading(false);
+    }, 1000);
+  }, []);
+
+  const columns = [
+    {
+      key: 'user',
+      label: 'Utilisateur',
+      render: (user: User) => (
+        <div>
+          <div className="text-sm font-medium text-white">{user.name}</div>
+          <div className="text-sm text-gray-400">{user.email}</div>
+        </div>
+      )
+    },
+    {
+      key: 'status',
+      label: 'Statut',
+      render: (user: User) => (
+        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+          user.status === 'active' 
+            ? 'bg-green-900 text-green-300 border border-green-700' 
+            : 'bg-red-900 text-red-300 border border-red-700'
+        }`}>
+          {user.status === 'active' ? 'Actif' : 'Inactif'}
+        </span>
+      )
+    },
+    {
+      key: 'plan',
+      label: 'Plan',
+      render: (user: User) => (
+        <span className="text-sm text-white">{user.plan}</span>
+      )
+    },
+    {
+      key: 'joinDate',
+      label: 'Date d\'inscription',
+      render: (user: User) => (
+        <span className="text-sm text-gray-400">{user.joinDate}</span>
+      )
+    }
+  ];
+
+  const actions = [
+    {
+      icon: Eye,
+      label: 'Voir',
+      onClick: (user: User) => console.log('Voir utilisateur:', user.id),
+      className: 'text-blue-400 hover:text-blue-300'
+    },
+    {
+      icon: Edit,
+      label: 'Modifier',
+      onClick: (user: User) => console.log('Modifier utilisateur:', user.id),
+      className: 'text-yellow-400 hover:text-yellow-300'
+    },
+    {
+      icon: Trash2,
+      label: 'Supprimer',
+      onClick: (user: User) => console.log('Supprimer utilisateur:', user.id),
+      className: 'text-red-400 hover:text-red-300'
+    }
+  ];
+
+  const filters = [
+    {
+      key: 'status',
+      label: 'Statut',
+      options: [
+        { value: 'all', label: 'Tous les statuts' },
+        { value: 'active', label: 'Actifs' },
+        { value: 'inactive', label: 'Inactifs' }
+      ]
+    },
+    {
+      key: 'plan',
+      label: 'Plan',
+      options: [
+        { value: 'all', label: 'Tous les plans' },
+        { value: 'Basic', label: 'Basic' },
+        { value: 'Pro', label: 'Pro' },
+        { value: 'Premium', label: 'Premium' }
+      ]
+    }
+  ];
+
+  const handleCreateUser = () => {
+    console.log('Créer un nouvel utilisateur');
+  };
+
   return (
-    <div className="max-w-7xl mx-auto py-8 px-4">
-      <div className="flex items-center gap-4 mb-8">
-        <Users className="w-8 h-8 text-blue-400" />
-        <h1 className="text-2xl font-bold text-white">Gestion des utilisateurs</h1>
-        <a href="/admin/utilisateurs/nouveau" className="ml-auto bg-[#ff0033] hover:bg-[#cc0029] text-white px-4 py-2 rounded-lg flex items-center gap-2 font-semibold">
-          <UserPlus className="w-5 h-5" /> Nouvel utilisateur
-        </a>
+    <AdminLayout
+      title="Gestion des Utilisateurs"
+      icon={Users}
+      actions={[
+        {
+          label: 'Nouvel utilisateur',
+          icon: UserPlus,
+          onClick: handleCreateUser,
+          variant: 'primary'
+        }
+      ]}
+    >
+      {/* Statistiques */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <StatCard
+          title="Total Utilisateurs"
+          value={stats.total.toLocaleString()}
+          icon={Users}
+          color="text-blue-400"
+        />
+        <StatCard
+          title="Actifs"
+          value={stats.active.toLocaleString()}
+          icon={() => <div className="w-3 h-3 bg-green-400 rounded-full" />}
+          color="text-green-400"
+        />
+        <StatCard
+          title="Inactifs"
+          value={stats.inactive.toLocaleString()}
+          icon={() => <div className="w-3 h-3 bg-red-400 rounded-full" />}
+          color="text-red-400"
+        />
+        <StatCard
+          title="Nouveaux (7j)"
+          value={stats.newThisWeek.toLocaleString()}
+          icon={UserPlus}
+          color="text-purple-400"
+        />
       </div>
 
-      {/* Statistiques rapides */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Total inscrits</h3>
-          <p className="text-3xl font-bold text-blue-400">1,234</p>
-        </div>
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Admins</h3>
-          <p className="text-3xl font-bold text-green-400">2</p>
-        </div>
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Nouveaux ce mois</h3>
-          <p className="text-3xl font-bold text-purple-400">12</p>
-        </div>
-      </div>
-
-      {/* Tableau d'exemple */}
-      <div className="bg-[#111] rounded-xl p-6 border border-[#232323] mb-8 overflow-x-auto">
-        <h2 className="text-lg font-semibold text-white mb-4">Liste des utilisateurs</h2>
-        <table className="min-w-full text-sm text-gray-300">
-          <thead>
-            <tr className="border-b border-[#232323]">
-              <th className="py-2 px-4 text-left">Nom</th>
-              <th className="py-2 px-4 text-left">Email</th>
-              <th className="py-2 px-4 text-left">Rôle</th>
-              <th className="py-2 px-4 text-left">Date d'inscription</th>
-              <th className="py-2 px-4 text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border-b border-[#232323]">
-              <td className="py-2 px-4">Cyril Iriebi</td>
-              <td className="py-2 px-4">cyril.iriebi@gmail.com</td>
-              <td className="py-2 px-4">ADMIN</td>
-              <td className="py-2 px-4">01/01/2024</td>
-              <td className="py-2 px-4">
-                <button className="text-blue-400 hover:underline">Voir</button>
-              </td>
-            </tr>
-            <tr>
-              <td className="py-2 px-4">Jane Doe</td>
-              <td className="py-2 px-4">jane.doe@email.com</td>
-              <td className="py-2 px-4">USER</td>
-              <td className="py-2 px-4">15/03/2024</td>
-              <td className="py-2 px-4">
-                <button className="text-blue-400 hover:underline">Voir</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      {/* Message en construction */}
-      <div className="bg-yellow-900/20 border border-yellow-700 text-yellow-300 rounded-lg p-6 text-center">
-        <p className="text-lg font-semibold mb-2">Section en construction</p>
-        <p>La gestion avancée des utilisateurs arrive bientôt !</p>
-      </div>
-    </div>
+      {/* Table des utilisateurs */}
+      <DataTable
+        data={users}
+        columns={columns}
+        actions={actions}
+        filters={filters}
+        loading={loading}
+        searchPlaceholder="Rechercher par nom ou email..."
+        searchKeys={['name', 'email']}
+        emptyMessage="Aucun utilisateur trouvé"
+      />
+    </AdminLayout>
   );
-} 
+}
