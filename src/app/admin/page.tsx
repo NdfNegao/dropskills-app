@@ -5,14 +5,12 @@ import { Users, Package, Bot, Activity, BarChart3, Settings, FileText } from 'lu
 
 export default function AdminDashboard() {
   return (
-    <AdminLayoutWithSidebar>
-      {/* Contenu principal */}
-      <main className="flex-1 p-8">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-white mb-2">Dashboard Admin</h1>
-          <p className="text-gray-400 mb-8">Vue d'ensemble de la plateforme DropSkills</p>
-
-          {/* Statistiques */}
+    <AdminLayoutWithSidebar
+      icon={<BarChart3 />}
+      title="Dashboard Admin"
+      subtitle="Vue d'ensemble de la plateforme DropSkills"
+    >
+      {/* Statistiques */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
               <Users className="w-8 h-8 text-blue-400 mb-4" />
@@ -54,7 +52,6 @@ export default function AdminDashboard() {
               </a>
             </div>
           </div>
-        </main>
       </AdminLayoutWithSidebar>
     );
   }
