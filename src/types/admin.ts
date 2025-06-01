@@ -44,7 +44,6 @@ export interface Pack {
 
 export interface SupportTicket {
   id: string;
-  user_id?: string;
   user_email: string;
   subject: string;
   message: string;
@@ -52,6 +51,24 @@ export interface SupportTicket {
   priority: 'low' | 'medium' | 'high' | 'urgent';
   assigned_to?: string;
   response?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FeatureRequest {
+  id: string;
+  user_email: string;
+  title: string;
+  description: string;
+  category: 'ai_tool' | 'ui_improvement' | 'new_feature' | 'integration' | 'other';
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  status: 'submitted' | 'under_review' | 'planned' | 'in_development' | 'completed' | 'rejected';
+  votes: number;
+  estimated_effort?: 'small' | 'medium' | 'large' | 'xl';
+  target_version?: string;
+  assigned_to?: string;
+  business_value?: 'low' | 'medium' | 'high' | 'critical';
+  technical_complexity?: 'low' | 'medium' | 'high' | 'complex';
   created_at: string;
   updated_at: string;
 }

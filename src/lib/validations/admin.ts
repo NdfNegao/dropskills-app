@@ -52,17 +52,34 @@ export const aiToolSchema = z.object({
 
 // Schéma ticket de support
 export const supportTicketSchema = z.object({
-  id: idSchema.optional(),
-  user_id: idSchema.optional(),
-  user_email: emailSchema,
-  subject: z.string().min(1).max(200),
-  message: z.string().min(1).max(5000),
-  status: z.enum(['open', 'in_progress', 'resolved', 'closed']).default('open'),
-  priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'),
+  id: z.string(),
+  user_email: z.string().email(),
+  subject: z.string().min(5, 'Le sujet doit faire au moins 5 caractères'),
+  message: z.string().min(10, 'Le message doit faire au moins 10 caractères'),
+  status: z.enum(['open', 'in_progress', 'resolved', 'closed']),
+  priority: z.enum(['low', 'medium', 'high', 'urgent']),
   assigned_to: z.string().optional(),
   response: z.string().optional(),
-  created_at: dateSchema.optional(),
-  updated_at: dateSchema.optional()
+  created_at: z.string(),
+  updated_at: z.string()
+});
+
+export const featureRequestSchema = z.object({
+  id: z.string(),
+  user_email: z.string().email(),
+  title: z.string().min(5, 'Le titre doit faire au moins 5 caractères'),
+  description: z.string().min(20, 'La description doit faire au moins 20 caractères'),
+  category: z.enum(['ai_tool', 'ui_improvement', 'new_feature', 'integration', 'other']),
+  priority: z.enum(['low', 'medium', 'high', 'critical']),
+  status: z.enum(['submitted', 'under_review', 'planned', 'in_development', 'completed', 'rejected']),
+  votes: z.number().min(0),
+  estimated_effort: z.enum(['small', 'medium', 'large', 'xl']).optional(),
+  target_version: z.string().optional(),
+  assigned_to: z.string().optional(),
+  business_value: z.enum(['low', 'medium', 'high', 'critical']).optional(),
+  technical_complexity: z.enum(['low', 'medium', 'high', 'complex']).optional(),
+  created_at: z.string(),
+  updated_at: z.string()
 });
 
 // Types TypeScript générés
@@ -70,6 +87,7 @@ export type User = z.infer<typeof userSchema>;
 export type Pack = z.infer<typeof packSchema>;
 export type AiTool = z.infer<typeof aiToolSchema>;
 export type SupportTicket = z.infer<typeof supportTicketSchema>;
+export type FeatureRequest = z.infer<typeof featureRequestSchema>;
 
 // Fonction utilitaire pour valider les données
 export function validateData<T>(schema: z.ZodSchema<T>, data: unknown): { success: true; data: T } | { success: false; errors: z.ZodError } {
@@ -92,4 +110,10 @@ export function createValidationMiddleware<T>(schema: z.ZodSchema<T>) {
       throw error;
     }
   };
-} 
+}
+
+export type DashboardStatsInput = z.infer<typeof dashboardStatsSchema>;
+export type UserInput = z.infer<typeof userSchema>;
+export type PackInput = z.infer<typeof packSchema>;
+export type SupportTicketInput = z.infer<typeof supportTicketSchema>;
+export type FeatureRequestInput = z.infer<typeof featureRequestSchema>; 
