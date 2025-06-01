@@ -49,7 +49,11 @@ export function StatCard({ title, value, icon: Icon, color, trend }: StatCardPro
 
 export function AdminDashboard({ title, description, icon: Icon, children, actions }: AdminDashboardProps) {
   return (
-    <AdminLayoutWithSidebar>
+    <AdminLayoutWithSidebar
+      icon={<Icon className="w-6 h-6" />}
+      title={title}
+      subtitle={description}
+    >
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">

@@ -147,7 +147,7 @@ export default function LandingPage() {
         <div className="flex flex-wrap justify-center gap-4">
           <Link href="/cgv" className="hover:underline">CGV</Link>
           <Link href="/mentions-legales" className="hover:underline">Mentions légales</Link>
-          <Link href="/confidentialite" className="hover:underline">Confidentialité</Link>
+          <Link href="/privacy" className="hover:underline">Confidentialité</Link>
         </div>
       </footer>
     </div>

@@ -167,7 +167,7 @@ export default function AdminDashboard() {
             <span className="text-green-700 font-medium">Gérer les packs</span>
           </a>
           <a 
-            href="/admin/outils-ia"
+            href="/admin/outils"
             className="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors group"
           >
             <Bot className="w-5 h-5 text-purple-600 mr-3 group-hover:scale-110 transition-transform" />

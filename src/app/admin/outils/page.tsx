@@ -187,7 +187,11 @@ export default function AdminOutilsPage() {
 
   if (loading) {
     return (
-      <AdminLayoutWithSidebar>
+      <AdminLayoutWithSidebar
+        icon={<Bot size={24} />}
+        title="Gestion des Outils IA"
+        subtitle="Chargement des outils..."
+      >
         <div className="min-h-screen flex items-center justify-center">
           <Loader2 className="w-8 h-8 text-white animate-spin" />
         </div>
@@ -196,7 +200,33 @@ export default function AdminOutilsPage() {
   }
 
   return (
-    <AdminLayoutWithSidebar>
+    <AdminLayoutWithSidebar
+      icon={<Bot size={24} />}
+      title="Gestion des Outils IA"
+      subtitle="Gérez les outils d'intelligence artificielle de la plateforme"
+      stats={[
+        {
+          title: "Total outils",
+          value: tools.length.toString(),
+          icon: <Bot size={20} />
+        },
+        {
+          title: "Premium",
+          value: tools.filter(t => t.is_premium).length.toString(),
+          icon: <Crown size={20} />
+        },
+        {
+          title: "Catégories",
+          value: CATEGORIES.length.toString(),
+          icon: <Zap size={20} />
+        },
+        {
+          title: "Modèles",
+          value: MODELS.length.toString(),
+          icon: <Bot size={20} />
+        }
+      ]}
+    >
       <div className="h-full">
         {/* Header */}
         <header className="bg-[#111] border-b border-[#232323] px-6 py-4">
@@ -211,26 +241,6 @@ export default function AdminOutilsPage() {
             </button>
           </div>
         </header>
-
-        {/* Statistiques rapides */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
-            <h3 className="text-lg font-bold text-black mb-2">Total outils</h3>
-            <p className="text-3xl font-bold text-blue-600">{tools.length}</p>
-          </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
-            <h3 className="text-lg font-bold text-black mb-2">Premium</h3>
-            <p className="text-3xl font-bold text-green-600">{tools.filter(t => t.is_premium).length}</p>
-          </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
-            <h3 className="text-lg font-bold text-black mb-2">Catégories</h3>
-            <p className="text-3xl font-bold text-purple-600">{CATEGORIES.length}</p>
-          </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
-            <h3 className="text-lg font-bold text-black mb-2">Modèles</h3>
-            <p className="text-3xl font-bold text-yellow-600">{MODELS.length}</p>
-          </div>
-        </div>
 
         {/* Filtres */}
         <div className="p-6 bg-white border border-gray-200 rounded-xl mb-6">

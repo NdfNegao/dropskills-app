@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
 import { 
-  BarChart3, TrendingUp, DollarSign, Zap, Users, 
-  Bot, AlertTriangle, Loader2, Calendar, Download
+  BarChart3, Activity, Zap, Users, Bot, TrendingUp, 
+  Download, PieChart, LineChart, 
+  DollarSign, AlertTriangle, Loader2 
 } from 'lucide-react';
 import AdvancedCharts from '@/components/admin/AdvancedCharts';
 
@@ -95,7 +96,11 @@ export default function AdminAnalyticsPage() {
 
   if (loading || !analytics) {
     return (
-      <AdminLayoutWithSidebar>
+      <AdminLayoutWithSidebar
+        icon={<BarChart3 className="w-5 h-5" />}
+        title="Analytics IA"
+        subtitle="Chargement des données analytiques..."
+      >
         <div className="min-h-screen flex items-center justify-center">
           <Loader2 className="w-8 h-8 text-white animate-spin" />
         </div>
@@ -118,7 +123,33 @@ export default function AdminAnalyticsPage() {
   }, []);
 
   return (
-    <AdminLayoutWithSidebar>
+    <AdminLayoutWithSidebar
+      icon={<BarChart3 className="w-5 h-5" />}
+      title="Analytics IA"
+      subtitle="Analyses et statistiques d'utilisation des outils IA"
+      stats={[
+        {
+          title: "Requêtes totales",
+          value: formatNumber(analytics.global?.totalRequests || 0),
+          icon: <Bot className="w-5 h-5" />
+        },
+        {
+          title: "Tokens utilisés",
+          value: `${formatNumber((analytics.global?.totalTokens || 0) / 1000)}k`,
+          icon: <Zap className="w-5 h-5" />
+        },
+        {
+          title: "Coût estimé",
+          value: formatCurrency(analytics.global?.totalCost || 0),
+          icon: <DollarSign className="w-5 h-5" />
+        },
+        {
+          title: "Taux de succès",
+          value: `${(analytics.global?.successRate || 0).toFixed(0)}%`,
+          icon: <TrendingUp className="w-5 h-5" />
+        }
+      ]}
+    >
       <div className="h-full">
         {/* Header */}
         <header className="bg-[#111] border-b border-[#232323] px-6 py-4">
