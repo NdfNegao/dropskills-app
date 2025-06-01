@@ -103,9 +103,7 @@ function CheckoutContent() {
     );
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const handleStripeCheckout = async () => {
     if (!formData.acceptTerms) {
       alert('Veuillez accepter les conditions générales');
       return;
@@ -114,11 +112,23 @@ function CheckoutContent() {
     setIsLoading(true);
     
     try {
-      // Simulation du processus de paiement
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      const response = await fetch('/api/stripe/create-checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          planId: plan.id.includes('monthly') ? 'monthly' : 'yearly'
+        }),
+      });
+
+      const data = await response.json();
       
-      // Redirection vers page de succès
-      router.push('/checkout/success?plan=' + planId);
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || 'Erreur lors de la création de la session');
+      }
       
     } catch (error) {
       console.error('Erreur de paiement:', error);
@@ -171,126 +181,34 @@ function CheckoutContent() {
         <div className="bg-[#111111] border border-[#232323] rounded-xl p-6">
           <h2 className="text-xl font-semibold text-white mb-6">Informations de paiement</h2>
           
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-6">
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Email
+                Email de confirmation
               </label>
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({...formData, email: e.target.value})}
                 className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
+                placeholder="votre@email.com"
                 required
+                disabled
               />
             </div>
 
-            {/* Méthode de paiement */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-3">
-                Méthode de paiement
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('card')}
-                  className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-colors ${
-                    paymentMethod === 'card'
-                      ? 'border-[#ff0033] bg-[#ff0033]/10 text-white'
-                      : 'border-[#333] bg-[#1a1a1a] text-gray-400'
-                  }`}
-                >
-                  <CreditCard className="w-4 h-4" />
-                  Carte
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('paypal')}
-                  className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-colors ${
-                    paymentMethod === 'paypal'
-                      ? 'border-[#ff0033] bg-[#ff0033]/10 text-white'
-                      : 'border-[#333] bg-[#1a1a1a] text-gray-400'
-                  }`}
-                >
-                  PayPal
-                </button>
+            {/* Information Stripe */}
+            <div className="bg-[#1a1a1a] border border-[#333] rounded-lg p-4">
+              <div className="flex items-center gap-3 mb-2">
+                <Shield className="w-5 h-5 text-green-400" />
+                <span className="text-white font-medium">Paiement sécurisé par Stripe</span>
               </div>
+              <p className="text-gray-400 text-sm">
+                Vous serez redirigé vers une page de paiement sécurisée Stripe pour finaliser votre achat. 
+                Aucune information de carte bancaire n'est stockée sur nos serveurs.
+              </p>
             </div>
-
-            {/* Informations carte */}
-            {paymentMethod === 'card' && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Numéro de carte
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.cardNumber}
-                    onChange={(e) => setFormData({...formData, cardNumber: formatCardNumber(e.target.value)})}
-                    placeholder="1234 5678 9012 3456"
-                    maxLength={19}
-                    className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Date d'expiration
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.expiryDate}
-                      onChange={(e) => setFormData({...formData, expiryDate: formatExpiryDate(e.target.value)})}
-                      placeholder="MM/AA"
-                      maxLength={5}
-                      className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      CVV
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.cvv}
-                      onChange={(e) => setFormData({...formData, cvv: e.target.value.replace(/\D/g, '').substring(0, 4)})}
-                      placeholder="123"
-                      maxLength={4}
-                      className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Nom sur la carte
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.cardName}
-                    onChange={(e) => setFormData({...formData, cardName: e.target.value})}
-                    className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
-                    required
-                  />
-                </div>
-              </>
-            )}
-
-            {/* PayPal */}
-            {paymentMethod === 'paypal' && (
-              <div className="bg-[#1a1a1a] border border-[#333] rounded-lg p-6 text-center">
-                <div className="text-blue-400 text-lg font-semibold mb-2">PayPal</div>
-                <p className="text-gray-400 text-sm">
-                  Vous serez redirigé vers PayPal pour finaliser votre paiement
-                </p>
-              </div>
-            )}
 
             {/* Conditions */}
             <div className="flex items-start gap-3">
@@ -316,23 +234,23 @@ function CheckoutContent() {
 
             {/* Bouton de paiement */}
             <button
-              type="submit"
+              onClick={handleStripeCheckout}
               disabled={isLoading || !formData.acceptTerms}
               className="w-full bg-gradient-to-r from-[#ff0033] to-[#cc0029] text-white py-4 rounded-lg font-semibold hover:from-[#cc0029] hover:to-[#990022] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  Traitement en cours...
+                  Redirection vers Stripe...
                 </>
               ) : (
                 <>
                   <Lock className="w-5 h-5" />
-                  Payer {plan.price}€/{plan.period}
+                  Payer avec Stripe - {plan.price}€/{plan.period}
                 </>
               )}
             </button>
-          </form>
+          </div>
 
           {/* Sécurité */}
           <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-400">
@@ -438,4 +356,4 @@ export default function CheckoutPage() {
       </Suspense>
     </LayoutWithSidebar>
   );
-} 
+}
