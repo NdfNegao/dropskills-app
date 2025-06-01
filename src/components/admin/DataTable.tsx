@@ -22,7 +22,7 @@ interface Action<T> {
 }
 
 interface DataTableProps<T> {
-  title: string;
+  title?: string;
   data: T[];
   columns: Column<T>[];
   actions?: Action<T>[];
@@ -130,7 +130,7 @@ export function DataTable<T extends Record<string, any>>({
     <Card className="bg-[#111] border-[#232323]">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-white">{title}</CardTitle>
+          {title && <CardTitle className="text-white">{title}</CardTitle>}
           <div className="flex items-center gap-3">
             {searchable && (
               <div className="relative">

@@ -58,6 +58,7 @@ export function useAuth() {
     canAccessPremium,
     isAdmin,
     isSuperAdmin,
+    canAccessAdmin: isAdmin || isSuperAdmin,
     session: devUser ? { user: devUser } : session,
     status: devUser ? 'authenticated' : status
   };

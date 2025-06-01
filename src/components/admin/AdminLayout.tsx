@@ -4,25 +4,15 @@ import { useEffect, ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { 
   Users, Bot, FileText, LogOut, BarChart3, Settings, 
-  Activity, TrendingUp, Plus, LucideIcon
+  Activity, TrendingUp
 } from 'lucide-react';
 import Notifications from './Notifications';
 
-interface ActionButton {
-  label: string;
-  icon: LucideIcon;
-  onClick: () => void;
-  variant?: 'primary' | 'secondary';
-}
-
 interface AdminLayoutProps {
   children: ReactNode;
-  title?: string;
-  icon?: LucideIcon;
-  actions?: ActionButton[];
 }
 
-export default function AdminLayout({ children, title, icon: PageIcon, actions }: AdminLayoutProps) {
+export default function AdminLayout({ children }: AdminLayoutProps) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -87,47 +77,11 @@ export default function AdminLayout({ children, title, icon: PageIcon, actions }
 
       {/* Contenu principal */}
       <main className="flex-1 overflow-auto">
-        <div className="p-6">
-          {/* Header avec titre et actions si fournis */}
-          {(title || actions) && (
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-4">
-                {PageIcon && <PageIcon className="w-8 h-8 text-blue-400" />}
-                {title && (
-                  <h1 className="text-2xl font-bold text-white">{title}</h1>
-                )}
-              </div>
-              {actions && actions.length > 0 && (
-                <div className="flex items-center gap-3">
-                  {actions.map((action, index) => {
-                    const Icon = action.icon;
-                    return (
-                      <button
-                        key={index}
-                        onClick={action.onClick}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-                          action.variant === 'primary'
-                            ? 'bg-[#ff0033] text-white hover:bg-[#cc0029]'
-                            : 'bg-gray-800 text-white hover:bg-gray-700'
-                        }`}
-                      >
-                        <Icon className="w-4 h-4" />
-                        {action.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          )}
-          
-          {/* Contenu de la page */}
-          {children}
-        </div>
+        {children}
       </main>
 
       {/* Notifications */}
       <Notifications />
     </div>
   );
-}
+} 

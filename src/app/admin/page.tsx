@@ -1,149 +1,102 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Users, Package, Bot, Activity, BarChart3, TrendingUp, AlertTriangle } from 'lucide-react';
-import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Users, Package, Bot, Activity, LogOut, BarChart3, Settings, FileText } from 'lucide-react';
 
-interface DashboardStats {
-  totalUsers: number;
-  totalTools: number;
-  totalRequests: number;
-  successRate: number;
-  trends: {
-    users: number;
-    tools: number;
-    requests: number;
-    successRate: number;
-  };
-}
-
-export default function AdminDashboardPage() {
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [loading, setLoading] = useState(true);
+export default function AdminDashboard() {
+  const router = useRouter();
 
   useEffect(() => {
-    fetchDashboardStats();
-  }, []);
-
-  const fetchDashboardStats = async () => {
-    try {
-      // Simuler un appel API pour les stats
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setStats({
-        totalUsers: 1234,
-        totalTools: 15,
-        totalRequests: 45200,
-        successRate: 98.5,
-        trends: {
-          users: 12.5,
-          tools: 0,
-          requests: 23.1,
-          successRate: 1.2
-        }
-      });
-    } catch (error) {
-      console.error('Erreur lors du chargement des stats:', error);
-    } finally {
-      setLoading(false);
+    // Vérifier le cookie côté client
+    const adminCookie = document.cookie.split('; ').find(row => row.startsWith('admin='));
+    if (!adminCookie || adminCookie.split('=')[1] !== 'ok') {
+      router.push('/admin/login');
     }
+  }, [router]);
+
+  const handleLogout = () => {
+    document.cookie = 'admin=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    router.push('/admin/login');
   };
 
-  const statsData = [
-    {
-      title: "Utilisateurs totaux",
-      value: stats?.totalUsers.toLocaleString() || '0',
-      change: stats?.trends.users ? `${stats.trends.users > 0 ? '+' : ''}${stats.trends.users}% ce mois` : undefined,
-      changeType: (stats?.trends.users || 0) > 0 ? 'positive' as const : (stats?.trends.users || 0) < 0 ? 'negative' as const : 'neutral' as const,
-      icon: <Users size={24} />
-    },
-    {
-      title: "Outils IA",
-      value: stats?.totalTools || 0,
-      change: stats?.trends.tools !== undefined ? `${stats.trends.tools > 0 ? '+' : ''}${stats.trends.tools} nouveaux` : undefined,
-      changeType: (stats?.trends.tools || 0) > 0 ? 'positive' as const : (stats?.trends.tools || 0) < 0 ? 'negative' as const : 'neutral' as const,
-      icon: <Bot size={24} />
-    },
-    {
-      title: "Requêtes API",
-      value: stats?.totalRequests.toLocaleString() || '0',
-      change: stats?.trends.requests ? `${stats.trends.requests > 0 ? '+' : ''}${stats.trends.requests}% ce mois` : undefined,
-      changeType: (stats?.trends.requests || 0) > 0 ? 'positive' as const : (stats?.trends.requests || 0) < 0 ? 'negative' as const : 'neutral' as const,
-      icon: <Activity size={24} />
-    },
-    {
-      title: "Taux de succès",
-      value: `${stats?.successRate || 0}%`,
-      change: stats?.trends.successRate ? `${stats.trends.successRate > 0 ? '+' : ''}${stats.trends.successRate}% ce mois` : undefined,
-      changeType: (stats?.trends.successRate || 0) > 0 ? 'positive' as const : (stats?.trends.successRate || 0) < 0 ? 'negative' as const : 'neutral' as const,
-      icon: <TrendingUp size={24} />
-    }
-  ];
+  return (
+    <div className="min-h-screen bg-[#0a0a0a] flex">
+      {/* Sidebar simple */}
+      <aside className="w-64 bg-[#111] border-r border-[#232323] p-6">
+        <h2 className="text-xl font-bold text-white mb-8">Admin Panel</h2>
+        <nav className="space-y-2">
+          <a href="/admin" className="flex items-center gap-3 p-3 rounded-lg bg-[#ff0033] text-white">
+            <BarChart3 size={20} /> Dashboard
+          </a>
+          <a href="/admin/utilisateurs" className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] text-gray-300">
+            <Users size={20} /> Utilisateurs
+          </a>
+          <a href="/admin/outils" className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] text-gray-300">
+            <Bot size={20} /> Outils IA
+          </a>
+          <a href="/admin/logs" className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] text-gray-300">
+            <FileText size={20} /> Logs
+          </a>
+          <a href="/admin/parametres" className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] text-gray-300">
+            <Settings size={20} /> Paramètres
+          </a>
+        </nav>
+        <button onClick={handleLogout} className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] text-gray-300 mt-8 w-full">
+          <LogOut size={20} /> Déconnexion
+        </button>
+      </aside>
+      
+      {/* Contenu principal */}
+      <main className="flex-1 p-8">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-3xl font-bold text-white mb-2">Dashboard Admin</h1>
+          <p className="text-gray-400 mb-8">Vue d'ensemble de la plateforme DropSkills</p>
 
-  if (loading) {
-    return (
-      <AdminLayoutWithSidebar
-        icon={<BarChart3 size={24} />}
-        title="Tableau de bord"
-        subtitle="Vue d'ensemble de votre plateforme"
-        stats={[...Array(4)].map((_, i) => ({
-          title: "Chargement...",
-          value: "---",
-          icon: <div className="w-6 h-6 bg-gray-300 rounded animate-pulse" />
-        }))}
-      >
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="animate-pulse">
-            <div className="h-4 bg-gray-300 rounded mb-4"></div>
-            <div className="h-8 bg-gray-300 rounded mb-4"></div>
-            <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+          {/* Statistiques */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
+              <Users className="w-8 h-8 text-blue-400 mb-4" />
+              <h3 className="text-2xl font-bold text-white">1,234</h3>
+              <p className="text-gray-400 text-sm">Utilisateurs</p>
+            </div>
+            <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
+              <Package className="w-8 h-8 text-green-400 mb-4" />
+              <h3 className="text-2xl font-bold text-white">567</h3>
+              <p className="text-gray-400 text-sm">Packs Vendus</p>
+            </div>
+            <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
+              <Bot className="w-8 h-8 text-purple-400 mb-4" />
+              <h3 className="text-2xl font-bold text-white">6</h3>
+              <p className="text-gray-400 text-sm">Outils IA</p>
+            </div>
+            <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
+              <Activity className="w-8 h-8 text-[#ff0033] mb-4" />
+              <h3 className="text-2xl font-bold text-white">89%</h3>
+              <p className="text-gray-400 text-sm">Activité</p>
+            </div>
+          </div>
+
+          {/* Actions rapides */}
+          <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
+            <h2 className="text-xl font-semibold text-white mb-4">Actions Rapides</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <a href="/admin/utilisateurs/nouveau" className="block p-4 bg-[#1a1a1a] rounded-lg border border-[#232323] hover:border-[#ff0033] transition-colors">
+                <h3 className="text-white font-medium">Créer un utilisateur</h3>
+                <p className="text-gray-400 text-sm mt-1">Ajouter un nouvel utilisateur</p>
+              </a>
+              <a href="/admin/outils/nouveau" className="block p-4 bg-[#1a1a1a] rounded-lg border border-[#232323] hover:border-[#ff0033] transition-colors">
+                <h3 className="text-white font-medium">Nouvel outil IA</h3>
+                <p className="text-gray-400 text-sm mt-1">Ajouter un outil IA</p>
+              </a>
+              <a href="/admin/logs" className="block p-4 bg-[#1a1a1a] rounded-lg border border-[#232323] hover:border-[#ff0033] transition-colors">
+                <h3 className="text-white font-medium">Voir les logs</h3>
+                <p className="text-gray-400 text-sm mt-1">Consulter l'activité système</p>
+              </a>
+            </div>
           </div>
         </div>
-      </AdminLayoutWithSidebar>
-    );
-  }
-
-  return (
-    <AdminLayoutWithSidebar
-      icon={<BarChart3 size={24} />}
-      title="Tableau de bord"
-      subtitle="Vue d'ensemble de votre plateforme"
-      stats={statsData}
-    >
-      {/* Actions rapides */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Actions rapides</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <a href="/admin/utilisateurs" className="bg-gray-50 rounded-lg p-6 border border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-colors group">
-            <div className="flex items-center gap-4">
-              <Users className="h-8 w-8 text-blue-600 group-hover:scale-110 transition-transform" />
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Gérer les utilisateurs</h3>
-                <p className="text-gray-600">Voir et modifier les comptes utilisateurs</p>
-              </div>
-            </div>
-          </a>
-          
-          <a href="/admin/outils-ia" className="bg-gray-50 rounded-lg p-6 border border-gray-200 hover:border-green-500 hover:bg-green-50 transition-colors group">
-            <div className="flex items-center gap-4">
-              <Bot className="h-8 w-8 text-green-600 group-hover:scale-110 transition-transform" />
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Outils IA</h3>
-                <p className="text-gray-600">Configurer les outils d'intelligence artificielle</p>
-              </div>
-            </div>
-          </a>
-          
-          <a href="/admin/prompts" className="bg-gray-50 rounded-lg p-6 border border-gray-200 hover:border-purple-500 hover:bg-purple-50 transition-colors group">
-            <div className="flex items-center gap-4">
-              <Activity className="h-8 w-8 text-purple-600 group-hover:scale-110 transition-transform" />
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Prompts</h3>
-                <p className="text-gray-600">Gérer les prompts système</p>
-              </div>
-            </div>
-          </a>
-        </div>
-      </div>
-    </AdminLayoutWithSidebar>
+      </main>
+    </div>
   );
-}
+} 

@@ -77,24 +77,10 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      // Redirection sécurisée - tous les utilisateurs vont vers /dashboard après connexion
-      if (url.startsWith("/")) {
-        // Si l'URL est relative, on redirige vers /dashboard
-        if (url === "/" || url.startsWith("/auth/")) {
-          return `${baseUrl}/dashboard`;
-        }
-        return `${baseUrl}${url}`;
-      }
-      else if (new URL(url).origin === baseUrl) {
-        // Si l'URL est absolue mais sur le même domaine
-        const urlObj = new URL(url);
-        if (urlObj.pathname === "/" || urlObj.pathname.startsWith("/auth/")) {
-          return `${baseUrl}/dashboard`;
-        }
-        return url;
-      }
-      // Par défaut, rediriger vers /dashboard
-      return `${baseUrl}/dashboard`;
+      // Redirection sécurisée
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     }
   },
   secret: process.env.NEXTAUTH_SECRET,
@@ -106,4 +92,4 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 jours
   },
   debug: process.env.NODE_ENV === 'development',
-};
+}; 

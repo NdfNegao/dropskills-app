@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 
 // Interface pour les produits Systeme.io
 interface SystemeIoProduct {
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     // Si pack_id fourni, récupérer le mapping spécifique
     if (packId) {
-      const { data: mapping, error } = await supabaseAdmin
+      const { data: mapping, error } = await supabase
         .from('systeme_io_products')
         .select(`
           *,
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Récupérer tous les mappings
-    const { data: mappings, error } = await supabaseAdmin
+    const { data: mappings, error } = await supabase
       .from('systeme_io_products')
       .select(`
         *,
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Vérifier que le pack existe
-    const { data: pack, error: packError } = await supabaseAdmin
+    const { data: pack, error: packError } = await supabase
       .from('packs')
       .select('id, title, price')
       .eq('id', pack_id)
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Créer ou mettre à jour le mapping
-    const { data: mapping, error } = await supabaseAdmin
+    const { data: mapping, error } = await supabase
       .from('systeme_io_products')
       .upsert({
         systeme_io_product_id,
@@ -175,7 +175,7 @@ export async function PUT(request: NextRequest) {
     if (currency) updateData.currency = currency;
     if (status) updateData.status = status;
 
-    const { data: mapping, error } = await supabaseAdmin
+    const { data: mapping, error } = await supabase
       .from('systeme_io_products')
       .update(updateData)
       .eq('systeme_io_product_id', systeme_io_product_id)
@@ -213,7 +213,7 @@ export async function DELETE(request: NextRequest) {
       }, { status: 400 });
     }
 
-    const { error } = await supabaseAdmin
+    const { error } = await supabase
       .from('systeme_io_products')
       .delete()
       .eq('systeme_io_product_id', systemeIoProductId);
@@ -234,4 +234,4 @@ export async function DELETE(request: NextRequest) {
       error: error instanceof Error ? error.message : 'Erreur inconnue'
     }, { status: 500 });
   }
-} 
+}

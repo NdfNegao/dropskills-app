@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
 
     for (const statement of sqlStatements) {
       try {
-        const { data, error } = await supabaseAdmin.rpc('exec_sql', {
+        const { data, error } = await supabase.rpc('exec_sql', {
           sql_query: statement + ';'
         });
 
@@ -176,7 +176,7 @@ export async function POST(request: NextRequest) {
 async function createTriggers() {
   try {
     // Trigger pour systeme_io_products
-    await supabaseAdmin.rpc('exec_sql', {
+    await supabase.rpc('exec_sql', {
       sql_query: `
         CREATE OR REPLACE FUNCTION update_systeme_io_products_updated_at()
         RETURNS TRIGGER AS $$
@@ -195,7 +195,7 @@ async function createTriggers() {
     });
 
     // Trigger pour systeme_io_orders
-    await supabaseAdmin.rpc('exec_sql', {
+    await supabase.rpc('exec_sql', {
       sql_query: `
         CREATE OR REPLACE FUNCTION update_systeme_io_orders_updated_at()
         RETURNS TRIGGER AS $$
@@ -222,7 +222,7 @@ async function createPolicies() {
     const tables = ['systeme_io_products', 'systeme_io_orders', 'systeme_io_webhooks', 'systeme_io_sync_logs'];
     
     for (const table of tables) {
-      await supabaseAdmin.rpc('exec_sql', {
+      await supabase.rpc('exec_sql', {
         sql_query: `
           ALTER TABLE ${table} ENABLE ROW LEVEL SECURITY;
           
@@ -243,7 +243,7 @@ async function checkTables() {
 
   for (const table of tables) {
     try {
-      const { count, error } = await supabaseAdmin
+      const { count, error } = await supabase
         .from(table)
         .select('*', { count: 'exact', head: true });
 
@@ -261,4 +261,4 @@ async function checkTables() {
   }
 
   return results;
-} 
+}

@@ -1,381 +1,485 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Bot, Plus, Edit, Trash2, ExternalLink } from 'lucide-react';
 import AdminLayout from '@/components/admin/AdminLayout';
-import DataTable from '@/components/admin/DataTable';
-import { StatCard } from '@/components/admin/AdminDashboard';
+import { 
+  Bot, Plus, Search, Filter, Edit2, Trash2, Copy, 
+  X, Check, AlertCircle, Loader2, Crown, Zap
+} from 'lucide-react';
 
-interface Tool {
-  id: number;
+interface AiTool {
+  id: string;
   name: string;
   description: string;
+  type: string;
   category: string;
-  status: 'active' | 'inactive' | 'maintenance';
-  usage: number;
-  lastUsed: string;
-  apiEndpoint: string;
+  icon: string;
+  color: string;
+  is_premium: boolean;
+  step: number;
+  step_title: string;
+  step_description: string;
+  endpoint: string;
+  model: string;
+  temperature: number;
+  max_tokens: number;
+  system_prompt: string;
+  created_at: string;
+  updated_at: string;
 }
 
-export default function AdminToolsPage() {
-  const [tools, setTools] = useState<Tool[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingTool, setEditingTool] = useState<Tool | null>(null);
+const CATEGORIES = ['Acquisition', 'Activation', 'Trafic', 'Contenu'];
+const MODELS = ['gpt-4o-mini', 'gpt-4o', 'gpt-3.5-turbo'];
+const TYPES = [
+  'ICP_MAKER', 'OFFER_GENERATOR', 'TITLE_GENERATOR', 'CONTENT_SYSTEM',
+  'TUNNEL_BUILDER', 'EMAIL_SEQUENCE', 'LEAD_MAGNET', 'VEILLE_STRATEGIQUE'
+];
 
+export default function AdminOutilsPage() {
+  const [tools, setTools] = useState<AiTool[]>([]);
+  const [filteredTools, setFilteredTools] = useState<AiTool[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [showModal, setShowModal] = useState(false);
+  const [editingTool, setEditingTool] = useState<AiTool | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    type: 'ICP_MAKER',
+    category: 'Acquisition',
+    icon: 'Bot',
+    color: 'from-purple-500 to-indigo-600',
+    is_premium: false,
+    step: 1,
+    step_title: '',
+    step_description: '',
+    endpoint: '',
+    model: 'gpt-4o-mini',
+    temperature: 0.7,
+    max_tokens: 1000,
+    system_prompt: ''
+  });
+  const [toast, setToast] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+
+  // Charger les outils
   useEffect(() => {
-    loadTools();
+    fetchTools();
   }, []);
 
-  const loadTools = async () => {
-    setLoading(true);
-    // Simuler un appel API
-    setTimeout(() => {
-      setTools([
-        {
-          id: 1,
-          name: 'GPT-4 Assistant',
-          description: 'Assistant IA avancé pour la génération de texte',
-          category: 'Text Generation',
-          status: 'active',
-          usage: 1250,
-          lastUsed: '2024-01-20',
-          apiEndpoint: '/api/gpt4'
-        },
-        {
-          id: 2,
-          name: 'Image Generator',
-          description: 'Générateur d\'images basé sur DALL-E',
-          category: 'Image Generation',
-          status: 'active',
-          usage: 890,
-          lastUsed: '2024-01-19',
-          apiEndpoint: '/api/dalle'
-        },
-        {
-          id: 3,
-          name: 'Code Assistant',
-          description: 'Assistant pour la génération et révision de code',
-          category: 'Code Generation',
-          status: 'maintenance',
-          usage: 567,
-          lastUsed: '2024-01-18',
-          apiEndpoint: '/api/codegen'
-        },
-        {
-          id: 4,
-          name: 'Translation Tool',
-          description: 'Outil de traduction multilingue',
-          category: 'Translation',
-          status: 'inactive',
-          usage: 234,
-          lastUsed: '2024-01-15',
-          apiEndpoint: '/api/translate'
-        }
-      ]);
+  // Filtrer les outils
+  useEffect(() => {
+    let filtered = tools;
+    
+    if (search) {
+      filtered = filtered.filter(tool => 
+        tool.name.toLowerCase().includes(search.toLowerCase()) ||
+        tool.description.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    
+    if (categoryFilter !== 'all') {
+      filtered = filtered.filter(tool => tool.category === categoryFilter);
+    }
+    
+    setFilteredTools(filtered);
+  }, [tools, search, categoryFilter]);
+
+  const fetchTools = async () => {
+    try {
+      const response = await fetch('/api/admin/ai-tools');
+      const data = await response.json();
+      setTools(data);
       setLoading(false);
-    }, 1000);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'bg-green-900 text-green-300 border border-green-700';
-      case 'inactive': return 'bg-red-900 text-red-300 border border-red-700';
-      case 'maintenance': return 'bg-yellow-900 text-yellow-300 border border-yellow-700';
-      default: return 'bg-gray-900 text-gray-300 border border-gray-700';
+    } catch (error) {
+      showToast('error', 'Erreur lors du chargement des outils');
+      setLoading(false);
     }
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'active': return 'Actif';
-      case 'inactive': return 'Inactif';
-      case 'maintenance': return 'Maintenance';
-      default: return status;
+  const showToast = (type: 'success' | 'error', message: string) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      const url = editingTool 
+        ? `/api/admin/ai-tools/${editingTool.id}`
+        : '/api/admin/ai-tools';
+      
+      const response = await fetch(url, {
+        method: editingTool ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        showToast('success', editingTool ? 'Outil modifié' : 'Outil créé');
+        setShowModal(false);
+        fetchTools();
+        resetForm();
+      } else {
+        throw new Error();
+      }
+    } catch (error) {
+      showToast('error', 'Erreur lors de l\'enregistrement');
     }
   };
 
-  const handleEdit = (tool: Tool) => {
+  const handleDelete = async (id: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cet outil ?')) return;
+    
+    try {
+      const response = await fetch(`/api/admin/ai-tools/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        showToast('success', 'Outil supprimé');
+        fetchTools();
+      } else {
+        throw new Error();
+      }
+    } catch (error) {
+      showToast('error', 'Erreur lors de la suppression');
+    }
+  };
+
+  const handleDuplicate = (tool: AiTool) => {
+    const { id, created_at, updated_at, ...toolData } = tool;
+    setFormData({
+      ...toolData,
+      name: `${tool.name} (copie)`
+    });
+    setEditingTool(null);
+    setShowModal(true);
+  };
+
+  const handleEdit = (tool: AiTool) => {
+    setFormData(tool as any);
     setEditingTool(tool);
-    setIsModalOpen(true);
+    setShowModal(true);
   };
 
-  const handleDelete = (toolId: number) => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cet outil ?')) {
-      setTools(tools.filter(tool => tool.id !== toolId));
-    }
-  };
-
-  const handleSave = (toolData: Partial<Tool>) => {
-    if (editingTool) {
-      // Modifier un outil existant
-      setTools(tools.map(tool => 
-        tool.id === editingTool.id 
-          ? { ...tool, ...toolData }
-          : tool
-      ));
-    } else {
-      // Créer un nouvel outil
-      const newTool: Tool = {
-        id: Date.now(),
-        name: toolData.name || '',
-        description: toolData.description || '',
-        category: toolData.category || '',
-        status: toolData.status || 'inactive',
-        usage: 0,
-        lastUsed: new Date().toISOString().split('T')[0],
-        apiEndpoint: toolData.apiEndpoint || ''
-      };
-      setTools([...tools, newTool]);
-    }
-    setIsModalOpen(false);
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      description: '',
+      type: 'ICP_MAKER',
+      category: 'Acquisition',
+      icon: 'Bot',
+      color: 'from-purple-500 to-indigo-600',
+      is_premium: false,
+      step: 1,
+      step_title: '',
+      step_description: '',
+      endpoint: '',
+      model: 'gpt-4o-mini',
+      temperature: 0.7,
+      max_tokens: 1000,
+      system_prompt: ''
+    });
     setEditingTool(null);
   };
 
-  const columns = [
-    {
-      key: 'tool',
-      label: 'Outil',
-      render: (tool: Tool) => (
-        <div>
-          <div className="text-sm font-medium text-white">{tool.name}</div>
-          <div className="text-sm text-gray-400">{tool.description}</div>
+  if (loading) {
+    return (
+      <AdminLayout>
+        <div className="min-h-screen flex items-center justify-center">
+          <Loader2 className="w-8 h-8 text-white animate-spin" />
         </div>
-      )
-    },
-    {
-      key: 'category',
-      label: 'Catégorie',
-      render: (tool: Tool) => (
-        <span className="text-sm text-white">{tool.category}</span>
-      )
-    },
-    {
-      key: 'status',
-      label: 'Statut',
-      render: (tool: Tool) => (
-        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(tool.status)}`}>
-          {getStatusText(tool.status)}
-        </span>
-      )
-    },
-    {
-      key: 'usage',
-      label: 'Utilisation',
-      render: (tool: Tool) => (
-        <span className="text-sm text-white">{tool.usage.toLocaleString()}</span>
-      )
-    },
-    {
-      key: 'lastUsed',
-      label: 'Dernière utilisation',
-      render: (tool: Tool) => (
-        <span className="text-sm text-gray-400">{tool.lastUsed}</span>
-      )
-    }
-  ];
-
-  const actions = [
-    {
-      icon: ExternalLink,
-      label: 'Tester l\'API',
-      onClick: (tool: Tool) => window.open(tool.apiEndpoint, '_blank'),
-      className: 'text-blue-400 hover:text-blue-300'
-    },
-    {
-      icon: Edit,
-      label: 'Modifier',
-      onClick: (tool: Tool) => handleEdit(tool),
-      className: 'text-yellow-400 hover:text-yellow-300'
-    },
-    {
-      icon: Trash2,
-      label: 'Supprimer',
-      onClick: (tool: Tool) => handleDelete(tool.id),
-      className: 'text-red-400 hover:text-red-300'
-    }
-  ];
-
-  const filters = [
-    {
-      key: 'category',
-      label: 'Catégorie',
-      options: [
-        { value: 'all', label: 'Toutes les catégories' },
-        { value: 'Text Generation', label: 'Génération de texte' },
-        { value: 'Image Generation', label: 'Génération d\'images' },
-        { value: 'Code Generation', label: 'Génération de code' },
-        { value: 'Translation', label: 'Traduction' }
-      ]
-    },
-    {
-      key: 'status',
-      label: 'Statut',
-      options: [
-        { value: 'all', label: 'Tous les statuts' },
-        { value: 'active', label: 'Actif' },
-        { value: 'inactive', label: 'Inactif' },
-        { value: 'maintenance', label: 'Maintenance' }
-      ]
-    }
-  ];
-
-  const handleCreateTool = () => {
-    setEditingTool(null);
-    setIsModalOpen(true);
-  };
+      </AdminLayout>
+    );
+  }
 
   return (
-    <AdminLayout
-      title="Gestion des Outils IA"
-      icon={Bot}
-      actions={[
-        {
-          label: 'Nouvel outil',
-          icon: Plus,
-          onClick: handleCreateTool,
-          variant: 'primary'
-        }
-      ]}
-    >
-      {/* Statistiques */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <StatCard
-          title="Total Outils"
-          value={tools.length.toString()}
-          icon={Bot}
-          color="text-blue-400"
-        />
-        <StatCard
-          title="Actifs"
-          value={tools.filter(t => t.status === 'active').length.toString()}
-          icon={() => <div className="w-3 h-3 bg-green-400 rounded-full" />}
-          color="text-green-400"
-        />
-        <StatCard
-          title="En maintenance"
-          value={tools.filter(t => t.status === 'maintenance').length.toString()}
-          icon={() => <div className="w-3 h-3 bg-yellow-400 rounded-full" />}
-          color="text-yellow-400"
-        />
-        <StatCard
-          title="Utilisation totale"
-          value={tools.reduce((sum, tool) => sum + tool.usage, 0).toLocaleString()}
-          icon={ExternalLink}
-          color="text-purple-400"
-        />
-      </div>
+    <AdminLayout>
+      <div className="h-full">
+        {/* Header */}
+        <header className="bg-[#111] border-b border-[#232323] px-6 py-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-white">Gestion des Outils IA</h1>
+            <button
+              onClick={() => { resetForm(); setShowModal(true); }}
+              className="flex items-center gap-2 px-4 py-2 bg-[#ff0033] text-white rounded-lg hover:bg-[#e6002d] transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Ajouter un outil
+            </button>
+          </div>
+        </header>
 
-      {/* Table des outils */}
-      <DataTable
-        data={tools}
-        columns={columns}
-        actions={actions}
-        filters={filters}
-        loading={loading}
-        searchPlaceholder="Rechercher un outil..."
-        searchKeys={['name', 'description', 'category']}
-        emptyMessage="Aucun outil trouvé"
-      />
-
-      {/* Modal pour créer/modifier un outil */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#111] rounded-xl p-6 border border-[#232323] w-full max-w-md mx-4">
-            <h3 className="text-lg font-semibold text-white mb-4">
-              {editingTool ? 'Modifier l\'outil' : 'Nouvel outil'}
-            </h3>
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.target as HTMLFormElement);
-              handleSave({
-                name: formData.get('name') as string,
-                description: formData.get('description') as string,
-                category: formData.get('category') as string,
-                status: formData.get('status') as 'active' | 'inactive' | 'maintenance',
-                apiEndpoint: formData.get('apiEndpoint') as string
-              });
-            }}>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Nom</label>
-                  <input
-                    type="text"
-                    name="name"
-                    defaultValue={editingTool?.name || ''}
-                    required
-                    className="w-full px-3 py-2 bg-[#1a1a1a] border border-[#232323] rounded-lg text-white focus:outline-none focus:border-[#ff0033]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Description</label>
-                  <textarea
-                    name="description"
-                    defaultValue={editingTool?.description || ''}
-                    required
-                    rows={3}
-                    className="w-full px-3 py-2 bg-[#1a1a1a] border border-[#232323] rounded-lg text-white focus:outline-none focus:border-[#ff0033]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Catégorie</label>
-                  <select
-                    name="category"
-                    defaultValue={editingTool?.category || ''}
-                    required
-                    className="w-full px-3 py-2 bg-[#1a1a1a] border border-[#232323] rounded-lg text-white focus:outline-none focus:border-[#ff0033]"
-                  >
-                    <option value="">Sélectionner une catégorie</option>
-                    <option value="Text Generation">Génération de texte</option>
-                    <option value="Image Generation">Génération d'images</option>
-                    <option value="Code Generation">Génération de code</option>
-                    <option value="Translation">Traduction</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Statut</label>
-                  <select
-                    name="status"
-                    defaultValue={editingTool?.status || 'inactive'}
-                    required
-                    className="w-full px-3 py-2 bg-[#1a1a1a] border border-[#232323] rounded-lg text-white focus:outline-none focus:border-[#ff0033]"
-                  >
-                    <option value="active">Actif</option>
-                    <option value="inactive">Inactif</option>
-                    <option value="maintenance">Maintenance</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Endpoint API</label>
-                  <input
-                    type="text"
-                    name="apiEndpoint"
-                    defaultValue={editingTool?.apiEndpoint || ''}
-                    required
-                    placeholder="/api/..."
-                    className="w-full px-3 py-2 bg-[#1a1a1a] border border-[#232323] rounded-lg text-white focus:outline-none focus:border-[#ff0033]"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-3 mt-6">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-2 bg-[#232323] text-white rounded-lg hover:bg-[#333] transition-colors"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 px-4 py-2 bg-[#ff0033] text-white rounded-lg hover:bg-[#cc0029] transition-colors"
-                >
-                  {editingTool ? 'Modifier' : 'Créer'}
-                </button>
-              </div>
-            </form>
+        {/* Filtres */}
+        <div className="p-6 bg-[#111] border-b border-[#232323]">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Rechercher un outil..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white placeholder-gray-400 focus:border-[#ff0033] focus:outline-none"
+              />
+            </div>
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
+            >
+              <option value="all">Toutes les catégories</option>
+              {CATEGORIES.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
           </div>
         </div>
-      )}
+
+        {/* Tableau */}
+        <div className="p-6">
+          <div className="bg-[#111] rounded-xl border border-[#232323] overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-[#1a1a1a] border-b border-[#232323]">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Nom</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Catégorie</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Modèle</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Premium</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#232323]">
+                {filteredTools.map((tool) => (
+                  <tr key={tool.id} className="hover:bg-[#1a1a1a] transition-colors">
+                    <td className="px-6 py-4">
+                      <div>
+                        <div className="text-sm font-medium text-white">{tool.name}</div>
+                        <div className="text-xs text-gray-400">{tool.description}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-300">{tool.category}</td>
+                    <td className="px-6 py-4 text-sm text-gray-300">{tool.model}</td>
+                    <td className="px-6 py-4">
+                      {tool.is_premium ? (
+                        <Crown className="w-5 h-5 text-yellow-400" />
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleEdit(tool)}
+                          className="p-2 text-gray-400 hover:text-white hover:bg-[#232323] rounded-lg transition-colors"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDuplicate(tool)}
+                          className="p-2 text-gray-400 hover:text-white hover:bg-[#232323] rounded-lg transition-colors"
+                        >
+                          <Copy className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(tool.id)}
+                          className="p-2 text-gray-400 hover:text-red-400 hover:bg-[#232323] rounded-lg transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            
+            {filteredTools.length === 0 && (
+              <div className="text-center py-12">
+                <Bot className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+                <p className="text-gray-400">Aucun outil trouvé</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Modal */}
+        {showModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-[#111] rounded-xl border border-[#232323] max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-[#232323]">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-semibold text-white">
+                    {editingTool ? 'Modifier l\'outil' : 'Ajouter un outil'}
+                  </h2>
+                  <button
+                    onClick={() => { setShowModal(false); resetForm(); }}
+                    className="p-2 text-gray-400 hover:text-white hover:bg-[#232323] rounded-lg transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Nom</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Type</label>
+                    <select
+                      value={formData.type}
+                      onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                      className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
+                    >
+                      {TYPES.map(type => (
+                        <option key={type} value={type}>{type}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+                  <textarea
+                    required
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    rows={3}
+                    className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Catégorie</label>
+                    <select
+                      value={formData.category}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                      className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
+                    >
+                      {CATEGORIES.map(cat => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Modèle</label>
+                    <select
+                      value={formData.model}
+                      onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+                      className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
+                    >
+                      {MODELS.map(model => (
+                        <option key={model} value={model}>{model}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Température</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="1"
+                      value={formData.temperature}
+                      onChange={(e) => setFormData({ ...formData, temperature: parseFloat(e.target.value) })}
+                      className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Max Tokens</label>
+                    <input
+                      type="number"
+                      value={formData.max_tokens}
+                      onChange={(e) => setFormData({ ...formData, max_tokens: parseInt(e.target.value) })}
+                      className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Premium</label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.is_premium}
+                        onChange={(e) => setFormData({ ...formData, is_premium: e.target.checked })}
+                        className="w-4 h-4 text-[#ff0033] bg-[#0a0a0a] border-[#232323] rounded focus:ring-[#ff0033]"
+                      />
+                      <span className="text-gray-300">Outil premium</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Endpoint API</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.endpoint}
+                    onChange={(e) => setFormData({ ...formData, endpoint: e.target.value })}
+                    placeholder="/api/ai/..."
+                    className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">System Prompt</label>
+                  <textarea
+                    required
+                    value={formData.system_prompt}
+                    onChange={(e) => setFormData({ ...formData, system_prompt: e.target.value })}
+                    rows={4}
+                    className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => { setShowModal(false); resetForm(); }}
+                    className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-[#ff0033] text-white rounded-lg hover:bg-[#e6002d] transition-colors"
+                  >
+                    {editingTool ? 'Modifier' : 'Créer'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Toast */}
+        {toast && (
+          <div className={`fixed bottom-4 right-4 px-4 py-3 rounded-lg flex items-center gap-2 ${
+            toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'
+          } text-white`}>
+            {toast.type === 'success' ? <Check className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+            {toast.message}
+          </div>
+        )}
+      </div>
     </AdminLayout>
   );
-}
+} 

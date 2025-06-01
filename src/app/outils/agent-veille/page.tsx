@@ -3,6 +3,48 @@
 import { useState } from 'react';
 import LayoutWithSidebar from '@/components/LayoutWithSidebar';
 import PremiumGuard from '@/components/auth/PremiumGuard';
+
+export interface VeilleFormData {
+  secteur: string;
+  zone: string;
+  objectif: string;
+  typeOpportunite: string[];
+  budgetRessources: string;
+  frequenceVeille: string;
+  canauxVeille: string[];
+}
+
+export interface VeilleAnalysis {
+  opportunites: Opportunity[];
+  trends: any[];
+  veilleInfo: {
+    titre: string;
+    nombreOpportunites: number;
+  };
+  metriques: {
+    opportunitesBlueOcean: number;
+    scoreGlobalMoyen: number;
+    scoreMovenPertinence: number;
+    secteursPrioritaires: string[];
+    potentielTotalEstime: string;
+  };
+  syntheseTendances: {
+    tendancesPrincipales: string[];
+    signauxFaibles: string[];
+    recommandationsStrategiques: string[];
+  };
+  summary: {
+    totalOpportunities: number;
+    blueOceanCount: number;
+    averageScore: number;
+    topSectors: string[];
+  };
+  metadata: {
+    analysisDate: string;
+    secteur: string;
+    zone: string;
+  };
+}
 import { 
   Search, 
   TrendingUp, 
@@ -20,7 +62,7 @@ import {
   AlertTriangle
 } from 'lucide-react';
 
-interface Opportunity {
+export interface Opportunity {
   id: string;
   titre: string;
   description: string;
@@ -38,6 +80,7 @@ interface Opportunity {
   dateDetection: string;
   tags: string[];
   isBlueOcean?: boolean;
+  lienReference?: string;
 }
 
 function AgentVeilleContent() {
@@ -583,4 +626,4 @@ export default function AgentVeillePage() {
       </PremiumGuard>
     </LayoutWithSidebar>
   );
-} 
+}

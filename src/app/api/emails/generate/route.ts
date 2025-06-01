@@ -135,7 +135,7 @@ Contraintes :
     userPrompt += `\n\nFournis une séquence email complète selon le format JSON demandé.`;
 
     try {
-      const openaiClient = openai();
+      const openaiClient = openai;
       
       const completion = await openaiClient.chat.completions.create({
         model: "gpt-4o",
@@ -258,4 +258,4 @@ Contraintes :
       { status: 500 }
     );
   }
-} 
+}

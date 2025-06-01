@@ -121,7 +121,7 @@ Privilégie les opportunités "Blue Ocean" avec peu de concurrence et fort poten
 Les opportunités doivent être adaptées au budget et aux ressources disponibles.`;
 
     try {
-      const openaiClient = openai();
+      const openaiClient = openai;
       
       const completion = await openaiClient.chat.completions.create({
         model: "gpt-4o",
@@ -329,4 +329,4 @@ Les opportunités doivent être adaptées au budget et aux ressources disponible
       { status: 500 }
     );
   }
-} 
+}

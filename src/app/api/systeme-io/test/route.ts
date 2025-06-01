@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
   try {
@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
 
     // Test 1: Vérifier les tables Systeme.io
     try {
-      const { data: products, error: productsError } = await supabaseAdmin
+      const { data: products, error: productsError } = await supabase
         .from('systeme_io_products')
         .select('*')
         .limit(5);
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 
     // Test 2: Vérifier les commandes
     try {
-      const { data: orders, error: ordersError } = await supabaseAdmin
+      const { data: orders, error: ordersError } = await supabase
         .from('systeme_io_orders')
         .select('*')
         .limit(5);
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
 
     // Test 3: Vérifier les webhooks logs
     try {
-      const { data: webhooks, error: webhooksError } = await supabaseAdmin
+      const { data: webhooks, error: webhooksError } = await supabase
         .from('systeme_io_webhooks')
         .select('*')
         .order('created_at', { ascending: false })
@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
 
     // Test 4: Vérifier les logs de sync
     try {
-      const { data: syncLogs, error: syncError } = await supabaseAdmin
+      const { data: syncLogs, error: syncError } = await supabase
         .from('systeme_io_sync_logs')
         .select('*')
         .order('started_at', { ascending: false })
@@ -183,14 +183,14 @@ async function getSystemeIoStats() {
     { count: webhooksCount },
     { count: syncLogsCount }
   ] = await Promise.all([
-    supabaseAdmin.from('systeme_io_products').select('*', { count: 'exact', head: true }),
-    supabaseAdmin.from('systeme_io_orders').select('*', { count: 'exact', head: true }),
-    supabaseAdmin.from('systeme_io_webhooks').select('*', { count: 'exact', head: true }),
-    supabaseAdmin.from('systeme_io_sync_logs').select('*', { count: 'exact', head: true })
+    supabase.from('systeme_io_products').select('*', { count: 'exact', head: true }),
+    supabase.from('systeme_io_orders').select('*', { count: 'exact', head: true }),
+    supabase.from('systeme_io_webhooks').select('*', { count: 'exact', head: true }),
+    supabase.from('systeme_io_sync_logs').select('*', { count: 'exact', head: true })
   ]);
 
   // Statistiques des webhooks par type
-  const { data: webhookStats } = await supabaseAdmin
+  const { data: webhookStats } = await supabase
     .from('systeme_io_webhooks')
     .select('event_type, processed')
     .order('created_at', { ascending: false })
@@ -224,7 +224,7 @@ async function createTestData() {
     console.log('🧪 Création de données de test Systeme.io...');
 
     // Récupérer quelques packs existants
-    const { data: packs } = await supabaseAdmin
+    const { data: packs } = await supabase
       .from('packs')
       .select('id, title, price')
       .limit(3);
@@ -253,7 +253,7 @@ async function createTestData() {
       }
     ];
 
-    const { data: createdProducts, error: productsError } = await supabaseAdmin
+    const { data: createdProducts, error: productsError } = await supabase
       .from('systeme_io_products')
       .upsert(testProducts, { onConflict: 'systeme_io_product_id' })
       .select();
@@ -288,7 +288,7 @@ async function createTestData() {
       }
     ];
 
-    const { data: createdOrders, error: ordersError } = await supabaseAdmin
+    const { data: createdOrders, error: ordersError } = await supabase
       .from('systeme_io_orders')
       .upsert(testOrders, { onConflict: 'systeme_io_order_id' })
       .select();
@@ -339,7 +339,7 @@ async function simulateWebhook() {
     };
 
     // Enregistrer le webhook simulé
-    const { data: webhookLog, error: webhookError } = await supabaseAdmin
+    const { data: webhookLog, error: webhookError } = await supabase
       .from('systeme_io_webhooks')
       .insert({
         event_type: testWebhookData.event_type,
@@ -379,9 +379,9 @@ async function cleanupTestData() {
 
     // Supprimer les données de test
     const cleanupResults = await Promise.allSettled([
-      supabaseAdmin.from('systeme_io_orders').delete().ilike('systeme_io_order_id', 'test_%'),
-      supabaseAdmin.from('systeme_io_products').delete().ilike('systeme_io_product_id', 'test_%'),
-      supabaseAdmin.from('systeme_io_webhooks').delete().ilike('event_id', 'test_%')
+      supabase.from('systeme_io_orders').delete().ilike('systeme_io_order_id', 'test_%'),
+      supabase.from('systeme_io_products').delete().ilike('systeme_io_product_id', 'test_%'),
+      supabase.from('systeme_io_webhooks').delete().ilike('event_id', 'test_%')
     ]);
 
     console.log('✅ Nettoyage terminé');
@@ -402,4 +402,4 @@ async function cleanupTestData() {
     console.error('❌ Erreur nettoyage:', error);
     throw error;
   }
-} 
+}

@@ -7,7 +7,7 @@ import Link from 'next/link';
 import {
   Home, Lock, BookOpen, User, Settings, LogOut, 
   Sparkles, BrainCog, Rocket, FolderKanban, Mail, 
-  CalendarCheck, LineChart, GraduationCap, Target, X, Users, HelpCircle, Shield
+  CalendarCheck, LineChart, GraduationCap, Target, X, Users, HelpCircle
 } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
@@ -137,17 +137,6 @@ export default function LayoutWithSidebar({
         {/* Footer mobile */}
         <div className="mt-auto p-4 border-t border-gray-800">
           <MobileNavLink icon={<User />} label="Mon Compte" href="/compte" onClick={() => setMobileMenuOpen(false)} />
-          
-          {/* Bouton Admin - visible uniquement pour cyril.iriebi@gmail.com */}
-          {user?.email === 'cyril.iriebi@gmail.com' && (
-            <MobileNavLink 
-              icon={<Shield />} 
-              label="Administration" 
-              href="/admin" 
-              onClick={() => setMobileMenuOpen(false)} 
-            />
-          )}
-          
           <button
             onClick={() => {
               setMobileMenuOpen(false);
@@ -242,4 +231,4 @@ function MobileNavLink({ icon, label, href, badge, isPremium, onClick }: MobileN
       )}
     </Link>
   );
-}
+} 
