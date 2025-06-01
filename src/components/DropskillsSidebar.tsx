@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { signOut } from 'next-auth/react';
 import { useAuth } from "@/hooks/useAuth";
 import {
-  Home, Lock, GraduationCap, FolderOpen, Settings, LogOut, ChevronLeft, ChevronRight, Users, HelpCircle, User, MessageSquarePlus, Heart, Crown
+  Home, Lock, GraduationCap, FolderOpen, Settings, LogOut, ChevronLeft, ChevronRight, Users, HelpCircle, User, MessageSquarePlus, Heart, Crown, Shield
 } from "lucide-react";
 import DollarConfetti from './DollarConfetti';
 
@@ -19,7 +19,7 @@ export default function DropskillsSidebar({
 }: DropskillsSidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
-  const { user, canAccessPremium, isLoading } = useAuth();
+  const { user, canAccessPremium, isLoading, isAdmin } = useAuth();
 
   const handleCollapse = (value: boolean) => {
     setCollapsed(value);
@@ -50,6 +50,11 @@ export default function DropskillsSidebar({
     { icon: <Users />, label: "Affiliation", href: "/affiliate", tooltip: "Gagnez de l'argent en recommandant DropSkills" },
     { icon: <HelpCircle />, label: "Support", href: "/support", tooltip: "Aide et support" }
   ];
+
+  // Section admin (uniquement pour cyril.iriebi@gmail.com)
+  const adminNavigation = isAdmin ? [
+    { icon: <Shield />, label: "Administration", href: "/admin", tooltip: "Panneau d'administration" }
+  ] : [];
 
   if (isLoading) {
     return (
@@ -141,6 +146,30 @@ export default function DropskillsSidebar({
         <div className={`my-4 ${collapsed ? 'mx-2' : 'mx-2'}`}>
           <div className="h-px bg-gray-800"></div>
         </div>
+
+        {/* Section admin (si utilisateur admin) */}
+        {isAdmin && (
+          <>
+            <div className="mb-2">
+              {adminNavigation.map((item, idx) => (
+                <SidebarLink
+                  key={item.label}
+                  collapsed={collapsed}
+                  icon={item.icon}
+                  label={item.label}
+                  href={item.href}
+                  tooltip={item.tooltip}
+                  index={250 + idx}
+                />
+              ))}
+            </div>
+            
+            {/* Séparateur */}
+            <div className={`my-4 ${collapsed ? 'mx-2' : 'mx-2'}`}>
+              <div className="h-px bg-gray-800"></div>
+            </div>
+          </>
+        )}
 
         {/* Section compte et autres */}
         <div className="mb-2">
@@ -280,4 +309,4 @@ function SidebarCTA({ icon, label, cta, collapsed, href }: SidebarCTAProps) {
       <DollarConfetti trigger={confetti} onComplete={() => setConfetti(false)} />
     </div>
   );
-} 
+}
