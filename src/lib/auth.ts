@@ -53,6 +53,13 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id;
         session.user.firstName = token.firstName;
         session.user.lastName = token.lastName;
+        
+        // Assigner le rôle ADMIN à cyril.iriebi@gmail.com
+        if (session.user.email === 'cyril.iriebi@gmail.com') {
+          (session.user as any).role = 'ADMIN';
+        } else {
+          (session.user as any).role = 'FREE';
+        }
       }
       return session;
     },

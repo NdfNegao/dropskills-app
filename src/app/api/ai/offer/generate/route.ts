@@ -14,7 +14,7 @@ async function checkPremiumAccess() {
 
   // Vérification du rôle premium
   const userRole = session.user.role;
-  if (!['PREMIUM', 'ADMIN', 'SUPER_ADMIN'].includes(userRole)) {
+  if (!['PREMIUM', 'ADMIN'].includes(userRole)) {
     return { error: 'Accès premium requis', status: 403 };
   }
 
@@ -176,4 +176,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-} 
+}

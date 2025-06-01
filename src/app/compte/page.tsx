@@ -545,22 +545,22 @@ function BillingTab({ user }: { user: any }) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white font-medium">
-                {user?.role === 'PREMIUM' ? 'Plan Premium' : 'Plan Gratuit'}
+                {(user?.role === 'PREMIUM' || user?.role === 'ADMIN') ? 'Plan Premium' : 'Plan Gratuit'}
               </p>
               <p className="text-gray-400 text-sm">
-                {user?.role === 'PREMIUM' 
+                {(user?.role === 'PREMIUM' || user?.role === 'ADMIN')
                   ? 'Accès illimité à tous les outils IA premium' 
                   : 'Accès limité aux outils gratuits uniquement'
                 }
               </p>
-              {user?.role === 'PREMIUM' && (
+              {(user?.role === 'PREMIUM' || user?.role === 'ADMIN') && (
                 <p className="text-green-400 text-xs mt-1">
-                  ✓ Facturation gérée via Systeme.io
+                  ✓ {user?.role === 'ADMIN' ? 'Accès administrateur' : 'Facturation gérée via Systeme.io'}
                 </p>
               )}
             </div>
             <div className="flex gap-2">
-              {user?.role !== 'PREMIUM' ? (
+              {(user?.role !== 'PREMIUM' && user?.role !== 'ADMIN') ? (
                 <button 
                   onClick={handleUpgrade}
                   className="bg-[#ff0033] hover:bg-[#cc0029] text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
@@ -623,7 +623,7 @@ function BillingTab({ user }: { user: any }) {
           </div>
         </div>
 
-        {user?.role === 'PREMIUM' && (
+        {(user?.role === 'PREMIUM' || user?.role === 'ADMIN') && (
           <div className="bg-[#1a1a1a] rounded-lg p-6">
             <h3 className="font-medium text-white mb-4">Support Premium</h3>
             <p className="text-gray-400 mb-4">

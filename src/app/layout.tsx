@@ -5,7 +5,6 @@ import SessionWrapper from "../components/SessionWrapper";
 import Script from "next/script";
 import { SavedProductsProvider } from "@/context/SavedProductsContext";
 import PageTransitionClient from "@/components/PageTransitionClient";
-import PostHogProvider from "@/components/PostHogProvider";
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/react';
 import PerformanceTracker from '@/components/PerformanceTracker';
@@ -45,7 +44,6 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className + " min-h-screen"}>
-        <PostHogProvider />
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe

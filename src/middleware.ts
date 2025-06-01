@@ -47,7 +47,12 @@ export default withAuth(
         return NextResponse.redirect(new URL('/auth/signin?callbackUrl=' + encodeURIComponent(pathname), req.url));
       }
 
-      // Pour l'instant, bloquer l'accès premium (à implémenter selon vos besoins)
+      // Permettre l'accès à cyril.iriebi@gmail.com (admin)
+      if (token.email === 'cyril.iriebi@gmail.com') {
+        return NextResponse.next();
+      }
+
+      // Pour les autres utilisateurs, vérifier le statut premium (à implémenter)
       return NextResponse.redirect(new URL('/premium?upgrade=required', req.url));
     }
 
@@ -57,7 +62,12 @@ export default withAuth(
         return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
       }
 
-      // Pour l'instant, bloquer l'accès premium API (à implémenter selon vos besoins)
+      // Permettre l'accès à cyril.iriebi@gmail.com (admin)
+      if (token.email === 'cyril.iriebi@gmail.com') {
+        return NextResponse.next();
+      }
+
+      // Pour les autres utilisateurs, vérifier le statut premium (à implémenter)
       return NextResponse.json({ error: 'Premium subscription required' }, { status: 403 });
     }
 

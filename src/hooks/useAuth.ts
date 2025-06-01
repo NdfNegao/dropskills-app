@@ -61,6 +61,9 @@ export function useAuth() {
   // Utiliser l'utilisateur de dev si disponible, sinon l'utilisateur de session
   const user = devUser || (session?.user as User) || null;
   
+  // Accès admin : uniquement pour cyril.iriebi@gmail.com
+  const isAdmin = user?.email === 'cyril.iriebi@gmail.com';
+  
   // Vérifier le statut premium depuis Supabase
   useEffect(() => {
     const checkPremiumStatus = async () => {
@@ -86,9 +89,6 @@ export function useAuth() {
 
   // Déterminer si l'utilisateur peut accéder au contenu premium
   const canAccessPremium = premiumStatus || isAdmin; // Admin a accès premium automatiquement
-
-  // Accès admin : uniquement pour cyril.iriebi@gmail.com
-  const isAdmin = user?.email === 'cyril.iriebi@gmail.com';
 
   // État de chargement global
   const loading = devUser ? false : (status === 'loading' || isLoading);

@@ -13,7 +13,7 @@ async function checkPremiumAccess(request: NextRequest) {
   }
 
   const userRole = (session.user as any).role;
-  const canAccessPremium = userRole === 'PREMIUM' || userRole === 'ADMIN' || userRole === 'SUPER_ADMIN';
+  const canAccessPremium = userRole === 'PREMIUM' || userRole === 'ADMIN';
 
   if (!canAccessPremium) {
     return { authorized: false, error: 'Premium subscription required' };
@@ -297,4 +297,4 @@ async function logAIUsage(userId: string, action: string, data: any) {
   } catch (error) {
     console.error('Erreur lors du logging:', error);
   }
-} 
+}

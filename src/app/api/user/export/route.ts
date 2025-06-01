@@ -104,7 +104,7 @@ export async function GET(request: NextRequest) {
         accountAge: userData.created_at ? 
           Math.floor((new Date().getTime() - new Date(userData.created_at).getTime()) / (1000 * 60 * 60 * 24)) + ' jours' : 
           'Non disponible',
-        isPremium: userData.role === 'PREMIUM',
+        isPremium: userData.role === 'PREMIUM' || userData.role === 'ADMIN',
         isAdmin: userData.email === 'cyril.iriebi@gmail.com'
       }
     };
