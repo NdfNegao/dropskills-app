@@ -1,6 +1,5 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import GoogleProvider from 'next-auth/providers/google';
 import bcrypt from 'bcryptjs';
 
 export const authOptions: NextAuthOptions = {
@@ -28,10 +27,6 @@ export const authOptions: NextAuthOptions = {
         }
         return null;
       }
-    }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     })
   ],
   pages: {
@@ -40,16 +35,7 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile }) {
-      // Permettre la connexion Google
-      if (account?.provider === 'google') {
-        // Vérifier si c'est l'email admin
-        if (user.email === 'cyril.iriebi@gmail.com') {
-          // Assurez-vous que l'admin peut se connecter
-          return true;
-        }
-        // Pour les autres utilisateurs Google, on peut les créer
-        return true;
-      }
+      // Autoriser toutes les connexions valides
       return true;
     },
     async jwt({ token, user, account }) {

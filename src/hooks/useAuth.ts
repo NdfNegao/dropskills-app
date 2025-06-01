@@ -30,6 +30,19 @@ export function useAuth() {
           localStorage.removeItem('dev-user');
           localStorage.removeItem('dev-session');
         }
+      } else {
+        // Auto-créer une session admin si pas de session
+        const autoAdminUser = {
+          id: 'admin-auto',
+          email: 'cyril.iriebi@gmail.com',
+          name: 'Cyril Iriebi',
+          firstName: 'Cyril',
+          lastName: 'Iriebi',
+          isDevAccount: true
+        };
+        setDevUser(autoAdminUser);
+        localStorage.setItem('dev-user', JSON.stringify(autoAdminUser));
+        localStorage.setItem('dev-session', 'true');
       }
     }
     setIsLoading(false);
