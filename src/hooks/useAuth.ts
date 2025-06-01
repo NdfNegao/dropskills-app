@@ -44,9 +44,9 @@ export function useAuth() {
                           user?.role === 'ADMIN' || 
                           user?.role === 'SUPER_ADMIN';
 
-  // Déterminer si l'utilisateur est admin
-  const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
-  const isSuperAdmin = user?.role === 'SUPER_ADMIN';
+  // Déterminer si l'utilisateur est admin (simplifié)
+  const isAdmin = user?.email === 'cyril.iriebi@gmail.com';
+  const isSuperAdmin = user?.email === 'cyril.iriebi@gmail.com';
 
   // État de chargement global
   const loading = devUser ? false : (status === 'loading' || isLoading);
@@ -61,4 +61,4 @@ export function useAuth() {
     session: devUser ? { user: devUser } : session,
     status: devUser ? 'authenticated' : status
   };
-} 
+}

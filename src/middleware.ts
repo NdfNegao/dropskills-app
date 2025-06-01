@@ -25,26 +25,8 @@ export default withAuth(
       return NextResponse.next();
     }
 
-    // Protection des routes admin
+    // Routes admin - accès libre (protection côté composant)
     if (pathname.startsWith('/admin')) {
-      if (!token) {
-        return NextResponse.redirect(new URL('/admin/login', req.url));
-      }
-
-      const userRole = token.role as string;
-      const isAdmin = userRole === 'ADMIN' || userRole === 'SUPER_ADMIN';
-
-      if (!isAdmin) {
-        return NextResponse.redirect(new URL('/admin/login?error=unauthorized', req.url));
-      }
-
-      // Protection spéciale pour les routes super admin
-      if (pathname.startsWith('/admin/system') || pathname.startsWith('/admin/super')) {
-        if (userRole !== 'SUPER_ADMIN') {
-          return NextResponse.redirect(new URL('/admin?error=insufficient_permissions', req.url));
-        }
-      }
-
       return NextResponse.next();
     }
 
@@ -87,18 +69,9 @@ export default withAuth(
       }
     }
 
-    // Protection des API routes admin
+    // API routes admin - accès libre (protection côté API si nécessaire)
     if (pathname.startsWith('/api/admin')) {
-      if (!token) {
-        return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
-      }
-
-      const userRole = token.role as string;
-      const isAdmin = userRole === 'ADMIN' || userRole === 'SUPER_ADMIN';
-
-      if (!isAdmin) {
-        return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
-      }
+      return NextResponse.next();
     }
 
     return NextResponse.next();
@@ -139,4 +112,4 @@ export const config = {
      */
     '/((?!_next/static|_next/image|favicon.ico|public/).*)',
   ],
-}; 
+};

@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Users, UserPlus, Eye, Edit, Trash2 } from 'lucide-react';
-import AdminLayout from '@/components/admin/AdminLayout';
+import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
 import DataTable from '@/components/admin/DataTable';
-import { StatCard } from '@/components/admin/AdminDashboard';
 
 interface User {
   id: number;
@@ -126,58 +125,68 @@ export default function AdminUsersPage() {
     console.log('Créer un nouvel utilisateur');
   };
 
-  return (
-    <AdminLayout
-      title="Gestion des Utilisateurs"
-      icon={Users}
-      actions={[
-        {
-          label: 'Nouvel utilisateur',
-          icon: UserPlus,
-          onClick: handleCreateUser,
-          variant: 'primary'
-        }
-      ]}
+  const statsData = [
+    {
+      title: "Total Utilisateurs",
+      value: stats.total.toLocaleString(),
+      change: "+12% ce mois",
+      changeType: 'positive' as const,
+      icon: <Users size={24} />
+    },
+    {
+      title: "Actifs",
+      value: stats.active.toLocaleString(),
+      change: "+5% cette semaine",
+      changeType: 'positive' as const,
+      icon: <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center"><div className="w-3 h-3 bg-white rounded-full" /></div>
+    },
+    {
+      title: "Inactifs",
+      value: stats.inactive.toLocaleString(),
+      change: "-2% cette semaine",
+      changeType: 'negative' as const,
+      icon: <div className="w-6 h-6 bg-red-400 rounded-full flex items-center justify-center"><div className="w-3 h-3 bg-white rounded-full" /></div>
+    },
+    {
+      title: "Nouveaux (7j)",
+      value: stats.newThisWeek.toLocaleString(),
+      change: "+8% vs semaine précédente",
+      changeType: 'positive' as const,
+      icon: <UserPlus size={24} />
+    }
+  ];
+
+  const pageActions = (
+    <button
+      onClick={handleCreateUser}
+      className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
     >
-      {/* Statistiques */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <StatCard
-          title="Total Utilisateurs"
-          value={stats.total.toLocaleString()}
-          icon={Users}
-          color="text-blue-400"
-        />
-        <StatCard
-          title="Actifs"
-          value={stats.active.toLocaleString()}
-          icon={() => <div className="w-3 h-3 bg-green-400 rounded-full" />}
-          color="text-green-400"
-        />
-        <StatCard
-          title="Inactifs"
-          value={stats.inactive.toLocaleString()}
-          icon={() => <div className="w-3 h-3 bg-red-400 rounded-full" />}
-          color="text-red-400"
-        />
-        <StatCard
-          title="Nouveaux (7j)"
-          value={stats.newThisWeek.toLocaleString()}
-          icon={UserPlus}
-          color="text-purple-400"
+      <UserPlus size={20} />
+      Nouvel utilisateur
+    </button>
+  );
+
+  return (
+    <AdminLayoutWithSidebar
+      icon={<Users size={24} />}
+      title="Gestion des Utilisateurs"
+      subtitle="Gérez tous les utilisateurs de la plateforme"
+      stats={statsData}
+      actions={pageActions}
+    >
+      {/* Table des utilisateurs */}
+      <div className="bg-white rounded-lg border border-gray-200">
+        <DataTable
+          data={users}
+          columns={columns}
+          actions={actions}
+          filters={filters}
+          loading={loading}
+          searchPlaceholder="Rechercher par nom ou email..."
+          searchKeys={['name', 'email']}
+          emptyMessage="Aucun utilisateur trouvé"
         />
       </div>
-
-      {/* Table des utilisateurs */}
-      <DataTable
-        data={users}
-        columns={columns}
-        actions={actions}
-        filters={filters}
-        loading={loading}
-        searchPlaceholder="Rechercher par nom ou email..."
-        searchKeys={['name', 'email']}
-        emptyMessage="Aucun utilisateur trouvé"
-      />
-    </AdminLayout>
+    </AdminLayoutWithSidebar>
   );
 }

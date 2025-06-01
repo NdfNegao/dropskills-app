@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { signOut } from 'next-auth/react';
 import { useAuth } from "@/hooks/useAuth";
 import {
-  Home, Lock, GraduationCap, FolderOpen, Settings, LogOut, ChevronLeft, ChevronRight, Users, HelpCircle, User, MessageSquarePlus, Heart, Crown
+  Home, Lock, GraduationCap, FolderOpen, Settings, LogOut, ChevronLeft, ChevronRight, Users, HelpCircle, User, MessageSquarePlus, Heart, Crown, Shield
 } from "lucide-react";
 import DollarConfetti from './DollarConfetti';
 
@@ -50,6 +50,9 @@ export default function DropskillsSidebar({
     { icon: <Users />, label: "Affiliation", href: "/affiliate", tooltip: "Gagnez de l'argent en recommandant DropSkills" },
     { icon: <HelpCircle />, label: "Support", href: "/support", tooltip: "Aide et support" }
   ];
+
+  // Bouton admin pour cyril.iriebi@gmail.com uniquement
+  const showAdminButton = user?.email === 'cyril.iriebi@gmail.com';
 
   if (isLoading) {
     return (
@@ -155,6 +158,19 @@ export default function DropskillsSidebar({
               index={300 + idx}
             />
           ))}
+          
+          {/* Bouton Admin - visible uniquement pour cyril.iriebi@gmail.com */}
+          {showAdminButton && (
+            <SidebarLink
+              collapsed={collapsed}
+              icon={<Shield />}
+              label="Administration"
+              href="/admin"
+              tooltip="Panneau d'administration"
+              index={399}
+            />
+          )}
+          
           <button
             onClick={handleSignOut}
             className={`group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 font-medium relative text-left w-full hover:scale-105 mt-2 hover:bg-[#1a1a1a]`}
@@ -280,4 +296,4 @@ function SidebarCTA({ icon, label, cta, collapsed, href }: SidebarCTAProps) {
       <DollarConfetti trigger={confetti} onComplete={() => setConfetti(false)} />
     </div>
   );
-} 
+}
