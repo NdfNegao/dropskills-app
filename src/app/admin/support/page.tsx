@@ -1,9 +1,11 @@
 "use client";
 import { MessageSquare, Clock, AlertCircle, CheckCircle } from 'lucide-react';
+import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
 
 export default function AdminSupport() {
   return (
-    <div className="max-w-7xl mx-auto py-8 px-4">
+    <AdminLayoutWithSidebar>
+      <div className="max-w-7xl mx-auto py-8 px-4">
       <div className="flex items-center gap-4 mb-8">
         <MessageSquare className="w-8 h-8 text-blue-400" />
         <h1 className="text-2xl font-bold text-white">Support client</h1>
@@ -104,6 +106,7 @@ export default function AdminSupport() {
         <p className="text-lg font-semibold mb-2">Section en construction</p>
         <p>La gestion avancée du support arrive bientôt !</p>
       </div>
-    </div>
+      </div>
+    </AdminLayoutWithSidebar>
   );
-} 
+}

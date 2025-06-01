@@ -1,9 +1,11 @@
 "use client";
 import { Users, UserPlus } from 'lucide-react';
+import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
 
 export default function AdminUtilisateurs() {
   return (
-    <div className="max-w-7xl mx-auto py-8 px-4">
+    <AdminLayoutWithSidebar>
+      <div className="max-w-7xl mx-auto py-8 px-4">
       <div className="flex items-center gap-4 mb-8">
         <Users className="w-8 h-8 text-blue-400" />
         <h1 className="text-2xl font-bold text-white">Gestion des utilisateurs</h1>
@@ -69,6 +71,7 @@ export default function AdminUtilisateurs() {
         <p className="text-lg font-semibold mb-2">Section en construction</p>
         <p>La gestion avancée des utilisateurs arrive bientôt !</p>
       </div>
-    </div>
+      </div>
+    </AdminLayoutWithSidebar>
   );
-} 
+}

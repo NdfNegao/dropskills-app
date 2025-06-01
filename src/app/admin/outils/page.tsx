@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
+import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
 import { 
   Bot, Plus, Search, Filter, Edit2, Trash2, Copy, 
   X, Check, AlertCircle, Loader2, Crown, Zap
@@ -187,16 +187,16 @@ export default function AdminOutilsPage() {
 
   if (loading) {
     return (
-      <AdminLayout>
+      <AdminLayoutWithSidebar>
         <div className="min-h-screen flex items-center justify-center">
           <Loader2 className="w-8 h-8 text-white animate-spin" />
         </div>
-      </AdminLayout>
+      </AdminLayoutWithSidebar>
     );
   }
 
   return (
-    <AdminLayout>
+    <AdminLayoutWithSidebar>
       <div className="h-full">
         {/* Header */}
         <header className="bg-[#111] border-b border-[#232323] px-6 py-4">
@@ -480,6 +480,6 @@ export default function AdminOutilsPage() {
           </div>
         )}
       </div>
-    </AdminLayout>
+    </AdminLayoutWithSidebar>
   );
-} 
+}

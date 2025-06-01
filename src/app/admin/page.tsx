@@ -1,52 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Users, Package, Bot, Activity, LogOut, BarChart3, Settings, FileText } from 'lucide-react';
+import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
+import { Users, Package, Bot, Activity, BarChart3, Settings, FileText } from 'lucide-react';
 
 export default function AdminDashboard() {
-  const router = useRouter();
-
-  useEffect(() => {
-    // Vérifier le cookie côté client
-    const adminCookie = document.cookie.split('; ').find(row => row.startsWith('admin='));
-    if (!adminCookie || adminCookie.split('=')[1] !== 'ok') {
-      router.push('/admin/login');
-    }
-  }, [router]);
-
-  const handleLogout = () => {
-    document.cookie = 'admin=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    router.push('/admin/login');
-  };
-
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex">
-      {/* Sidebar simple */}
-      <aside className="w-64 bg-[#111] border-r border-[#232323] p-6">
-        <h2 className="text-xl font-bold text-white mb-8">Admin Panel</h2>
-        <nav className="space-y-2">
-          <a href="/admin" className="flex items-center gap-3 p-3 rounded-lg bg-[#ff0033] text-white">
-            <BarChart3 size={20} /> Dashboard
-          </a>
-          <a href="/admin/utilisateurs" className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] text-gray-300">
-            <Users size={20} /> Utilisateurs
-          </a>
-          <a href="/admin/outils" className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] text-gray-300">
-            <Bot size={20} /> Outils IA
-          </a>
-          <a href="/admin/logs" className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] text-gray-300">
-            <FileText size={20} /> Logs
-          </a>
-          <a href="/admin/parametres" className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] text-gray-300">
-            <Settings size={20} /> Paramètres
-          </a>
-        </nav>
-        <button onClick={handleLogout} className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a1a] text-gray-300 mt-8 w-full">
-          <LogOut size={20} /> Déconnexion
-        </button>
-      </aside>
-      
+    <AdminLayoutWithSidebar>
       {/* Contenu principal */}
       <main className="flex-1 p-8">
         <div className="max-w-7xl mx-auto">
@@ -95,8 +54,7 @@ export default function AdminDashboard() {
               </a>
             </div>
           </div>
-        </div>
-      </main>
-    </div>
-  );
-} 
+        </main>
+      </AdminLayoutWithSidebar>
+    );
+  }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
+import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
 import { 
   BarChart3, TrendingUp, DollarSign, Zap, Users, 
   Bot, AlertTriangle, Loader2, Calendar, Download
@@ -95,11 +95,11 @@ export default function AdminAnalyticsPage() {
 
   if (loading || !analytics) {
     return (
-      <AdminLayout>
+      <AdminLayoutWithSidebar>
         <div className="min-h-screen flex items-center justify-center">
           <Loader2 className="w-8 h-8 text-white animate-spin" />
         </div>
-      </AdminLayout>
+      </AdminLayoutWithSidebar>
     );
   }
 
@@ -118,7 +118,7 @@ export default function AdminAnalyticsPage() {
   }, []);
 
   return (
-    <AdminLayout>
+    <AdminLayoutWithSidebar>
       <div className="h-full">
         {/* Header */}
         <header className="bg-[#111] border-b border-[#232323] px-6 py-4">
@@ -289,6 +289,6 @@ export default function AdminAnalyticsPage() {
           </div>
         </div>
       </div>
-    </AdminLayout>
+    </AdminLayoutWithSidebar>
   );
-} 
+}

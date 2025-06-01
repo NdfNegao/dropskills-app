@@ -1,18 +1,27 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
-import { cookies } from 'next/headers';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { Parser } from 'json2csv';
 import PDFDocument from 'pdfkit';
 
-// Vérification du cookie admin
-const isAdmin = (request: Request) => {
-  const cookieStore = cookies();
-  const adminCookie = cookieStore.get('admin');
-  return adminCookie?.value === 'ok';
+// Vérification des permissions admin
+const isAdmin = async () => {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) return false;
+  
+  const supabase = createClient();
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('can_access_admin, is_super_admin')
+    .eq('email', session.user.email)
+    .single();
+    
+  return profile?.can_access_admin || profile?.is_super_admin;
 };
 
 export async function GET(request: Request) {
-  if (!isAdmin(request)) {
+  if (!(await isAdmin())) {
     return new NextResponse('Unauthorized', { status: 401 });
   }
 
@@ -121,4 +130,4 @@ export async function GET(request: Request) {
     console.error('Erreur lors de l\'export:', error);
     return new NextResponse('Erreur lors de l\'export', { status: 500 });
   }
-} 
+}

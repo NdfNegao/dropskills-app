@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import AdminLayout from './AdminLayout';
+import AdminLayoutWithSidebar from './AdminLayoutWithSidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { LucideIcon } from 'lucide-react';
 
@@ -49,7 +49,7 @@ export function StatCard({ title, value, icon: Icon, color, trend }: StatCardPro
 
 export function AdminDashboard({ title, description, icon: Icon, children, actions }: AdminDashboardProps) {
   return (
-    <AdminLayout>
+    <AdminLayoutWithSidebar>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -72,7 +72,7 @@ export function AdminDashboard({ title, description, icon: Icon, children, actio
         {/* Content */}
         {children}
       </div>
-    </AdminLayout>
+    </AdminLayoutWithSidebar>
   );
 }
 
