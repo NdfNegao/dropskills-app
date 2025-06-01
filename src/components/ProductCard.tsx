@@ -213,8 +213,8 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">{product.students} étudiants</span>
-              </div>
-            </div>
+        </div>
+      </div>
             <div className="flex justify-end mt-2">
               <ProductActions product={product} />
             </div>
@@ -230,8 +230,8 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
         <div className="bg-card border border-border rounded-xl flex overflow-hidden hover:border-[#ff0033] transition-colors group-hover:shadow-lg">
           <div className="relative w-48 min-w-[12rem] h-32 flex-shrink-0">
             <ImageWithFallback
-              src={product.image}
-              alt={product.title}
+          src={product.image} 
+          alt={product.title} 
               width={192}
               height={128}
               className="w-full h-full object-cover rounded-t-lg"
@@ -239,7 +239,7 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
             {product.isPremium && (
               <div className="absolute top-2 right-2 bg-[#ff0033] text-white px-2 py-1 rounded text-xs font-medium">
                 Premium
-              </div>
+        </div>
             )}
           </div>
           <div className="flex-1 p-4 flex flex-col justify-between">
@@ -265,11 +265,11 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
               </div>
               <div className="flex-1 flex justify-end">
                 <ProductActions product={product} />
-              </div>
-            </div>
+          </div>
+      </div>
             <Link href={`/produits/${product.id}`} className="mt-3 w-full bg-[#ff0033] hover:bg-[#cc0029] text-white py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#ff0033]">
-              <ExternalLink className="w-4 h-4" />
-              Voir
+            <ExternalLink className="w-4 h-4" />
+          Voir
             </Link>
           </div>
         </div>

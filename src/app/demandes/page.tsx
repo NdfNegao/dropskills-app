@@ -396,7 +396,7 @@ export default function DemandesPage() {
         {showToast && (
           <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#232323] text-white px-6 py-3 rounded-full shadow-lg z-50 animate-fade-in">
             Fonctionnalité Premium réservée aux abonnés. 🚀
-          </div>
+      </div>
         )}
       </PageBentoLayout>
     </LayoutWithSidebar>
