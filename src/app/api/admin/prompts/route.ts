@@ -156,7 +156,7 @@ export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
-    if (!session?.user?.email || (session.user.role !== 'ADMIN' && session.user.role !== 'SUPER_ADMIN')) {
+    if (!session?.user?.email || session.user.email !== 'cyril.iriebi@gmail.com') {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
@@ -204,7 +204,7 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
-    if (!session?.user?.email || (session.user.role !== 'ADMIN' && session.user.role !== 'SUPER_ADMIN')) {
+    if (!session?.user?.email || session.user.email !== 'cyril.iriebi@gmail.com') {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
@@ -255,7 +255,7 @@ export async function PUT(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
-    if (!session?.user?.email || (session.user.role !== 'ADMIN' && session.user.role !== 'SUPER_ADMIN')) {
+    if (!session?.user?.email || session.user.email !== 'cyril.iriebi@gmail.com') {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
@@ -304,7 +304,7 @@ export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
-    if (!session?.user?.email || session.user.role !== 'SUPER_ADMIN') {
+    if (!session?.user?.email || session.user.email !== 'cyril.iriebi@gmail.com') {
       return NextResponse.json({ error: 'Non autorisé - Super Admin requis' }, { status: 401 });
     }
 
@@ -331,4 +331,4 @@ export async function DELETE(request: NextRequest) {
     console.error('Erreur lors de la suppression du prompt:', error);
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
-} 
+}

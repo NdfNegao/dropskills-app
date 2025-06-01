@@ -105,7 +105,7 @@ export async function GET(request: NextRequest) {
           Math.floor((new Date().getTime() - new Date(userData.created_at).getTime()) / (1000 * 60 * 60 * 24)) + ' jours' : 
           'Non disponible',
         isPremium: userData.role === 'PREMIUM',
-        isAdmin: userData.role === 'SUPER_ADMIN'
+        isAdmin: userData.email === 'cyril.iriebi@gmail.com'
       }
     };
 
@@ -118,4 +118,4 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-} 
+}

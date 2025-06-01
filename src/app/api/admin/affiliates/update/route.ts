@@ -21,7 +21,7 @@ export async function PUT(request: NextRequest) {
       .eq('email', session.user.email)
       .single();
 
-    if (!userData || (userData.role !== 'SUPER_ADMIN' && userData.role !== 'ADMIN')) {
+    if (!userData || userData.email !== 'cyril.iriebi@gmail.com') {
       return NextResponse.json(
         { error: 'Permissions insuffisantes' },
         { status: 403 }
@@ -78,4 +78,4 @@ export async function PUT(request: NextRequest) {
       { status: 500 }
     );
   }
-} 
+}

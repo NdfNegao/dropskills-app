@@ -3,91 +3,61 @@ import { BrainCircuit, Plus, Star, Copy } from 'lucide-react';
 import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
 
 export default function AdminPrompts() {
+  const statsData = [
+    {
+      title: "Total prompts",
+      value: "156",
+      icon: <BrainCircuit size={24} />
+    },
+    {
+      title: "Actifs",
+      value: "142",
+      icon: <Star size={24} />
+    },
+    {
+      title: "Utilisations/jour",
+      value: "2,345",
+      icon: <Copy size={24} />
+    },
+    {
+      title: "Nouveaux",
+      value: "8",
+      icon: <Plus size={24} />
+    }
+  ];
+
   return (
-    <AdminLayoutWithSidebar>
-      <div className="max-w-7xl mx-auto py-8 px-4">
-      <div className="flex items-center gap-4 mb-8">
-        <BrainCircuit className="w-8 h-8 text-blue-400" />
-        <h1 className="text-2xl font-bold text-white">Gestion des prompts IA</h1>
-        <a href="/admin/prompts/nouveau" className="ml-auto bg-[#ff0033] hover:bg-[#cc0029] text-white px-4 py-2 rounded-lg flex items-center gap-2 font-semibold">
-          <Plus className="w-5 h-5" /> Nouveau prompt
-        </a>
-      </div>
+    <AdminLayoutWithSidebar
+      icon={<BrainCircuit size={24} />}
+      title="Gestion des prompts IA"
+      subtitle="Gérez les prompts d'intelligence artificielle de la plateforme"
+      stats={statsData}
+    >
 
-      {/* Statistiques rapides */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Total prompts</h3>
-          <p className="text-3xl font-bold text-blue-400">89</p>
-        </div>
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Prompts publics</h3>
-          <p className="text-3xl font-bold text-green-400">67</p>
-        </div>
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Utilisations</h3>
-          <p className="text-3xl font-bold text-purple-400">5.2k</p>
-        </div>
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Note moyenne</h3>
-          <p className="text-3xl font-bold text-yellow-400">4.7</p>
-        </div>
-      </div>
-
-      {/* Tableau des prompts */}
-      <div className="bg-[#111] rounded-xl p-6 border border-[#232323] mb-8 overflow-x-auto">
-        <h2 className="text-lg font-semibold text-white mb-4">Liste des prompts</h2>
-        <table className="min-w-full text-sm text-gray-300">
+      {/* Liste des prompts */}
+      <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow mb-8 overflow-x-auto">
+        <h2 className="text-2xl font-semibold text-black mb-6">Gestion des prompts</h2>
+        <table className="w-full">
           <thead>
-            <tr className="border-b border-[#232323]">
-              <th className="py-2 px-4 text-left">Titre</th>
-              <th className="py-2 px-4 text-left">Catégorie</th>
-              <th className="py-2 px-4 text-left">Auteur</th>
-              <th className="py-2 px-4 text-left">Utilisations</th>
-              <th className="py-2 px-4 text-left">Note</th>
-              <th className="py-2 px-4 text-left">Statut</th>
-              <th className="py-2 px-4 text-left">Actions</th>
+            <tr className="border-b border-gray-200">
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Titre</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Catégorie</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Modèle</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Statut</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Utilisations</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b border-[#232323]">
-              <td className="py-2 px-4">Assistant Code JavaScript</td>
-              <td className="py-2 px-4">Développement</td>
-              <td className="py-2 px-4">Admin</td>
-              <td className="py-2 px-4">456</td>
-              <td className="py-2 px-4">
-                <span className="flex items-center gap-1 text-yellow-400">
-                  <Star className="w-4 h-4 fill-current" /> 4.8
-                </span>
-              </td>
-              <td className="py-2 px-4"><span className="text-green-400">Public</span></td>
-              <td className="py-2 px-4">
-                <div className="flex gap-2">
-                  <button className="text-blue-400 hover:underline">Modifier</button>
-                  <button className="text-gray-400 hover:underline">
-                    <Copy className="w-4 h-4" />
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td className="py-2 px-4">Générateur de contenu marketing</td>
-              <td className="py-2 px-4">Marketing</td>
-              <td className="py-2 px-4">Admin</td>
-              <td className="py-2 px-4">324</td>
-              <td className="py-2 px-4">
-                <span className="flex items-center gap-1 text-yellow-400">
-                  <Star className="w-4 h-4 fill-current" /> 4.6
-                </span>
-              </td>
-              <td className="py-2 px-4"><span className="text-green-400">Public</span></td>
-              <td className="py-2 px-4">
-                <div className="flex gap-2">
-                  <button className="text-blue-400 hover:underline">Modifier</button>
-                  <button className="text-gray-400 hover:underline">
-                    <Copy className="w-4 h-4" />
-                  </button>
-                </div>
+            <tr className="border-b border-gray-100 hover:bg-gray-50">
+              <td className="py-3 px-4 text-black font-medium">Générateur d'articles de blog</td>
+              <td className="py-3 px-4 text-gray-600">Marketing</td>
+              <td className="py-3 px-4 text-gray-600">GPT-4</td>
+              <td className="py-3 px-4"><span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">Actif</span></td>
+              <td className="py-3 px-4 text-gray-600">1,234</td>
+              <td className="py-3 px-4">
+                <button className="text-blue-600 hover:text-blue-800 mr-3 font-medium">Modifier</button>
+                <button className="text-red-600 hover:text-red-800 font-medium">Supprimer</button>
               </td>
             </tr>
           </tbody>
@@ -95,29 +65,28 @@ export default function AdminPrompts() {
       </div>
 
       {/* Prompts populaires */}
-      <div className="bg-[#111] rounded-xl p-6 border border-[#232323] mb-8">
-        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <Star className="w-5 h-5 text-yellow-400" />
+      <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow mb-8">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <Star className="w-5 h-5 text-yellow-600" />
           Prompts les plus populaires
         </h2>
         <div className="space-y-3">
-          <div className="flex justify-between items-center p-3 bg-[#0a0a0a] rounded-lg">
-            <span className="text-gray-300">Assistant Code JavaScript</span>
-            <span className="text-yellow-400 font-semibold">456 utilisations</span>
+          <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
+            <span className="text-gray-700 font-medium">Assistant Code JavaScript</span>
+            <span className="text-yellow-600 font-semibold">456 utilisations</span>
           </div>
-          <div className="flex justify-between items-center p-3 bg-[#0a0a0a] rounded-lg">
-            <span className="text-gray-300">Générateur de contenu marketing</span>
-            <span className="text-yellow-400 font-semibold">324 utilisations</span>
+          <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
+            <span className="text-gray-700 font-medium">Générateur de contenu marketing</span>
+            <span className="text-yellow-600 font-semibold">324 utilisations</span>
           </div>
         </div>
       </div>
 
-      {/* Message en construction */}
-      <div className="bg-yellow-900/20 border border-yellow-700 text-yellow-300 rounded-lg p-6 text-center">
-        <p className="text-lg font-semibold mb-2">Section en construction</p>
-        <p>La gestion avancée des prompts IA arrive bientôt !</p>
-      </div>
-      </div>
+        {/* Message en construction */}
+        <div className="bg-yellow-900/20 border border-yellow-700 text-yellow-300 rounded-lg p-6 text-center">
+          <p className="text-lg font-semibold mb-2">Section en construction</p>
+          <p>La gestion avancée des prompts IA arrive bientôt !</p>
+        </div>
     </AdminLayoutWithSidebar>
   );
 }

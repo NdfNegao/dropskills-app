@@ -3,84 +3,61 @@ import { Bot, Plus, Zap, Activity } from 'lucide-react';
 import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
 
 export default function AdminOutilsIA() {
+  const statsData = [
+    {
+      title: "Total outils IA",
+      value: "28",
+      icon: <Bot size={24} />
+    },
+    {
+      title: "Actifs",
+      value: "25",
+      icon: <Zap size={24} />
+    },
+    {
+      title: "Utilisations/jour",
+      value: "456",
+      icon: <Activity size={24} />
+    },
+    {
+      title: "Premium",
+      value: "12",
+      icon: <Plus size={24} />
+    }
+  ];
+
   return (
-    <AdminLayoutWithSidebar>
-      <div className="max-w-7xl mx-auto py-8 px-4">
-      <div className="flex items-center gap-4 mb-8">
-        <Bot className="w-8 h-8 text-blue-400" />
-        <h1 className="text-2xl font-bold text-white">Gestion des outils IA</h1>
-        <a href="/admin/outils-ia/nouveau" className="ml-auto bg-[#ff0033] hover:bg-[#cc0029] text-white px-4 py-2 rounded-lg flex items-center gap-2 font-semibold">
-          <Plus className="w-5 h-5" /> Nouvel outil
-        </a>
-      </div>
+    <AdminLayoutWithSidebar
+      icon={<Bot size={24} />}
+      title="Gestion des outils IA"
+      subtitle="Gérez les outils d'intelligence artificielle de la plateforme"
+      stats={statsData}
+    >
 
-      {/* Statistiques rapides */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Total outils</h3>
-          <p className="text-3xl font-bold text-blue-400">15</p>
-        </div>
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Outils actifs</h3>
-          <p className="text-3xl font-bold text-green-400">12</p>
-        </div>
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Utilisations/jour</h3>
-          <p className="text-3xl font-bold text-purple-400">2.4k</p>
-        </div>
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">API Calls</h3>
-          <p className="text-3xl font-bold text-yellow-400">45.2k</p>
-        </div>
-      </div>
-
-      {/* Tableau des outils */}
-      <div className="bg-[#111] rounded-xl p-6 border border-[#232323] mb-8 overflow-x-auto">
-        <h2 className="text-lg font-semibold text-white mb-4">Liste des outils IA</h2>
-        <table className="min-w-full text-sm text-gray-300">
+      {/* Liste des outils IA */}
+      <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow mb-8 overflow-x-auto">
+        <h2 className="text-2xl font-semibold text-black mb-6">Gestion des outils IA</h2>
+        <table className="w-full">
           <thead>
-            <tr className="border-b border-[#232323]">
-              <th className="py-2 px-4 text-left">Nom de l'outil</th>
-              <th className="py-2 px-4 text-left">Catégorie</th>
-              <th className="py-2 px-4 text-left">Modèle IA</th>
-              <th className="py-2 px-4 text-left">Utilisations</th>
-              <th className="py-2 px-4 text-left">Statut</th>
-              <th className="py-2 px-4 text-left">Actions</th>
+            <tr className="border-b border-gray-200">
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Nom</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Catégorie</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Modèle IA</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Statut</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Utilisations</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b border-[#232323]">
-              <td className="py-2 px-4">Générateur de Code</td>
-              <td className="py-2 px-4">Développement</td>
-              <td className="py-2 px-4">GPT-4</td>
-              <td className="py-2 px-4">1.2k</td>
-              <td className="py-2 px-4">
-                <span className="flex items-center gap-1 text-green-400">
-                  <Activity className="w-4 h-4" /> Actif
-                </span>
-              </td>
-              <td className="py-2 px-4">
-                <div className="flex gap-2">
-                  <button className="text-blue-400 hover:underline">Modifier</button>
-                  <button className="text-red-400 hover:underline">Désactiver</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td className="py-2 px-4">Assistant Marketing</td>
-              <td className="py-2 px-4">Marketing</td>
-              <td className="py-2 px-4">Claude-3</td>
-              <td className="py-2 px-4">856</td>
-              <td className="py-2 px-4">
-                <span className="flex items-center gap-1 text-green-400">
-                  <Activity className="w-4 h-4" /> Actif
-                </span>
-              </td>
-              <td className="py-2 px-4">
-                <div className="flex gap-2">
-                  <button className="text-blue-400 hover:underline">Modifier</button>
-                  <button className="text-red-400 hover:underline">Désactiver</button>
-                </div>
+            <tr className="border-b border-gray-100 hover:bg-gray-50">
+              <td className="py-3 px-4 text-black font-medium">Générateur de contenu</td>
+              <td className="py-3 px-4 text-gray-600">Marketing</td>
+              <td className="py-3 px-4 text-gray-600">GPT-4</td>
+              <td className="py-3 px-4"><span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">Actif</span></td>
+              <td className="py-3 px-4 text-gray-600">1,234</td>
+              <td className="py-3 px-4">
+                <button className="text-blue-600 hover:text-blue-800 mr-3 font-medium">Modifier</button>
+                <button className="text-red-600 hover:text-red-800 font-medium">Désactiver</button>
               </td>
             </tr>
           </tbody>
@@ -88,29 +65,28 @@ export default function AdminOutilsIA() {
       </div>
 
       {/* Outils populaires */}
-      <div className="bg-[#111] rounded-xl p-6 border border-[#232323] mb-8">
-        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <Zap className="w-5 h-5 text-yellow-400" />
+      <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow mb-8">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <Zap className="w-5 h-5 text-yellow-600" />
           Outils les plus utilisés
         </h2>
         <div className="space-y-3">
-          <div className="flex justify-between items-center p-3 bg-[#0a0a0a] rounded-lg">
-            <span className="text-gray-300">Générateur de Code</span>
-            <span className="text-yellow-400 font-semibold">1.2k utilisations</span>
+          <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
+            <span className="text-gray-700 font-medium">Générateur de Code</span>
+            <span className="text-yellow-600 font-semibold">1.2k utilisations</span>
           </div>
-          <div className="flex justify-between items-center p-3 bg-[#0a0a0a] rounded-lg">
-            <span className="text-gray-300">Assistant Marketing</span>
-            <span className="text-yellow-400 font-semibold">856 utilisations</span>
+          <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
+            <span className="text-gray-700 font-medium">Assistant Marketing</span>
+            <span className="text-yellow-600 font-semibold">856 utilisations</span>
           </div>
         </div>
       </div>
 
-      {/* Message en construction */}
-      <div className="bg-yellow-900/20 border border-yellow-700 text-yellow-300 rounded-lg p-6 text-center">
-        <p className="text-lg font-semibold mb-2">Section en construction</p>
-        <p>La gestion avancée des outils IA arrive bientôt !</p>
-      </div>
-      </div>
+        {/* Message en construction */}
+        <div className="bg-yellow-900/20 border border-yellow-700 text-yellow-300 rounded-lg p-6 text-center">
+          <p className="text-lg font-semibold mb-2">Section en construction</p>
+          <p>La gestion avancée des outils IA arrive bientôt !</p>
+        </div>
     </AdminLayoutWithSidebar>
   );
 }

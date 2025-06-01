@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Settings, Save, RefreshCw, Mail, Globe, Palette, Bell, Database, Shield } from 'lucide-react';
+import { Settings, Save, RefreshCw, Mail, Globe, Palette, Bell, Database, Shield, Server, Users, Lock } from 'lucide-react';
 import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
 
 interface AppSettings {
@@ -84,34 +84,38 @@ export default function AdminSettingsPage() {
 
   const statsData = [
     {
-      title: "Paramètres",
-      value: "12",
-      icon: <Settings size={24} />
-    },
-    {
-      title: "Dernière MAJ",
-      value: "2h ago",
-      icon: <RefreshCw size={24} />
-    },
-    {
-      title: "Mode",
+      icon: <Server className="w-5 h-5" />,
+      label: "Mode",
       value: settings?.maintenanceMode ? "Maintenance" : "Production",
-      icon: <Globe size={24} />
+      color: "text-blue-400"
     },
     {
-      title: "Notifications",
+      icon: <Bell className="w-5 h-5" />,
+      label: "Notifications",
       value: settings?.emailNotifications ? "Activées" : "Désactivées",
-      icon: <Bell size={24} />
+      color: "text-green-400"
+    },
+    {
+      icon: <Users className="w-5 h-5" />,
+      label: "Inscriptions",
+      value: settings?.registrationEnabled ? "Ouvertes" : "Fermées",
+      color: "text-purple-400"
+    },
+    {
+      icon: <Lock className="w-5 h-5" />,
+      label: "Session",
+      value: `${settings?.sessionTimeout || 30}min`,
+      color: "text-yellow-400"
     }
   ];
 
   if (loading) {
     return (
       <AdminLayoutWithSidebar
-        icon={<Settings size={24} />}
+        icon={<Settings className="w-6 h-6" />}
         title="Configuration"
-        subtitle="Paramètres généraux de l'application"
-        stats={statsData.map(stat => ({ ...stat, value: '---' }))}
+        subtitle="Chargement des paramètres..."
+        stats={statsData.map(stat => ({ title: stat.label, value: '---', icon: stat.icon }))}
       >
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="animate-pulse space-y-4">
@@ -126,22 +130,28 @@ export default function AdminSettingsPage() {
 
   return (
     <AdminLayoutWithSidebar
-      icon={<Settings size={24} />}
+      icon={<Settings className="w-6 h-6" />}
       title="Configuration"
-      subtitle="Paramètres généraux de l'application"
-      stats={statsData}
-      actions={
-        <button 
-          onClick={handleSave}
-          disabled={saving}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 disabled:opacity-50"
-        >
-          <Save size={20} className={saving ? 'animate-pulse' : ''} />
-          {saving ? 'Sauvegarde...' : 'Sauvegarder'}
-        </button>
-      }
+      subtitle="Gérer les paramètres de l'application"
+      stats={statsData.map(stat => ({ title: stat.label, value: stat.value, icon: stat.icon }))}
+      actions={[
+        {
+          label: "Sauvegarder",
+          onClick: handleSave,
+          variant: "default" as const,
+          icon: <Save className="w-4 h-4" />,
+          loading: saving
+        },
+        {
+          label: "Actualiser",
+          onClick: fetchSettings,
+          variant: "secondary" as const,
+          icon: <RefreshCw className="w-4 h-4" />,
+          loading: loading
+        }
+      ]}
     >
-      <div className="bg-white rounded-lg border border-gray-200">
+        <div className="bg-white rounded-lg border border-gray-200">
         {/* Onglets */}
         <div className="border-b border-gray-200">
           <nav className="flex space-x-8 px-6" aria-label="Tabs">
@@ -164,266 +174,240 @@ export default function AdminSettingsPage() {
 
         {/* Contenu des onglets */}
         <div className="p-6">
-          {settings && (
-            <>
-              {/* Onglet Général */}
-              {activeTab === 'general' && (
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Informations générales</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Nom du site
-                        </label>
-                        <input
-                          type="text"
-                          value={settings.siteName}
-                          onChange={(e) => handleSettingChange('siteName', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Langue
-                        </label>
-                        <select
-                          value={settings.language}
-                          onChange={(e) => handleSettingChange('language', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        >
-                          <option value="fr">Français</option>
-                          <option value="en">English</option>
-                          <option value="es">Español</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="mt-4">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Description du site
-                      </label>
-                      <textarea
-                        value={settings.siteDescription}
-                        onChange={(e) => handleSettingChange('siteDescription', e.target.value)}
-                        rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                  </div>
+          {activeTab === 'general' && (
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Nom du site
+                </label>
+                <input
+                  type="text"
+                  value={settings?.siteName || ''}
+                  onChange={(e) => handleSettingChange('siteName', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
 
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Fonctionnalités</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">Mode maintenance</label>
-                          <p className="text-sm text-gray-500">Désactiver temporairement l'accès au site</p>
-                        </div>
-                        <button
-                          onClick={() => handleSettingChange('maintenanceMode', !settings.maintenanceMode)}
-                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                            settings.maintenanceMode ? 'bg-red-600' : 'bg-gray-200'
-                          }`}
-                        >
-                          <span
-                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                              settings.maintenanceMode ? 'translate-x-6' : 'translate-x-1'
-                            }`}
-                          />
-                        </button>
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">Inscription ouverte</label>
-                          <p className="text-sm text-gray-500">Permettre aux nouveaux utilisateurs de s'inscrire</p>
-                        </div>
-                        <button
-                          onClick={() => handleSettingChange('registrationEnabled', !settings.registrationEnabled)}
-                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                            settings.registrationEnabled ? 'bg-blue-600' : 'bg-gray-200'
-                          }`}
-                        >
-                          <span
-                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                              settings.registrationEnabled ? 'translate-x-6' : 'translate-x-1'
-                            }`}
-                          />
-                        </button>
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">Analytics</label>
-                          <p className="text-sm text-gray-500">Collecter des données d'utilisation anonymes</p>
-                        </div>
-                        <button
-                          onClick={() => handleSettingChange('analyticsEnabled', !settings.analyticsEnabled)}
-                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                            settings.analyticsEnabled ? 'bg-blue-600' : 'bg-gray-200'
-                          }`}
-                        >
-                          <span
-                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                              settings.analyticsEnabled ? 'translate-x-6' : 'translate-x-1'
-                            }`}
-                          />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Description du site
+                </label>
+                <textarea
+                  value={settings?.siteDescription || ''}
+                  onChange={(e) => handleSettingChange('siteDescription', e.target.value)}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email de contact
+                  </label>
+                  <input
+                    type="email"
+                    value={settings?.contactEmail || ''}
+                    onChange={(e) => handleSettingChange('contactEmail', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
-              )}
 
-              {/* Onglet Email */}
-              {activeTab === 'email' && (
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Configuration Email</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Email de contact
-                        </label>
-                        <input
-                          type="email"
-                          value={settings.contactEmail}
-                          onChange={(e) => handleSettingChange('contactEmail', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Email de support
-                        </label>
-                        <input
-                          type="email"
-                          value={settings.supportEmail}
-                          onChange={(e) => handleSettingChange('supportEmail', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Notifications</h3>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <label className="text-sm font-medium text-gray-700">Notifications par email</label>
-                        <p className="text-sm text-gray-500">Envoyer des notifications par email aux administrateurs</p>
-                      </div>
-                      <button
-                        onClick={() => handleSettingChange('emailNotifications', !settings.emailNotifications)}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                          settings.emailNotifications ? 'bg-blue-600' : 'bg-gray-200'
-                        }`}
-                      >
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            settings.emailNotifications ? 'translate-x-6' : 'translate-x-1'
-                          }`}
-                        />
-                      </button>
-                    </div>
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email de support
+                  </label>
+                  <input
+                    type="email"
+                    value={settings?.supportEmail || ''}
+                    onChange={(e) => handleSettingChange('supportEmail', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
-              )}
+              </div>
 
-              {/* Onglet Apparence */}
-              {activeTab === 'appearance' && (
-                <div className="space-y-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Thème</h3>
-                    <div className="grid grid-cols-3 gap-4">
-                      {['light', 'dark', 'auto'].map((theme) => (
-                        <button
-                          key={theme}
-                          onClick={() => handleSettingChange('theme', theme)}
-                          className={`p-4 border-2 rounded-lg text-center transition-colors ${
-                            settings.theme === theme
-                              ? 'border-blue-500 bg-blue-50'
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                        >
-                          <div className="text-sm font-medium text-gray-900 capitalize">{theme}</div>
-                          <div className="text-xs text-gray-500 mt-1">
-                            {theme === 'light' && 'Thème clair'}
-                            {theme === 'dark' && 'Thème sombre'}
-                            {theme === 'auto' && 'Automatique'}
-                          </div>
-                        </button>
-                      ))}
-                    </div>
+                    <h3 className="text-sm font-medium text-gray-700">Mode maintenance</h3>
+                    <p className="text-sm text-gray-500">Désactiver temporairement le site</p>
                   </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={settings?.maintenanceMode || false}
+                      onChange={(e) => handleSettingChange('maintenanceMode', e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
                 </div>
-              )}
 
-              {/* Onglet Sécurité */}
-              {activeTab === 'security' && (
-                <div className="space-y-6">
+                <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Sessions</h3>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Timeout de session (minutes)
-                      </label>
-                      <input
-                        type="number"
-                        value={settings.sessionTimeout}
-                        onChange={(e) => handleSettingChange('sessionTimeout', parseInt(e.target.value))}
-                        className="w-full md:w-1/3 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                      <p className="text-sm text-gray-500 mt-1">
-                        Durée avant déconnexion automatique des utilisateurs inactifs
-                      </p>
-                    </div>
+                    <h3 className="text-sm font-medium text-gray-700">Inscriptions ouvertes</h3>
+                    <p className="text-sm text-gray-500">Permettre aux nouveaux utilisateurs de s'inscrire</p>
                   </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={settings?.registrationEnabled || false}
+                      onChange={(e) => handleSettingChange('registrationEnabled', e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
                 </div>
-              )}
+              </div>
+            </div>
+          )}
 
-              {/* Onglet Système */}
-              {activeTab === 'system' && (
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Limites système</h3>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Taille maximale des fichiers (MB)
-                      </label>
-                      <input
-                        type="number"
-                        value={settings.maxFileSize}
-                        onChange={(e) => handleSettingChange('maxFileSize', parseInt(e.target.value))}
-                        className="w-full md:w-1/3 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                      <p className="text-sm text-gray-500 mt-1">
-                        Taille maximale autorisée pour les uploads de fichiers
-                      </p>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Actions système</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <button className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left">
-                        <RefreshCw className="h-6 w-6 text-blue-600 mb-2" />
-                        <div className="font-medium text-gray-900">Vider le cache</div>
-                        <div className="text-sm text-gray-600">Nettoyer le cache de l'application</div>
-                      </button>
-                      <button className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left">
-                        <Database className="h-6 w-6 text-green-600 mb-2" />
-                        <div className="font-medium text-gray-900">Optimiser la DB</div>
-                        <div className="text-sm text-gray-600">Optimiser les performances de la base de données</div>
-                      </button>
-                    </div>
-                  </div>
+          {activeTab === 'email' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700">Notifications par email</h3>
+                  <p className="text-sm text-gray-500">Envoyer des notifications par email aux utilisateurs</p>
                 </div>
-              )}
-            </>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={settings?.emailNotifications || false}
+                    onChange={(e) => handleSettingChange('emailNotifications', e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-medium text-gray-700 mb-2">Configuration SMTP</h4>
+                <p className="text-sm text-gray-500">Les paramètres SMTP doivent être configurés dans les variables d'environnement.</p>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'appearance' && (
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Thème
+                </label>
+                <select
+                  value={settings?.theme || 'auto'}
+                  onChange={(e) => handleSettingChange('theme', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="light">Clair</option>
+                  <option value="dark">Sombre</option>
+                  <option value="auto">Automatique</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Langue
+                </label>
+                <select
+                  value={settings?.language || 'fr'}
+                  onChange={(e) => handleSettingChange('language', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="fr">Français</option>
+                  <option value="en">English</option>
+                  <option value="es">Español</option>
+                </select>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'security' && (
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Timeout de session (minutes)
+                </label>
+                <input
+                  type="number"
+                  value={settings?.sessionTimeout || 30}
+                  onChange={(e) => handleSettingChange('sessionTimeout', parseInt(e.target.value))}
+                  min="5"
+                  max="1440"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
+                <h4 className="font-medium text-yellow-800 mb-2">Sécurité avancée</h4>
+                <p className="text-sm text-yellow-700">Les paramètres de sécurité avancés (2FA, politique de mots de passe, etc.) sont configurés dans le panneau de sécurité.</p>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'system' && (
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Taille maximale des fichiers (MB)
+                </label>
+                <input
+                  type="number"
+                  value={settings?.maxFileSize || 10}
+                  onChange={(e) => handleSettingChange('maxFileSize', parseInt(e.target.value))}
+                  min="1"
+                  max="100"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700">Analytics activés</h3>
+                  <p className="text-sm text-gray-500">Collecter des données d'utilisation anonymes</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={settings?.analyticsEnabled || false}
+                    onChange={(e) => handleSettingChange('analyticsEnabled', e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+                <h4 className="font-medium text-blue-800 mb-2">Informations système</h4>
+                <div className="text-sm text-blue-700 space-y-1">
+                  <p>Version: 1.0.0</p>
+                  <p>Environnement: Production</p>
+                  <p>Base de données: PostgreSQL</p>
+                </div>
+              </div>
+            </div>
           )}
         </div>
-      </div>
+
+        {/* Boutons d'action */}
+        <div className="border-t border-gray-200 px-6 py-4 flex justify-end space-x-3">
+          <button
+            onClick={fetchSettings}
+            disabled={loading}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 flex items-center gap-2"
+          >
+            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+            Actualiser
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 flex items-center gap-2"
+          >
+            <Save size={16} className={saving ? 'animate-pulse' : ''} />
+            {saving ? 'Sauvegarde...' : 'Sauvegarder'}
+          </button>
+        </div>
+        </div>
     </AdminLayoutWithSidebar>
   );
 }

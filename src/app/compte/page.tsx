@@ -211,13 +211,10 @@ function ProfileTab({ user, showMessage, update }: {
           <h3 className="font-medium text-white mb-2">Statut du Compte</h3>
           <div className="flex items-center gap-2">
             <span className={`px-3 py-1 rounded-full text-sm ${
-              user?.role === 'PREMIUM' ? 'bg-yellow-500/10 text-yellow-400' :
-              user?.role === 'SUPER_ADMIN' ? 'bg-red-500/10 text-red-400' :
+              user?.email === 'cyril.iriebi@gmail.com' ? 'bg-red-500/10 text-red-400' :
               'bg-gray-500/10 text-gray-400'
             }`}>
-              {user?.role === 'PREMIUM' ? '👑 Premium' : 
-               user?.role === 'SUPER_ADMIN' ? '🔧 Admin' : 
-               '👤 Standard'}
+              {user?.email === 'cyril.iriebi@gmail.com' ? '🔧 Admin' : '👤 Standard'}
             </span>
           </div>
         </div>
@@ -876,4 +873,4 @@ function PreferencesTab() {
       </button>
     </div>
   );
-} 
+}

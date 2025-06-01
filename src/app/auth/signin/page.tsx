@@ -36,11 +36,12 @@ export default function SignInPage() {
           const userRole = (session.user as any).role;
           
           // Redirection selon le rôle
-          if (userRole === "ADMIN" || userRole === "SUPER_ADMIN") {
-            router.push("/admin");
-          } else {
-            router.push("/dashboard");
-          }
+          // Redirection vers admin uniquement pour cyril.iriebi@gmail.com
+        if (session.user?.email === "cyril.iriebi@gmail.com") {
+          router.push("/admin");
+        } else {
+          router.push("/dashboard");
+        }
         }
       }
     } catch (error) {
@@ -176,4 +177,4 @@ export default function SignInPage() {
       </div>
     </div>
   );
-} 
+}

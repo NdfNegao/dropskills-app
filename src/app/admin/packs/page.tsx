@@ -1,78 +1,68 @@
 "use client";
-import { Package, Plus, TrendingUp } from 'lucide-react';
+import { Package, Plus, TrendingUp, CheckCircle, Clock, Archive } from 'lucide-react';
 import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
 
 export default function AdminPacks() {
+  const statsData = [
+    {
+      title: "Total packs",
+      value: "24",
+      icon: <Package size={24} />
+    },
+    {
+      title: "Actifs",
+      value: "18",
+      icon: <CheckCircle size={24} />
+    },
+    {
+      title: "En attente",
+      value: "4",
+      icon: <Clock size={24} />
+    },
+    {
+      title: "Archivés",
+      value: "2",
+      icon: <Archive size={24} />
+    }
+  ];
+
   return (
-    <AdminLayoutWithSidebar>
-      <div className="max-w-7xl mx-auto py-8 px-4">
-      <div className="flex items-center gap-4 mb-8">
-        <Package className="w-8 h-8 text-blue-400" />
-        <h1 className="text-2xl font-bold text-white">Gestion des packs</h1>
-        <a href="/admin/packs/nouveau" className="ml-auto bg-[#ff0033] hover:bg-[#cc0029] text-white px-4 py-2 rounded-lg flex items-center gap-2 font-semibold">
-          <Plus className="w-5 h-5" /> Nouveau pack
-        </a>
-      </div>
+    <AdminLayoutWithSidebar
+      icon={<Package size={24} />}
+      title="Gestion des packs"
+      subtitle="Créez et gérez vos offres de formation groupées"
+      stats={statsData}
+    >
+        <div className="flex justify-end mb-6">
+          <a href="/admin/packs/nouveau" className="bg-[#ff0033] hover:bg-[#cc0029] text-white px-4 py-2 rounded-lg flex items-center gap-2 font-semibold">
+            <Plus className="w-5 h-5" /> Nouveau pack
+          </a>
+        </div>
 
-      {/* Statistiques rapides */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Total packs</h3>
-          <p className="text-3xl font-bold text-blue-400">24</p>
-        </div>
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Packs actifs</h3>
-          <p className="text-3xl font-bold text-green-400">18</p>
-        </div>
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Ventes ce mois</h3>
-          <p className="text-3xl font-bold text-purple-400">156</p>
-        </div>
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Revenus totaux</h3>
-          <p className="text-3xl font-bold text-yellow-400">€15,240</p>
-        </div>
-      </div>
-
-      {/* Tableau des packs */}
-      <div className="bg-[#111] rounded-xl p-6 border border-[#232323] mb-8 overflow-x-auto">
-        <h2 className="text-lg font-semibold text-white mb-4">Liste des packs</h2>
-        <table className="min-w-full text-sm text-gray-300">
-          <thead>
-            <tr className="border-b border-[#232323]">
-              <th className="py-2 px-4 text-left">Nom du pack</th>
-              <th className="py-2 px-4 text-left">Prix</th>
-              <th className="py-2 px-4 text-left">Formations incluses</th>
-              <th className="py-2 px-4 text-left">Ventes</th>
-              <th className="py-2 px-4 text-left">Statut</th>
-              <th className="py-2 px-4 text-left">Actions</th>
+        {/* Liste des packs */}
+        <div className="bg-card border border-border rounded-lg p-6 mb-8 overflow-x-auto">
+          <h2 className="text-2xl font-semibold text-foreground mb-6">Gestion des packs</h2>
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Nom</th>
+                <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Prix</th>
+                <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Statut</th>
+                <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Ventes</th>
+                <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Date création</th>
+                <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b border-[#232323]">
-              <td className="py-2 px-4">Pack Développeur Full-Stack</td>
-              <td className="py-2 px-4">€297</td>
-              <td className="py-2 px-4">12</td>
-              <td className="py-2 px-4">45</td>
-              <td className="py-2 px-4"><span className="text-green-400">Actif</span></td>
-              <td className="py-2 px-4">
-                <div className="flex gap-2">
-                  <button className="text-blue-400 hover:underline">Modifier</button>
-                  <button className="text-red-400 hover:underline">Désactiver</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td className="py-2 px-4">Pack Design & UX</td>
-              <td className="py-2 px-4">€197</td>
-              <td className="py-2 px-4">8</td>
-              <td className="py-2 px-4">32</td>
-              <td className="py-2 px-4"><span className="text-green-400">Actif</span></td>
-              <td className="py-2 px-4">
-                <div className="flex gap-2">
-                  <button className="text-blue-400 hover:underline">Modifier</button>
-                  <button className="text-red-400 hover:underline">Désactiver</button>
-                </div>
+            <tr className="border-b border-gray-100 hover:bg-gray-50">
+              <td className="py-3 px-4 text-black font-medium">Pack Débutant</td>
+              <td className="py-3 px-4 text-gray-600 font-semibold">€29</td>
+              <td className="py-3 px-4"><span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">Actif</span></td>
+              <td className="py-3 px-4 text-gray-600">45</td>
+              <td className="py-3 px-4 text-gray-600">15/03/2024</td>
+              <td className="py-3 px-4">
+                <button className="text-blue-600 hover:text-blue-800 mr-3 font-medium">Modifier</button>
+                <button className="text-red-600 hover:text-red-800 font-medium">Supprimer</button>
               </td>
             </tr>
           </tbody>
@@ -95,14 +85,17 @@ export default function AdminPacks() {
             <span className="text-green-400 font-semibold">32 ventes</span>
           </div>
         </div>
-      </div>
+        </div>
 
-      {/* Message en construction */}
-      <div className="bg-yellow-900/20 border border-yellow-700 text-yellow-300 rounded-lg p-6 text-center">
-        <p className="text-lg font-semibold mb-2">Section en construction</p>
-        <p>La gestion avancée des packs arrive bientôt !</p>
-      </div>
-      </div>
+        {/* Actions rapides */}
+        <div className="bg-card border border-border rounded-lg p-6">
+          <h3 className="text-xl font-semibold text-foreground mb-4">Actions rapides</h3>
+          <div className="flex flex-wrap gap-4">
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">Exporter la liste</button>
+            <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium">Créer un bundle</button>
+            <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium">Rapport de ventes</button>
+          </div>
+        </div>
     </AdminLayoutWithSidebar>
   );
 }

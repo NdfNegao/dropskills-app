@@ -3,84 +3,61 @@ import { MessageSquare, Clock, AlertCircle, CheckCircle } from 'lucide-react';
 import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
 
 export default function AdminSupport() {
+  const statsData = [
+    {
+      title: "Total tickets",
+      value: "156",
+      icon: <MessageSquare size={24} />
+    },
+    {
+      title: "En attente",
+      value: "23",
+      icon: <Clock size={24} />
+    },
+    {
+      title: "Résolus",
+      value: "128",
+      icon: <CheckCircle size={24} />
+    },
+    {
+      title: "Fermés",
+      value: "5",
+      icon: <AlertCircle size={24} />
+    }
+  ];
+
   return (
-    <AdminLayoutWithSidebar>
-      <div className="max-w-7xl mx-auto py-8 px-4">
-      <div className="flex items-center gap-4 mb-8">
-        <MessageSquare className="w-8 h-8 text-blue-400" />
-        <h1 className="text-2xl font-bold text-white">Support client</h1>
-      </div>
+    <AdminLayoutWithSidebar
+      icon={<MessageSquare size={24} />}
+      title="Support client"
+      subtitle="Gérez les tickets de support et l'assistance client"
+      stats={statsData}
+    >
 
-      {/* Statistiques rapides */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Total tickets</h3>
-          <p className="text-3xl font-bold text-blue-400">234</p>
-        </div>
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Ouverts</h3>
-          <p className="text-3xl font-bold text-red-400">12</p>
-        </div>
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">En cours</h3>
-          <p className="text-3xl font-bold text-yellow-400">8</p>
-        </div>
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Résolus</h3>
-          <p className="text-3xl font-bold text-green-400">214</p>
-        </div>
-      </div>
-
-      {/* Tableau des tickets */}
-      <div className="bg-[#111] rounded-xl p-6 border border-[#232323] mb-8 overflow-x-auto">
-        <h2 className="text-lg font-semibold text-white mb-4">Tickets récents</h2>
-        <table className="min-w-full text-sm text-gray-300">
+      {/* Liste des tickets */}
+      <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow mb-8 overflow-x-auto">
+        <h2 className="text-2xl font-semibold text-black mb-6">Tickets récents</h2>
+        <table className="w-full">
           <thead>
-            <tr className="border-b border-[#232323]">
-              <th className="py-2 px-4 text-left">ID</th>
-              <th className="py-2 px-4 text-left">Sujet</th>
-              <th className="py-2 px-4 text-left">Utilisateur</th>
-              <th className="py-2 px-4 text-left">Priorité</th>
-              <th className="py-2 px-4 text-left">Statut</th>
-              <th className="py-2 px-4 text-left">Date</th>
-              <th className="py-2 px-4 text-left">Actions</th>
+            <tr className="border-b border-gray-200">
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">ID</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Utilisateur</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Sujet</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Statut</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Date</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b border-[#232323]">
-              <td className="py-2 px-4">#1234</td>
-              <td className="py-2 px-4">Problème de connexion</td>
-              <td className="py-2 px-4">jean.dupont@email.com</td>
-              <td className="py-2 px-4">
-                <span className="flex items-center gap-1 text-red-400">
-                  <AlertCircle className="w-4 h-4" /> Haute
-                </span>
-              </td>
-              <td className="py-2 px-4">
-                <span className="flex items-center gap-1 text-yellow-400">
-                  <Clock className="w-4 h-4" /> En cours
-                </span>
-              </td>
-              <td className="py-2 px-4">15/03/2024</td>
-              <td className="py-2 px-4">
-                <button className="text-blue-400 hover:underline">Répondre</button>
-              </td>
-            </tr>
-            <tr>
-              <td className="py-2 px-4">#1233</td>
-              <td className="py-2 px-4">Question sur facturation</td>
-              <td className="py-2 px-4">marie.martin@email.com</td>
-              <td className="py-2 px-4">
-                <span className="text-green-400">Normale</span>
-              </td>
-              <td className="py-2 px-4">
-                <span className="flex items-center gap-1 text-green-400">
-                  <CheckCircle className="w-4 h-4" /> Résolu
-                </span>
-              </td>
-              <td className="py-2 px-4">14/03/2024</td>
-              <td className="py-2 px-4">
-                <button className="text-blue-400 hover:underline">Voir</button>
+            <tr className="border-b border-gray-100 hover:bg-gray-50">
+              <td className="py-3 px-4 text-black font-medium">#001</td>
+              <td className="py-3 px-4 text-gray-600">john.doe@email.com</td>
+              <td className="py-3 px-4 text-gray-600">Problème de connexion</td>
+              <td className="py-3 px-4"><span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-medium">Ouvert</span></td>
+              <td className="py-3 px-4 text-gray-600">15/03/2024</td>
+              <td className="py-3 px-4">
+                <button className="text-blue-600 hover:text-blue-800 mr-3 font-medium">Voir</button>
+                <button className="text-green-600 hover:text-green-800 font-medium">Répondre</button>
               </td>
             </tr>
           </tbody>
@@ -105,7 +82,6 @@ export default function AdminSupport() {
       <div className="bg-yellow-900/20 border border-yellow-700 text-yellow-300 rounded-lg p-6 text-center">
         <p className="text-lg font-semibold mb-2">Section en construction</p>
         <p>La gestion avancée du support arrive bientôt !</p>
-      </div>
       </div>
     </AdminLayoutWithSidebar>
   );

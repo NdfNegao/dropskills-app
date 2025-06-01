@@ -137,6 +137,19 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Erreur analytics:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+    
+    // Retourner des données par défaut en cas d'erreur
+    return NextResponse.json({
+      global: {
+        totalRequests: 0,
+        totalTokens: 0,
+        totalCost: 0,
+        successRate: 0
+      },
+      tools: [],
+      topUsers: [],
+      evolution: [],
+      period
+    });
   }
-} 
+}

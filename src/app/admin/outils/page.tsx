@@ -212,23 +212,44 @@ export default function AdminOutilsPage() {
           </div>
         </header>
 
+        {/* Statistiques rapides */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
+            <h3 className="text-lg font-bold text-black mb-2">Total outils</h3>
+            <p className="text-3xl font-bold text-blue-600">{tools.length}</p>
+          </div>
+          <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
+            <h3 className="text-lg font-bold text-black mb-2">Premium</h3>
+            <p className="text-3xl font-bold text-green-600">{tools.filter(t => t.is_premium).length}</p>
+          </div>
+          <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
+            <h3 className="text-lg font-bold text-black mb-2">Catégories</h3>
+            <p className="text-3xl font-bold text-purple-600">{CATEGORIES.length}</p>
+          </div>
+          <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
+            <h3 className="text-lg font-bold text-black mb-2">Modèles</h3>
+            <p className="text-3xl font-bold text-yellow-600">{MODELS.length}</p>
+          </div>
+        </div>
+
         {/* Filtres */}
-        <div className="p-6 bg-[#111] border-b border-[#232323]">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+        <div className="p-6 bg-white border border-gray-200 rounded-xl mb-6">
+          <div className="flex flex-wrap gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
                 placeholder="Rechercher un outil..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white placeholder-gray-400 focus:border-[#ff0033] focus:outline-none"
+                className="pl-10 pr-4 py-2 bg-white border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            <select
-              value={categoryFilter}
+            
+            <select 
+              value={categoryFilter} 
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
+              className="bg-white border border-gray-300 text-black px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="all">Toutes les catégories</option>
               {CATEGORIES.map(cat => (

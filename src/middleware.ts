@@ -47,12 +47,8 @@ export default withAuth(
         return NextResponse.redirect(new URL('/auth/signin?callbackUrl=' + encodeURIComponent(pathname), req.url));
       }
 
-      const userRole = token.role as string;
-      const canAccessPremium = userRole === 'PREMIUM' || userRole === 'ADMIN' || userRole === 'SUPER_ADMIN';
-
-      if (!canAccessPremium) {
-        return NextResponse.redirect(new URL('/premium?upgrade=required', req.url));
-      }
+      // Pour l'instant, bloquer l'accès premium (à implémenter selon vos besoins)
+      return NextResponse.redirect(new URL('/premium?upgrade=required', req.url));
     }
 
     // Protection des API routes premium
@@ -61,12 +57,8 @@ export default withAuth(
         return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
       }
 
-      const userRole = token.role as string;
-      const canAccessPremium = userRole === 'PREMIUM' || userRole === 'ADMIN' || userRole === 'SUPER_ADMIN';
-
-      if (!canAccessPremium) {
-        return NextResponse.json({ error: 'Premium subscription required' }, { status: 403 });
-      }
+      // Pour l'instant, bloquer l'accès premium API (à implémenter selon vos besoins)
+      return NextResponse.json({ error: 'Premium subscription required' }, { status: 403 });
     }
 
     // API routes admin - accès libre (protection côté API si nécessaire)

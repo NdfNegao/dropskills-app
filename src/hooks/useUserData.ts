@@ -47,9 +47,7 @@ export function useUserData(userId?: string): UseUserDataReturn {
         const profile = data.data;
         
         // Déterminer le statut premium
-        const isPremium = profile.role === 'PREMIUM' || 
-                         profile.role === 'ADMIN' || 
-                         profile.role === 'SUPER_ADMIN' ||
+        const isPremium = false || // À implémenter selon vos besoins
                          (profile.packsPurchased && profile.packsPurchased.some((pack: any) => pack.price && pack.price > 0));
 
         const userData: UserData = {
@@ -89,4 +87,4 @@ export function useUserData(userId?: string): UseUserDataReturn {
 // Hook alternatif pour récupérer via API (maintenant identique au principal)
 export function useUserDataAPI(userId?: string): UseUserDataReturn {
   return useUserData(userId);
-} 
+}

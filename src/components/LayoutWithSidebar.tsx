@@ -152,9 +152,8 @@ export default function LayoutWithSidebar({
             <div className="mt-3 text-center text-xs text-gray-400">
               Connecté en tant que {user.email}
               <div className="text-[#ff0033] font-medium mt-1">
-                {user.role === 'PREMIUM' && '👑 Premium'}
-                {user.role === 'ADMIN' && '🛡️ Admin'}
-                {user.role === 'SUPER_ADMIN' && '⚡ Super Admin'}
+                {/* Premium à implémenter selon vos besoins */}
+                {user.email === 'cyril.iriebi@gmail.com' && '🔧 Admin'}
               </div>
             </div>
           )}
@@ -231,4 +230,4 @@ function MobileNavLink({ icon, label, href, badge, isPremium, onClick }: MobileN
       )}
     </Link>
   );
-} 
+}

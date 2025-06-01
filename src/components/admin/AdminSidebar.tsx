@@ -7,7 +7,8 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   Home, Users, Settings, LogOut, ChevronLeft, ChevronRight, 
   BarChart3, FileText, MessageSquare, Shield, Database,
-  Zap, Crown, HelpCircle
+  Zap, Crown, HelpCircle, TrendingUp, Wrench, UserCheck,
+  Package, MessageCircle, HeadphonesIcon
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -36,10 +37,16 @@ export default function AdminSidebar({
   // Navigation principale admin
   const adminNavigation = [
     { icon: <BarChart3 />, label: "Tableau de bord", href: "/admin", tooltip: "Vue d'ensemble" },
+    { icon: <TrendingUp />, label: "Analytics", href: "/admin/analytics", tooltip: "Analyses et statistiques" },
     { icon: <Users />, label: "Utilisateurs", href: "/admin/utilisateurs", tooltip: "Gestion des utilisateurs" },
     { icon: <FileText />, label: "Produits", href: "/admin/produits", tooltip: "Gestion des produits" },
+    { icon: <Package />, label: "Packs", href: "/admin/packs", tooltip: "Gestion des packs" },
     { icon: <Zap />, label: "Outils IA", href: "/admin/outils-ia", tooltip: "Gestion des outils IA" },
+    { icon: <Wrench />, label: "Outils", href: "/admin/outils", tooltip: "Gestion des outils" },
     { icon: <MessageSquare />, label: "Prompts", href: "/admin/prompts", tooltip: "Gestion des prompts" },
+    { icon: <UserCheck />, label: "Affiliés", href: "/admin/affiliates", tooltip: "Gestion des affiliés" },
+    { icon: <MessageCircle />, label: "Demandes produits", href: "/admin/product-requests", tooltip: "Demandes de produits" },
+    { icon: <HeadphonesIcon />, label: "Support", href: "/admin/support", tooltip: "Support client" },
     { icon: <Database />, label: "Base de données", href: "/admin/database", tooltip: "Gestion de la base de données" }
   ];
 

@@ -24,7 +24,6 @@ export const authOptions: NextAuthOptions = {
             id: 'admin',
             email: credentials.email,
             name: 'Cyril Iriebi',
-            role: 'ADMIN',
           };
         }
         return null;
@@ -60,7 +59,6 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.email = user.email;
         token.id = user.id;
-        token.role = (user as any).role || 'USER';
         token.firstName = (user as any).firstName || user.name?.split(' ')[0] || '';
         token.lastName = (user as any).lastName || user.name?.split(' ').slice(1).join(' ') || '';
       }
@@ -70,7 +68,6 @@ export const authOptions: NextAuthOptions = {
       if (session?.user) {
         session.user.email = token.email;
         session.user.id = token.id;
-        session.user.role = token.role;
         session.user.firstName = token.firstName;
         session.user.lastName = token.lastName;
       }
@@ -92,4 +89,4 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 jours
   },
   debug: process.env.NODE_ENV === 'development',
-}; 
+};

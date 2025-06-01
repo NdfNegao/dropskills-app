@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { LucideIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface StatCardData {
   title: string;
@@ -10,12 +11,20 @@ interface StatCardData {
   icon?: React.ReactNode;
 }
 
+interface ActionData {
+  label: string;
+  onClick: () => void;
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  icon?: React.ReactNode;
+  loading?: boolean;
+}
+
 interface AdminPageLayoutProps {
   icon: React.ReactNode;
   title: string;
   subtitle?: string;
   stats?: StatCardData[];
-  actions?: React.ReactNode;
+  actions?: ActionData[] | React.ReactNode;
   children: React.ReactNode;
 }
 
@@ -28,24 +37,39 @@ export default function AdminPageLayout({
   children
 }: AdminPageLayoutProps) {
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-gray-50">
+    <div className="flex-1 flex flex-col min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
+      <div className="bg-white border-b border-gray-200 px-6 py-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-gray-100 rounded-lg text-gray-700">
               {icon}
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+              <h1 className="text-3xl font-bold text-black">{title}</h1>
               {subtitle && (
-                <p className="text-gray-600 mt-1">{subtitle}</p>
+                <p className="text-gray-600 mt-1 text-lg">{subtitle}</p>
               )}
             </div>
           </div>
           {actions && (
             <div className="flex items-center gap-2">
-              {actions}
+              {Array.isArray(actions) ? (
+                actions.map((action, index) => (
+                  <Button
+                    key={index}
+                    onClick={action.onClick}
+                    variant={action.variant || 'default'}
+                    disabled={action.loading}
+                    className="flex items-center gap-2"
+                  >
+                    {action.icon}
+                    {action.label}
+                  </Button>
+                ))
+              ) : (
+                actions
+              )}
             </div>
           )}
         </div>
@@ -94,20 +118,20 @@ function StatCard({ title, value, change, changeType = 'neutral', icon }: StatCa
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+    <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <p className="text-sm font-medium text-gray-600 mb-1">{title}</p>
-          <p className="text-2xl font-bold text-gray-900">{value}</p>
+          <p className="text-sm font-medium text-gray-600 mb-2">{title}</p>
+          <p className="text-3xl font-bold text-black">{value}</p>
           {change && (
-            <p className={`text-sm mt-1 flex items-center gap-1 ${getChangeColor()}`}>
+            <p className={`text-sm mt-2 flex items-center gap-1 ${getChangeColor()}`}>
               <span>{getChangeIcon()}</span>
               {change}
             </p>
           )}
         </div>
         {icon && (
-          <div className="text-gray-400 ml-4">
+          <div className="text-gray-500 ml-4">
             {icon}
           </div>
         )}

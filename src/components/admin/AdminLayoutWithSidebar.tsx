@@ -20,13 +20,21 @@ interface StatCardData {
   icon?: React.ReactNode;
 }
 
+interface ActionData {
+  label: string;
+  onClick: () => void;
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  icon?: React.ReactNode;
+  loading?: boolean;
+}
+
 interface AdminLayoutWithSidebarProps {
   // Props pour la page
   icon: React.ReactNode;
   title: string;
   subtitle?: string;
   stats?: StatCardData[];
-  actions?: React.ReactNode;
+  actions?: ActionData[] | React.ReactNode;
   children: React.ReactNode;
   // Props pour la sidebar
   sidebarClassName?: string;

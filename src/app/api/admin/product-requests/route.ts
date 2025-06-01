@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     // Vérifier les permissions admin
     const user = session.user as any;
-    if (user.role !== 'SUPER_ADMIN' && user.role !== 'ADMIN') {
+    if (user.email !== 'cyril.iriebi@gmail.com') {
       return NextResponse.json(
         { error: 'Permissions insuffisantes' },
         { status: 403 }
@@ -49,7 +49,7 @@ export async function PUT(request: NextRequest) {
 
     // Vérifier les permissions admin
     const user = session.user as any;
-    if (user.role !== 'SUPER_ADMIN' && user.role !== 'ADMIN') {
+    if (user.email !== 'cyril.iriebi@gmail.com') {
       return NextResponse.json(
         { error: 'Permissions insuffisantes' },
         { status: 403 }
@@ -133,7 +133,7 @@ export async function DELETE(request: NextRequest) {
 
     // Vérifier les permissions admin
     const user = session.user as any;
-    if (user.role !== 'SUPER_ADMIN' && user.role !== 'ADMIN') {
+    if (user.email !== 'cyril.iriebi@gmail.com') {
       return NextResponse.json(
         { error: 'Permissions insuffisantes' },
         { status: 403 }
@@ -172,4 +172,4 @@ export async function DELETE(request: NextRequest) {
       { status: 500 }
     );
   }
-} 
+}

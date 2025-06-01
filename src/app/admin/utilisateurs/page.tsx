@@ -1,77 +1,74 @@
-"use client";
-import { Users, UserPlus } from 'lucide-react';
+'use client';
+
 import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
+import { Users, UserPlus, UserCheck, UserX } from 'lucide-react';
 
-export default function AdminUtilisateurs() {
+export default function UsersPage() {
+  const statsData = [
+    {
+      title: "Total utilisateurs",
+      value: "1,234",
+      icon: <Users size={24} />
+    },
+    {
+      title: "Nouveaux ce mois",
+      value: "45",
+      icon: <UserPlus size={24} />
+    },
+    {
+      title: "Actifs",
+      value: "1,189",
+      icon: <UserCheck size={24} />
+    },
+    {
+      title: "Suspendus",
+      value: "45",
+      icon: <UserX size={24} />
+    }
+  ];
+
   return (
-    <AdminLayoutWithSidebar>
-      <div className="max-w-7xl mx-auto py-8 px-4">
-      <div className="flex items-center gap-4 mb-8">
-        <Users className="w-8 h-8 text-blue-400" />
-        <h1 className="text-2xl font-bold text-white">Gestion des utilisateurs</h1>
-        <a href="/admin/utilisateurs/nouveau" className="ml-auto bg-[#ff0033] hover:bg-[#cc0029] text-white px-4 py-2 rounded-lg flex items-center gap-2 font-semibold">
-          <UserPlus className="w-5 h-5" /> Nouvel utilisateur
-        </a>
-      </div>
+    <AdminLayoutWithSidebar
+      icon={<Users size={24} />}
+      title="Gestion des utilisateurs"
+      subtitle="Gérez les comptes utilisateurs de la plateforme"
+      stats={statsData}
+    >
 
-      {/* Statistiques rapides */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Total inscrits</h3>
-          <p className="text-3xl font-bold text-blue-400">1,234</p>
-        </div>
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Admins</h3>
-          <p className="text-3xl font-bold text-green-400">2</p>
-        </div>
-        <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
-          <h3 className="text-lg font-bold text-white mb-2">Nouveaux ce mois</h3>
-          <p className="text-3xl font-bold text-purple-400">12</p>
-        </div>
-      </div>
-
-      {/* Tableau d'exemple */}
-      <div className="bg-[#111] rounded-xl p-6 border border-[#232323] mb-8 overflow-x-auto">
-        <h2 className="text-lg font-semibold text-white mb-4">Liste des utilisateurs</h2>
-        <table className="min-w-full text-sm text-gray-300">
+      {/* Liste des utilisateurs */}
+      <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow mb-8 overflow-x-auto">
+        <h2 className="text-2xl font-semibold text-black mb-6">Liste des utilisateurs</h2>
+        <table className="w-full">
           <thead>
-            <tr className="border-b border-[#232323]">
-              <th className="py-2 px-4 text-left">Nom</th>
-              <th className="py-2 px-4 text-left">Email</th>
-              <th className="py-2 px-4 text-left">Rôle</th>
-              <th className="py-2 px-4 text-left">Date d'inscription</th>
-              <th className="py-2 px-4 text-left">Actions</th>
+            <tr className="border-b border-gray-200">
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Nom</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Email</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Rôle</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Inscription</th>
+              <th className="text-left py-3 px-4 text-gray-700 font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b border-[#232323]">
-              <td className="py-2 px-4">Cyril Iriebi</td>
-              <td className="py-2 px-4">cyril.iriebi@gmail.com</td>
-              <td className="py-2 px-4">ADMIN</td>
-              <td className="py-2 px-4">01/01/2024</td>
-              <td className="py-2 px-4">
-                <button className="text-blue-400 hover:underline">Voir</button>
-              </td>
-            </tr>
-            <tr>
-              <td className="py-2 px-4">Jane Doe</td>
-              <td className="py-2 px-4">jane.doe@email.com</td>
-              <td className="py-2 px-4">USER</td>
-              <td className="py-2 px-4">15/03/2024</td>
-              <td className="py-2 px-4">
-                <button className="text-blue-400 hover:underline">Voir</button>
+            <tr className="border-b border-gray-100 hover:bg-gray-50">
+              <td className="py-3 px-4 text-black font-medium">Cyril Iriebi</td>
+              <td className="py-3 px-4 text-gray-600">cyril.iriebi@gmail.com</td>
+              <td className="py-3 px-4"><span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-medium">Admin</span></td>
+              <td className="py-3 px-4 text-gray-600">15/03/2024</td>
+              <td className="py-3 px-4">
+                <button className="text-blue-600 hover:text-blue-800 mr-3 font-medium">Voir</button>
+                <button className="text-yellow-600 hover:text-yellow-800 mr-3 font-medium">Modifier</button>
+                <button className="text-red-600 hover:text-red-800 font-medium">Supprimer</button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      {/* Message en construction */}
-      <div className="bg-yellow-900/20 border border-yellow-700 text-yellow-300 rounded-lg p-6 text-center">
-        <p className="text-lg font-semibold mb-2">Section en construction</p>
-        <p>La gestion avancée des utilisateurs arrive bientôt !</p>
-      </div>
-      </div>
+        {/* Message en construction */}
+        <div className="bg-yellow-900/20 border border-yellow-700 text-yellow-300 rounded-lg p-6 text-center">
+          <p className="text-lg font-semibold mb-2">Section en construction</p>
+          <p>La gestion avancée des utilisateurs arrive bientôt !</p>
+        </div>
     </AdminLayoutWithSidebar>
   );
 }

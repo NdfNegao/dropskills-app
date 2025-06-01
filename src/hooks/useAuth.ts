@@ -7,7 +7,6 @@ interface User {
   name?: string;
   firstName?: string;
   lastName?: string;
-  role: 'USER' | 'PREMIUM' | 'ADMIN' | 'SUPER_ADMIN';
   isDevAccount?: boolean;
 }
 
@@ -40,13 +39,10 @@ export function useAuth() {
   const user = devUser || (session?.user as User) || null;
   
   // Déterminer si l'utilisateur peut accéder au contenu premium
-  const canAccessPremium = user?.role === 'PREMIUM' || 
-                          user?.role === 'ADMIN' || 
-                          user?.role === 'SUPER_ADMIN';
+  const canAccessPremium = false; // À implémenter selon vos besoins
 
-  // Déterminer si l'utilisateur est admin (simplifié)
+  // Accès admin : uniquement pour cyril.iriebi@gmail.com
   const isAdmin = user?.email === 'cyril.iriebi@gmail.com';
-  const isSuperAdmin = user?.email === 'cyril.iriebi@gmail.com';
 
   // État de chargement global
   const loading = devUser ? false : (status === 'loading' || isLoading);
@@ -57,8 +53,6 @@ export function useAuth() {
     isAuthenticated: !!user,
     canAccessPremium,
     isAdmin,
-    isSuperAdmin,
-    canAccessAdmin: isAdmin || isSuperAdmin,
     session: devUser ? { user: devUser } : session,
     status: devUser ? 'authenticated' : status
   };

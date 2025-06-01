@@ -104,10 +104,10 @@ export default function AdminAnalyticsPage() {
   }
 
   // Calculer le max pour l'échelle du graphique
-  const maxUsage = Math.max(...analytics.evolution.map(d => d.usage), 1);
+  const maxUsage = Math.max(...(analytics.evolution || []).map(d => d.usage), 1);
 
   // Calculer les données pour les graphiques
-  const categoriesData = analytics.tools.reduce((acc: any[], tool) => {
+  const categoriesData = (analytics.tools || []).reduce((acc: any[], tool) => {
     const existingCategory = acc.find(c => c.category === tool.category);
     if (existingCategory) {
       existingCategory.usage += tool.usage;
@@ -175,47 +175,47 @@ export default function AdminAnalyticsPage() {
         <div className="p-6 space-y-6">
           {/* Statistiques globales */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
+            <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
               <div className="flex items-center justify-between mb-4">
-                <Bot className="w-8 h-8 text-blue-400" />
-                <span className="text-xs text-gray-400">{period === '7d' ? '7j' : period === '30d' ? '30j' : 'Total'}</span>
+                <Bot className="w-8 h-8 text-blue-600" />
+                <span className="text-xs text-gray-600">{period === '7d' ? '7j' : period === '30d' ? '30j' : 'Total'}</span>
               </div>
-              <h3 className="text-2xl font-bold text-white">{formatNumber(analytics.global.totalRequests)}</h3>
-              <p className="text-gray-400 text-sm mt-1">Requêtes totales</p>
+              <h3 className="text-2xl font-bold text-black">{formatNumber(analytics.global?.totalRequests || 0)}</h3>
+              <p className="text-gray-600 text-sm mt-1">Requêtes totales</p>
             </div>
 
-            <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
+            <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
               <div className="flex items-center justify-between mb-4">
-                <Zap className="w-8 h-8 text-yellow-400" />
-                <span className="text-xs text-gray-400">{formatNumber(analytics.global.totalTokens)}</span>
+                <Zap className="w-8 h-8 text-yellow-600" />
+                <span className="text-xs text-gray-600">{formatNumber(analytics.global?.totalTokens || 0)}</span>
               </div>
-              <h3 className="text-2xl font-bold text-white">{formatNumber(analytics.global.totalTokens / 1000)}k</h3>
-              <p className="text-gray-400 text-sm mt-1">Tokens utilisés</p>
+              <h3 className="text-2xl font-bold text-black">{formatNumber((analytics.global?.totalTokens || 0) / 1000)}k</h3>
+              <p className="text-gray-600 text-sm mt-1">Tokens utilisés</p>
             </div>
 
-            <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
+            <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
               <div className="flex items-center justify-between mb-4">
-                <DollarSign className="w-8 h-8 text-green-400" />
-                <TrendingUp className="w-4 h-4 text-green-400" />
+                <DollarSign className="w-8 h-8 text-green-600" />
+                <TrendingUp className="w-4 h-4 text-green-600" />
               </div>
-              <h3 className="text-2xl font-bold text-white">{formatCurrency(analytics.global.totalCost)}</h3>
-              <p className="text-gray-400 text-sm mt-1">Coût estimé</p>
+              <h3 className="text-2xl font-bold text-black">{formatCurrency(analytics.global?.totalCost || 0)}</h3>
+              <p className="text-gray-600 text-sm mt-1">Coût estimé</p>
             </div>
 
-            <div className="bg-[#111] rounded-xl p-6 border border-[#232323]">
+            <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
               <div className="flex items-center justify-between mb-4">
-                <AlertTriangle className="w-8 h-8 text-[#ff0033]" />
-                <span className="text-xs text-gray-400">{analytics.global.successRate.toFixed(1)}%</span>
+                <AlertTriangle className="w-8 h-8 text-red-600" />
+                <span className="text-xs text-gray-600">{(analytics.global?.successRate || 0).toFixed(1)}%</span>
               </div>
-              <h3 className="text-2xl font-bold text-white">{analytics.global.successRate.toFixed(0)}%</h3>
-              <p className="text-gray-400 text-sm mt-1">Taux de succès</p>
+              <h3 className="text-2xl font-bold text-black">{(analytics.global?.successRate || 0).toFixed(0)}%</h3>
+              <p className="text-gray-600 text-sm mt-1">Taux de succès</p>
             </div>
           </div>
 
           {/* Graphiques avancés */}
           <AdvancedCharts
-            evolution={analytics.evolution}
-            tools={analytics.tools}
+            evolution={analytics.evolution || []}
+            tools={analytics.tools || []}
             categories={categoriesData}
           />
 
@@ -236,7 +236,7 @@ export default function AdminAnalyticsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#232323]">
-                {analytics.tools.slice(0, 10).map((tool) => (
+                {(analytics.tools || []).slice(0, 10).map((tool) => (
                   <tr key={tool.id} className="hover:bg-[#1a1a1a] transition-colors">
                     <td className="px-6 py-4 text-sm text-white">{tool.name}</td>
                     <td className="px-6 py-4 text-sm text-gray-300">{tool.category}</td>
@@ -273,7 +273,7 @@ export default function AdminAnalyticsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#232323]">
-                {analytics.topUsers.map((user, index) => (
+                {(analytics.topUsers || []).map((user, index) => (
                   <tr key={user.email} className="hover:bg-[#1a1a1a] transition-colors">
                     <td className="px-6 py-4 text-sm text-white flex items-center gap-2">
                       {index < 3 && <span className="text-yellow-400">🏆</span>}

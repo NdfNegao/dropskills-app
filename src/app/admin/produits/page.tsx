@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FileText, Plus, Search, Filter, Edit, Trash2 } from 'lucide-react';
+import { FileText, Plus, Search, Filter, Edit, Trash2, Package, TrendingUp, DollarSign, Download } from 'lucide-react';
 import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
 
 interface Product {
@@ -72,24 +72,28 @@ export default function AdminProductsPage() {
 
   const statsData = [
     {
-      title: "Total Produits",
-      value: products.length,
-      icon: <FileText size={24} />
+      icon: <Package className="w-5 h-5" />,
+      label: "Total Produits",
+      value: products.length.toString(),
+      color: "text-blue-400"
     },
     {
-      title: "Produits Actifs",
-      value: products.filter(p => p.status === 'active').length,
-      icon: <FileText size={24} />
+      icon: <TrendingUp className="w-5 h-5" />,
+      label: "Produits Actifs",
+      value: products.filter(p => p.status === 'active').length.toString(),
+      color: "text-green-400"
     },
     {
-      title: "Brouillons",
-      value: products.filter(p => p.status === 'draft').length,
-      icon: <FileText size={24} />
+      icon: <FileText className="w-5 h-5" />,
+      label: "Brouillons",
+      value: products.filter(p => p.status === 'draft').length.toString(),
+      color: "text-yellow-400"
     },
     {
-      title: "Total Téléchargements",
+      icon: <Download className="w-5 h-5" />,
+      label: "Total Téléchargements",
       value: products.reduce((sum, p) => sum + p.downloads, 0).toLocaleString(),
-      icon: <FileText size={24} />
+      color: "text-purple-400"
     }
   ];
 
@@ -114,10 +118,10 @@ export default function AdminProductsPage() {
   if (loading) {
     return (
       <AdminLayoutWithSidebar
-        icon={<FileText size={24} />}
+        icon={<Package className="w-6 h-6" />}
         title="Gestion des Produits"
-        subtitle="Gérez vos formations, outils et templates"
-        stats={statsData.map(stat => ({ ...stat, value: '---' }))}
+        subtitle="Chargement des produits..."
+        stats={statsData.map(stat => ({ title: stat.label, value: '---', icon: stat.icon }))}
       >
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="animate-pulse space-y-4">
@@ -132,16 +136,18 @@ export default function AdminProductsPage() {
 
   return (
     <AdminLayoutWithSidebar
-      icon={<FileText size={24} />}
+      icon={<Package className="w-6 h-6" />}
       title="Gestion des Produits"
-      subtitle="Gérez vos formations, outils et templates"
-      stats={statsData}
-      actions={
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
-          <Plus size={20} />
-          Nouveau Produit
-        </button>
-      }
+      subtitle="Gérer les formations, outils et templates"
+      stats={statsData.map(stat => ({ title: stat.label, value: stat.value, icon: stat.icon }))}
+      actions={[
+        {
+          label: "Nouveau Produit",
+          onClick: () => console.log('Nouveau produit'),
+          variant: "default" as const,
+          icon: <Plus className="w-4 h-4" />
+        }
+      ]}
     >
       <div className="bg-white rounded-lg border border-gray-200">
         {/* Filtres et recherche */}
@@ -246,7 +252,7 @@ export default function AdminProductsPage() {
             </p>
           </div>
         )}
-      </div>
+        </div>
     </AdminLayoutWithSidebar>
   );
 }

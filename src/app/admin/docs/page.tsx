@@ -258,12 +258,12 @@ export default function AdminDocsPage() {
   const statsData = [
     {
       title: "Articles",
-      value: docSections.reduce((total, section) => total + section.articles.length, 0),
+      value: docSections.reduce((total, section) => total + section.articles.length, 0).toString(),
       icon: <Book size={24} />
     },
     {
       title: "Sections",
-      value: docSections.length,
+      value: docSections.length.toString(),
       icon: <HelpCircle size={24} />
     },
     {
@@ -285,18 +285,18 @@ export default function AdminDocsPage() {
       subtitle="Guide d'administration et ressources"
       stats={statsData}
     >
-      <div className="space-y-6">
-        {/* Barre de recherche */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-            <input
-              type="text"
-              placeholder="Rechercher dans la documentation..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-            />
+        <div className="space-y-6">
+          {/* Barre de recherche */}
+          <div className="bg-card border border-border rounded-lg p-6">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={20} />
+              <input
+                type="text"
+                placeholder="Rechercher dans la documentation..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg bg-background text-foreground"
+              />
           </div>
         </div>
 
@@ -419,7 +419,7 @@ export default function AdminDocsPage() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
     </AdminLayoutWithSidebar>
   );
 }
