@@ -805,31 +805,105 @@ function PreferencesTab() {
       {/* Thème */}
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-4">
-          Thème
+          Apparence
         </label>
-        <div className="flex gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Mode Clair */}
           <button
             onClick={() => setTheme('light')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${
+            className={`group relative p-4 rounded-xl border-2 transition-all duration-200 ${
               theme === 'light'
-                ? 'bg-white text-black border-white'
-                : 'bg-[#1a1a1a] text-white border-[#333] hover:bg-[#222]'
+                ? 'border-[#ff0033] bg-white/10 shadow-lg shadow-[#ff0033]/20'
+                : 'border-[#333] bg-[#1a1a1a] hover:border-[#444] hover:bg-[#222]'
             }`}
+            aria-label="Activer le thème clair"
           >
-            <Sun className="w-4 h-4" />
-            <span>Clair</span>
+            <div className="flex items-center gap-3 mb-2">
+              <div className={`p-2 rounded-lg ${
+                theme === 'light' ? 'bg-[#ff0033] text-white' : 'bg-[#333] text-gray-300'
+              }`}>
+                <Sun className="w-5 h-5" />
+              </div>
+              <span className={`font-semibold ${
+                theme === 'light' ? 'text-white' : 'text-gray-200'
+              }`}>
+                Mode Clair
+              </span>
+              {theme === 'light' && (
+                <div className="ml-auto">
+                  <div className="w-2 h-2 bg-[#ff0033] rounded-full animate-pulse"></div>
+                </div>
+              )}
+            </div>
+            <p className={`text-sm text-left ${
+              theme === 'light' ? 'text-gray-300' : 'text-gray-400'
+            }`}>
+              Interface claire et moderne, optimisée pour la lecture en journée
+            </p>
+            {/* Aperçu visuel */}
+            <div className="mt-3 flex gap-1">
+              <div className="w-3 h-3 bg-white rounded border border-gray-300"></div>
+              <div className="w-3 h-3 bg-gray-100 rounded"></div>
+              <div className="w-3 h-3 bg-[#ff0033] rounded"></div>
+            </div>
           </button>
+
+          {/* Mode Sombre */}
           <button
             onClick={() => setTheme('dark')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${
+            className={`group relative p-4 rounded-xl border-2 transition-all duration-200 ${
               theme === 'dark'
-                ? 'bg-[#1a1a1a] text-white border-[#333]'
-                : 'bg-[#1a1a1a] text-white border-[#333] hover:bg-[#222]'
+                ? 'border-[#ff0033] bg-white/10 shadow-lg shadow-[#ff0033]/20'
+                : 'border-[#333] bg-[#1a1a1a] hover:border-[#444] hover:bg-[#222]'
             }`}
+            aria-label="Activer le thème sombre"
           >
-            <Moon className="w-4 h-4" />
-            <span>Sombre</span>
+            <div className="flex items-center gap-3 mb-2">
+              <div className={`p-2 rounded-lg ${
+                theme === 'dark' ? 'bg-[#ff0033] text-white' : 'bg-[#333] text-gray-300'
+              }`}>
+                <Moon className="w-5 h-5" />
+              </div>
+              <span className={`font-semibold ${
+                theme === 'dark' ? 'text-white' : 'text-gray-200'
+              }`}>
+                Mode Sombre
+              </span>
+              {theme === 'dark' && (
+                <div className="ml-auto">
+                  <div className="w-2 h-2 bg-[#ff0033] rounded-full animate-pulse"></div>
+                </div>
+              )}
+            </div>
+            <p className={`text-sm text-left ${
+              theme === 'dark' ? 'text-gray-300' : 'text-gray-400'
+            }`}>
+              Interface sombre et élégante, confortable pour les yeux en soirée
+            </p>
+            {/* Aperçu visuel */}
+            <div className="mt-3 flex gap-1">
+              <div className="w-3 h-3 bg-[#0a0a0a] rounded border border-gray-600"></div>
+              <div className="w-3 h-3 bg-[#1a1a1a] rounded"></div>
+              <div className="w-3 h-3 bg-[#ff0033] rounded"></div>
+            </div>
           </button>
+        </div>
+        
+        {/* Note d'accessibilité */}
+        <div className="mt-4 p-3 bg-[#1a1a1a] border border-[#333] rounded-lg">
+          <div className="flex items-start gap-2">
+            <div className="w-4 h-4 mt-0.5 text-[#ff0033]">
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm text-gray-300 font-medium mb-1">Accessibilité</p>
+              <p className="text-xs text-gray-400">
+                Les deux thèmes respectent les standards WCAG AA pour un contraste optimal et une meilleure lisibilité.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 

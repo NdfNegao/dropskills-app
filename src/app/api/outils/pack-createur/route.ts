@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { callN8nTool, PackCreateurInput } from '@/lib/n8n';
+import { processAiTool, PackCreateurInput } from '@/lib/ai-tools';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
@@ -43,8 +45,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Appel vers n8n
-    const result = await callN8nTool({
+    // Traitement avec notre système IA
+    const result = await processAiTool({
       toolType: 'pack-createur',
       input: {
         niche,
@@ -65,11 +67,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: result.data,
-      executionId: result.executionId
+      metadata: result.metadata
     });
 
   } catch (error) {
-    console.error('Erreur Pack Créateur IA:', error);
+    console.error('Erreur Pack Créateur:', error);
     return NextResponse.json(
       { error: 'Erreur serveur interne' },
       { status: 500 }

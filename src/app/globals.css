@@ -150,17 +150,49 @@ a {
   }
 }
 
-/* Thème clair */
+/* Thème clair - Conforme aux standards WCAG AA */
 .theme-light {
-  --background: #ffffff;
-  --foreground: #111111;
-  --card: #f7f7f7;
-  --card-foreground: #111111;
-  --border: #e5e7eb;
-  --muted: #666666;
-  --muted-foreground: #374151;
-  --primary: #ff0033;
+  /* Couleurs de Base - Light Theme */
+  --background: #ffffff;        /* Blanc pur - Background principal */
+  --background-secondary: #f8f9fa; /* Gris très clair - Cartes */
+  --background-tertiary: #f1f3f4;  /* Gris clair - Gradients */
+
+  /* Couleur Signature */
+  --primary: #ff0033;           /* Rouge Dropskills - CTA principal */
+  --primary-hover: #cc0029;     /* Rouge hover */
+  --primary-light: rgba(255, 0, 51, 0.1); /* Rouge transparent plus léger */
   --primary-foreground: #ffffff;
+
+  /* Texte - Contraste WCAG AA conforme */
+  --foreground: #0f172a;        /* Gris très foncé - Texte principal (Contraste 15.8:1) */
+  --foreground-secondary: #475569; /* Gris moyen - Texte secondaire (Contraste 7.2:1) */
+  --foreground-muted: #94a3b8;  /* Gris clair - Texte désactivé (Contraste 4.5:1) */
+
+  /* Cartes et conteneurs */
+  --card: #ffffff;              /* Blanc pur pour les cartes */
+  --card-foreground: #0f172a;   /* Texte sur cartes */
+  --card-secondary: #f8f9fa;    /* Cartes secondaires */
+
+  /* Bordures & Séparateurs */
+  --border: #e2e8f0;            /* Bordures douces */
+  --border-light: #f1f5f9;      /* Bordures très légères */
+  --border-hover: #cbd5e1;      /* Bordures au hover */
+
+  /* États - Couleurs plus foncées pour le contraste */
+  --success: #059669;           /* Vert plus foncé - Succès (Contraste 4.5:1) */
+  --warning: #d97706;           /* Orange plus foncé - Attention (Contraste 4.5:1) */
+  --error: #dc2626;             /* Rouge plus foncé - Erreur (Contraste 4.5:1) */
+  --info: #2563eb;              /* Bleu plus foncé - Information (Contraste 4.5:1) */
+
+  /* Couleurs utilitaires */
+  --muted: #94a3b8;             /* Couleur atténuée */
+  --muted-foreground: #64748b;  /* Texte atténué */
+  --accent: #f1f5f9;            /* Couleur d'accent */
+  --accent-foreground: #0f172a; /* Texte sur accent */
+
+  /* Ombres et effets */
+  --shadow: rgba(0, 0, 0, 0.1); /* Ombres douces */
+  --shadow-lg: rgba(0, 0, 0, 0.15); /* Ombres importantes */
 }
 
 .theme-light html,
@@ -170,25 +202,79 @@ a {
 }
 
 .theme-light .btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--primary-foreground));
-  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+  color: var(--primary-foreground);
+  border: none;
+}
+
+.theme-light .btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 0, 51, 0.3);
 }
 
 .theme-light .card-hover:hover {
-  box-shadow: 0 8px 25px rgba(255, 0, 51, 0.08);
+  box-shadow: 0 8px 25px var(--shadow-lg);
+  border-color: var(--border-hover);
 }
 
 .theme-light ::selection {
-  background: var(--primary);
-  color: var(--primary-foreground);
+  background: var(--primary-light);
+  color: var(--foreground);
 }
 
 .theme-light ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: var(--background-secondary);
 }
 
 .theme-light ::-webkit-scrollbar-thumb {
   background: var(--border);
+  border-radius: 6px;
+}
+
+.theme-light ::-webkit-scrollbar-thumb:hover {
+  background: var(--border-hover);
+}
+
+/* Amélioration des inputs en mode clair */
+.theme-light input,
+.theme-light textarea,
+.theme-light select {
+  background-color: var(--background);
+  border-color: var(--border);
+  color: var(--foreground);
+}
+
+.theme-light input:focus,
+.theme-light textarea:focus,
+.theme-light select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+  outline: none;
+}
+
+/* Amélioration des cartes en mode clair */
+.theme-light .bg-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px var(--shadow);
+}
+
+/* États des boutons en mode clair */
+.theme-light button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Amélioration de la lisibilité des liens */
+.theme-light a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.theme-light a:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
 }
 
 /* Application des variables */

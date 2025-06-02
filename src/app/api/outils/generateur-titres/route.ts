@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { callN8nTool, GenerateurTitresInput } from '@/lib/n8n';
+import { processAiTool, GenerateurTitresInput } from '@/lib/ai-tools';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -52,8 +52,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Appel vers n8n
-    const result = await callN8nTool({
+    // Traitement avec notre système IA
+    const result = await processAiTool({
       toolType: 'generateur-titres',
       input: {
         sujet,
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: result.data,
-      executionId: result.executionId
+      metadata: result.metadata
     });
 
   } catch (error) {
