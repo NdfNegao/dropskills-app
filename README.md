@@ -1,5 +1,32 @@
 # DropSkills App
 
+## 🎯 Status Projet
+- **Projet IA Veille Premium** mis en **STANDBY** (voir `PROJET_IA_VEILLE_STANDBY.md`)
+- Raison : Trop avancé pour l'équipe actuelle
+- Pages supprimées : `/ai-veille`, `/veille/[jobId]`, `/demo-results`
+- Focus actuel : Projets plus simples
+
+## 🚧 Notes Techniques
+- Quelques erreurs linter temporaires dans `dashboard/page.tsx` (imports UI components)
+- À nettoyer lors de prochaine session dev
+- Base de données et architecture principale intacte
+
+---
+
+Application Next.js avec Supabase pour la gestion des opportunités business.
+
+## Structure
+- `/src/app` - Pages principales
+- `/supabase` - Base de données et migrations  
+- `/src/components` - Composants réutilisables
+
+## Développement
+```bash
+npm run dev
+```
+
+Accès : http://localhost:3000
+
 Plateforme moderne de dropshipping de produits digitaux, développée avec Next.js 14.
 
 ---

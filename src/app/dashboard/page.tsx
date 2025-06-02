@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,7 +22,6 @@ import {
   Download,
   Bell
 } from 'lucide-react';
-import Link from 'next/link';
 
 interface ScrapeJob {
   id: string;
@@ -189,20 +189,12 @@ export default function DashboardPage() {
         <div className="bg-white rounded-lg shadow p-6 mb-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Lancer une Veille Automatisée</h2>
-            <div className="flex gap-3">
-              <Link 
-                href="/ai-veille"
-                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-blue-700 flex items-center gap-2 font-medium shadow-lg"
-              >
-                🤖 IA Veille Premium
-              </Link>
-              <Link 
-                href="/veille/nouvelle"
-                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2"
-              >
-                ⚡ Nouvelle Veille Avancée
-              </Link>
-            </div>
+            <Link 
+              href="/veille/nouvelle"
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2"
+            >
+              ⚡ Nouvelle Veille
+            </Link>
           </div>
           
           {/* Version rapide */}
