@@ -36,6 +36,14 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# IDE
+.vscode/
+.idea/
+
+# Logs
+logs
+*.log
+
 # ============================================================================
 # FICHIERS OBSOLÈTES POST-MIGRATION PRISMA → SUPABASE
 # ============================================================================
@@ -104,3 +112,17 @@ Thumbs.db
 # Garder la config Supabase
 !supabase/
 !supabase/migrations/
+
+# 🔒 SÉCURITÉ RENFORCÉE - NE JAMAIS COMMITER
+*.env
+.env*
+!.env.example
+*.key
+*.pem
+secrets.json
+config/production.json
+api-keys.json
+credentials.json
+.env.production
+.env.staging
+.vercel/.env*
