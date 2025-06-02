@@ -33,15 +33,9 @@ export default function SignInPage() {
         // Vérifier la session pour rediriger selon le rôle
         const session = await getSession();
         if (session?.user) {
-          const userRole = (session.user as any).role;
-          
-          // Redirection selon le rôle
-          // Redirection vers admin uniquement pour cyril.iriebi@gmail.com
-        if (session.user?.email === "cyril.iriebi@gmail.com") {
-          router.push("/admin");
-        } else {
+          // Redirection vers dashboard pour tous les utilisateurs
+          // L'accès admin se fait via le bouton dans la sidebar
           router.push("/dashboard");
-        }
         }
       }
     } catch (error) {
