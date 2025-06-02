@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateAIContent } from '@/lib/openai';
+import { generateAIContentWithProvider } from '@/lib/openai';
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,8 +16,14 @@ export async function POST(request: NextRequest) {
     // Construction du prompt optimisé
     const prompt = buildTitlesPrompt({ subject, audience, tone, type });
 
-    // Génération avec OpenAI
-    const response = await generateAIContent(prompt, 'titles', 0.8, 800);
+    // Génération avec routage intelligent (DeepSeek prioritaire)
+    const response = await generateAIContentWithProvider(
+      prompt, 
+      'titles', 
+      0.8, 
+      800,
+      'Tu es un expert en copywriting et marketing digital. Génère des titres accrocheurs et optimisés pour le web en français.'
+    );
 
     // Parsing des titres (format JSON attendu)
     let titles: string[] = [];
@@ -36,7 +42,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       titles,
-      usage: response.usage
+      usage: response.usage,
+      provider: response.provider,
+      costSavings: response.costSavings
     });
 
   } catch (error) {
@@ -108,4 +116,4 @@ function getToneGuidelines(tone: string): string {
     'urgent': '- Crée un sentiment d\'urgence\n- Utilise des mots d\'action\n- Évoque la rareté ou le temps limité'
   };
   return guidelines[tone as keyof typeof guidelines] || 'Sois engageant et pertinent';
-} 
+}

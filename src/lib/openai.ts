@@ -1,4 +1,6 @@
 import OpenAI from 'openai';
+import { deepseek } from './deepseek';
+import { AIProviderManager } from './ai-providers';
 
 // Configuration OpenAI
 const openai = new OpenAI({
@@ -29,7 +31,57 @@ export const AI_MODELS = {
   usp: 'gpt-3.5-turbo', // Propositions courtes
 } as const;
 
-// Fonction générique de génération
+// Fonction avec routage intelligent vers le meilleur provider
+export async function generateAIContentWithProvider(
+  prompt: string,
+  toolType: string,
+  temperature: number = 0.7,
+  maxTokens: number = 1000,
+  systemPrompt?: string
+): Promise<AIResponse & { provider: string; costSavings?: number }> {
+  try {
+    // Utilise le provider optimal selon le mapping
+    const provider = await AIProviderManager.getOptimalProvider(toolType);
+    
+    if (provider.name === 'DeepSeek V3') {
+      const response = await deepseek.generateWithRetry(prompt, {
+        temperature,
+        maxTokens,
+        systemPrompt
+      });
+      
+      // Calcul des économies vs OpenAI
+      const costComparison = deepseek.compareCostWithOpenAI(
+        response.usage?.prompt_tokens || 0,
+        response.usage?.completion_tokens || 0
+      );
+      
+      return {
+        ...response,
+        provider: 'deepseek-v3',
+        costSavings: costComparison.savings
+      };
+    }
+    
+    // Fallback vers OpenAI pour les autres providers non implémentés
+    const response = await generateAIContent(prompt, toolType, temperature, maxTokens);
+    return {
+      ...response,
+      provider: 'openai'
+    };
+    
+  } catch (error) {
+    console.error(`Erreur provider ${toolType}:`, error);
+    // Fallback vers OpenAI en cas d'erreur
+    const response = await generateAIContent(prompt, toolType, temperature, maxTokens);
+    return {
+      ...response,
+      provider: 'openai-fallback'
+    };
+  }
+}
+
+// Fonction générique de génération (conservée pour compatibilité)
 export async function generateAIContent(
   prompt: string,
   model: keyof typeof AI_MODELS | string = 'titles',
@@ -216,4 +268,4 @@ ${formats && formats.length > 0 ? `- Privilégiant les formats : ${formats.join(
     // Fallback en cas d'erreur
     throw new Error(`Erreur lors de la génération avec OpenAI: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
   }
-} 
+}

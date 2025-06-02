@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateAIContent } from '@/lib/openai';
+import { generateAIContentWithProvider } from '@/lib/openai';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,7 +24,13 @@ export async function POST(request: NextRequest) {
     });
 
     // Génération avec OpenAI
-    const response = await generateAIContent(prompt, 'descriptions', 0.8, 1000);
+    const response = await generateAIContentWithProvider(
+      prompt, 
+      'descriptions', 
+      0.8, 
+      1000,
+      'Tu es un expert en copywriting et marketing digital. Crée des descriptions produits persuasives et optimisées SEO en français.'
+    );
 
     // Parsing des descriptions (format JSON attendu)
     let descriptions: string[] = [];
@@ -43,7 +49,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       descriptions,
-      usage: response.usage
+      usage: response.usage,
+      provider: response.provider,
+      costSavings: response.costSavings
     });
 
   } catch (error) {
@@ -125,4 +133,4 @@ function getToneGuidelines(tone: string): string {
     'casual': '- Ton décontracté et amical\n- Utilise un langage simple\n- Évite le jargon technique\n- Reste accessible à tous'
   };
   return guidelines[tone as keyof typeof guidelines] || 'Sois professionnel et engageant';
-} 
+}
