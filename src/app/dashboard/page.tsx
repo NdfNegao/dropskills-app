@@ -21,6 +21,7 @@ import {
   Download,
   Bell
 } from 'lucide-react';
+import Link from 'next/link';
 
 interface ScrapeJob {
   id: string;
@@ -184,29 +185,50 @@ export default function DashboardPage() {
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">🚀 Dashboard DropSkills - Phase 1 MVP</h1>
         
-        {/* Interface de veille */}
+        {/* Interface de veille améliorée */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">Lancer une Veille Automatisée</h2>
-          <div className="flex gap-4">
-            <input
-              type="text"
-              placeholder="Mots-clés séparés par des virgules"
-              className="flex-1 border rounded px-4 py-2"
-              value={searchKeywords}
-              onChange={(e) => setSearchKeywords(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && launchVeille()}
-            />
-            <button
-              onClick={launchVeille}
-              disabled={!searchKeywords.trim()}
-              className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-            >
-              🔍 Lancer Veille
-            </button>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Lancer une Veille Automatisée</h2>
+            <div className="flex gap-3">
+              <Link 
+                href="/ai-veille"
+                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-blue-700 flex items-center gap-2 font-medium shadow-lg"
+              >
+                🤖 IA Veille Premium
+              </Link>
+              <Link 
+                href="/veille/nouvelle"
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2"
+              >
+                ⚡ Nouvelle Veille Avancée
+              </Link>
+            </div>
           </div>
-          <p className="text-sm text-gray-600 mt-2">
-            Exemple: startup, fintech, levée de fonds
-          </p>
+          
+          {/* Version rapide */}
+          <div className="border-t pt-4">
+            <p className="text-sm text-gray-600 mb-3">Version rapide (LinkedIn + News) :</p>
+            <div className="flex gap-4">
+              <input
+                type="text"
+                placeholder="Mots-clés séparés par des virgules"
+                className="flex-1 border rounded px-4 py-2"
+                value={searchKeywords}
+                onChange={(e) => setSearchKeywords(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && launchVeille()}
+              />
+              <button
+                onClick={launchVeille}
+                disabled={!searchKeywords.trim()}
+                className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+              >
+                🔍 Lancer Veille
+              </button>
+            </div>
+            <p className="text-sm text-gray-600 mt-2">
+              Exemple: startup, fintech, levée de fonds
+            </p>
+          </div>
         </div>
 
         {/* Statistiques rapides */}
@@ -247,6 +269,7 @@ export default function DashboardPage() {
                 <li>✅ APIs Apify + IA opérationnelles</li>
                 <li>✅ Authentication Supabase</li>
                 <li>✅ Dashboard MVP</li>
+                <li>✅ Formulaire veille avancé</li>
               </ul>
             </div>
             <div>
@@ -254,17 +277,17 @@ export default function DashboardPage() {
               <ul className="text-sm space-y-1">
                 <li>🔄 Integration scrapers Apify</li>
                 <li>🔄 Pipeline analyse IA</li>
-                <li>🔄 Interface utilisateur</li>
+                <li>🔄 Pages résultats</li>
                 <li>🔄 Système de billing</li>
               </ul>
             </div>
             <div>
               <h3 className="font-semibold mb-2">📅 Prochaines Étapes</h3>
               <ul className="text-sm space-y-1">
+                <li>📅 Page suivi jobs</li>
+                <li>📅 Liste opportunités</li>
+                <li>📅 Analyse IA interactive</li>
                 <li>📅 Tests end-to-end</li>
-                <li>📅 Déploiement production</li>
-                <li>📅 Onboarding beta users</li>
-                <li>📅 Première facturation</li>
               </ul>
             </div>
           </div>
@@ -277,21 +300,29 @@ export default function DashboardPage() {
         {/* Section test des APIs */}
         <div className="bg-white rounded-lg shadow p-6 mt-8">
           <h2 className="text-xl font-semibold mb-4">🧪 Test des APIs Phase 1</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Link 
+              href="/veille/nouvelle"
+              className="bg-blue-100 border border-blue-300 rounded p-4 hover:bg-blue-200 transition-colors block"
+            >
+              <h3 className="font-semibold text-blue-800">🚀 Nouvelle Veille</h3>
+              <p className="text-sm text-blue-600">Interface complète de création</p>
+            </Link>
+            
             <button 
               onClick={() => window.open('/admin/test-apify', '_blank')}
-              className="bg-blue-100 border border-blue-300 rounded p-4 hover:bg-blue-200 transition-colors"
+              className="bg-green-100 border border-green-300 rounded p-4 hover:bg-green-200 transition-colors"
             >
-              <h3 className="font-semibold text-blue-800">🕷️ Test Apify Integration</h3>
-              <p className="text-sm text-blue-600">Tester les scrapers et pipeline</p>
+              <h3 className="font-semibold text-green-800">🕷️ Test Apify Integration</h3>
+              <p className="text-sm text-green-600">Tester les scrapers et pipeline</p>
             </button>
             
             <button 
               onClick={() => alert('API IA test - Coming soon!')}
-              className="bg-green-100 border border-green-300 rounded p-4 hover:bg-green-200 transition-colors"
+              className="bg-purple-100 border border-purple-300 rounded p-4 hover:bg-purple-200 transition-colors"
             >
-              <h3 className="font-semibold text-green-800">🤖 Test Pipeline IA</h3>
-              <p className="text-sm text-green-600">DeepSeek + Grok analysis</p>
+              <h3 className="font-semibold text-purple-800">🤖 Test Pipeline IA</h3>
+              <p className="text-sm text-purple-600">DeepSeek + Grok analysis</p>
             </button>
           </div>
         </div>
