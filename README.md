@@ -68,3 +68,4 @@ Pull requests bienvenues ! Pour toute suggestion, ouvre une issue ou contacte 
 # relance workflow supabase vars
 # redeploy test
 # redeploy Sam 31 mai 2025 21:26:07 CEST
+# Force Vercel redeploy Lun  2 jui 2025 02:47:14 CEST
