@@ -1,7 +1,7 @@
 import React from 'react';
 import PageBentoLayout from './PageBentoLayout';
 import LayoutWithSidebar from './LayoutWithSidebar';
-import { IA_TOOLS } from '@/data/ai-tools';
+import { AI_TOOLS, ICON_MAP } from '@/data/ai-tools';
 
 interface ToolLayoutProps {
   toolId: string;
@@ -18,8 +18,12 @@ const ToolLayout: React.FC<ToolLayoutProps> = ({
   children, 
   showSidebar = true 
 }) => {
-  // Chercher les métadonnées de l'outil
-  const tool = IA_TOOLS.find(t => t.href.includes(toolId));
+  // Chercher les métadonnées de l'outil par ID ou par href
+  const tool = AI_TOOLS.find(t => 
+    t.id === toolId || 
+    t.href === `/outils/${toolId}` ||
+    t.href.endsWith(`/${toolId}`)
+  );
   
   if (!tool) {
     // Fallback vers LayoutWithSidebar si outil non trouvé
@@ -30,12 +34,15 @@ const ToolLayout: React.FC<ToolLayoutProps> = ({
     );
   }
 
+  // Récupérer le composant d'icône
+  const IconComponent = ICON_MAP[tool.icon];
+
   return (
     <LayoutWithSidebar showSidebar={showSidebar}>
       <PageBentoLayout
-        icon={tool.icon}
-        title={tool.label}
-        subtitle={tool.description || `Outil IA pour ${tool.label.toLowerCase()}`}
+        icon={IconComponent ? <IconComponent className="w-6 h-6 text-white" /> : null}
+        title={tool.name}
+        subtitle={tool.description || `Outil IA pour ${tool.name.toLowerCase()}`}
       >
         {children}
       </PageBentoLayout>
