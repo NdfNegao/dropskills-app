@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import React, { useState } from 'react';
+import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
 import { 
   Target, 
@@ -568,10 +568,10 @@ function GenerateurOffreContent() {
 
 export default function GenerateurOffrePage() {
   return (
-    <LayoutWithSidebar>
+    <ToolLayout toolId="generateur-offre">
       <PremiumGuard feature="Générateur d'Offre IA">
         <GenerateurOffreContent />
       </PremiumGuard>
-    </LayoutWithSidebar>
+    </ToolLayout>
   );
 } 

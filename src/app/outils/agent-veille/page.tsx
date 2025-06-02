@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import React, { useState } from 'react';
+import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
 
 export interface VeilleFormData {
@@ -620,10 +620,10 @@ function AgentVeilleContent() {
 
 export default function AgentVeillePage() {
   return (
-    <LayoutWithSidebar>
-      <PremiumGuard feature="Agent Veille IA">
+    <ToolLayout toolId="agent-veille">
+      <PremiumGuard feature="Agent de Veille IA">
         <AgentVeilleContent />
       </PremiumGuard>
-    </LayoutWithSidebar>
+    </ToolLayout>
   );
 }

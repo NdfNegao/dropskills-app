@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import React, { useState } from 'react';
+import ToolLayout from '@/components/ToolLayout';
 import { 
   FileText, 
   Sparkles, 
@@ -296,8 +296,8 @@ function DescriptionsContent() {
 
 export default function DescriptionsPage() {
   return (
-    <LayoutWithSidebar>
+    <ToolLayout toolId="descriptions">
       <DescriptionsContent />
-    </LayoutWithSidebar>
+    </ToolLayout>
   );
 } 

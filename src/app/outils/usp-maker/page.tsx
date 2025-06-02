@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import React, { useState, useEffect } from 'react';
+import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
 import { USPWizard } from '@/components/USPWizard';
 import { USPResult } from '@/components/USPResult';
@@ -162,10 +162,10 @@ function USPMakerContent() {
 
 export default function USPMakerPage() {
   return (
-    <LayoutWithSidebar>
+    <ToolLayout toolId="usp-maker">
       <PremiumGuard feature="USP Maker IA">
         <USPMakerContent />
       </PremiumGuard>
-    </LayoutWithSidebar>
+    </ToolLayout>
   );
 } 

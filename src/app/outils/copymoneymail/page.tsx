@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import React, { useState, useEffect } from 'react';
+import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
 import { 
   Mail, 
@@ -655,10 +655,10 @@ function CopyMoneyMailContent() {
 
 export default function CopyMoneyMailPage() {
   return (
-    <LayoutWithSidebar>
-      <PremiumGuard feature="CopyMoneyMail IA">
+    <ToolLayout toolId="copymoneymail">
+      <PremiumGuard feature="Copy Money Mail IA">
         <CopyMoneyMailContent />
       </PremiumGuard>
-    </LayoutWithSidebar>
+    </ToolLayout>
   );
 } 

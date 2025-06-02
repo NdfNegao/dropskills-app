@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import React, { useState } from 'react';
+import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
 import { 
   BrainCog, 
@@ -576,10 +576,10 @@ function ICPMakerContent() {
 
 export default function ICPMakerPage() {
   return (
-    <LayoutWithSidebar>
+    <ToolLayout toolId="icp-maker">
       <PremiumGuard feature="ICP Maker IA">
         <ICPMakerContent />
       </PremiumGuard>
-    </LayoutWithSidebar>
+    </ToolLayout>
   );
 } 

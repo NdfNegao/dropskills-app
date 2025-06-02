@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import React, { useState } from 'react';
+import ToolLayout from '@/components/ToolLayout';
 import { 
   Sparkles, 
   Type, 
@@ -289,8 +289,8 @@ function GenerateurTitresContent() {
 
 export default function GenerateurTitresPage() {
   return (
-    <LayoutWithSidebar>
+    <ToolLayout toolId="generateur-titres">
       <GenerateurTitresContent />
-    </LayoutWithSidebar>
+    </ToolLayout>
   );
 } 

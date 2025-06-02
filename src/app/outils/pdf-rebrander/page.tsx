@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import LayoutWithSidebar from '@/components/LayoutWithSidebar';
-import PremiumGuard from '@/components/auth/PremiumGuard';
+import React, { useState } from 'react';
+import ToolLayout from '@/components/ToolLayout';
 import { 
   Palette, 
   Upload, 
@@ -368,10 +367,8 @@ function PDFRebranderContent() {
 
 export default function PDFRebranderPage() {
   return (
-    <LayoutWithSidebar>
-      <PremiumGuard feature="PDF Rebrander">
-        <PDFRebranderContent />
-      </PremiumGuard>
-    </LayoutWithSidebar>
+    <ToolLayout toolId="pdf-rebrander">
+      <PDFRebranderContent />
+    </ToolLayout>
   );
 }

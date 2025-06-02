@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import React, { useState } from 'react';
+import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
 import { 
   Sparkles, 
@@ -374,10 +374,10 @@ function ContentSystemContent() {
 
 export default function ContentSystemPage() {
   return (
-    <LayoutWithSidebar>
-      <PremiumGuard feature="Content System IA">
+    <ToolLayout toolId="content-system">
+      <PremiumGuard feature="Système de Contenu IA">
         <ContentSystemContent />
       </PremiumGuard>
-    </LayoutWithSidebar>
+    </ToolLayout>
   );
 } 

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import Link from 'next/link';
-import PageBentoLayout from '@/components/PageBentoLayout';
+import LayoutWithSidebar from '@/components/LayoutWithSidebar';
 import { AiToolsGrid } from '@/components/AiToolsGrid';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -310,12 +310,30 @@ export default function DashboardPage() {
   };
 
   return (
-    <PageBentoLayout
-      icon={<BarChart3 className="w-6 h-6 text-white" />}
-      title={`Bonjour ${(user as any)?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Entrepreneur'} 👋`}
-      subtitle="Votre centre de contrôle DropSkills - Transformez vos idées en business"
-      stats={dashboardStats}
-    >
+    <LayoutWithSidebar>
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
+              <BarChart3 className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">{`Bonjour ${(user as any)?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Entrepreneur'} 👋`}</h1>
+              <p className="text-muted-foreground">Votre centre de contrôle DropSkills - Transformez vos idées en business</p>
+            </div>
+          </div>
+        </div>
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {dashboardStats.map((stat, idx) => (
+            <div key={idx} className="bg-card border border-border rounded-lg p-4">
+              <div className={`flex items-center gap-2 mb-1 ${stat.color}`}>{stat.icon}<span className="text-sm font-medium">{stat.label}</span></div>
+              <div className="text-2xl font-bold text-foreground">{stat.value}</div>
+              <div className="text-xs text-muted-foreground">{stat.description}</div>
+            </div>
+          ))}
+        </div>
       {/* Alert Premium si utilisateur gratuit */}
       {!canAccessPremium && (
         <div className="bg-gradient-to-r from-[#ff0033]/10 to-[#cc0029]/5 border-l-4 border-[#ff0033] rounded-xl p-6 mb-8">
@@ -797,6 +815,7 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
-    </PageBentoLayout>
+      </div>
+    </LayoutWithSidebar>
   );
 }

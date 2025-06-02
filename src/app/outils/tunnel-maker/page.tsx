@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import React, { useState, useEffect } from 'react';
+import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
 import { 
   FolderKanban, 
@@ -743,10 +743,10 @@ function TunnelMakerContent() {
 
 export default function TunnelMakerPage() {
   return (
-    <LayoutWithSidebar>
+    <ToolLayout toolId="tunnel-maker">
       <PremiumGuard feature="Tunnel Maker IA">
         <TunnelMakerContent />
       </PremiumGuard>
-    </LayoutWithSidebar>
+    </ToolLayout>
   );
 } 

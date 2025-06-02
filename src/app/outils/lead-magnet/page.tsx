@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import LayoutWithSidebar from '@/components/LayoutWithSidebar';
+import React, { useState } from 'react';
+import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
 import { 
   Sparkles, 
@@ -394,10 +394,10 @@ function LeadMagnetContent() {
 
 export default function LeadMagnetPage() {
   return (
-    <LayoutWithSidebar>
-      <PremiumGuard feature="Lead Magnet Creator">
+    <ToolLayout toolId="lead-magnet">
+      <PremiumGuard feature="Lead Magnet IA">
         <LeadMagnetContent />
       </PremiumGuard>
-    </LayoutWithSidebar>
+    </ToolLayout>
   );
 } 
