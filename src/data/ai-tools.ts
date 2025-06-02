@@ -1,11 +1,11 @@
-import { 
+import {
   Bot, 
   Sparkles, 
   Type, 
   FileText, 
   Mail, 
   Users, 
-  CalendarCheck, 
+  Calendar, 
   PenTool,
   Brain,
   Target,
@@ -128,7 +128,7 @@ export const AI_TOOLS: AiTool[] = [
     id: 'content-system',
     name: 'Content System 90J',
     description: 'Planifiez 90 jours de contenu en 10 minutes',
-    icon: 'CalendarCheck',
+    icon: 'Calendar',
     type: 'CONTENT_SYSTEM',
     category: 'Trafic',
     href: '/outils/content-system',
@@ -208,7 +208,7 @@ export const ICON_MAP: Record<string, React.ComponentType<any>> = {
   Sparkles,
   Type,
   FileText,
-  CalendarCheck,
+  Calendar,
   Mail,
   Users,
   Brain,
@@ -236,4 +236,4 @@ export function getPremiumTools(): AiTool[] {
 
 export function getFreeTools(): AiTool[] {
   return AI_TOOLS.filter(tool => !tool.isPremium);
-} 
+}

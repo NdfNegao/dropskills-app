@@ -11,6 +11,12 @@ export function AiToolCard({ tool, className = '' }: AiToolCardProps) {
   // Récupérer le composant icône depuis la map
   const IconComponent = ICON_MAP[tool.icon] || ICON_MAP['Bot'];
   
+  // Vérifier que href existe
+  if (!tool.href) {
+    console.warn('AiToolCard: href is undefined for tool:', tool);
+    return null;
+  }
+  
   return (
     <Link 
       href={tool.href}
@@ -42,4 +48,4 @@ export function AiToolCard({ tool, className = '' }: AiToolCardProps) {
       </div>
     </Link>
   );
-} 
+}
