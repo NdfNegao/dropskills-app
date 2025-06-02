@@ -56,7 +56,7 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
 
   'grok-3': {
     name: 'Grok 3',
-    apiKey: process.env.XAI_API_KEY || '',
+    apiKey: process.env.GROK_API_KEY || '',
     baseURL: 'https://api.x.ai/v1',
     model: 'grok-3',
     pricing: {
@@ -66,13 +66,13 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     capabilities: ['creativity', 'copywriting', 'engagement'],
     temperature: 0.8,
     maxTokens: 4000,
-    isAvailable: () => !!process.env.XAI_API_KEY,
+    isAvailable: () => !!process.env.GROK_API_KEY,
     generateText: async (prompt: string, options = {}) => {
       // Implémentation Grok API (quand disponible)
       const response = await fetch(`${AI_PROVIDERS['grok-3'].baseURL}/chat/completions`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.XAI_API_KEY}`,
+          'Authorization': `Bearer ${process.env.GROK_API_KEY}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({

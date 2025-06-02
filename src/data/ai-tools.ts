@@ -42,6 +42,7 @@ export interface AiTool {
   stepDescription: string;
   endpoint: string;
   model: string;
+  provider?: string;
   temperature: number;
   maxTokens: number;
   systemPrompt: string;
@@ -371,4 +372,37 @@ export function getPremiumTools(): AiTool[] {
 
 export function getFreeTools(): AiTool[] {
   return AI_TOOLS.filter(tool => !tool.isPremium);
+}
+
+// Nouvelles fonctions pour la gestion des providers
+export function getToolProvider(toolId: string): string {
+  // Mapping des IDs d'outils vers les clés de providers
+  const providerMapping: Record<string, string> = {
+    'title-generator': 'titles',
+    'generateur-titres-alt': 'titles',
+    'description-generator': 'descriptions',
+    'email-sequence': 'emails',
+    'veille-strategique': 'veille',
+    'agent-veille': 'veille',
+    'content-system': 'content',
+    'usp-maker': 'usp',
+    'icp-maker': 'icp'
+  };
+  
+  return providerMapping[toolId] || 'openai'; // fallback
+}
+
+export function getToolConfigForProvider(toolId: string) {
+  const tool = getToolById(toolId);
+  if (!tool) return null;
+  
+  return {
+    toolId,
+    providerKey: getToolProvider(toolId),
+    name: tool.name,
+    endpoint: tool.endpoint,
+    systemPrompt: tool.systemPrompt,
+    temperature: tool.temperature,
+    maxTokens: tool.maxTokens
+  };
 }

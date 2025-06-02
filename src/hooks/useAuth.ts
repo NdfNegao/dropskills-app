@@ -25,7 +25,7 @@ export function useAuth() {
   const [isLoading, setIsLoading] = useState(true);
   const [premiumStatus, setPremiumStatus] = useState<boolean>(false);
 
-  // Vérifier s'il y a un utilisateur de développement
+  // Vérifier s'il y a un utilisateur de développement (uniquement si explicitement défini)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const devUserData = localStorage.getItem('dev-user');
@@ -40,20 +40,8 @@ export function useAuth() {
           localStorage.removeItem('dev-user');
           localStorage.removeItem('dev-session');
         }
-      } else {
-        // Auto-créer une session admin si pas de session
-        const autoAdminUser = {
-          id: 'admin-auto',
-          email: 'cyril.iriebi@gmail.com',
-          name: 'Cyril Iriebi',
-          firstName: 'Cyril',
-          lastName: 'Iriebi',
-          isDevAccount: true
-        };
-        setDevUser(autoAdminUser);
-        localStorage.setItem('dev-user', JSON.stringify(autoAdminUser));
-        localStorage.setItem('dev-session', 'true');
       }
+      // Ne plus auto-créer de session de développement
     }
     setIsLoading(false);
   }, []);
