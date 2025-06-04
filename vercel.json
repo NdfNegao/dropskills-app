@@ -1,17 +1,18 @@
 {
+  "framework": "nextjs",
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "installCommand": "npm install",
-  "framework": "nextjs",
-  "regions": ["cdg1"],
-  "functions": {
-    "src/app/api/**/*.ts": {
-      "maxDuration": 30
-    }
-  },
   "env": {
+    "NEXTAUTH_URL": "https://dropskills-app.vercel.app",
     "NODE_ENV": "production"
   },
+  "functions": {
+    "app/api/**/*.ts": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "regions": ["cdg1"],
   "headers": [
     {
       "source": "/(.*)",
