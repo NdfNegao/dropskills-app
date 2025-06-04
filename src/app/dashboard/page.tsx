@@ -79,7 +79,6 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [searchKeywords, setSearchKeywords] = useState('');
   const [achievements, setAchievements] = useState<Achievement[]>([]);
-  const [userProfile, setUserProfile] = useState<{firstName?: string; fullName?: string} | null>(null);
   
   const supabase = createClientComponentClient();
   const { user, canAccessPremium, isAdmin } = useAuth();
@@ -87,29 +86,7 @@ export default function DashboardPage() {
   useEffect(() => {
     loadDashboardData();
     loadAchievements();
-    loadUserProfile();
   }, [user]);
-
-  const loadUserProfile = async () => {
-    if (!user?.email) return;
-    
-    try {
-      const { data: userData, error } = await supabase
-        .from('users')
-        .select('first_name, last_name, full_name')
-        .eq('email', user.email)
-        .single();
-
-      if (userData && !error) {
-        setUserProfile({
-          firstName: userData.first_name,
-          fullName: userData.full_name || `${userData.first_name || ''} ${userData.last_name || ''}`.trim()
-        });
-      }
-    } catch (error) {
-      console.error('Erreur chargement profil utilisateur:', error);
-    }
-  };
 
   const loadDashboardData = async () => {
     try {
@@ -343,8 +320,7 @@ export default function DashboardPage() {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-foreground">{`Bonjour ${
-                userProfile?.firstName || 
-                userProfile?.fullName?.split(' ')[0] || 
+                user?.firstName || 
                 user?.name?.split(' ')[0] || 
                 user?.email?.split('@')[0] || 
                 'Entrepreneur'

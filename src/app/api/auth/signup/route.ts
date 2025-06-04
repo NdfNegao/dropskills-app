@@ -57,6 +57,10 @@ export async function POST(request: NextRequest) {
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
+    // Déterminer le rôle (ADMIN si c'est l'email de Cyril)
+    const role = email.toLowerCase() === 'cyril.iriebi@gmail.com' ? 'ADMIN' : 'USER';
+    const isPremium = role === 'ADMIN'; // L'admin est premium par défaut
+
     // Sauvegarder l'utilisateur en base de données
     const { data: newUser, error: insertError } = await supabase
       .from('users')
@@ -65,7 +69,9 @@ export async function POST(request: NextRequest) {
         last_name: lastName,
         name: `${firstName} ${lastName}`,
         email: email.toLowerCase(),
-        is_premium: false,
+        password_hash: hashedPassword,
+        role: role,
+        is_premium: isPremium,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       })
@@ -85,7 +91,7 @@ export async function POST(request: NextRequest) {
       firstName,
       lastName,
       email: email.toLowerCase(),
-      role: 'USER'
+      role: role
     });
 
     // TODO: Envoyer un email de bienvenue
@@ -99,7 +105,7 @@ export async function POST(request: NextRequest) {
           firstName,
           lastName,
           email: email.toLowerCase(),
-          role: 'USER'
+          role: role
         }
       },
       { status: 201 }

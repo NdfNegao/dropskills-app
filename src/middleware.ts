@@ -6,74 +6,19 @@ export default withAuth(
     const token = req.nextauth.token;
     const { pathname } = req.nextUrl;
 
-    // Routes publiques - pas de protection
-    const publicRoutes = [
-      '/',
-      '/auth',
-      '/catalogue',
-      '/premium',
-      '/api/auth',
-      '/api/public'
-    ];
-
-    // Vérifier si la route est publique
-    const isPublicRoute = publicRoutes.some(route => 
-      pathname.startsWith(route) || pathname === route
-    );
-
-    if (isPublicRoute) {
-      return NextResponse.next();
-    }
-
-    // Routes admin - accès libre (protection côté composant)
+    // Routes admin - accessible uniquement aux ADMIN
     if (pathname.startsWith('/admin')) {
-      return NextResponse.next();
+      if (token?.role !== 'ADMIN') {
+        return NextResponse.redirect(new URL('/dashboard', req.url));
+      }
     }
 
-    // Protection des routes premium (outils IA)
-    const premiumRoutes = [
-      '/outils/icp-maker',
-      '/outils/generateur-offre',
-      '/outils/tunnel-maker',
-      '/outils/copymoneymail',
-      '/outils/content-system',
-      '/outils/lead-magnet'
-    ];
-
-    const isPremiumRoute = premiumRoutes.some(route => pathname.startsWith(route));
-
-    if (isPremiumRoute) {
-      if (!token) {
-        return NextResponse.redirect(new URL('/auth/signin?callbackUrl=' + encodeURIComponent(pathname), req.url));
+    // Routes premium - accessible aux utilisateurs premium ou admin
+    if (pathname.startsWith('/premium-') || 
+        pathname.startsWith('/outils/') && !pathname.includes('/icp-maker')) {
+      if (!token?.isPremium && token?.role !== 'ADMIN') {
+        return NextResponse.redirect(new URL('/premium', req.url));
       }
-
-      // Permettre l'accès à cyril.iriebi@gmail.com (admin)
-      if (token.email === 'cyril.iriebi@gmail.com') {
-        return NextResponse.next();
-      }
-
-      // Pour les autres utilisateurs, vérifier le statut premium (à implémenter)
-      return NextResponse.redirect(new URL('/premium?upgrade=required', req.url));
-    }
-
-    // Protection des API routes premium
-    if (pathname.startsWith('/api/premium') || pathname.startsWith('/api/ai')) {
-      if (!token) {
-        return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
-      }
-
-      // Permettre l'accès à cyril.iriebi@gmail.com (admin)
-      if (token.email === 'cyril.iriebi@gmail.com') {
-        return NextResponse.next();
-      }
-
-      // Pour les autres utilisateurs, vérifier le statut premium (à implémenter)
-      return NextResponse.json({ error: 'Premium subscription required' }, { status: 403 });
-    }
-
-    // API routes admin - accès libre (protection côté API si nécessaire)
-    if (pathname.startsWith('/api/admin')) {
-      return NextResponse.next();
     }
 
     return NextResponse.next();
@@ -81,23 +26,27 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        // Permettre l'accès si on a un token ou si c'est une route publique
         const { pathname } = req.nextUrl;
         
-        const publicRoutes = [
+        // Pages publiques (pas besoin d'authentification)
+        const publicPaths = [
           '/',
-          '/auth',
-          '/catalogue',
-          '/premium',
+          '/auth/signin',
+          '/auth/signup',
+          '/auth/error',
           '/api/auth',
-          '/api/public'
+          '/premium',
+          '/home_cursor',
+          '/home_cursorV2',
+          '/home_cursorV3'
         ];
 
-        const isPublicRoute = publicRoutes.some(route => 
-          pathname.startsWith(route) || pathname === route
-        );
+        if (publicPaths.some(path => pathname.startsWith(path))) {
+          return true;
+        }
 
-        return !!token || isPublicRoute;
+        // Toutes les autres routes nécessitent une authentification
+        return !!token;
       },
     },
   }
