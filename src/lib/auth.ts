@@ -3,10 +3,13 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Configuration Supabase avec fallback pour éviter les erreurs de build
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const supabase = supabaseUrl && supabaseKey 
+  ? createClient(supabaseUrl, supabaseKey)
+  : null;
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -18,6 +21,25 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        // Fallback admin si Supabase n'est pas configuré
+        if (!supabase) {
+          if (
+            credentials.email === 'cyril.iriebi@gmail.com' &&
+            credentials.password === 'jjbMMA200587@'
+          ) {
+            return {
+              id: 'admin',
+              email: 'cyril.iriebi@gmail.com',
+              name: 'Cyril Iriebi',
+              firstName: 'Cyril',
+              lastName: 'Iriebi',
+              role: 'ADMIN',
+              isPremium: true
+            };
+          }
           return null;
         }
 
@@ -75,7 +97,7 @@ export const authOptions: NextAuthOptions = {
         token.lastName = (user as any).lastName;
         token.role = (user as any).role;
         token.isPremium = (user as any).isPremium;
-      } else if (token.email) {
+      } else if (token.email && supabase) {
         // À chaque requête, rafraîchir les données depuis la BDD
         try {
           const { data: userData } = await supabase

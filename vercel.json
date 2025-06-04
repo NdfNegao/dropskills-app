@@ -7,11 +7,7 @@
     "NEXTAUTH_URL": "https://dropskills-app.vercel.app",
     "NODE_ENV": "production"
   },
-  "functions": {
-    "app/api/**/*.ts": {
-      "runtime": "nodejs18.x"
-    }
-  },
+
   "regions": ["cdg1"],
   "headers": [
     {
@@ -90,4 +86,4 @@
       "schedule": "0 12 * * *"
     }
   ]
-} 
+}
