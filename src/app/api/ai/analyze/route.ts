@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { supabaseAdmin as supabase } from '@/lib/supabase';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 
 // Interface pour les données à analyser
 interface OpportunityData {
@@ -36,17 +37,16 @@ interface AnalysisResult {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
-    
-    // Vérifier l'authentification
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
+    const userId = session.user.id;
 
-    const { opportunityData, analysisType = 'full' }: { 
-      opportunityData: OpportunityData; 
-      analysisType?: 'quick' | 'full' | 'creative' 
+    const { opportunityData, analysisType = 'full' }: {
+      opportunityData: OpportunityData;
+      analysisType?: 'quick' | 'full' | 'creative'
     } = await request.json();
 
     // Validation des données
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
 
     // Vérifier les limites utilisateur
     const { data: usageCheck } = await supabase.rpc('check_user_usage_limit', {
-      p_user_id: user.id,
+      p_user_id: userId,
       p_usage_type: 'ai_analysis',
       p_quantity: 1
     });
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
 
     // Enregistrer l'usage
     await supabase.from('usage_tracking').insert({
-      user_id: user.id,
+      user_id: userId,
       usage_type: 'ai_analysis',
       action: `analysis_${analysisType}`,
       quantity: 1,

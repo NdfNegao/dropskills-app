@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ThumbsUp, ThumbsDown, MessageSquare, Filter, ArrowUpDown } from 'lucide-react';
@@ -32,7 +32,6 @@ export default function IdeaList() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [sort, setSort] = useState('votes');
-  const supabase = createClientComponentClient();
 
   const fetchIdeas = async () => {
     try {

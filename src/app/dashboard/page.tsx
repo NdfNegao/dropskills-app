@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import LayoutWithSidebar from '@/components/LayoutWithSidebar';
 import { AiToolsGrid } from '@/components/AiToolsGrid';
@@ -80,7 +80,6 @@ export default function DashboardPage() {
   const [searchKeywords, setSearchKeywords] = useState('');
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   
-  const supabase = createClientComponentClient();
   const { user, canAccessPremium, isAdmin } = useAuth();
 
   useEffect(() => {
