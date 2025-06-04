@@ -18,7 +18,6 @@ export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const router = useRouter();
@@ -28,21 +27,6 @@ export default function SignUpPage() {
       ...formData,
       [e.target.name]: e.target.value
     });
-  };
-
-  const handleGoogleSignIn = async () => {
-    setIsGoogleLoading(true);
-    setError("");
-    
-    try {
-      await signIn("google", {
-        callbackUrl: "/dashboard",
-      });
-    } catch (error) {
-      setError("Erreur lors de la connexion avec Google");
-    } finally {
-      setIsGoogleLoading(false);
-    }
   };
 
   const validatePassword = (password: string) => {

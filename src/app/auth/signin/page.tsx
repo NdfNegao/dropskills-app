@@ -12,7 +12,6 @@ export default function SignInPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -43,21 +42,6 @@ export default function SignInPage() {
       setError("Une erreur est survenue lors de la connexion");
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    setIsGoogleLoading(true);
-    setError("");
-    
-    try {
-      await signIn("google", {
-        callbackUrl: "/dashboard",
-      });
-    } catch (error) {
-      setError("Erreur lors de la connexion avec Google");
-    } finally {
-      setIsGoogleLoading(false);
     }
   };
 

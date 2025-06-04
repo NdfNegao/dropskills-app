@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export const dynamic = 'force-dynamic';
 
@@ -33,15 +39,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Vérifier si l'utilisateur existe déjà
-    // TODO: Remplacer par une vraie vérification en base de données
-    const existingUsers = [
-      'admin@dropskills.com',
-      'premium@dropskills.com',
-      'user@dropskills.com'
-    ];
+    // Vérifier si l'utilisateur existe déjà dans Supabase
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('email')
+      .eq('email', email.toLowerCase())
+      .single();
 
-    if (existingUsers.includes(email.toLowerCase())) {
+    if (existingUser) {
       return NextResponse.json(
         { message: 'Un compte avec cet email existe déjà' },
         { status: 409 }
@@ -52,23 +57,34 @@ export async function POST(request: NextRequest) {
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // TODO: Sauvegarder l'utilisateur en base de données
-    // const newUser = await createUser({
-    //   firstName,
-    //   lastName,
-    //   email: email.toLowerCase(),
-    //   password: hashedPassword,
-    //   role: 'USER',
-    //   createdAt: new Date(),
-    //   isActive: true
-    // });
+    // Sauvegarder l'utilisateur en base de données
+    const { data: newUser, error: insertError } = await supabase
+      .from('users')
+      .insert({
+        first_name: firstName,
+        last_name: lastName,
+        name: `${firstName} ${lastName}`,
+        email: email.toLowerCase(),
+        is_premium: false,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      .select()
+      .single();
 
-    // Simulation de création d'utilisateur
+    if (insertError) {
+      console.error('Erreur lors de la création de l\'utilisateur:', insertError);
+      return NextResponse.json(
+        { message: 'Erreur lors de la création du compte' },
+        { status: 500 }
+      );
+    }
+
     console.log('Nouvel utilisateur créé:', {
+      id: newUser.id,
       firstName,
       lastName,
       email: email.toLowerCase(),
-      hashedPassword: hashedPassword.substring(0, 20) + '...',
       role: 'USER'
     });
 
@@ -79,6 +95,7 @@ export async function POST(request: NextRequest) {
       { 
         message: 'Compte créé avec succès',
         user: {
+          id: newUser.id,
           firstName,
           lastName,
           email: email.toLowerCase(),

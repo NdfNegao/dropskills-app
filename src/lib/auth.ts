@@ -1,6 +1,12 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -14,18 +20,43 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
-        // Auth PARETO : email et mot de passe hardcodés
-        if (
-          credentials.email === 'cyril.iriebi@gmail.com' &&
-          credentials.password === 'jjbMMA200587@'
-        ) {
-          return {
-            id: 'admin',
-            email: credentials.email,
-            name: 'Cyril Iriebi',
-          };
+
+        // Vérifier l'utilisateur dans Supabase
+        const { data: userData, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('email', credentials.email.toLowerCase())
+          .single();
+
+        if (error || !userData) {
+          // Auth PARETO pour l'admin en cas d'absence en BDD
+          if (
+            credentials.email === 'cyril.iriebi@gmail.com' &&
+            credentials.password === 'jjbMMA200587@'
+          ) {
+            return {
+              id: 'admin',
+              email: credentials.email,
+              name: 'Cyril Iriebi',
+              firstName: 'Cyril',
+              lastName: 'Iriebi'
+            };
+          }
+          return null;
         }
-        return null;
+
+        // Vérifier le mot de passe (simulé pour l'instant car on a pas encore de hashed password en BDD)
+        // TODO: Implémenter la vérification du mot de passe hashé
+        // const passwordValid = await bcrypt.compare(credentials.password, userData.password_hash);
+        // if (!passwordValid) return null;
+
+        return {
+          id: userData.id,
+          email: userData.email,
+          name: userData.name,
+          firstName: userData.first_name,
+          lastName: userData.last_name
+        };
       }
     })
   ],
@@ -35,7 +66,49 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile }) {
-      // Autoriser toutes les connexions valides
+      // Synchroniser avec Supabase pour tous les utilisateurs
+      if (user?.email) {
+        try {
+          const firstName = user.firstName || user.name?.split(' ')[0] || '';
+          const lastName = user.lastName || user.name?.split(' ').slice(1).join(' ') || '';
+          
+          // Vérifier si l'utilisateur existe déjà
+          const { data: existingUser } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', user.email)
+            .single();
+
+          if (!existingUser) {
+            // Créer l'utilisateur s'il n'existe pas
+            await supabase
+              .from('users')
+              .insert({
+                email: user.email,
+                name: user.name || '',
+                first_name: firstName,
+                last_name: lastName,
+                is_premium: user.email === 'cyril.iriebi@gmail.com', // Admin Premium par défaut
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+              });
+          } else if (!existingUser.first_name && firstName) {
+            // Mettre à jour les noms s'ils manquent
+            await supabase
+              .from('users')
+              .update({
+                first_name: firstName,
+                last_name: lastName,
+                name: user.name || '',
+                updated_at: new Date().toISOString()
+              })
+              .eq('email', user.email);
+          }
+        } catch (error) {
+          console.error('Erreur lors de la synchronisation utilisateur:', error);
+        }
+      }
+      
       return true;
     },
     async jwt({ token, user, account }) {
