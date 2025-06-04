@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { createClient } from '@/utils/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { Bell, X, CheckCircle, AlertCircle, Info } from 'lucide-react';
 
 interface Notification {
@@ -11,7 +11,6 @@ interface Notification {
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const supabase = createClient();
 
   useEffect(() => {
     // Écouter les changements sur la table ai_tool_logs

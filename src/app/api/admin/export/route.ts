@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server';
+import { supabaseAdmin } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { Parser } from 'json2csv';
@@ -10,8 +10,7 @@ const isAdmin = async () => {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) return false;
   
-  const supabase = createClient();
-  const { data: profile } = await supabase
+  const { data: profile } = await supabaseAdmin
     .from('profiles')
     .select('can_access_admin, is_super_admin')
     .eq('email', session.user.email)
@@ -30,7 +29,7 @@ export async function GET(request: Request) {
   const type = searchParams.get('type') || 'tools';
   const period = searchParams.get('period') || '7d';
 
-  const supabase = createClient();
+  const supabase = supabaseAdmin;
 
   try {
     let data;
