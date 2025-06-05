@@ -1,0 +1,10 @@
+[33m8a84a32[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m 🔧 Add: Page debug production Vercel pour diagnostiquer problème permissions premium en prod
+[33m29b4523[m 🔧 Fix: Résolution permissions premium admin - middleware optimisé + accès complet outils IA premium pour administrateurs
+[33mb705114[m 🎯 Finalisation refactorisation auth NextAuth + Supabase - Système opérationnel avec admin fonctionnel
+[33mb96458a[m Fix auth.ts - Configuration stable avec build local validé pour Vercel
+[33maa9a347[m ✅ Reconstitution complete de auth.ts - Configuration NextAuth avec Supabase fonctionnelle
+[33mb0953da[m 🔥 Fix auth.ts - Suppression marqueurs diff et syntaxe corrigée pour Vercel build
+[33m302374b[m 🔧 Finalisation auth.ts - Contenu complet de la configuration NextAuth avec authentification Supabase
+[33ma03cd71[m 🏗️ Refactorisation complète authentification - Architecture centralisée via NextAuth/Supabase - Suppression logique dev user et vérifications hardcodées - Token JWT avec role/isPremium/firstName/lastName - Middleware propre avec vérifications par rôle - Inscription vraie avec hash bcrypt - Script init-admin pour compte administrateur - Dashboard simplifié sans appels API redondants
+[33m2286174[m 🔧 Simplification authentification et affichage prénom utilisateur - Suppression Google OAuth, conservation credentials uniquement - Dashboard personnalisé avec 'Bonjour [Prénom]' - API inscription avec sauvegarde Supabase réelle - Pages signin/signup nettoyées
+[33mdfc2a50[m feat: Ajout de 3 versions modernes de homepage inspirées de Firecrawl.dev - /home_cursor (CSS classique), /home_cursorV2 (Framer Motion avancé), /home_cursorV3 (Digital Dropshipping français) avec animations fluides, carousels produits, code preview interactif, et design responsive

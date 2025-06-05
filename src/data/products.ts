@@ -1,4 +1,4 @@
-export type Product = {
+export interface Product {
   id: string;
   title: string;
   subtitle: string;
@@ -32,6 +32,7 @@ export type Product = {
   permissions?: string[];
   previewImages?: string[];
   downloadUrl?: string;
+  videoUrl?: string; // URL de la vidéo YouTube
   students: number;
 };
 
@@ -1070,4 +1071,4 @@ export const PRODUCTS: Product[] = [
     ],
     students: 0
   }
-]; 
+];

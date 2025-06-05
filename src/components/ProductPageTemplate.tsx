@@ -42,6 +42,44 @@ import Link from 'next/link';
 import ProductActions from './ProductActions';
 import { Product } from '@/data/products';
 
+// Composant YouTubePlayer
+interface YouTubePlayerProps {
+  videoUrl: string;
+  title: string;
+}
+
+const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoUrl, title }) => {
+  // Extraire l'ID de la vidéo YouTube depuis l'URL
+  const getYouTubeVideoId = (url: string): string | null => {
+    const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  };
+
+  const videoId = getYouTubeVideoId(videoUrl);
+
+  if (!videoId) {
+    return (
+      <div className="aspect-video bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center">
+        <p className="text-gray-400">URL vidéo YouTube invalide</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="aspect-video bg-black rounded-lg overflow-hidden">
+      <iframe
+        src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&showinfo=0`}
+        title={title}
+        className="w-full h-full"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+    </div>
+  );
+};
+
 // Fonction pour convertir les noms d'icônes en composants
 function getIconComponent(iconName: string) {
   const iconMap: { [key: string]: React.ReactNode } = {
@@ -246,15 +284,22 @@ export default function ProductPageTemplate({
             <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
               <h2 className="text-xl font-semibold text-white mb-6">Aperçu du produit</h2>
               
-              {/* Image principale */}
+              {/* Vidéo ou Image principale */}
               <div className="relative mb-6">
-                <div className="aspect-video bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg overflow-hidden">
-                  <img 
-                    src={product.previewImages[selectedPreview] || '/api/placeholder/800/450'}
-                    alt={`Aperçu ${selectedPreview + 1}`}
-                    className="w-full h-full object-cover"
+                {product.videoUrl ? (
+                  <YouTubePlayer 
+                    videoUrl={product.videoUrl} 
+                    title={product.title}
                   />
-                </div>
+                ) : (
+                  <div className="aspect-video bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg overflow-hidden">
+                    <img 
+                      src={product.previewImages[selectedPreview] || '/api/placeholder/800/450'}
+                      alt={`Aperçu ${selectedPreview + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Miniatures */}
@@ -423,4 +468,4 @@ export default function ProductPageTemplate({
       )}
     </LayoutWithSidebar>
   );
-} 
+}
