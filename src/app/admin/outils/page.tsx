@@ -41,6 +41,7 @@ export default function AdminOutilsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [premiumFilter, setPremiumFilter] = useState<'all' | 'premium' | 'free'>('all');
   const [showModal, setShowModal] = useState(false);
   const [editingTool, setEditingTool] = useState<AiTool | null>(null);
   const [formData, setFormData] = useState({
@@ -81,9 +82,15 @@ export default function AdminOutilsPage() {
     if (categoryFilter !== 'all') {
       filtered = filtered.filter(tool => tool.category === categoryFilter);
     }
+
+    if (premiumFilter !== 'all') {
+      filtered = filtered.filter(tool => 
+        premiumFilter === 'premium' ? tool.is_premium : !tool.is_premium
+      );
+    }
     
     setFilteredTools(filtered);
-  }, [tools, search, categoryFilter]);
+  }, [tools, search, categoryFilter, premiumFilter]);
 
   const fetchTools = async () => {
     try {
@@ -117,7 +124,7 @@ export default function AdminOutilsPage() {
       });
 
       if (response.ok) {
-        showToast('success', editingTool ? 'Outil modifié' : 'Outil créé');
+        showToast('success', editingTool ? 'Outil modifié avec succès' : 'Outil créé avec succès');
         setShowModal(false);
         fetchTools();
         resetForm();
@@ -138,7 +145,7 @@ export default function AdminOutilsPage() {
       });
 
       if (response.ok) {
-        showToast('success', 'Outil supprimé');
+        showToast('success', 'Outil supprimé avec succès');
         fetchTools();
       } else {
         throw new Error();
@@ -159,7 +166,14 @@ export default function AdminOutilsPage() {
   };
 
   const handleEdit = (tool: AiTool) => {
-    setFormData(tool as any);
+    // Pré-remplir correctement le formulaire avec les données actuelles de l'outil
+    const { id, created_at, updated_at, ...toolData } = tool;
+    setFormData({
+      ...toolData,
+      temperature: Number(tool.temperature),
+      max_tokens: Number(tool.max_tokens),
+      step: Number(tool.step)
+    });
     setEditingTool(tool);
     setShowModal(true);
   };
@@ -216,13 +230,13 @@ export default function AdminOutilsPage() {
           icon: <Crown size={20} />
         },
         {
-          title: "Catégories",
-          value: CATEGORIES.length.toString(),
+          title: "Gratuits",
+          value: tools.filter(t => !t.is_premium).length.toString(),
           icon: <Zap size={20} />
         },
         {
-          title: "Modèles",
-          value: MODELS.length.toString(),
+          title: "Catégories",
+          value: CATEGORIES.length.toString(),
           icon: <Bot size={20} />
         }
       ]}
@@ -242,7 +256,7 @@ export default function AdminOutilsPage() {
           </div>
         </header>
 
-        {/* Filtres */}
+        {/* Filtres améliorés */}
         <div className="p-6 bg-white border border-gray-200 rounded-xl mb-6">
           <div className="flex flex-wrap gap-4">
             <div className="relative">
@@ -266,10 +280,20 @@ export default function AdminOutilsPage() {
                 <option key={cat} value={cat}>{cat}</option>
               ))}
             </select>
+
+            <select 
+              value={premiumFilter} 
+              onChange={(e) => setPremiumFilter(e.target.value as 'all' | 'premium' | 'free')}
+              className="bg-white border border-gray-300 text-black px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="all">Tous les statuts</option>
+              <option value="premium">Premium uniquement</option>
+              <option value="free">Gratuits uniquement</option>
+            </select>
           </div>
         </div>
 
-        {/* Tableau */}
+        {/* Tableau amélioré */}
         <div className="p-6">
           <div className="bg-[#111] rounded-xl border border-[#232323] overflow-hidden">
             <table className="w-full">
@@ -278,7 +302,7 @@ export default function AdminOutilsPage() {
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Nom</th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Catégorie</th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Modèle</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Premium</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Statut</th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
@@ -288,35 +312,50 @@ export default function AdminOutilsPage() {
                     <td className="px-6 py-4">
                       <div>
                         <div className="text-sm font-medium text-white">{tool.name}</div>
-                        <div className="text-xs text-gray-400">{tool.description}</div>
+                        <div className="text-xs text-gray-400 mt-1">{tool.description}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-300">{tool.category}</td>
-                    <td className="px-6 py-4 text-sm text-gray-300">{tool.model}</td>
+                    <td className="px-6 py-4">
+                      <span className="px-2 py-1 bg-[#232323] text-gray-300 text-xs rounded-full">
+                        {tool.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-sm text-gray-300 font-mono">{tool.model}</span>
+                    </td>
                     <td className="px-6 py-4">
                       {tool.is_premium ? (
-                        <Crown className="w-5 h-5 text-yellow-400" />
+                        <div className="flex items-center gap-2">
+                          <Crown className="w-4 h-4 text-yellow-500" />
+                          <span className="text-yellow-500 font-semibold text-sm">Premium</span>
+                        </div>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 rounded-full bg-green-500"></div>
+                          <span className="text-green-500 font-semibold text-sm">Gratuit</span>
+                        </div>
                       )}
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleEdit(tool)}
-                          className="p-2 text-gray-400 hover:text-white hover:bg-[#232323] rounded-lg transition-colors"
+                          className="p-2 text-gray-400 hover:text-blue-400 hover:bg-[#232323] rounded-lg transition-colors"
+                          title="Modifier l'outil"
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDuplicate(tool)}
-                          className="p-2 text-gray-400 hover:text-white hover:bg-[#232323] rounded-lg transition-colors"
+                          className="p-2 text-gray-400 hover:text-purple-400 hover:bg-[#232323] rounded-lg transition-colors"
+                          title="Dupliquer l'outil"
                         >
                           <Copy className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(tool.id)}
                           className="p-2 text-gray-400 hover:text-red-400 hover:bg-[#232323] rounded-lg transition-colors"
+                          title="Supprimer l'outil"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -330,20 +369,25 @@ export default function AdminOutilsPage() {
             {filteredTools.length === 0 && (
               <div className="text-center py-12">
                 <Bot className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-                <p className="text-gray-400">Aucun outil trouvé</p>
+                <p className="text-gray-400">
+                  {search || categoryFilter !== 'all' || premiumFilter !== 'all' 
+                    ? 'Aucun outil ne correspond aux critères de recherche'
+                    : 'Aucun outil trouvé'
+                  }
+                </p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Modal */}
+        {/* Modal amélioré */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-[#111] rounded-xl border border-[#232323] max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6 border-b border-[#232323]">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-semibold text-white">
-                    {editingTool ? 'Modifier l\'outil' : 'Ajouter un outil'}
+                    {editingTool ? `Modifier "${editingTool.name}"` : 'Ajouter un nouvel outil'}
                   </h2>
                   <button
                     onClick={() => { setShowModal(false); resetForm(); }}
@@ -354,41 +398,43 @@ export default function AdminOutilsPage() {
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              <form onSubmit={handleSubmit} className="p-6 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Nom</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Nom *</label>
                     <input
                       type="text"
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
+                      placeholder="Nom de l'outil..."
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Type</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Type *</label>
                     <select
                       value={formData.type}
                       onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                       className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
                     >
                       {TYPES.map(type => (
-                        <option key={type} value={type}>{type}</option>
+                        <option key={type} value={type}>{type.replace('_', ' ')}</option>
                       ))}
                     </select>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Description *</label>
                   <textarea
                     required
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     rows={3}
                     className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
+                    placeholder="Description de l'outil..."
                   />
                 </div>
 
@@ -407,7 +453,7 @@ export default function AdminOutilsPage() {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Modèle</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Modèle IA</label>
                     <select
                       value={formData.model}
                       onChange={(e) => setFormData({ ...formData, model: e.target.value })}
@@ -420,6 +466,7 @@ export default function AdminOutilsPage() {
                   </div>
                 </div>
 
+                {/* Paramètres avancés */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">Température</label>
@@ -429,7 +476,7 @@ export default function AdminOutilsPage() {
                       min="0"
                       max="1"
                       value={formData.temperature}
-                      onChange={(e) => setFormData({ ...formData, temperature: parseFloat(e.target.value) })}
+                      onChange={(e) => setFormData({ ...formData, temperature: parseFloat(e.target.value) || 0 })}
                       className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
                     />
                   </div>
@@ -439,27 +486,43 @@ export default function AdminOutilsPage() {
                     <input
                       type="number"
                       value={formData.max_tokens}
-                      onChange={(e) => setFormData({ ...formData, max_tokens: parseInt(e.target.value) })}
+                      onChange={(e) => setFormData({ ...formData, max_tokens: parseInt(e.target.value) || 1000 })}
                       className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Premium</label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.is_premium}
-                        onChange={(e) => setFormData({ ...formData, is_premium: e.target.checked })}
-                        className="w-4 h-4 text-[#ff0033] bg-[#0a0a0a] border-[#232323] rounded focus:ring-[#ff0033]"
-                      />
-                      <span className="text-gray-300">Outil premium</span>
-                    </label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Étape</label>
+                    <input
+                      type="number"
+                      value={formData.step}
+                      onChange={(e) => setFormData({ ...formData, step: parseInt(e.target.value) || 1 })}
+                      className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
+                    />
                   </div>
                 </div>
 
+                {/* Checkbox Premium mis en évidence */}
+                <div className="bg-[#0f0f0f] p-4 rounded-lg border border-[#232323]">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.is_premium}
+                      onChange={(e) => setFormData({ ...formData, is_premium: e.target.checked })}
+                      className="w-5 h-5 text-[#ff0033] bg-[#0a0a0a] border-[#232323] rounded focus:ring-[#ff0033] focus:ring-2"
+                    />
+                    <div className="flex items-center gap-2">
+                      <Crown className="w-5 h-5 text-yellow-500" />
+                      <span className="text-gray-300 font-medium">Outil Premium</span>
+                    </div>
+                  </label>
+                  <p className="text-sm text-gray-400 mt-2 ml-8">
+                    Les outils premium nécessitent un abonnement pour être utilisés
+                  </p>
+                </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Endpoint API</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Endpoint API *</label>
                   <input
                     type="text"
                     required
@@ -471,29 +534,30 @@ export default function AdminOutilsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">System Prompt</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">System Prompt *</label>
                   <textarea
                     required
                     value={formData.system_prompt}
                     onChange={(e) => setFormData({ ...formData, system_prompt: e.target.value })}
                     rows={4}
                     className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#232323] rounded-lg text-white focus:border-[#ff0033] focus:outline-none"
+                    placeholder="Instructions pour l'IA..."
                   />
                 </div>
 
-                <div className="flex justify-end gap-3 pt-4">
+                <div className="flex justify-end gap-3 pt-6 border-t border-[#232323]">
                   <button
                     type="button"
                     onClick={() => { setShowModal(false); resetForm(); }}
-                    className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+                    className="px-6 py-2 text-gray-400 hover:text-white transition-colors"
                   >
                     Annuler
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-[#ff0033] text-white rounded-lg hover:bg-[#e6002d] transition-colors"
+                    className="px-6 py-2 bg-[#ff0033] text-white rounded-lg hover:bg-[#e6002d] transition-colors font-semibold"
                   >
-                    {editingTool ? 'Modifier' : 'Créer'}
+                    {editingTool ? 'Mettre à jour' : 'Créer l\'outil'}
                   </button>
                 </div>
               </form>
@@ -503,11 +567,11 @@ export default function AdminOutilsPage() {
 
         {/* Toast */}
         {toast && (
-          <div className={`fixed bottom-4 right-4 px-4 py-3 rounded-lg flex items-center gap-2 ${
+          <div className={`fixed bottom-4 right-4 px-6 py-4 rounded-lg flex items-center gap-3 shadow-lg ${
             toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'
           } text-white`}>
             {toast.type === 'success' ? <Check className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
-            {toast.message}
+            <span className="font-medium">{toast.message}</span>
           </div>
         )}
       </div>
