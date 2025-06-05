@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { headers } from 'next/headers';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   const body = await request.text();
@@ -44,7 +39,7 @@ export async function POST(request: NextRequest) {
         
         if (customerEmail) {
           // Mettre à jour le statut premium de l'utilisateur
-          const { error } = await supabase
+          const { error } = await supabaseAdmin
             .from('users')
             .upsert({
               email: customerEmail,
@@ -70,7 +65,7 @@ export async function POST(request: NextRequest) {
         const subscription = event.data.object;
         
         // Révoquer l'accès premium
-        const { error } = await supabase
+        const { error } = await supabaseAdmin
           .from('users')
           .update({
             is_premium: false,
