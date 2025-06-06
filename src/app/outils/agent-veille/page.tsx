@@ -179,10 +179,10 @@ function AgentVeilleContent() {
           <Search className="w-10 h-10 text-white" />
         </div>
         <h1 className="text-4xl font-bold text-white mb-4">
-          Agent IA Veille & Opportunités
+          Agent Veille IA
         </h1>
         <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-          Détectez automatiquement les opportunités business et tendances de votre marché avec l'IA
+          Automatisez votre veille concurrentielle et technologique avec l'IA
         </p>
       </div>
 

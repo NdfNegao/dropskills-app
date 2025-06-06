@@ -125,7 +125,7 @@ function USPMakerContent() {
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold text-white mb-4">
-          ⚡ USP Maker IA
+          ⚡ USP Maker
         </h1>
         <p className="text-xl text-gray-400 max-w-2xl mx-auto">
           Créez votre proposition de valeur unique en 8 étapes avec l'IA

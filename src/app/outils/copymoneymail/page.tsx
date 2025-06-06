@@ -246,7 +246,7 @@ function CopyMoneyMailContent() {
             <Mail className="w-8 h-8 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-white">CopyMoneyMail IA</h1>
+            <h1 className="text-3xl font-bold text-white">CopyMoneyMail</h1>
             <p className="text-gray-400">Créez des séquences email qui convertissent</p>
           </div>
         </div>

@@ -295,26 +295,26 @@ export const AI_TOOLS: AiTool[] = [
     model: 'gpt-3.5-turbo',
     temperature: 0.7,
     maxTokens: 1000,
-    systemPrompt: 'Tu es un expert en design et branding. Aide à rebrandir des contenus PDF.'
+          systemPrompt: 'Tu es un expert en design et branding. Aide à rebrandir des contenus PDF.'
   },
   {
-    id: 'generateur-titres-alt',
+    id: 'generateur-titres-pro',
     name: 'Générateur Titres Pro',
-    description: 'Version avancée du générateur de titres',
+    description: 'Version premium avec techniques avancées de copywriting',
     icon: 'Type',
     type: 'TITLE_GENERATOR',
     category: 'Contenu',
     href: '/outils/generateur-titres',
-    color: 'from-teal-500 to-cyan-600',
+    color: 'from-purple-500 to-pink-600',
     isPremium: true,
     step: 5,
     stepTitle: 'TRAFIC',
-    stepDescription: 'Titres premium',
+    stepDescription: 'Titres premium avancés',
     endpoint: '/api/ai/titles-pro/generate',
     model: 'gpt-4o-mini',
     temperature: 0.8,
     maxTokens: 1000,
-    systemPrompt: 'Tu es un expert en copywriting premium. Génère des titres haute conversion avec techniques avancées.'
+    systemPrompt: 'Tu es un expert en copywriting premium. Génère des titres haute conversion avec techniques avancées et psychologie comportementale.'
   }
 ];
 
@@ -360,7 +360,7 @@ export function getToolProvider(toolId: string): string {
   // Mapping des IDs d'outils vers les clés de providers
   const providerMapping: Record<string, string> = {
     'title-generator': 'titles',
-    'generateur-titres-alt': 'titles',
+    'generateur-titres-pro': 'titles',
     'description-generator': 'descriptions',
     'email-sequence': 'emails',
     'veille-strategique': 'veille',

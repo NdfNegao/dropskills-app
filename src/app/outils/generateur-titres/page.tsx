@@ -79,8 +79,8 @@ function GenerateurTitresContent() {
             <Type className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-white">Générateur de Titres IA</h1>
-            <p className="text-gray-400">Créez des titres irrésistibles qui captent l'attention</p>
+            <h1 className="text-3xl font-bold text-white">Générateur Titres Pro</h1>
+            <p className="text-gray-400">Version premium avec techniques avancées de copywriting</p>
           </div>
         </div>
 
