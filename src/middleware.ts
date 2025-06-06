@@ -14,8 +14,7 @@ export default withAuth(
     }
 
     // Routes premium - accessible aux utilisateurs premium ou admin
-    if (pathname.startsWith('/premium-') || 
-        (pathname.startsWith('/outils/') && !pathname.includes('/icp-maker'))) {
+    if (pathname.startsWith('/premium-')) {
       
       const hasAccess = token?.isPremium === true || token?.role === 'ADMIN';
       
