@@ -117,15 +117,6 @@ function ContentSystemContent() {
     <div className="max-w-6xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
-            <FileText className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-white">Content System IA</h1>
-            <p className="text-gray-400">Générez un système de contenu complet pour 4 semaines</p>
-          </div>
-        </div>
 
         {/* Statistiques */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

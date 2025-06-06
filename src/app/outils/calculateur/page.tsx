@@ -67,15 +67,6 @@ function CalculateurContent() {
     <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="p-3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl">
-            <Calculator className="w-8 h-8 text-white" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-white">Calculateur de Revenus</h1>
-            <p className="text-gray-400">Calculez et projetez vos revenus futurs avec précision</p>
-          </div>
-        </div>
       </div>
 
       {/* Stats */}

@@ -21,7 +21,7 @@ import Link from 'next/link';
 const MASTERPIECES = [
   {
     id: 'icp-maker',
-    title: 'ICP Maker IA',
+    title: 'ICP Maker',
     description: 'Définissez votre client idéal en 7 étapes avec analyse IA',
     icon: Target,
     href: '/outils/icp-maker',
@@ -29,7 +29,7 @@ const MASTERPIECES = [
   },
   {
     id: 'usp-maker',
-    title: 'USP Maker IA',
+    title: 'USP Maker',
     description: 'Créez votre proposition de valeur unique en 8 étapes',
     icon: Zap,
     href: '/outils/usp-maker',
@@ -37,7 +37,7 @@ const MASTERPIECES = [
   },
   {
     id: 'tunnel-maker',
-    title: 'Tunnel Maker IA',
+    title: 'Tunnel Maker',
     description: 'Concevez votre tunnel de vente optimisé en 8 étapes',
     icon: Package,
     href: '/outils/tunnel-maker',
@@ -45,7 +45,7 @@ const MASTERPIECES = [
   },
   {
     id: 'copymoneymail',
-    title: 'CopyMoneyMail AI',
+    title: 'CopyMoneyMail',
     description: 'Générez des séquences email qui convertissent en 8 étapes',
     icon: Mail,
     href: '/outils/copymoneymail',
@@ -53,7 +53,7 @@ const MASTERPIECES = [
   },
   {
     id: 'content-system',
-    title: 'Content System AI',
+    title: 'Content System 90J',
     description: 'Planifiez votre contenu sur 90 jours en 8 étapes',
     icon: Calendar,
     href: '/outils/content-system',
@@ -61,7 +61,7 @@ const MASTERPIECES = [
   },
   {
     id: 'agent-veille',
-    title: 'Agent IA Veille & Opportunités',
+    title: 'Agent Veille',
     description: 'Détectez les opportunités business avec scoring IA',
     icon: TrendingUp,
     href: '/outils/agent-veille',
@@ -257,4 +257,4 @@ export function DropskillsRoadmap() {
       </div>
     </div>
   );
-} 
+}

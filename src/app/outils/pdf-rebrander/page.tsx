@@ -51,15 +51,7 @@ function PDFRebranderContent() {
     <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="p-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl">
-            <Palette className="w-8 h-8 text-white" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-white">PDF Rebrander</h1>
-            <p className="text-gray-400">Personnalisez vos PDFs avec votre identité de marque</p>
-          </div>
-        </div>
+
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

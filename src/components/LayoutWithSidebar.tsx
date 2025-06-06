@@ -15,8 +15,8 @@ import { signOut } from 'next-auth/react';
 // Outils IA pour mobile
 const IA_TOOLS = [
   { icon: <BrainCog />, label: "ICP Maker", href: "/outils/icp-maker" },
-  { icon: <Rocket />, label: "Générateur d'Offre", href: "/outils/generateur-offre" },
-  { icon: <FolderKanban />, label: "Tunnel de Vente IA", href: "/outils/tunnel-maker" },
+  { icon: <Rocket />, label: "Générateur d'Offres", href: "/outils/generateur-offre" },
+  { icon: <FolderKanban />, label: "Tunnel Maker", href: "/outils/tunnel-maker" },
   { icon: <Mail />, label: "CopyMoneyMail", href: "/outils/copymoneymail" },
   { icon: <CalendarCheck />, label: "Content System 90J", href: "/outils/content-system" },
   { icon: <Target />, label: "Lead Magnet Creator", href: "/outils/lead-magnet" },

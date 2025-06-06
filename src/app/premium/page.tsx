@@ -22,17 +22,17 @@ import Link from 'next/link';
 const PREMIUM_FEATURES = [
   {
     icon: <BrainCog className="w-6 h-6" />,
-    title: "ICP Maker IA",
+    title: "ICP Maker",
     description: "Créez votre profil client idéal en 7 étapes avec l'IA"
   },
   {
     icon: <Rocket className="w-6 h-6" />,
-    title: "Générateur d'Offre",
+    title: "Générateur d'Offres",
     description: "Générez des offres irrésistibles automatiquement"
   },
   {
     icon: <FolderKanban className="w-6 h-6" />,
-    title: "Tunnel de Vente IA",
+    title: "Tunnel Maker",
     description: "Créez des tunnels de vente optimisés par l'IA"
   },
   {
@@ -304,4 +304,4 @@ export default function PremiumPage() {
       </div>
     </LayoutWithSidebar>
   );
-} 
+}
