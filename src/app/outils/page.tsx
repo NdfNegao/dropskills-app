@@ -16,11 +16,13 @@ export default function OutilsPage() {
       <div className="space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-white mb-4">
-            Outils IA pour Entrepreneurs
+            {activeTab === 'grid' ? 'Outils IA pour Entrepreneurs' : 'Parcours AARRR - Framework de Croissance'}
           </h1>
           <p className="text-gray-400 max-w-3xl mx-auto">
-            Découvrez notre collection d'outils IA spécialement conçus pour accélérer 
-            votre croissance entrepreneuriale. Explorez-les par grille ou suivez le parcours AARRR.
+            {activeTab === 'grid' 
+              ? 'Découvrez notre collection d\'outils IA spécialement conçus pour accélérer votre croissance entrepreneuriale. Explorez-les par grille ou suivez le parcours AARRR.'
+              : 'Optimisez chaque étape de votre funnel de croissance avec nos outils IA spécialisés. Le framework AARRR vous guide de l\'acquisition à la monétisation.'
+            }
           </p>
         </div>
         

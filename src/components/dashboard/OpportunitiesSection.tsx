@@ -37,7 +37,28 @@ export default function OpportunitiesSection({ opportunities, canAccessPremium }
 
   const launchVeille = async () => {
     if (!searchKeywords.trim()) return;
-    console.log('Launching veille with keywords:', searchKeywords);
+    
+    try {
+      const response = await fetch('/api/dashboard/veille/launch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keywords: searchKeywords })
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        alert(`✅ ${data.message}`);
+        // Recharger les opportunités si besoin
+        window.location.reload();
+      } else {
+        alert(`❌ Erreur: ${data.error}`);
+      }
+    } catch (error) {
+      console.error('Erreur lancement veille:', error);
+      alert('❌ Erreur lors du lancement de la veille');
+    }
+    
     setSearchKeywords('');
   };
 

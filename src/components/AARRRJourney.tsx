@@ -96,16 +96,7 @@ export function AARRRJourney() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-white mb-4">
-          Parcours AARRR - Framework de Croissance
-        </h1>
-        <p className="text-gray-400 max-w-3xl mx-auto">
-          Optimisez chaque étape de votre funnel de croissance avec nos outils IA spécialisés. 
-          Le framework AARRR vous guide de l'acquisition à la monétisation.
-        </p>
-      </div>
+      {/* Header - Titre géré par la page parent */}
 
       {/* Journey Visualization */}
       <div className="relative">
