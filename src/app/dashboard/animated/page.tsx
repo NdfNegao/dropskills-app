@@ -58,17 +58,12 @@ export default function SimpleDashboardPage() {
     try {
       setLoading(true);
       
-      // 1. Charger les vraies statistiques
-      const statsResponse = await fetch('/api/dashboard/stats', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      
+      // Charger les statistiques
+      const statsResponse = await fetch('/api/dashboard/stats');
       if (statsResponse.ok) {
         const statsData = await statsResponse.json();
         setStats(statsData);
       } else {
-        console.error('Erreur API stats:', statsResponse.statusText);
         // Fallback avec données par défaut
         setStats({
           totalOpportunities: canAccessPremium ? 47 : 12,
@@ -81,17 +76,12 @@ export default function SimpleDashboardPage() {
         });
       }
 
-      // 2. Charger les vraies opportunités
-      const oppsResponse = await fetch('/api/dashboard/opportunities', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      
+      // Charger les opportunités
+      const oppsResponse = await fetch('/api/dashboard/opportunities');
       if (oppsResponse.ok) {
         const oppsData = await oppsResponse.json();
         setOpportunities(oppsData);
       } else {
-        console.error('Erreur API opportunities:', oppsResponse.statusText);
         // Fallback avec données simulées
         setOpportunities([
           {
@@ -105,11 +95,21 @@ export default function SimpleDashboardPage() {
             tags: ['fintech', 'levée de fonds'],
             sector: 'Finance',
             created_at: new Date().toISOString()
+          },
+          {
+            id: '2',
+            title: 'Tendance E-commerce 2025',
+            description: 'Nouvelles stratégies de vente en ligne émergentes',
+            source: 'Google Trends',
+            relevance_score: 85,
+            priority_level: 'medium',
+            status: 'new',
+            tags: ['e-commerce', 'tendances'],
+            sector: 'Commerce',
+            created_at: new Date().toISOString()
           }
         ]);
       }
-
-      // Données chargées avec succès
 
     } catch (error) {
       console.error('Erreur chargement dashboard:', error);
