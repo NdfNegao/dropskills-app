@@ -97,25 +97,35 @@ export const authOptions: NextAuthOptions = {
         token.lastName = (user as any).lastName;
         token.role = (user as any).role;
         token.isPremium = (user as any).isPremium;
-      } else if (token.email && supabase) {
-        // À chaque requête, rafraîchir les données depuis la BDD
-        try {
-          const { data: userData } = await supabase
-            .from('users')
-            .select('id, email, name, first_name, last_name, role, is_premium')
-            .eq('email', token.email as string)
-            .single();
+      } else if (token.email) {
+        // Vérifier si c'est l'admin (fallback hardcodé)
+        if (token.email === 'cyril.iriebi@gmail.com') {
+          token.role = 'ADMIN';
+          token.isPremium = true;
+          token.firstName = 'Cyril';
+          token.lastName = 'Iriebi';
+          token.name = 'Cyril Iriebi';
+        } else if (supabase) {
+          // À chaque requête, rafraîchir les données depuis la BDD pour les autres utilisateurs
+          try {
+            const { data: userData } = await supabase
+              .from('users')
+              .select('id, email, name, first_name, last_name, role, is_premium')
+              .eq('email', token.email as string)
+              .single();
 
-          if (userData) {
-            token.id = userData.id;
-            token.firstName = userData.first_name;
-            token.lastName = userData.last_name;
-            token.role = userData.role;
-            token.isPremium = userData.is_premium;
-            token.name = userData.name || `${userData.first_name} ${userData.last_name}`.trim();
+            if (userData) {
+              token.id = userData.id;
+              token.firstName = userData.first_name;
+              token.lastName = userData.last_name;
+              token.role = userData.role;
+              token.isPremium = userData.is_premium;
+              token.name = userData.name || `${userData.first_name} ${userData.last_name}`.trim();
+            }
+          } catch (error) {
+            console.error('Erreur lors du rafraîchissement du token:', error);
+            // En cas d'erreur BDD, conserver les valeurs existantes du token
           }
-        } catch (error) {
-          console.error('Erreur lors du rafraîchissement du token:', error);
         }
       }
       return token;
