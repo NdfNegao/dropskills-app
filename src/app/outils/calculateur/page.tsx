@@ -109,6 +109,34 @@ function CalculateurContent() {
         </div>
       </div>
 
+      {/* Conseils */}
+      <div className="mb-8 bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-6">
+        <h3 className="text-indigo-400 font-semibold mb-4 flex items-center gap-2">
+          <Lightbulb className="w-5 h-5" />
+          💡 Conseils pour optimiser vos revenus
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-indigo-300 text-sm">
+          <div>
+            <h4 className="font-medium mb-3 text-indigo-200">✨ Optimisation des revenus</h4>
+            <ul className="space-y-2 text-indigo-300">
+              <li>• <strong>Prix psychologique :</strong> Testez différents prix pour maximiser les ventes</li>
+              <li>• <strong>Upselling :</strong> Proposez des produits complémentaires</li>
+              <li>• <strong>Récurrence :</strong> Développez des revenus récurrents (abonnements)</li>
+              <li>• <strong>Segmentation :</strong> Adaptez vos prix selon vos segments clients</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-3 text-indigo-200">🎯 Contrôle des coûts</h4>
+            <ul className="space-y-2 text-indigo-300">
+              <li>• <strong>Négociation fournisseurs :</strong> Réduisez vos coûts variables</li>
+              <li>• <strong>Automatisation :</strong> Diminuez les coûts opérationnels</li>
+              <li>• <strong>Économies d'échelle :</strong> Optimisez avec la croissance</li>
+              <li>• <strong>Suivi régulier :</strong> Analysez vos métriques mensuellement</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Formulaire de calcul */}
         <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
@@ -326,33 +354,7 @@ function CalculateurContent() {
         </div>
       </div>
 
-      {/* Conseils */}
-      <div className="mt-8 bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-6">
-        <h3 className="text-indigo-400 font-semibold mb-4 flex items-center gap-2">
-          <Lightbulb className="w-5 h-5" />
-          💡 Conseils pour optimiser vos revenus
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-indigo-300 text-sm">
-          <div>
-            <h4 className="font-medium mb-3 text-indigo-200">✨ Optimisation des revenus</h4>
-            <ul className="space-y-2 text-indigo-300">
-              <li>• <strong>Prix psychologique :</strong> Testez différents prix pour maximiser les ventes</li>
-              <li>• <strong>Upselling :</strong> Proposez des produits complémentaires</li>
-              <li>• <strong>Récurrence :</strong> Développez des revenus récurrents (abonnements)</li>
-              <li>• <strong>Segmentation :</strong> Adaptez vos prix selon vos segments clients</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium mb-3 text-indigo-200">🎯 Contrôle des coûts</h4>
-            <ul className="space-y-2 text-indigo-300">
-              <li>• <strong>Négociation fournisseurs :</strong> Réduisez vos coûts variables</li>
-              <li>• <strong>Automatisation :</strong> Diminuez les coûts opérationnels</li>
-              <li>• <strong>Économies d'échelle :</strong> Optimisez avec la croissance</li>
-              <li>• <strong>Suivi régulier :</strong> Analysez vos métriques mensuellement</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }
@@ -363,4 +365,4 @@ export default function CalculateurPage() {
       <CalculateurContent />
     </ToolLayout>
   );
-} 
+}

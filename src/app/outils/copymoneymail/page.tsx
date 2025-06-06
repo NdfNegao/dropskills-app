@@ -313,6 +313,34 @@ function CopyMoneyMailContent() {
         )}
       </div>
 
+      {/* Conseils */}
+      <div className="mb-8 bg-pink-900/20 border border-pink-500/30 rounded-xl p-6">
+        <h3 className="text-pink-400 font-semibold mb-4 flex items-center gap-2">
+          <Lightbulb className="w-5 h-5" />
+          💡 Conseils pour des emails efficaces
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-pink-300 text-sm">
+          <div>
+            <h4 className="font-medium mb-3 text-pink-200">✨ Optimisation des campagnes</h4>
+            <ul className="space-y-2 text-pink-300">
+              <li>• <strong>Segmentez votre liste :</strong> Adaptez le message selon le profil</li>
+              <li>• <strong>Objets accrocheurs :</strong> 30-50 caractères, évitez le spam</li>
+              <li>• <strong>Personnalisation :</strong> Utilisez le prénom et les données client</li>
+              <li>• <strong>Mobile-first :</strong> 70% des emails sont lus sur mobile</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-3 text-pink-200">🎯 Conversion et engagement</h4>
+            <ul className="space-y-2 text-pink-300">
+              <li>• <strong>Un seul CTA :</strong> Concentrez l'attention sur une action</li>
+              <li>• <strong>Storytelling :</strong> Racontez une histoire qui résonne</li>
+              <li>• <strong>Preuve sociale :</strong> Témoignages et résultats clients</li>
+              <li>• <strong>Testez et mesurez :</strong> A/B testez objets, contenus et CTA</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Formulaire */}
         <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
@@ -622,33 +650,7 @@ function CopyMoneyMailContent() {
         </div>
       </div>
 
-      {/* Conseils */}
-      <div className="mt-8 bg-pink-900/20 border border-pink-500/30 rounded-xl p-6">
-        <h3 className="text-pink-400 font-semibold mb-4 flex items-center gap-2">
-          <Lightbulb className="w-5 h-5" />
-          💡 Conseils pour des emails efficaces
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-pink-300 text-sm">
-          <div>
-            <h4 className="font-medium mb-3 text-pink-200">✨ Optimisation des campagnes</h4>
-            <ul className="space-y-2 text-pink-300">
-              <li>• <strong>Segmentez votre liste :</strong> Adaptez le message selon le profil</li>
-              <li>• <strong>Objets accrocheurs :</strong> 30-50 caractères, évitez le spam</li>
-              <li>• <strong>Personnalisation :</strong> Utilisez le prénom et les données client</li>
-              <li>• <strong>Mobile-first :</strong> 70% des emails sont lus sur mobile</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium mb-3 text-pink-200">🎯 Conversion et engagement</h4>
-            <ul className="space-y-2 text-pink-300">
-              <li>• <strong>Un seul CTA :</strong> Concentrez l'attention sur une action</li>
-              <li>• <strong>Storytelling :</strong> Racontez une histoire qui résonne</li>
-              <li>• <strong>Preuve sociale :</strong> Témoignages et résultats clients</li>
-              <li>• <strong>Testez et mesurez :</strong> A/B testez objets, contenus et CTA</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }
@@ -661,4 +663,4 @@ export default function CopyMoneyMailPage() {
       </PremiumGuard>
     </ToolLayout>
   );
-} 
+}

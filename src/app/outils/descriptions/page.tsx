@@ -114,6 +114,34 @@ function DescriptionsContent() {
         </div>
       </div>
 
+      {/* Conseils */}
+      <div className="mb-8 bg-orange-900/20 border border-orange-500/30 rounded-xl p-6">
+        <h3 className="text-orange-400 font-semibold mb-4 flex items-center gap-2">
+          <Lightbulb className="w-5 h-5" />
+          💡 Conseils pour des descriptions efficaces
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-orange-300 text-sm">
+          <div>
+            <h4 className="font-medium mb-3 text-orange-200">✨ Structure optimale</h4>
+            <ul className="space-y-2 text-orange-300">
+              <li>• <strong>Accroche :</strong> Captez l'attention dès les premiers mots</li>
+              <li>• <strong>Bénéfices :</strong> Mettez en avant les avantages, pas les caractéristiques</li>
+              <li>• <strong>Preuve sociale :</strong> Intégrez témoignages et avis clients</li>
+              <li>• <strong>Call-to-action :</strong> Terminez par une incitation claire</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-3 text-orange-200">🎯 Optimisation SEO</h4>
+            <ul className="space-y-2 text-orange-300">
+              <li>• <strong>Mots-clés :</strong> Intégrez naturellement les termes recherchés</li>
+              <li>• <strong>Longueur :</strong> 150-300 mots pour un bon référencement</li>
+              <li>• <strong>Lisibilité :</strong> Phrases courtes et paragraphes aérés</li>
+              <li>• <strong>Unicité :</strong> Évitez le contenu dupliqué</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Formulaire */}
         <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
@@ -263,33 +291,7 @@ function DescriptionsContent() {
         </div>
       </div>
 
-      {/* Conseils */}
-      <div className="mt-8 bg-orange-900/20 border border-orange-500/30 rounded-xl p-6">
-        <h3 className="text-orange-400 font-semibold mb-4 flex items-center gap-2">
-          <Lightbulb className="w-5 h-5" />
-          💡 Conseils pour des descriptions efficaces
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-orange-300 text-sm">
-          <div>
-            <h4 className="font-medium mb-3 text-orange-200">✨ Structure optimale</h4>
-            <ul className="space-y-2 text-orange-300">
-              <li>• <strong>Accroche :</strong> Captez l'attention dès les premiers mots</li>
-              <li>• <strong>Bénéfices :</strong> Mettez en avant les avantages, pas les caractéristiques</li>
-              <li>• <strong>Preuve sociale :</strong> Intégrez témoignages et avis clients</li>
-              <li>• <strong>Call-to-action :</strong> Terminez par une incitation claire</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium mb-3 text-orange-200">🎯 Optimisation SEO</h4>
-            <ul className="space-y-2 text-orange-300">
-              <li>• <strong>Mots-clés :</strong> Intégrez naturellement les termes recherchés</li>
-              <li>• <strong>Longueur :</strong> 150-300 mots pour un bon référencement</li>
-              <li>• <strong>Lisibilité :</strong> Phrases courtes et paragraphes aérés</li>
-              <li>• <strong>Unicité :</strong> Évitez le contenu dupliqué</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }
@@ -300,4 +302,4 @@ export default function DescriptionsPage() {
       <DescriptionsContent />
     </ToolLayout>
   );
-} 
+}

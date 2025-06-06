@@ -312,9 +312,37 @@ function TunnelMakerContent() {
               </div>
             </div>
           </div>
-        </div>
+      </div>
 
-        {/* Données détectées */}
+      {/* Conseils */}
+      <div className="mb-8 bg-cyan-900/20 border border-cyan-500/30 rounded-xl p-6">
+        <h3 className="text-cyan-400 font-semibold mb-4 flex items-center gap-2">
+          <Lightbulb className="w-5 h-5" />
+          💡 Conseils pour des tunnels efficaces
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-cyan-300 text-sm">
+          <div>
+            <h4 className="font-medium mb-3 text-cyan-200">✨ Optimisation du parcours</h4>
+            <ul className="space-y-2 text-cyan-300">
+              <li>• <strong>Simplicité avant tout :</strong> Réduisez les étapes au minimum</li>
+              <li>• <strong>Cohérence visuelle :</strong> Gardez le même design sur toutes les pages</li>
+              <li>• <strong>Chargement rapide :</strong> Optimisez la vitesse de vos pages</li>
+              <li>• <strong>Mobile responsive :</strong> 60% du trafic vient du mobile</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-3 text-cyan-200">🎯 Conversion maximale</h4>
+            <ul className="space-y-2 text-cyan-300">
+              <li>• <strong>Urgence et rareté :</strong> Créez un sentiment d'urgence authentique</li>
+              <li>• <strong>Preuves sociales :</strong> Avis, témoignages et compteurs</li>
+              <li>• <strong>Garanties fortes :</strong> Réduisez le risque perçu</li>
+              <li>• <strong>Analytics précis :</strong> Mesurez chaque étape du tunnel</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Données détectées */}
         {(icpData || uspData) && (
           <div className="bg-[#111111] rounded-xl p-4 border border-[#232323] mb-6">
             <div className="flex items-center gap-2 mb-3">
@@ -710,33 +738,7 @@ function TunnelMakerContent() {
         </div>
       </div>
 
-      {/* Conseils */}
-      <div className="mt-8 bg-cyan-900/20 border border-cyan-500/30 rounded-xl p-6">
-        <h3 className="text-cyan-400 font-semibold mb-4 flex items-center gap-2">
-          <Lightbulb className="w-5 h-5" />
-          💡 Conseils pour des tunnels efficaces
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-cyan-300 text-sm">
-          <div>
-            <h4 className="font-medium mb-3 text-cyan-200">✨ Optimisation du parcours</h4>
-            <ul className="space-y-2 text-cyan-300">
-              <li>• <strong>Simplicité avant tout :</strong> Réduisez les étapes au minimum</li>
-              <li>• <strong>Cohérence visuelle :</strong> Gardez le même design sur toutes les pages</li>
-              <li>• <strong>Chargement rapide :</strong> Optimisez la vitesse de vos pages</li>
-              <li>• <strong>Mobile responsive :</strong> 60% du trafic vient du mobile</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium mb-3 text-cyan-200">🎯 Conversion maximale</h4>
-            <ul className="space-y-2 text-cyan-300">
-              <li>• <strong>Urgence et rareté :</strong> Créez un sentiment d'urgence authentique</li>
-              <li>• <strong>Preuves sociales :</strong> Avis, témoignages et compteurs</li>
-              <li>• <strong>Garanties fortes :</strong> Réduisez le risque perçu</li>
-              <li>• <strong>Analytics précis :</strong> Mesurez chaque étape du tunnel</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }
@@ -749,4 +751,4 @@ export default function TunnelMakerPage() {
       </PremiumGuard>
     </ToolLayout>
   );
-} 
+}

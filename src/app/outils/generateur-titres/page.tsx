@@ -115,6 +115,31 @@ function GenerateurTitresContent() {
         </div>
       </div>
 
+      {/* Conseils */}
+      <div className="mb-8 bg-blue-900/20 border border-blue-500/30 rounded-xl p-6">
+        <h3 className="text-blue-400 font-semibold mb-4">💡 Conseils pour des titres efficaces</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-blue-300 text-sm">
+          <div>
+            <h4 className="font-medium mb-2">✨ Structure optimale</h4>
+            <ul className="space-y-1 text-blue-200">
+              <li>• Utilisez des chiffres (5 façons de...)</li>
+              <li>• Posez des questions intrigantes</li>
+              <li>• Promettez un bénéfice clair</li>
+              <li>• Créez de la curiosité</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-2">🎯 Mots puissants</h4>
+            <ul className="space-y-1 text-blue-200">
+              <li>• "Secret", "Révélé", "Exclusif"</li>
+              <li>• "Gratuit", "Rapide", "Simple"</li>
+              <li>• "Prouvé", "Garanti", "Testé"</li>
+              <li>• "Nouveau", "Ultime", "Complet"</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Formulaire */}
         <div className="bg-[#111111] border border-[#232323] rounded-xl p-6">
@@ -259,30 +284,7 @@ function GenerateurTitresContent() {
         </div>
       </div>
 
-      {/* Conseils */}
-      <div className="mt-8 bg-blue-900/20 border border-blue-500/30 rounded-xl p-6">
-        <h3 className="text-blue-400 font-semibold mb-4">💡 Conseils pour des titres efficaces</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-blue-300 text-sm">
-          <div>
-            <h4 className="font-medium mb-2">✨ Structure optimale</h4>
-            <ul className="space-y-1 text-blue-200">
-              <li>• Utilisez des chiffres (5 façons de...)</li>
-              <li>• Posez des questions intrigantes</li>
-              <li>• Promettez un bénéfice clair</li>
-              <li>• Créez de la curiosité</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium mb-2">🎯 Mots puissants</h4>
-            <ul className="space-y-1 text-blue-200">
-              <li>• "Secret", "Révélé", "Exclusif"</li>
-              <li>• "Gratuit", "Rapide", "Simple"</li>
-              <li>• "Prouvé", "Garanti", "Testé"</li>
-              <li>• "Nouveau", "Ultime", "Complet"</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }
@@ -293,4 +295,4 @@ export default function GenerateurTitresPage() {
       <GenerateurTitresContent />
     </ToolLayout>
   );
-} 
+}

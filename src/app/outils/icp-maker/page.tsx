@@ -223,6 +223,34 @@ function ICPMakerContent() {
         </div>
       </div>
 
+      {/* Conseils */}
+      <div className="mb-8 bg-blue-900/20 border border-blue-500/30 rounded-xl p-6">
+        <h3 className="text-blue-400 font-semibold mb-4 flex items-center gap-2">
+          <Lightbulb className="w-5 h-5" />
+          💡 Conseils pour un ICP efficace
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-blue-300 text-sm">
+          <div>
+            <h4 className="font-medium mb-3 text-blue-200">✨ Optimisation du profil</h4>
+            <ul className="space-y-2 text-blue-300">
+              <li>• <strong>Soyez spécifique :</strong> Plus votre secteur est précis, plus l'ICP sera pertinent</li>
+              <li>• <strong>Détaillez votre offre :</strong> Incluez les bénéfices concrets de votre produit/service</li>
+              <li>• <strong>Budget réaliste :</strong> Indiquez une fourchette cohérente avec votre marché</li>
+              <li>• <strong>Canaux multiples :</strong> Sélectionnez 3-5 canaux pour une stratégie diversifiée</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-3 text-blue-200">🎯 Utilisation des résultats</h4>
+            <ul className="space-y-2 text-blue-300">
+              <li>• <strong>Créez vos personas :</strong> Utilisez le profil pour vos campagnes marketing</li>
+              <li>• <strong>Adaptez votre message :</strong> Reprenez les expressions et peurs identifiées</li>
+              <li>• <strong>Ciblez vos canaux :</strong> Concentrez-vous sur les plateformes recommandées</li>
+              <li>• <strong>Testez et ajustez :</strong> Régénérez l'ICP selon vos retours terrain</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Formulaire */}
         <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
@@ -543,33 +571,7 @@ function ICPMakerContent() {
         </div>
       </div>
 
-      {/* Conseils */}
-      <div className="mt-8 bg-blue-900/20 border border-blue-500/30 rounded-xl p-6">
-        <h3 className="text-blue-400 font-semibold mb-4 flex items-center gap-2">
-          <Lightbulb className="w-5 h-5" />
-          💡 Conseils pour un ICP efficace
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-blue-300 text-sm">
-          <div>
-            <h4 className="font-medium mb-3 text-blue-200">✨ Optimisation du profil</h4>
-            <ul className="space-y-2 text-blue-300">
-              <li>• <strong>Soyez spécifique :</strong> Plus votre secteur est précis, plus l'ICP sera pertinent</li>
-              <li>• <strong>Détaillez votre offre :</strong> Incluez les bénéfices concrets de votre produit/service</li>
-              <li>• <strong>Budget réaliste :</strong> Indiquez une fourchette cohérente avec votre marché</li>
-              <li>• <strong>Canaux multiples :</strong> Sélectionnez 3-5 canaux pour une stratégie diversifiée</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium mb-3 text-blue-200">🎯 Utilisation des résultats</h4>
-            <ul className="space-y-2 text-blue-300">
-              <li>• <strong>Créez vos personas :</strong> Utilisez le profil pour vos campagnes marketing</li>
-              <li>• <strong>Adaptez votre message :</strong> Reprenez les expressions et peurs identifiées</li>
-              <li>• <strong>Ciblez vos canaux :</strong> Concentrez-vous sur les plateformes recommandées</li>
-              <li>• <strong>Testez et ajustez :</strong> Régénérez l'ICP selon vos retours terrain</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }
@@ -582,4 +584,4 @@ export default function ICPMakerPage() {
       </PremiumGuard>
     </ToolLayout>
   );
-} 
+}

@@ -92,6 +92,34 @@ function PDFRebranderContent() {
           </div>
         </div>
 
+        {/* Conseils */}
+        <div className="mb-8 bg-orange-900/20 border border-orange-500/30 rounded-xl p-6">
+          <h3 className="text-orange-400 font-semibold mb-4 flex items-center gap-2">
+            <Lightbulb className="w-5 h-5" />
+            💡 Conseils pour un rebranding efficace
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-orange-300 text-sm">
+            <div>
+              <h4 className="font-medium mb-3 text-orange-200">✨ Préparation optimale</h4>
+              <ul className="space-y-2 text-orange-300">
+                <li>• <strong>Logo haute qualité :</strong> Utilisez un format PNG avec fond transparent</li>
+                <li>• <strong>Couleurs cohérentes :</strong> Respectez votre charte graphique</li>
+                <li>• <strong>PDF source :</strong> Privilégiez des fichiers de bonne qualité</li>
+                <li>• <strong>Informations complètes :</strong> Préparez nom, site web et coordonnées</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-3 text-orange-200">🎯 Utilisation stratégique</h4>
+              <ul className="space-y-2 text-orange-300">
+                <li>• <strong>Lead magnets :</strong> Rebrandez vos guides et ebooks gratuits</li>
+                <li>• <strong>Formations :</strong> Personnalisez vos supports de cours</li>
+                <li>• <strong>Rapports :</strong> Ajoutez votre marque aux études et analyses</li>
+                <li>• <strong>Cohérence :</strong> Gardez le même style sur tous vos documents</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Upload et paramètres */}
           <div className="space-y-6">
@@ -334,33 +362,7 @@ function PDFRebranderContent() {
         </div>
       </div>
 
-      {/* Conseils */}
-      <div className="mt-8 bg-orange-900/20 border border-orange-500/30 rounded-xl p-6">
-        <h3 className="text-orange-400 font-semibold mb-4 flex items-center gap-2">
-          <Lightbulb className="w-5 h-5" />
-          💡 Conseils pour un rebranding efficace
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-orange-300 text-sm">
-          <div>
-            <h4 className="font-medium mb-3 text-orange-200">✨ Préparation optimale</h4>
-            <ul className="space-y-2 text-orange-300">
-              <li>• <strong>Logo haute qualité :</strong> Utilisez un format PNG avec fond transparent</li>
-              <li>• <strong>Couleurs cohérentes :</strong> Respectez votre charte graphique</li>
-              <li>• <strong>PDF source :</strong> Privilégiez des fichiers de bonne qualité</li>
-              <li>• <strong>Informations complètes :</strong> Préparez nom, site web et coordonnées</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium mb-3 text-orange-200">🎯 Utilisation stratégique</h4>
-            <ul className="space-y-2 text-orange-300">
-              <li>• <strong>Lead magnets :</strong> Rebrandez vos guides et ebooks gratuits</li>
-              <li>• <strong>Formations :</strong> Personnalisez vos supports de cours</li>
-              <li>• <strong>Rapports :</strong> Ajoutez votre marque aux études et analyses</li>
-              <li>• <strong>Cohérence :</strong> Gardez le même style sur tous vos documents</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }

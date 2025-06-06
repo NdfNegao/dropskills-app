@@ -119,6 +119,34 @@ function TitresContent() {
         </div>
       </div>
 
+      {/* Conseils */}
+      <div className="mb-8 bg-orange-900/20 border border-orange-500/30 rounded-xl p-6">
+        <h3 className="text-orange-400 font-semibold mb-4 flex items-center gap-2">
+          <Lightbulb className="w-5 h-5" />
+          💡 Conseils pour des titres efficaces
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-orange-300 text-sm">
+          <div>
+            <h4 className="font-medium mb-3 text-orange-200">✨ Techniques de rédaction</h4>
+            <ul className="space-y-2 text-orange-300">
+              <li>• <strong>Chiffres et listes :</strong> "7 secrets", "5 étapes" attirent l'œil</li>
+              <li>• <strong>Mots puissants :</strong> "Révolutionnaire", "Secret", "Exclusif"</li>
+              <li>• <strong>Questions intrigantes :</strong> Créez de la curiosité chez le lecteur</li>
+              <li>• <strong>Urgence temporelle :</strong> "Maintenant", "Aujourd'hui", "2024"</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-3 text-orange-200">🎯 Optimisation par plateforme</h4>
+            <ul className="space-y-2 text-orange-300">
+              <li>• <strong>YouTube :</strong> 60 caractères max, émojis en début</li>
+              <li>• <strong>Articles blog :</strong> 50-60 caractères pour le SEO</li>
+              <li>• <strong>Réseaux sociaux :</strong> Adaptez selon l'algorithme</li>
+              <li>• <strong>Email marketing :</strong> Évitez les mots spam, testez A/B</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Formulaire */}
         <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
@@ -262,33 +290,7 @@ function TitresContent() {
         </div>
       </div>
 
-      {/* Conseils */}
-      <div className="mt-8 bg-orange-900/20 border border-orange-500/30 rounded-xl p-6">
-        <h3 className="text-orange-400 font-semibold mb-4 flex items-center gap-2">
-          <Lightbulb className="w-5 h-5" />
-          💡 Conseils pour des titres efficaces
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-orange-300 text-sm">
-          <div>
-            <h4 className="font-medium mb-3 text-orange-200">✨ Techniques de rédaction</h4>
-            <ul className="space-y-2 text-orange-300">
-              <li>• <strong>Chiffres et listes :</strong> "7 secrets", "5 étapes" attirent l'œil</li>
-              <li>• <strong>Mots puissants :</strong> "Révolutionnaire", "Secret", "Exclusif"</li>
-              <li>• <strong>Questions intrigantes :</strong> Créez de la curiosité chez le lecteur</li>
-              <li>• <strong>Urgence temporelle :</strong> "Maintenant", "Aujourd'hui", "2024"</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium mb-3 text-orange-200">🎯 Optimisation par plateforme</h4>
-            <ul className="space-y-2 text-orange-300">
-              <li>• <strong>YouTube :</strong> 60 caractères max, émojis en début</li>
-              <li>• <strong>Articles blog :</strong> 50-60 caractères pour le SEO</li>
-              <li>• <strong>Réseaux sociaux :</strong> Adaptez selon l'algorithme</li>
-              <li>• <strong>Email marketing :</strong> Évitez les mots spam, testez A/B</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }
@@ -299,4 +301,4 @@ export default function TitresPage() {
       <TitresContent />
     </ToolLayout>
   );
-} 
+}

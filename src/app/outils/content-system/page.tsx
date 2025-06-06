@@ -158,6 +158,31 @@ function ContentSystemContent() {
         </div>
       </div>
 
+      {/* Conseils */}
+      <div className="mb-8 bg-blue-900/20 border border-blue-500/30 rounded-xl p-6">
+        <h3 className="text-blue-400 font-semibold mb-4">💡 Conseils pour un système de contenu efficace</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-blue-300 text-sm">
+          <div>
+            <h4 className="font-medium mb-2">📅 Planification</h4>
+            <ul className="space-y-1 text-blue-200">
+              <li>• Variez les types de contenu (éducatif, divertissant, promotionnel)</li>
+              <li>• Respectez la règle 80/20 (80% valeur, 20% promotion)</li>
+              <li>• Adaptez le contenu à chaque plateforme</li>
+              <li>• Planifiez vos publications à l'avance</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-2">🎯 Optimisation</h4>
+            <ul className="space-y-1 text-blue-200">
+              <li>• Analysez les performances régulièrement</li>
+              <li>• Engagez avec votre audience</li>
+              <li>• Réutilisez le contenu performant</li>
+              <li>• Testez différents formats et horaires</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Formulaire */}
         <div className="bg-[#111111] border border-[#232323] rounded-xl p-6">
@@ -344,30 +369,7 @@ function ContentSystemContent() {
         </div>
       </div>
 
-      {/* Conseils */}
-      <div className="mt-8 bg-blue-900/20 border border-blue-500/30 rounded-xl p-6">
-        <h3 className="text-blue-400 font-semibold mb-4">💡 Conseils pour un système de contenu efficace</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-blue-300 text-sm">
-          <div>
-            <h4 className="font-medium mb-2">📅 Planification</h4>
-            <ul className="space-y-1 text-blue-200">
-              <li>• Variez les types de contenu (éducatif, divertissant, promotionnel)</li>
-              <li>• Respectez la règle 80/20 (80% valeur, 20% promotion)</li>
-              <li>• Adaptez le contenu à chaque plateforme</li>
-              <li>• Planifiez vos publications à l'avance</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium mb-2">🎯 Optimisation</h4>
-            <ul className="space-y-1 text-blue-200">
-              <li>• Analysez les performances régulièrement</li>
-              <li>• Engagez avec votre audience</li>
-              <li>• Réutilisez le contenu performant</li>
-              <li>• Testez différents formats et horaires</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }
@@ -380,4 +382,4 @@ export default function ContentSystemPage() {
       </PremiumGuard>
     </ToolLayout>
   );
-} 
+}
