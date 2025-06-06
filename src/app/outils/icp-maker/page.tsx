@@ -186,7 +186,7 @@ function ICPMakerContent() {
             <BrainCog className="w-8 h-8 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-white">ICP Maker IA</h1>
+            <h1 className="text-3xl font-bold text-white">ICP Maker</h1>
             <p className="text-gray-400">Créez votre profil client idéal avec l'IA</p>
           </div>
         </div>

@@ -315,25 +315,6 @@ export const AI_TOOLS: AiTool[] = [
     temperature: 0.8,
     maxTokens: 1000,
     systemPrompt: 'Tu es un expert en copywriting premium. Génère des titres haute conversion avec techniques avancées.'
-  },
-  {
-    id: 'outils',
-    name: 'Outils IA DropSkills',
-    description: 'Découvrez tous nos outils IA pour entrepreneurs',
-    icon: 'Bot',
-    type: 'ICP_MAKER',
-    category: 'Acquisition',
-    href: '/outils',
-    color: 'from-purple-500 to-blue-600',
-    isPremium: false,
-    step: 0,
-    stepTitle: 'OVERVIEW',
-    stepDescription: 'Vue d\'ensemble',
-    endpoint: '/api/ai/overview/generate',
-    model: 'gpt-4o-mini',
-    temperature: 0.7,
-    maxTokens: 1000,
-    systemPrompt: 'Tu es un expert en présentation d\'outils IA pour entrepreneurs.'
   }
 ];
 
