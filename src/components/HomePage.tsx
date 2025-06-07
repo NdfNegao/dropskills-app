@@ -70,7 +70,7 @@ function ProductGridSimplified() {
       <div>
         <div className="flex flex-col sm:flex-row gap-4 mb-6 items-center">
           <select
-            className="bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none"
+            className="bg-card text-card-foreground rounded-lg px-4 py-2 border border-border focus:outline-none"
             value={category}
             onChange={e => setCategory(e.target.value)}
           >
@@ -80,7 +80,7 @@ function ProductGridSimplified() {
             ))}
           </select>
           <select
-            className="bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none"
+            className="bg-card text-card-foreground rounded-lg px-4 py-2 border border-border focus:outline-none"
             value={format}
             onChange={e => setFormat(e.target.value)}
           >
@@ -92,7 +92,7 @@ function ProductGridSimplified() {
           <input
             type="text"
             placeholder="Rechercher un produit..."
-            className="flex-1 bg-[#18181b] text-white rounded-lg px-4 py-2 border border-[#232323] focus:outline-none"
+            className="flex-1 bg-card text-card-foreground rounded-lg px-4 py-2 border border-border focus:outline-none"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -102,7 +102,7 @@ function ProductGridSimplified() {
             <ProductCard key={product.id} product={product} />
           ))}
           {filtered.length === 0 && (
-            <div className="col-span-full text-center text-gray-400 py-12">Aucun produit trouvé.</div>
+            <div className="col-span-full text-center text-muted-foreground py-12">Aucun produit trouvé.</div>
           )}
         </div>
       </div>

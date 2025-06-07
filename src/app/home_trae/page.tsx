@@ -105,10 +105,10 @@ export default function HomeTraePage() {
             en Business Rentable
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Accédez à un catalogue premium de formations, templates et outils. 
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+            Accédez à un catalogue premium de formations, templates et outils.
             <br className="hidden md:block" />
-            Revendez avec <strong className="text-[#ff0033]">95% de marge</strong> et une livraison automatisée.
+            Revendez avec <strong className="text-primary">95% de marge</strong> et une livraison automatisée.
           </p>
         </motion.div>
 
@@ -133,7 +133,7 @@ export default function HomeTraePage() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             onClick={() => setIsPlaying(!isPlaying)}
-            className="flex items-center gap-2 px-6 py-4 border border-gray-600 hover:border-gray-400 rounded-xl transition-all duration-300"
+            className="flex items-center gap-2 px-6 py-4 border border-border hover:border-border rounded-xl transition-all duration-300"
           >
             <Play className="w-5 h-5" />
             Voir la démo (2 min)
@@ -151,13 +151,13 @@ export default function HomeTraePage() {
             <motion.div
               key={index}
               whileHover={{ scale: 1.05 }}
-              className="bg-[#1a1a1a]/50 backdrop-blur-sm border border-gray-800 rounded-xl p-4 text-center"
+              className="bg-card/50 backdrop-blur-sm border border-border rounded-xl p-4 text-center"
             >
-              <div className="flex justify-center mb-2 text-[#ff0033]">
+              <div className="flex justify-center mb-2 text-primary">
                 {stat.icon}
               </div>
               <div className="text-2xl font-bold">{stat.value}</div>
-              <div className="text-sm text-gray-400">{stat.label}</div>
+              <div className="text-sm text-muted-foreground">{stat.label}</div>
             </motion.div>
           ))}
         </motion.div>
@@ -176,9 +176,9 @@ export default function HomeTraePage() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Explorez notre <span className="text-[#ff0033]">Catalogue Premium</span>
+            Explorez notre <span className="text-primary">Catalogue Premium</span>
           </h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Découvrez en temps réel le contenu de nos produits les plus vendus
           </p>
         </motion.div>
@@ -193,22 +193,22 @@ export default function HomeTraePage() {
                 whileHover={{ scale: 1.02 }}
                 onClick={() => setActiveDemo(index)}
                 className={`p-6 rounded-xl border cursor-pointer transition-all duration-300 ${
-                  activeDemo === index 
-                    ? 'bg-[#ff0033]/10 border-[#ff0033] shadow-lg shadow-[#ff0033]/20' 
-                    : 'bg-[#1a1a1a]/50 border-gray-800 hover:border-gray-600'
+                  activeDemo === index
+                    ? 'bg-primary/10 border-primary shadow-lg shadow-primary/20'
+                    : 'bg-card/50 border-border hover:border-border'
                 }`}
               >
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <h3 className="font-bold text-lg">{demo.title}</h3>
-                    <p className="text-gray-400 text-sm">{demo.description}</p>
+                    <p className="text-muted-foreground text-sm">{demo.description}</p>
                   </div>
                   <div className="text-right">
                     <div className="text-[#ff0033] font-bold">{demo.price}</div>
-                    <div className="text-xs text-gray-500">{demo.category}</div>
+                    <div className="text-xs text-muted-foreground">{demo.category}</div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-400">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Eye className="w-4 h-4" />
                   <span>Aperçu disponible</span>
                   {activeDemo === index && (
@@ -231,15 +231,15 @@ export default function HomeTraePage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-[#1a1a1a] border border-gray-800 rounded-xl p-6 h-96 overflow-hidden relative"
+            className="bg-card border border-border rounded-xl p-6 h-96 overflow-hidden relative"
           >
-            <div className="flex items-center gap-2 mb-4 pb-4 border-b border-gray-800">
+            <div className="flex items-center gap-2 mb-4 pb-4 border-b border-border">
               <div className="flex gap-2">
                 <div className="w-3 h-3 bg-red-500 rounded-full" />
                 <div className="w-3 h-3 bg-yellow-500 rounded-full" />
                 <div className="w-3 h-3 bg-green-500 rounded-full" />
               </div>
-              <div className="text-sm text-gray-400 ml-4">
+              <div className="text-sm text-muted-foreground ml-4">
                 {demos[activeDemo].title} - Aperçu
               </div>
             </div>
@@ -251,10 +251,10 @@ export default function HomeTraePage() {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="flex items-center gap-3 p-3 bg-[#0a0a0a] rounded-lg"
+                  className="flex items-center gap-3 p-3 bg-background rounded-lg"
                 >
                   <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
-                  <span className="text-gray-300">{line}</span>
+                  <span className="text-muted-foreground">{line}</span>
                 </motion.div>
               ))}
             </div>
@@ -265,7 +265,7 @@ export default function HomeTraePage() {
               transition={{ delay: 0.5 }}
               className="absolute bottom-4 right-4"
             >
-              <div className="flex items-center gap-2 text-sm text-gray-400">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Download className="w-4 h-4" />
                 <span>Téléchargement instantané</span>
               </div>
@@ -334,13 +334,13 @@ export default function HomeTraePage() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               whileHover={{ scale: 1.05, y: -5 }}
               viewport={{ once: true }}
-              className="group relative bg-[#1a1a1a]/50 backdrop-blur-sm border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all duration-300"
+              className="group relative bg-card/50 backdrop-blur-sm border border-border rounded-xl p-6 hover:border-border transition-all duration-300"
             >
               <div className={`inline-flex p-3 rounded-lg bg-gradient-to-r ${feature.color} mb-4`}>
                 {feature.icon}
               </div>
               <h3 className="font-bold text-xl mb-3">{feature.title}</h3>
-              <p className="text-gray-400 leading-relaxed">{feature.description}</p>
+              <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
               
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
             </motion.div>
@@ -360,7 +360,7 @@ export default function HomeTraePage() {
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Prêt à lancer votre <span className="text-[#ff0033]">Empire Digital</span> ?
           </h2>
-          <p className="text-xl text-gray-300 mb-8">
+          <p className="text-xl text-muted-foreground mb-8">
             Rejoignez les 300+ entrepreneurs qui génèrent des revenus passifs avec DropSkills
           </p>
           
@@ -378,14 +378,14 @@ export default function HomeTraePage() {
             
             <motion.button
               whileHover={{ scale: 1.05 }}
-              className="px-8 py-4 border border-gray-600 hover:border-gray-400 rounded-xl transition-all duration-300 flex items-center gap-2"
+              className="px-8 py-4 border border-border hover:border-border rounded-xl transition-all duration-300 flex items-center gap-2"
             >
               <Mail className="w-5 h-5" />
               Parler à un expert
             </motion.button>
           </div>
           
-          <div className="mt-8 flex justify-center items-center gap-6 text-sm text-gray-400">
+          <div className="mt-8 flex justify-center items-center gap-6 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <CheckCircle className="w-4 h-4 text-green-400" />
               <span>Sans engagement</span>

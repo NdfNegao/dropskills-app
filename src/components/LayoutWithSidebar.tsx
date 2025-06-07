@@ -68,7 +68,7 @@ export default function LayoutWithSidebar({
         {/* Header mobile */}
         <div className="flex items-center justify-between p-4 border-b border-border">
           <Link href="/" className="text-2xl font-extrabold">
-            DROP <span className="text-[#ff0033]">SKILLS</span>
+            DROP <span className="text-primary">SKILLS</span>
           </Link>
           <button
             onClick={() => setMobileMenuOpen(false)}
@@ -91,7 +91,7 @@ export default function LayoutWithSidebar({
           
           {/* Divider */}
           <div className="my-4 border-t border-border"></div>
-          <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
             Outils IA Dropskills
           </div>
           
@@ -124,7 +124,7 @@ export default function LayoutWithSidebar({
 
           {/* Aide & Support */}
           <div className="my-4 border-t border-border"></div>
-          <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
             Aide & Support
           </div>
           
@@ -149,9 +149,9 @@ export default function LayoutWithSidebar({
           </button>
           
           {user && (
-            <div className="mt-3 text-center text-xs text-gray-400">
+            <div className="mt-3 text-center text-xs text-muted-foreground">
               Connecté en tant que {user.email}
-              <div className="text-[#ff0033] font-medium mt-1">
+              <div className="text-primary font-medium mt-1">
                 {/* Premium à implémenter selon vos besoins */}
                 {user.email === 'cyril.iriebi@gmail.com' && '🔧 Admin'}
               </div>
@@ -169,7 +169,7 @@ export default function LayoutWithSidebar({
         {/* Header mobile avec bouton menu */}
         <div className="lg:hidden bg-card border-b border-border p-4 flex items-center justify-between">
           <h1 className="text-xl font-bold text-foreground">
-            DROP<span className="text-[#ff0033]">SKILLS</span>
+            DROP<span className="text-primary">SKILLS</span>
           </h1>
           <button
             onClick={() => setMobileMenuOpen(true)}
@@ -185,8 +185,8 @@ export default function LayoutWithSidebar({
         <div className="p-4 lg:p-6">
           {isLoading ? (
             <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff0033]"></div>
-              <span className="ml-2 text-gray-300">Chargement...</span>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <span className="ml-2 text-muted-foreground">Chargement...</span>
             </div>
           ) : (
             children
@@ -219,12 +219,12 @@ function MobileNavLink({ icon, label, href, badge, isPremium, onClick }: MobileN
       </div>
       <span className="font-medium">{label}</span>
       {badge && badge > 0 && (
-        <span className="ml-auto bg-[#ff0033] text-white text-xs px-2 py-1 rounded-full">
+        <span className="ml-auto bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
           {badge}
         </span>
       )}
       {isPremium && (
-        <Lock className="ml-auto w-4 h-4 text-gray-400" />
+        <Lock className="ml-auto w-4 h-4 text-muted-foreground" />
       )}
     </Link>
   );

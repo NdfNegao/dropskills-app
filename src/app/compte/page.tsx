@@ -34,8 +34,8 @@ export default function ComptePage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff0033]"></div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -813,19 +813,19 @@ function PreferencesTab() {
             onClick={() => setTheme('light')}
             className={`group relative p-4 rounded-xl border-2 transition-all duration-200 ${
               theme === 'light'
-                ? 'border-[#ff0033] bg-white/10 shadow-lg shadow-[#ff0033]/20'
-                : 'border-[#333] bg-[#1a1a1a] hover:border-[#444] hover:bg-[#222]'
+                ? 'border-primary bg-white/10 shadow-lg shadow-primary/20'
+                : 'border-border bg-card hover:border-border hover:bg-background'
             }`}
             aria-label="Activer le thème clair"
           >
             <div className="flex items-center gap-3 mb-2">
               <div className={`p-2 rounded-lg ${
-                theme === 'light' ? 'bg-[#ff0033] text-white' : 'bg-[#333] text-gray-300'
+                theme === 'light' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
               }`}>
                 <Sun className="w-5 h-5" />
               </div>
               <span className={`font-semibold ${
-                theme === 'light' ? 'text-white' : 'text-gray-200'
+                theme === 'light' ? 'text-foreground' : 'text-muted-foreground'
               }`}>
                 Mode Clair
               </span>
@@ -853,19 +853,19 @@ function PreferencesTab() {
             onClick={() => setTheme('dark')}
             className={`group relative p-4 rounded-xl border-2 transition-all duration-200 ${
               theme === 'dark'
-                ? 'border-[#ff0033] bg-white/10 shadow-lg shadow-[#ff0033]/20'
-                : 'border-[#333] bg-[#1a1a1a] hover:border-[#444] hover:bg-[#222]'
+                ? 'border-primary bg-white/10 shadow-lg shadow-primary/20'
+                : 'border-border bg-card hover:border-border hover:bg-background'
             }`}
             aria-label="Activer le thème sombre"
           >
             <div className="flex items-center gap-3 mb-2">
               <div className={`p-2 rounded-lg ${
-                theme === 'dark' ? 'bg-[#ff0033] text-white' : 'bg-[#333] text-gray-300'
+                theme === 'dark' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
               }`}>
                 <Moon className="w-5 h-5" />
               </div>
               <span className={`font-semibold ${
-                theme === 'dark' ? 'text-white' : 'text-gray-200'
+                theme === 'dark' ? 'text-foreground' : 'text-muted-foreground'
               }`}>
                 Mode Sombre
               </span>
@@ -876,7 +876,7 @@ function PreferencesTab() {
               )}
             </div>
             <p className={`text-sm text-left ${
-              theme === 'dark' ? 'text-gray-300' : 'text-gray-400'
+              theme === 'dark' ? 'text-muted-foreground' : 'text-muted-foreground'
             }`}>
               Interface sombre et élégante, confortable pour les yeux en soirée
             </p>
@@ -915,7 +915,7 @@ function PreferencesTab() {
         <select
           value={preferences.language}
           onChange={(e) => setPreferences({...preferences, language: e.target.value})}
-          className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
+          className="w-full bg-card border border-border rounded-lg px-4 py-3 text-card-foreground focus:outline-none focus:border-primary"
         >
           <option value="fr">Français</option>
           <option value="en">English</option>
@@ -930,7 +930,7 @@ function PreferencesTab() {
         <select
           value={preferences.timezone}
           onChange={(e) => setPreferences({...preferences, timezone: e.target.value})}
-          className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#ff0033]"
+          className="w-full bg-card border border-border rounded-lg px-4 py-3 text-card-foreground focus:outline-none focus:border-primary"
         >
           <option value="Europe/Paris">Paris (UTC+1)</option>
           <option value="Europe/London">Londres (UTC+0)</option>
@@ -940,7 +940,7 @@ function PreferencesTab() {
 
       <button
         onClick={handleSave}
-        className="flex items-center gap-2 bg-[#ff0033] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#cc0029] transition-colors"
+        className="flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:bg-primary transition-colors"
       >
         <Save className="w-4 h-4" />
         Sauvegarder
