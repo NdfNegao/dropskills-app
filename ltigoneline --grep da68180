@@ -1,0 +1,18 @@
+[33m46cdc04[m Merge remote-tracking branch 'origin/main' into main
+[33m980736a[m Simplify dashboard: remove animations and use consistent layout
+[33mda68180[m 🚀 Dashboard Premium Complet + APIs Réelles - Dashboard redesigné avec 8 sections ultra-modernes - APIs réelles connectées à Supabase - Interface de veille IA fonctionnelle - Système de gamification complet - Ready for production! 🎉
+[33me84bd97[m feat: Add YouTube video player integration
+[33m29b4523[m 🔧 Fix: Résolution permissions premium admin - middleware optimisé + accès complet outils IA premium pour administrateurs
+[33ma03cd71[m 🏗️ Refactorisation complète authentification - Architecture centralisée via NextAuth/Supabase - Suppression logique dev user et vérifications hardcodées - Token JWT avec role/isPremium/firstName/lastName - Middleware propre avec vérifications par rôle - Inscription vraie avec hash bcrypt - Script init-admin pour compte administrateur - Dashboard simplifié sans appels API redondants
+[33m2286174[m 🔧 Simplification authentification et affichage prénom utilisateur - Suppression Google OAuth, conservation credentials uniquement - Dashboard personnalisé avec 'Bonjour [Prénom]' - API inscription avec sauvegarde Supabase réelle - Pages signin/signup nettoyées
+[33m0916dad[m 🏗️ ARCHITECTURE FIX: Migration complète vers ToolLayout unifié - Double container supprimé, 14 outils IA migrés, cohérence visuelle garantie
+[33m7591945[m 🚀 Dashboard Premium-Oriented: Optimisation conversion massive - Personnalisation + gamification + limitations visuelles + CTA stratégiques - Impact attendu: +150-300% conversion gratuit → premium
+[33m30b14ae[m ✨ Ajout Dashboard IA complet avec monitoring et optimisation - Dashboard IA centralisé (/admin/ai-dashboard) - API métriques temps réel - Migration BDD monitoring - Guide optimisation complet - Économies projetées -85% des coûts IA - ROI estimé +530% sur 12 mois - Support multi-providers (DeepSeek, OpenAI, Claude, Grok)
+[33mc877adf[m Update dashboard page
+[33m0b35805[m 🏗️ PHASE 1 DAY 1: Core infrastructure MVP - Database schema + API routes + Dashboard MVP ready for production deployment
+[33m14bf026[m refactor: suppression de /coffre redondant avec /favoris
+[33med50bc8[m ton message de commit
+[33m8551f17[m security: Fix premium tools access control - Remove PremiumGuard from FREE tools - Add PremiumGuard to PREMIUM tools - Ensure proper access control
+[33m20f16ff[m 🔐 Sécurisation complète du système d'authentification - Suppression des comptes test exposés, pages auth sécurisées, dashboard protégé, gestion compte complète
+[33m49245bc[m Mise en production : base nettoyée, cohérence vérifiée, RLS en place
+[33mc1da63e[m ✨ Migration Dropskills V2 - Design unifié et sidebar moderne - Remplacement des couleurs bleues par le rouge Dropskills (#ff0033) - Nouvelle sidebar rétractable avec DropskillsSidebar - Pages mises à jour avec design cohérent - Suppression des pages obsolètes - Interface admin modernisée - NextAuth configuré
