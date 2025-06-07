@@ -8,6 +8,13 @@ interface QuickActionsProps {
   canAccessPremium: boolean;
 }
 
+/**
+ * Renders a section of quick access tools with animated cards, premium access indicators, and an upgrade call-to-action.
+ *
+ * Displays a grid of the most-used tools, highlighting which are premium and conditionally showing lock overlays or premium glows based on user access. Includes animated UI elements and a prompt to upgrade for users without premium access.
+ *
+ * @param canAccessPremium - Whether the user has access to premium tools.
+ */
 export default function QuickActions({ canAccessPremium }: QuickActionsProps) {
   const quickActions = [
     {

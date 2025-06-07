@@ -4,6 +4,11 @@ import { useSession } from 'next-auth/react';
 import { useAuth } from '@/hooks/useAuth';
 import { useState } from 'react';
 
+/**
+ * Renders a comprehensive debugging dashboard for production environments on Vercel.
+ *
+ * Displays environment details, authentication status, session data, database connectivity, middleware logic simulation, and corrective actions to assist with troubleshooting and verifying deployment configuration.
+ */
 export default function DebugProdPage() {
   const { data: session, status } = useSession();
   const { user, canAccessPremium, isAdmin } = useAuth();

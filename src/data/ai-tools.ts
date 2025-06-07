@@ -356,7 +356,14 @@ export function getFreeTools(): AiTool[] {
   return AI_TOOLS.filter(tool => !tool.isPremium);
 }
 
-// Nouvelles fonctions pour la gestion des providers
+/**
+ * Returns the provider key associated with a given AI tool ID.
+ *
+ * If the tool ID is not mapped to a specific provider, returns 'openai' as the default.
+ *
+ * @param toolId - The unique identifier of the AI tool.
+ * @returns The provider key string for the specified tool.
+ */
 export function getToolProvider(toolId: string): string {
   // Mapping des IDs d'outils vers les clés de providers
   const providerMapping: Record<string, string> = {

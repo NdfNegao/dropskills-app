@@ -36,6 +36,11 @@ interface Opportunity {
   created_at: string;
 }
 
+/**
+ * Renders the main user dashboard page with statistics, recent opportunities, quick actions, and popular tools.
+ *
+ * Displays personalized statistics, actionable links, and business opportunities based on the user's authentication and subscription status. Provides fallback data if API requests fail and conditionally shows premium upgrade prompts for non-premium users.
+ */
 export default function SimpleDashboardPage() {
   // States
   const [stats, setStats] = useState<UserStats | null>(null);

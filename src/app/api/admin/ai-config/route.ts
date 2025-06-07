@@ -88,7 +88,15 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// PUT: Réinitialiser la configuration par défaut
+/**
+ * Resets the AI tool-provider mapping to the default optimized configuration.
+ *
+ * Updates the in-memory mapping and attempts to persist it to a configuration file. Returns a JSON response with the updated mapping.
+ *
+ * @returns A JSON response containing the success status, a confirmation message, and the default mapping.
+ *
+ * @remark If saving the configuration file fails, a warning is logged but the operation continues successfully.
+ */
 export async function PUT() {
   try {
     // Configuration par défaut optimisée avec tous les outils

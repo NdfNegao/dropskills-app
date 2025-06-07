@@ -13,6 +13,11 @@ interface ProviderStatus {
   testResult?: string;
 }
 
+/**
+ * Renders the AI configuration admin page for managing AI providers, environment variables, and tool-provider assignments.
+ *
+ * Provides interfaces to view and test provider availability, configure environment variables, assign providers to tools, and reset mappings to optimal defaults. Displays real-time status, cost, and capabilities for each provider and tool.
+ */
 export default function AIConfigPage() {
   const [providers, setProviders] = useState<ProviderStatus[]>([]);
   const [testing, setTesting] = useState<string | null>(null);

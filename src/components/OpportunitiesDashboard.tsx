@@ -16,6 +16,20 @@ interface OpportunitiesDashboardProps {
   onToggleAlert: (id: string) => void;
 }
 
+/**
+ * Displays a dashboard for exploring, filtering, and managing detected business opportunities based on analysis data.
+ *
+ * Renders summary metrics, filter controls, a list of opportunities with actionable controls, trend synthesis, and a detailed modal view for selected opportunities. Allows users to save opportunities, toggle alerts, share details, and initiate further analysis.
+ *
+ * @param analysis - The analysis data containing opportunities, metrics, and trend summaries.
+ * @param onBackToWizard - Callback to return to the previous wizard view.
+ * @param onRefresh - Callback to refresh the analysis data.
+ * @param isRefreshing - Indicates if a refresh is currently in progress.
+ * @param savedOpportunities - List of IDs for saved opportunities.
+ * @param onSaveOpportunity - Callback to save an opportunity by its ID.
+ * @param alerts - Mapping of opportunity IDs to their alert activation status.
+ * @param onToggleAlert - Callback to toggle alert activation for an opportunity by its ID.
+ */
 export function OpportunitiesDashboard({ 
   analysis, 
   onBackToWizard, 
