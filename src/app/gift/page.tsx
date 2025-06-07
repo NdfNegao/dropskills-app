@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Gift, Users, Share2, Copy, Check, Mail, Zap } from "lucide-react";
 import LayoutWithSidebar from "@/components/LayoutWithSidebar";
+import PageBentoLayout from "@/components/PageBentoLayout";
 
 function GiftPageContent() {
   const [referralLink] = useState("https://dropskills.com/ref/USER123");
@@ -63,54 +64,47 @@ function GiftPageContent() {
     nextReward: 1,
   };
 
-  return (
-    <div className="min-h-screen bg-[#0a0a0a] py-12 px-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-purple-500/10 text-purple-500 px-4 py-2 rounded-full mb-4">
-            <Gift className="w-4 h-4" />
-            <span className="text-sm font-medium">Programme de parrainage</span>
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Invitez vos amis et gagnez des
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500"> récompenses</span>
-          </h1>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Pour chaque ami qui s'inscrit avec votre lien, vous débloquez des cadeaux exclusifs.
-          </p>
-        </div>
+  const pageStats = [
+    {
+      icon: <Users className="w-4 h-4" />,
+      label: "Parrainages réussis",
+      value: stats.totalReferrals,
+      color: "text-purple-500"
+    },
+    {
+      icon: <Zap className="w-4 h-4" />,
+      label: "En attente",
+      value: stats.pendingReferrals,
+      color: "text-yellow-500"
+    },
+    {
+      icon: <Gift className="w-4 h-4" />,
+      label: "Prochain cadeau dans",
+      value: `${stats.nextReward} parrainage${stats.nextReward > 1 ? 's' : ''}`,
+      color: "text-green-500"
+    },
+    {
+      icon: <Share2 className="w-4 h-4" />,
+      label: "Lien partagé",
+      value: "Actif",
+      color: "text-blue-500"
+    }
+  ];
 
-        {/* Stats */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-400">Parrainages réussis</span>
-              <Users className="w-5 h-5 text-purple-500" />
-            </div>
-            <p className="text-3xl font-bold text-white">{stats.totalReferrals}</p>
-          </div>
-          <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-400">En attente</span>
-              <Zap className="w-5 h-5 text-yellow-500" />
-            </div>
-            <p className="text-3xl font-bold text-white">{stats.pendingReferrals}</p>
-          </div>
-          <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-400">Prochain cadeau dans</span>
-              <Gift className="w-5 h-5 text-green-500" />
-            </div>
-            <p className="text-3xl font-bold text-white">{stats.nextReward} parrainage{stats.nextReward > 1 ? 's' : ''}</p>
-          </div>
-        </div>
+  return (
+    <PageBentoLayout
+      icon={<Gift className="w-6 h-6 text-white" />}
+      title="Programme de parrainage"
+      subtitle="Invitez vos amis et gagnez des récompenses exclusives pour chaque inscription"
+      stats={pageStats}
+    >
+      <div className="space-y-8">
 
         {/* Referral link */}
-        <div className="bg-[#111111] rounded-xl p-8 border border-[#232323] mb-12">
-          <h2 className="text-2xl font-bold text-white mb-4">Votre lien de parrainage</h2>
+        <div className="bg-card border border-border rounded-xl p-8">
+          <h2 className="text-2xl font-bold text-foreground mb-4">Votre lien de parrainage</h2>
           <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 bg-[#1a1a1a] rounded-lg px-4 py-3 text-gray-300 font-mono text-sm">
+            <div className="flex-1 bg-muted rounded-lg px-4 py-3 text-muted-foreground font-mono text-sm">
               {referralLink}
             </div>
             <button
@@ -133,18 +127,18 @@ function GiftPageContent() {
 
           {/* Share buttons */}
           <div className="mt-6">
-            <p className="text-gray-400 mb-3">Partager sur :</p>
+            <p className="text-muted-foreground mb-3">Partager sur :</p>
             <div className="flex gap-3">
-              <button className="bg-[#1a1a1a] hover:bg-[#232323] text-white px-4 py-2 rounded-lg transition-colors">
+              <button className="bg-muted hover:bg-muted/80 text-foreground px-4 py-2 rounded-lg transition-colors">
                 Twitter
               </button>
-              <button className="bg-[#1a1a1a] hover:bg-[#232323] text-white px-4 py-2 rounded-lg transition-colors">
+              <button className="bg-muted hover:bg-muted/80 text-foreground px-4 py-2 rounded-lg transition-colors">
                 LinkedIn
               </button>
-              <button className="bg-[#1a1a1a] hover:bg-[#232323] text-white px-4 py-2 rounded-lg transition-colors">
+              <button className="bg-muted hover:bg-muted/80 text-foreground px-4 py-2 rounded-lg transition-colors">
                 Facebook
               </button>
-              <button className="bg-[#1a1a1a] hover:bg-[#232323] text-white px-4 py-2 rounded-lg transition-colors">
+              <button className="bg-muted hover:bg-muted/80 text-foreground px-4 py-2 rounded-lg transition-colors">
                 WhatsApp
               </button>
             </div>
@@ -152,17 +146,17 @@ function GiftPageContent() {
         </div>
 
         {/* Email invite */}
-        <div className="bg-[#111111] rounded-xl p-8 border border-[#232323] mb-12">
-          <h2 className="text-2xl font-bold text-white mb-4">Inviter par email</h2>
+        <div className="bg-card border border-border rounded-xl p-8">
+          <h2 className="text-2xl font-bold text-foreground mb-4">Inviter par email</h2>
           <form onSubmit={handleInvite} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Emails de vos amis (séparés par des virgules)
               </label>
               <textarea
                 value={emails}
                 onChange={(e) => setEmails(e.target.value)}
-                className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors h-24 resize-none"
+                className="w-full bg-background border border-border rounded-lg px-4 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors h-24 resize-none"
                 placeholder="ami1@email.com, ami2@email.com..."
                 required
               />
@@ -189,34 +183,34 @@ function GiftPageContent() {
 
         {/* Rewards */}
         <div>
-          <h2 className="text-3xl font-bold text-white mb-8 text-center">Récompenses à débloquer</h2>
+          <h2 className="text-3xl font-bold text-foreground mb-8 text-center">Récompenses à débloquer</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {rewards.map((reward, index) => (
               <div
                 key={index}
-                className={`bg-[#111111] rounded-xl p-6 border ${
-                  reward.unlocked ? "border-purple-500" : "border-[#232323]"
+                className={`bg-card rounded-xl p-6 border ${
+                  reward.unlocked ? "border-primary" : "border-border"
                 } relative overflow-hidden`}
               >
                 {!reward.unlocked && (
                   <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center">
                     <div className="text-center">
-                      <Gift className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                      <p className="text-gray-400 text-sm">{reward.referrals} parrainages</p>
+                      <Gift className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                      <p className="text-muted-foreground text-sm">{reward.referrals} parrainages</p>
                     </div>
                   </div>
                 )}
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-purple-500 mb-2">{reward.referrals}</div>
-                  <h3 className="text-lg font-semibold text-white mb-1">{reward.reward}</h3>
-                  <p className="text-gray-400 text-sm">{reward.description}</p>
+                  <div className="text-4xl font-bold text-primary mb-2">{reward.referrals}</div>
+                  <h3 className="text-lg font-semibold text-foreground mb-1">{reward.reward}</h3>
+                  <p className="text-muted-foreground text-sm">{reward.description}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </div>
-    </div>
+    </PageBentoLayout>
   );
 }
 
