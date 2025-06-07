@@ -190,7 +190,7 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
               className="w-full h-48 object-cover rounded-t-lg"
             />
             {product.isPremium && (
-              <div className="absolute top-2 right-2 bg-[#ff0033] text-white px-2 py-1 rounded text-xs font-medium">
+              <div className="absolute top-2 right-2 bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium">
                 Premium
               </div>
             )}
@@ -218,7 +218,7 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
             <div className="flex justify-end mt-2">
               <ProductActions product={product} />
             </div>
-            <Link href={`/produits/${product.id}`} className="mt-3 w-full bg-[#ff0033] hover:bg-[#cc0029] text-white py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#ff0033]">
+            <Link href={`/produits/${product.id}`} className="mt-3 w-full bg-primary hover:bg-primary/90 text-primary-foreground py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary">
               <ExternalLink className="w-4 h-4" />
               Voir
             </Link>
@@ -237,7 +237,7 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
               className="w-full h-full object-cover rounded-t-lg"
             />
             {product.isPremium && (
-              <div className="absolute top-2 right-2 bg-[#ff0033] text-white px-2 py-1 rounded text-xs font-medium">
+              <div className="absolute top-2 right-2 bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium">
                 Premium
         </div>
             )}
@@ -267,7 +267,7 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
                 <ProductActions product={product} />
           </div>
       </div>
-            <Link href={`/produits/${product.id}`} className="mt-3 w-full bg-[#ff0033] hover:bg-[#cc0029] text-white py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#ff0033]">
+            <Link href={`/produits/${product.id}`} className="mt-3 w-full bg-primary hover:bg-primary/90 text-primary-foreground py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary">
             <ExternalLink className="w-4 h-4" />
           Voir
             </Link>

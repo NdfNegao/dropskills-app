@@ -59,7 +59,7 @@ export default function DropskillsSidebar({
 
   if (isLoading) {
     return (
-      <aside className={`flex flex-col h-screen bg-black text-white transition-all duration-300 shadow-xl
+      <aside className={`flex flex-col h-screen bg-background text-foreground transition-all duration-300 shadow-xl
         w-64 hidden lg:flex fixed top-0 left-0 z-30 ${className}`}>
         <div className="flex items-center justify-center h-full">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff0033]"></div>
@@ -69,7 +69,7 @@ export default function DropskillsSidebar({
   }
 
   return (
-    <aside className={`flex flex-col h-screen bg-black text-white shadow-xl
+    <aside className={`flex flex-col h-screen bg-background text-foreground shadow-xl
       ${collapsed ? "w-20" : "w-64"} 
       hidden lg:flex
       fixed top-0 left-0 z-30
@@ -78,7 +78,7 @@ export default function DropskillsSidebar({
       `}>
       
       {/* Logo & collapse button avec animation */}
-      <div className="flex items-center justify-between px-4 py-5 border-b border-gray-800">
+      <div className="flex items-center justify-between px-4 py-5 border-b border-border">
         <Link href="/" className={`text-2xl font-extrabold transition-all duration-300 hover:scale-105 ${collapsed ? "hidden" : "block"}`}>
           DROP <span className="text-[#ff0033]">SKILLS</span>
         </Link>
@@ -123,7 +123,7 @@ export default function DropskillsSidebar({
 
         {/* Séparateur */}
         <div className={`my-4 ${collapsed ? 'mx-2' : 'mx-2'}`}>
-          <div className="h-px bg-gray-800"></div>
+          <div className="h-px bg-border"></div>
         </div>
 
         {/* Section Aide & Personnalisation */}
@@ -145,7 +145,7 @@ export default function DropskillsSidebar({
 
         {/* Séparateur */}
         <div className={`my-4 ${collapsed ? 'mx-2' : 'mx-2'}`}>
-          <div className="h-px bg-gray-800"></div>
+          <div className="h-px bg-border"></div>
         </div>
 
         {/* Section admin (si utilisateur admin) */}
@@ -167,7 +167,7 @@ export default function DropskillsSidebar({
             
             {/* Séparateur */}
             <div className={`my-4 ${collapsed ? 'mx-2' : 'mx-2'}`}>
-              <div className="h-px bg-gray-800"></div>
+              <div className="h-px bg-border"></div>
             </div>
           </>
         )}
@@ -187,12 +187,12 @@ export default function DropskillsSidebar({
           ))}
           <button
             onClick={handleSignOut}
-            className={`group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 font-medium relative text-left w-full hover:scale-105 mt-2 hover:bg-[#1a1a1a]`}
+            className={`group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 font-medium relative text-left w-full hover:scale-105 mt-2 hover:bg-muted/20`}
           >
             <LogOut size={20} className="transition-transform duration-200 group-hover:rotate-12 group-hover:text-[#ff0033]" />
             {!collapsed && <span className="group-hover:text-[#ff0033]">Déconnexion</span>}
             {collapsed && (
-              <span className="absolute left-20 bg-black text-white rounded px-2 py-1 shadow-lg text-xs opacity-0 group-hover:opacity-100 z-50 transition-all duration-200 whitespace-nowrap border border-gray-700">
+              <span className="absolute left-20 bg-card text-card-foreground rounded px-2 py-1 shadow-lg text-xs opacity-0 group-hover:opacity-100 z-50 transition-all duration-200 whitespace-nowrap border border-border">
                 Déconnexion
               </span>
             )}
@@ -201,7 +201,7 @@ export default function DropskillsSidebar({
       </nav>
 
       {/* Footer avec animations */}
-      <div className="mt-auto mb-4 flex flex-col gap-1 px-2 border-t border-gray-800 pt-4">
+      <div className="mt-auto mb-4 flex flex-col gap-1 px-2 border-t border-border pt-4">
         {!collapsed && (
           <div className="text-xs text-neutral-600 mt-2 px-2 text-center animate-fade-in">
             © {new Date().getFullYear()} Dropskills
@@ -244,7 +244,7 @@ function SidebarLink({
         <span className="flex-1 transition-all duration-200 group-hover:text-[#ff0033]">{label}</span>
       )}
       {collapsed && (tooltip || label) && (
-        <span className={`absolute left-20 bg-black text-white rounded px-2 py-1 shadow-lg text-xs transition-all duration-200 whitespace-nowrap border border-gray-700 z-50 ${isHovered ? 'opacity-100 translate-x-2' : 'opacity-0'}`}>{tooltip || label}</span>
+        <span className={`absolute left-20 bg-card text-card-foreground rounded px-2 py-1 shadow-lg text-xs transition-all duration-200 whitespace-nowrap border border-border z-50 ${isHovered ? 'opacity-100 translate-x-2' : 'opacity-0'}`}>{tooltip || label}</span>
       )}
     </div>
   );
@@ -291,12 +291,12 @@ function SidebarCTA({ icon, label, cta, collapsed, href }: SidebarCTAProps) {
   // Bloc complet en mode étendu
   return (
     <div className="relative">
-      <div className={`relative bg-gradient-to-br from-[#18181b] to-[#232323] rounded-xl p-4 shadow-lg border border-[#232323] flex flex-col items-start justify-between w-full mb-2`}> 
+      <div className={`relative bg-card rounded-xl p-4 shadow-lg border border-border flex flex-col items-start justify-between w-full mb-2`}>
         <div className="flex items-center gap-2 mb-2">
           <span className="text-2xl text-[#ff0033]">{icon}</span>
-          <span className="font-bold text-white text-[14px]">Débloquez Premium</span>
+          <span className="font-bold text-card-foreground text-[14px]">Débloquez Premium</span>
         </div>
-        <span className="text-white text-[12px] mb-4 block opacity-80">Passez à la version premium pour débloquer tout le contenu et les outils.</span>
+        <span className="text-card-foreground text-[12px] mb-4 block opacity-80">Passez à la version premium pour débloquer tout le contenu et les outils.</span>
         <a href={href} onClick={handleClick} className="w-full">
           <button type="button" className="w-full flex items-center justify-center gap-2 bg-[#ff0033] hover:bg-[#cc0029] text-white py-2.5 rounded-lg font-semibold text-base transition-all duration-200 shadow-md">
             Go Premium <span className="ml-1">→</span>
