@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "@/app/globals.css";
 import SessionWrapper from "../components/SessionWrapper";
 import Script from "next/script";
 import { SavedProductsProvider } from "@/context/SavedProductsContext";

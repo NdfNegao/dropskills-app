@@ -46,7 +46,7 @@ export default function LayoutWithSidebar({
   }
 
   return (
-    <div className="flex min-h-screen bg-[#0a0a0a]">
+    <div className="flex min-h-screen bg-background">
       {/* Overlay pour mobile */}
       {mobileMenuOpen && (
         <div 
@@ -62,17 +62,17 @@ export default function LayoutWithSidebar({
 
       {/* Navigation Mobile Drawer */}
       <div className={`
-        fixed top-0 left-0 h-full w-80 bg-black text-white z-50 transform transition-transform duration-300 lg:hidden
+        fixed top-0 left-0 h-full w-80 bg-background text-foreground z-50 transform transition-transform duration-300 lg:hidden
         ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         {/* Header mobile */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-800">
+        <div className="flex items-center justify-between p-4 border-b border-border">
           <Link href="/" className="text-2xl font-extrabold">
             DROP <span className="text-[#ff0033]">SKILLS</span>
           </Link>
           <button
             onClick={() => setMobileMenuOpen(false)}
-            className="p-2 rounded-lg bg-[#232323] text-white hover:bg-[#333333] transition-colors"
+            className="p-2 rounded-lg bg-muted text-muted-foreground hover:bg-muted/50 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -90,7 +90,7 @@ export default function LayoutWithSidebar({
           />
           
           {/* Divider */}
-          <div className="my-4 border-t border-gray-800"></div>
+          <div className="my-4 border-t border-border"></div>
           <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
             Outils IA Dropskills
           </div>
@@ -123,7 +123,7 @@ export default function LayoutWithSidebar({
           )}
 
           {/* Aide & Support */}
-          <div className="my-4 border-t border-gray-800"></div>
+          <div className="my-4 border-t border-border"></div>
           <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
             Aide & Support
           </div>
@@ -135,7 +135,7 @@ export default function LayoutWithSidebar({
         </nav>
 
         {/* Footer mobile */}
-        <div className="mt-auto p-4 border-t border-gray-800">
+        <div className="mt-auto p-4 border-t border-border">
           <MobileNavLink icon={<User />} label="Mon Compte" href="/compte" onClick={() => setMobileMenuOpen(false)} />
           <button
             onClick={() => {
@@ -167,13 +167,13 @@ export default function LayoutWithSidebar({
         ${!sidebarCollapsed ? 'lg:ml-64' : ''}
       `}>
         {/* Header mobile avec bouton menu */}
-        <div className="lg:hidden bg-[#111111] border-b border-[#232323] p-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-white">
+        <div className="lg:hidden bg-card border-b border-border p-4 flex items-center justify-between">
+          <h1 className="text-xl font-bold text-foreground">
             DROP<span className="text-[#ff0033]">SKILLS</span>
           </h1>
           <button
             onClick={() => setMobileMenuOpen(true)}
-            className="p-2 rounded-lg bg-[#232323] text-white hover:bg-[#333333] transition-colors"
+            className="p-2 rounded-lg bg-muted text-muted-foreground hover:bg-muted/50 transition-colors"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -212,7 +212,7 @@ function MobileNavLink({ icon, label, href, badge, isPremium, onClick }: MobileN
     <Link
       href={href}
       onClick={onClick}
-      className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#232323] transition-colors relative"
+      className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-muted/20 transition-colors relative"
     >
       <div className="flex-shrink-0 w-5 h-5">
         {icon}
