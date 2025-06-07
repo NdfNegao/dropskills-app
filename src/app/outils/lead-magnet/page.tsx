@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
+import AILoadingLogs from '@/components/AILoadingLogs';
 import { 
   Sparkles, 
   Target, 
@@ -18,8 +19,10 @@ import {
   Zap,
   Video,
   CheckSquare,
-  BookOpen
+  BookOpen,
+  Image
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface LeadMagnetData {
   business: string;
@@ -40,6 +43,7 @@ function LeadMagnetContent() {
     tone: 'professionnel'
   });
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showLogs, setShowLogs] = useState(false);
   const [results, setResults] = useState<any>(null);
 
   const formats = [
@@ -64,6 +68,7 @@ function LeadMagnetContent() {
     }
 
     setIsGenerating(true);
+    setShowLogs(true);
     
     // Simulation de génération IA
     setTimeout(() => {
@@ -92,6 +97,16 @@ function LeadMagnetContent() {
       setIsGenerating(false);
     }, 3000);
   };
+
+  // Masquer les logs après la génération
+  useEffect(() => {
+    if (!isGenerating && showLogs) {
+      const timer = setTimeout(() => {
+        setShowLogs(false);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isGenerating, showLogs]);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -294,6 +309,19 @@ function LeadMagnetContent() {
             <Zap className="w-5 h-5 text-green-400" />
             Votre Lead Magnet Généré
           </h2>
+
+          <AnimatePresence>
+            {showLogs && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mb-6"
+              >
+                <AILoadingLogs />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {!results ? (
             <div className="text-center py-12">

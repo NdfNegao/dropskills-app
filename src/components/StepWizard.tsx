@@ -12,6 +12,7 @@ import {
   Zap,
   Target
 } from 'lucide-react';
+import AILoadingLogs from './AILoadingLogs';
 
 export interface WizardStep {
   id: string;
@@ -49,6 +50,7 @@ export function StepWizard({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [stepHistory, setStepHistory] = useState<number[]>([0]);
+  const [showLogs, setShowLogs] = useState(false);
 
   const currentStep = steps[currentStepIndex];
   const isLastStep = currentStepIndex === steps.length - 1;
@@ -57,6 +59,16 @@ export function StepWizard({
   useEffect(() => {
     onStepChange?.(currentStepIndex, formData);
   }, [currentStepIndex, formData, onStepChange]);
+
+  useEffect(() => {
+    if (!isLoading && showLogs) {
+      // Masquer les logs après un délai quand le chargement se termine
+      const timer = setTimeout(() => {
+        setShowLogs(false);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, showLogs]);
 
   const validateCurrentStep = (): boolean => {
     if (!currentStep.validation) return true;
@@ -71,6 +83,7 @@ export function StepWizard({
       setCompletedSteps(prev => new Set([...prev, currentStepIndex]));
       
       if (isLastStep) {
+        setShowLogs(true);
         onComplete(formData);
       } else {
         const nextStepIndex = currentStepIndex + 1;
@@ -194,51 +207,67 @@ export function StepWizard({
       {/* Step Content */}
       <div className="p-6">
         <AnimatePresence mode="wait">
-          <motion.div
-            key={currentStepIndex}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
-            className="space-y-6"
-          >
-            {/* Step Header */}
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold text-white">
-                {currentStep.title}
-              </h2>
-              <p className="text-gray-400">
-                {currentStep.description}
-              </p>
-            </div>
-
-            {/* Step Component */}
-            <div className="min-h-[200px]">
-              <currentStep.component 
-                data={formData}
-                onChange={updateFormData}
-                errors={errors}
-                isActive={true}
+          {showLogs && isLoading ? (
+            <motion.div
+              key="loading-logs"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+            >
+              <AILoadingLogs 
+                isVisible={true}
+                toolName={title}
+                onComplete={() => {/* Les logs se masqueront automatiquement */}}
               />
-            </div>
-
-            {/* Error Display */}
-            {Object.keys(errors).length > 0 && (
-              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-2 h-2 bg-red-500 rounded-full" />
-                  <span className="text-red-400 font-medium">Erreurs à corriger :</span>
-                </div>
-                <ul className="space-y-1">
-                  {Object.values(errors).map((error, index) => (
-                    <li key={index} className="text-red-400 text-sm ml-4">
-                      • {error}
-                    </li>
-                  ))}
-                </ul>
+            </motion.div>
+          ) : (
+            <motion.div
+              key={currentStepIndex}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-6"
+            >
+              {/* Step Header */}
+              <div className="space-y-2">
+                <h2 className="text-xl font-semibold text-white">
+                  {currentStep.title}
+                </h2>
+                <p className="text-gray-400">
+                  {currentStep.description}
+                </p>
               </div>
-            )}
-          </motion.div>
+
+              {/* Step Component */}
+              <div className="min-h-[200px]">
+                <currentStep.component 
+                  data={formData}
+                  onChange={updateFormData}
+                  errors={errors}
+                  isActive={true}
+                />
+              </div>
+
+              {/* Error Display */}
+              {Object.keys(errors).length > 0 && (
+                <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-2 h-2 bg-red-500 rounded-full" />
+                    <span className="text-red-400 font-medium">Erreurs à corriger :</span>
+                  </div>
+                  <ul className="space-y-1">
+                    {Object.values(errors).map((error, index) => (
+                      <li key={index} className="text-red-400 text-sm ml-4">
+                        • {error}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
 
