@@ -3,13 +3,10 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { createClient } from '@supabase/supabase-js';
 
-// Configuration Supabase avec fallback pour éviter les erreurs de build
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-const supabase = supabaseUrl && supabaseKey 
-  ? createClient(supabaseUrl, supabaseKey)
-  : null;
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -24,8 +21,15 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        // Fallback admin si Supabase n'est pas configuré
-        if (!supabase) {
+        // Récupérer l'utilisateur depuis Supabase
+        const { data: userData, error } = await supabase
+          .from('users')
+          .select('id, email, name, first_name, last_name, password_hash, role, is_premium')
+          .eq('email', credentials.email.toLowerCase())
+          .single();
+
+        if (error || !userData) {
+          // Fallback Pareto pour l'admin si non présent en BDD
           if (
             credentials.email === 'cyril.iriebi@gmail.com' &&
             credentials.password === 'jjbMMA200587@'
@@ -38,136 +42,63 @@ export const authOptions: NextAuthOptions = {
               lastName: 'Iriebi',
               role: 'ADMIN',
               isPremium: true
-            };
+            } as any;
           }
           return null;
         }
 
-        try {
-          // Récupérer l'utilisateur depuis Supabase
-          const { data: userData, error } = await supabase
-            .from('users')
-            .select('*')
-            .eq('email', credentials.email.toLowerCase())
-            .single();
+        // Vérifier le mot de passe hashé
+        if (!userData.password_hash) return null;
+        const passwordValid = await bcrypt.compare(credentials.password, userData.password_hash);
+        if (!passwordValid) return null;
 
-          if (error || !userData) {
-            return null;
-          }
-
-          // Vérifier le mot de passe
-          if (!userData.password_hash) {
-            return null;
-          }
-
-          const passwordValid = await bcrypt.compare(credentials.password, userData.password_hash);
-          if (!passwordValid) {
-            return null;
-          }
-
-          // Retourner les données utilisateur
-          return {
-            id: userData.id,
-            email: userData.email,
-            name: userData.name || `${userData.first_name} ${userData.last_name}`.trim(),
-            firstName: userData.first_name,
-            lastName: userData.last_name,
-            role: userData.role,
-            isPremium: userData.is_premium
-          };
-        } catch (error) {
-          console.error('Erreur lors de l\'authentification:', error);
-          return null;
-        }
+        return {
+          id: userData.id,
+          email: userData.email,
+          name: userData.name,
+          firstName: userData.first_name,
+          lastName: userData.last_name,
+          role: userData.role || 'USER',
+          isPremium: userData.is_premium || false
+        } as any;
       }
     })
   ],
   pages: {
     signIn: '/auth/signin',
-    error: '/auth/error',
+    error: '/auth/error'
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        // Lors de la première connexion, ajouter les données au token
-        token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
-        token.firstName = (user as any).firstName;
-        token.lastName = (user as any).lastName;
-        token.role = (user as any).role;
-        token.isPremium = (user as any).isPremium;
-      } else if (token.email) {
-        // Vérifier si c'est l'admin (fallback hardcodé)
-        if (token.email === 'cyril.iriebi@gmail.com') {
-          token.role = 'ADMIN';
-          token.isPremium = true;
-          token.firstName = 'Cyril';
-          token.lastName = 'Iriebi';
-          token.name = 'Cyril Iriebi';
-        } else if (supabase) {
-          // À chaque requête, rafraîchir les données depuis la BDD pour les autres utilisateurs
-          try {
-            const { data: userData } = await supabase
-              .from('users')
-              .select('id, email, name, first_name, last_name, role, is_premium')
-              .eq('email', token.email as string)
-              .single();
-
-            if (userData) {
-              token.id = userData.id;
-              token.firstName = userData.first_name;
-              token.lastName = userData.last_name;
-              token.role = userData.role;
-              token.isPremium = userData.is_premium;
-              token.name = userData.name || `${userData.first_name} ${userData.last_name}`.trim();
-            }
-          } catch (error) {
-            console.error('Erreur lors du rafraîchissement du token:', error);
-            // En cas d'erreur BDD, conserver les valeurs existantes du token
-          }
-        }
+        token.id = (user as any).id;
+        token.email = (user as any).email;
+        token.firstName = (user as any).firstName || '';
+        token.lastName = (user as any).lastName || '';
+        token.role = (user as any).role || 'USER';
+        token.isPremium = (user as any).isPremium || false;
       }
       return token;
     },
     async session({ session, token }) {
-      if (session?.user && token) {
-        // Ajouter toutes les données du token à la session
+      if (session.user) {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
-        session.user.name = token.name as string;
-        (session.user as any).firstName = token.firstName;
-        (session.user as any).lastName = token.lastName;
+        session.user.firstName = token.firstName as string;
+        session.user.lastName = token.lastName as string;
         (session.user as any).role = token.role;
         (session.user as any).isPremium = token.isPremium;
       }
       return session;
-    },
-    async redirect({ url, baseUrl }) {
-      // Redirection sécurisée
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      else if (new URL(url).origin === baseUrl) return url;
-      return `${baseUrl}/dashboard`;
     }
   },
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 jours
+    maxAge: 30 * 24 * 60 * 60
   },
   jwt: {
-    maxAge: 30 * 24 * 60 * 60, // 30 jours
+    maxAge: 30 * 24 * 60 * 60
   },
-  cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production'
-      }
-    }
-  },
-  debug: process.env.NODE_ENV === 'development',
-}; 
+  debug: process.env.NODE_ENV === 'development'
+};

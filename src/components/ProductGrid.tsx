@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Eye, Bookmark } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSavedProducts } from "@/context/SavedProductsContext";
@@ -86,7 +87,7 @@ export default function ProductGrid() {
             </button>
             
             <div className="aspect-video bg-[#1a1a1a] rounded-lg mb-4 flex items-center justify-center overflow-hidden">
-              <img src={p.image} alt={p.title} className="object-contain h-full w-full" />
+              <Image src={p.image} alt={p.title} className="object-contain" fill />
             </div>
             <h3 className="text-white font-semibold text-lg mb-2 truncate">{p.title}</h3>
             <p className="text-gray-400 text-sm mb-4 truncate">{p.subtitle}</p>
