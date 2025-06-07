@@ -7,7 +7,7 @@ import BusinessContextStep from './icp-steps/BusinessContextStep';
 import ProductServiceStep from './icp-steps/ProductServiceStep';
 import MarketingChannelsStep from './icp-steps/MarketingChannelsStep';
 import TonalityStep from './icp-steps/TonalityStep';
-import { ICPFormData } from '@/app/outils/icp-maker/page';
+import { ICPFormData } from '@/types/icp';
 
 interface ICPWizardV2Props {
   onComplete: (data: ICPFormData) => void;

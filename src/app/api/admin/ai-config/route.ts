@@ -101,8 +101,6 @@ export async function PUT() {
       'content': 'claude-3.5-sonnet',
       'usp': 'deepseek-v3',
       'icp': 'deepseek-v3',
-      // Nouveaux noms standardisés
-      'icp-maker': 'deepseek-v3',
       'offer-generator': 'grok-3',
       'title-generator': 'deepseek-v3',
       'description-generator': 'deepseek-v3',

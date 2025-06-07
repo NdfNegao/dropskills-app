@@ -39,9 +39,9 @@ export async function GET(request: NextRequest) {
     const mockData = {
       tools: [
         {
-          id: 'icp-maker',
-          name: 'ICP Maker',
-          type: 'ICP_MAKER',
+          id: 'icp-generator',
+          name: 'ICP Generator',
+          type: 'ICP_GENERATOR',
           status: 'active',
           provider: 'DeepSeek V3',
           usageCount: Math.floor(Math.random() * 100) + 20,

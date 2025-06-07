@@ -52,25 +52,6 @@ export interface AiTool {
 // Configuration des outils IA
 export const AI_TOOLS: AiTool[] = [
   {
-    id: 'icp-maker',
-    name: 'ICP Maker',
-    description: 'Créez votre profil client idéal en quelques minutes',
-    icon: 'Target',
-    type: 'ICP_MAKER',
-    category: 'Acquisition',
-    href: '/outils/icp-maker',
-    color: 'from-purple-500 to-indigo-600',
-    isPremium: true,
-    step: 1,
-    stepTitle: 'ACQUISITION',
-    stepDescription: 'Identifier votre cible',
-    endpoint: '/api/ai/icp/generate',
-    model: 'gpt-4o-mini',
-    temperature: 0.7,
-    maxTokens: 1000,
-    systemPrompt: 'Tu es un expert en stratégie marketing, persona et IA. À partir des informations fournies, dresse le portrait ultra-précis du client idéal (ICP) pour ce business.'
-  },
-  {
     id: 'icp-generator',
     name: 'ICP Generator',
     description: 'Générateur avancé de profil client idéal avec analyse approfondie',
@@ -387,7 +368,6 @@ export function getToolProvider(toolId: string): string {
     'agent-veille': 'veille',
     'content-system': 'content',
     'usp-maker': 'usp',
-    'icp-maker': 'icp',
     'icp-generator': 'icp'
   };
   

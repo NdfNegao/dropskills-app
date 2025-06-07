@@ -204,7 +204,7 @@ export default function SimpleDashboardPage() {
               Actions rapides
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Link href="/outils/icp-maker" className="flex items-center gap-3 p-4 bg-[#1a1a1a] rounded-lg hover:bg-[#222] transition-colors">
+              <Link href="/outils/icp-generator" className="flex items-center gap-3 p-4 bg-[#1a1a1a] rounded-lg hover:bg-[#222] transition-colors">
                 <Target className="w-5 h-5 text-[#ff0033]" />
                 <span className="text-white">Créer un ICP</span>
               </Link>
@@ -281,10 +281,10 @@ export default function SimpleDashboardPage() {
               Outils populaires
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Link href="/outils/icp-maker" className="p-4 bg-[#1a1a1a] rounded-lg hover:bg-[#222] transition-colors">
+              <Link href="/outils/icp-generator" className="p-4 bg-[#1a1a1a] rounded-lg hover:bg-[#222] transition-colors">
                 <div className="flex items-center gap-3 mb-2">
                   <Target className="w-6 h-6 text-[#ff0033]" />
-                  <h4 className="font-medium text-white">ICP Maker</h4>
+                  <h4 className="font-medium text-white">ICP Generator</h4>
                 </div>
                 <p className="text-gray-400 text-sm">Créez votre client idéal</p>
               </Link>

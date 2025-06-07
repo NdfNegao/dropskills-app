@@ -196,7 +196,7 @@ export default function AIConfigPage() {
 
   const getOptimalMapping = () => {
     const toolsConfig = {
-      'icp-maker': { name: 'ICP Maker', defaultProvider: 'deepseek-v3' },
+      'icp-generator': { name: 'ICP Generator', defaultProvider: 'deepseek-v3' },
       'offer-generator': { name: 'Générateur d\'Offres', defaultProvider: 'grok-3' },
       'title-generator': { name: 'Générateur de Titres', defaultProvider: 'deepseek-v3' },
       'description-generator': { name: 'Générateur de Descriptions', defaultProvider: 'deepseek-v3' },

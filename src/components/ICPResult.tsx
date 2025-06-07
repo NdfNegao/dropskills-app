@@ -23,7 +23,7 @@ import {
   Star,
   Lightbulb
 } from 'lucide-react';
-import { ICPAnalysis } from '@/app/outils/icp-generator/page';
+import { ICPAnalysis } from '@/types/icp';
 
 interface ICPResultProps {
   analysis: ICPAnalysis;

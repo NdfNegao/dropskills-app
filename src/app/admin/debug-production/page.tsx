@@ -63,7 +63,7 @@ export default function DebugProductionPage() {
 
   const runToolTests = async () => {
     const tools = [
-      '/outils/icp-maker',
+      '/outils/icp-generator',
       '/outils/content-system',
       '/outils/generateur-offre',
       '/outils/tunnel-maker'
@@ -209,10 +209,10 @@ export default function DebugProductionPage() {
             <h2 className="text-xl font-bold mb-4 text-cyan-400">⚡ Actions Debug</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <a
-                href="/outils/icp-maker"
+                href="/outils/icp-generator"
                 className="bg-blue-600 hover:bg-blue-700 px-4 py-3 rounded text-center font-medium"
               >
-                ICP Maker
+                ICP Generator
               </a>
               <a
                 href="/outils/content-system"

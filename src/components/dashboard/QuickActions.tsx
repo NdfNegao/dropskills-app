@@ -11,11 +11,11 @@ interface QuickActionsProps {
 export default function QuickActions({ canAccessPremium }: QuickActionsProps) {
   const quickActions = [
     {
-      id: 'icp-maker',
-      title: 'ICP Maker IA',
+      id: 'icp-generator',
+      title: 'ICP Generator IA',
       description: 'Définissez votre client idéal',
       icon: Target,
-      href: '/outils/icp-maker',
+      href: '/outils/icp-generator',
       color: 'from-blue-400 to-blue-600',
       bgColor: 'bg-blue-500/10',
       borderColor: 'border-blue-500/30',

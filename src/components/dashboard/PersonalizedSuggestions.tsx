@@ -18,7 +18,7 @@ export default function PersonalizedSuggestions({ canAccessPremium, stats }: Per
           title: "Optimisez votre ICP",
           description: "Affinez votre client idéal avec l'IA",
           icon: Target,
-          action: "/outils/icp-maker",
+          action: "/outils/icp-generator",
           type: "optimization",
           color: "from-blue-400 to-blue-600",
           bgColor: "bg-blue-500/10",
@@ -58,10 +58,10 @@ export default function PersonalizedSuggestions({ canAccessPremium, stats }: Per
           borderColor: "border-[#ff0033]/30"
         },
         {
-          title: "Testez ICP Maker",
+          title: "Testez ICP Generator",
           description: "Gratuit - Définissez votre client idéal",
           icon: Target,
-          action: "/outils/icp-maker",
+          action: "/outils/icp-generator",
           type: "trial",
           color: "from-blue-400 to-blue-600",
           bgColor: "bg-blue-500/10",

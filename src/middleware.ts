@@ -38,9 +38,7 @@ export default withAuth(
           '/auth/error',
           '/api/auth',
           '/premium',
-          '/home_cursor',
-          '/home_cursorV2',
-          '/home_cursorV3'
+          
         ];
 
         if (publicPaths.some(path => pathname.startsWith(path))) {

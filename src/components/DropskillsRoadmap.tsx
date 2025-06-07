@@ -20,11 +20,11 @@ import Link from 'next/link';
 
 const MASTERPIECES = [
   {
-    id: 'icp-maker',
-    title: 'ICP Maker',
+    id: 'icp-generator',
+    title: 'ICP Generator',
     description: 'Définissez votre client idéal en 7 étapes avec analyse IA',
     icon: Target,
-    href: '/outils/icp-maker',
+    href: '/outils/icp-generator',
     color: 'text-red-400'
   },
   {

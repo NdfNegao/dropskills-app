@@ -75,7 +75,7 @@ export function OpportunitiesDashboard({
   };
 
   const handleStartAnalysis = () => {
-    router.push('/outils/icp-maker');
+    router.push('/outils/icp-generator');
   };
 
   const handleOpportunityClick = (opportunity: Opportunity) => {

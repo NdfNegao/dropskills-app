@@ -97,7 +97,7 @@ Tu dois répondre UNIQUEMENT avec un JSON valide suivant EXACTEMENT cette struct
 }
 
 Sois concis, opérationnel, sans bullshit, et mets-toi à la place d'un marketer qui doit vendre demain matin.`,
-    tool: 'icp-maker',
+    tool: 'icp-generator',
     isActive: true,
     parameters: JSON.stringify({
       temperature: 0.7,

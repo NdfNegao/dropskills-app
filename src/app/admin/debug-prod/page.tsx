@@ -93,8 +93,8 @@ export default function DebugProdPage() {
               <div className="space-y-2">
                 <p className="text-sm text-gray-300">Test direct d'accès aux outils :</p>
                 <div className="space-x-2">
-                  <a href="/outils/icp-maker" className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white font-medium inline-block text-sm">
-                    🎯 ICP Maker
+                  <a href="/outils/icp-generator" className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white font-medium inline-block text-sm">
+                    🎯 ICP Generator
                   </a>
                   <a href="/outils/content-system" className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded text-white font-medium inline-block text-sm">
                     📝 Content System

@@ -12,7 +12,7 @@ export interface MigrationPlan {
 export const MIGRATION_PHASES: MigrationPlan[] = [
   {
     phase: 1,
-    tools: ['icp-maker', 'lead-magnet', 'title-generator'],
+    tools: ['icp-generator', 'lead-magnet', 'title-generator'],
     provider: 'deepseek-v3',
     priority: 'immediate',
     estimatedSavings: '~95% de réduction des coûts IA'
