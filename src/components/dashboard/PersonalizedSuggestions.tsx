@@ -10,6 +10,16 @@ interface PersonalizedSuggestionsProps {
   stats: any;
 }
 
+/**
+ * Renders a personalized suggestions interface with animated cards and progress tracking, tailored to the user's premium access and business statistics.
+ *
+ * Displays recommended actions, upgrade prompts, or educational resources based on the user's access level. For non-premium users with available statistics, shows a progress panel with business score and milestones.
+ *
+ * @param canAccessPremium - Indicates if the user has premium access, determining which suggestions and UI elements are shown.
+ * @param stats - User statistics, used to display progress information for non-premium users.
+ *
+ * @returns A React component displaying animated suggestion cards and, if applicable, a progress tracker.
+ */
 export default function PersonalizedSuggestions({ canAccessPremium, stats }: PersonalizedSuggestionsProps) {
   const getPersonalizedSuggestions = () => {
     if (canAccessPremium) {

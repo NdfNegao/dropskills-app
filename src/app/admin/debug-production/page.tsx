@@ -4,6 +4,13 @@ import { useSession } from 'next-auth/react';
 import { useAuth } from '@/hooks/useAuth';
 import { useState, useEffect } from 'react';
 
+/**
+ * Renders a comprehensive production debugging interface for diagnosing premium access issues in a Next.js application.
+ *
+ * Displays authentication status, user and environment details, raw session data, token and database debug information, premium tool access tests, and middleware simulation. Provides interactive controls to trigger API checks and tool access tests, as well as quick navigation to relevant tools and pages.
+ *
+ * @returns The debug page React component.
+ */
 export default function DebugProductionPage() {
   const { data: session, status } = useSession();
   const { user, canAccessPremium, isAdmin } = useAuth();

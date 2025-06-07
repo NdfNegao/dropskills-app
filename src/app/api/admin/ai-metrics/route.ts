@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
+/**
+ * Handles GET requests to retrieve AI tool usage metrics for a specified time range.
+ *
+ * Parses the `timeRange` query parameter to determine the reporting window, fetches usage logs from the Supabase database, and computes aggregate metrics such as total requests, total cost, average response time, success rate, cost savings, and the top-performing tool. If the database is unavailable or an error occurs, returns mock data with randomized statistics.
+ *
+ * @param request - The incoming HTTP request containing an optional `timeRange` query parameter (`24h`, `7d`, `30d`).
+ * @returns A JSON response with success status, computed metrics, tool data, the requested time range, and a generation timestamp.
+ */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

@@ -23,6 +23,13 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { ICPFormData, ICPAnalysis } from '@/types/icp';
 
+/**
+ * Renders the main content for the ICP Generator tool, allowing users to input data, generate an Ideal Customer Profile (ICP) analysis using Dropskills AI, and view or manage the results.
+ *
+ * Handles state management for the ICP generation process, including loading, error handling, saving/loading data from local storage, and animated transitions between the input wizard and results view.
+ *
+ * @remark The export to PDF functionality is not yet implemented.
+ */
 function ICPGeneratorContent() {
   const [icpResult, setIcpResult] = useState<ICPAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState(false);
