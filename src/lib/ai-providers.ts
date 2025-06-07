@@ -12,6 +12,7 @@ export interface AIProvider {
   temperature: number;
   maxTokens: number;
   isAvailable: () => boolean;
+  checkAvailability: () => Promise<boolean>;
   generateText: (prompt: string, options?: any) => Promise<string>;
   getCost: (inputTokens: number, outputTokens: number) => number;
 }
@@ -31,6 +32,14 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     temperature: 0.7,
     maxTokens: 8000,
     isAvailable: () => !!process.env.DEEPSEEK_API_KEY,
+    checkAvailability: async () => {
+      try {
+        const res = await fetch(AI_PROVIDERS['deepseek-v3'].baseURL);
+        return res.ok;
+      } catch {
+        return false;
+      }
+    },
     generateText: async (prompt: string, options = {}) => {
       // Implémentation DeepSeek API
       const response = await fetch(`${AI_PROVIDERS['deepseek-v3'].baseURL}/chat/completions`, {
@@ -67,6 +76,14 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     temperature: 0.8,
     maxTokens: 4000,
     isAvailable: () => !!process.env.GROK_API_KEY,
+    checkAvailability: async () => {
+      try {
+        const res = await fetch(AI_PROVIDERS['grok-3'].baseURL);
+        return res.ok;
+      } catch {
+        return false;
+      }
+    },
     generateText: async (prompt: string, options = {}) => {
       // Implémentation Grok API (quand disponible)
       const response = await fetch(`${AI_PROVIDERS['grok-3'].baseURL}/chat/completions`, {
@@ -103,6 +120,14 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     temperature: 0.7,
     maxTokens: 4000,
     isAvailable: () => !!process.env.ANTHROPIC_API_KEY,
+    checkAvailability: async () => {
+      try {
+        const res = await fetch(AI_PROVIDERS['claude-3.5-sonnet'].baseURL);
+        return res.ok;
+      } catch {
+        return false;
+      }
+    },
     generateText: async (prompt: string, options = {}) => {
       const response = await fetch(`${AI_PROVIDERS['claude-3.5-sonnet'].baseURL}/messages`, {
         method: 'POST',
@@ -139,6 +164,14 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     temperature: 0.8,
     maxTokens: 4000,
     isAvailable: () => !!process.env.GOOGLE_AI_API_KEY,
+    checkAvailability: async () => {
+      try {
+        const res = await fetch(AI_PROVIDERS['gemini-2.0-flash'].baseURL);
+        return res.ok;
+      } catch {
+        return false;
+      }
+    },
     generateText: async (prompt: string, options = {}) => {
       const response = await fetch(
         `${AI_PROVIDERS['gemini-2.0-flash'].baseURL}/models/gemini-2.0-flash:generateContent?key=${process.env.GOOGLE_AI_API_KEY}`,
@@ -203,21 +236,19 @@ export const TOOL_PROVIDER_MAPPING: Record<string, string> = loadToolProviderMap
 export class AIProviderManager {
   static async getOptimalProvider(toolType: string): Promise<AIProvider> {
     const preferredProvider = TOOL_PROVIDER_MAPPING[toolType];
-    
-    if (preferredProvider && AI_PROVIDERS[preferredProvider].isAvailable()) {
-      return AI_PROVIDERS[preferredProvider];
+    const candidates = [
+      preferredProvider,
+      'deepseek-v3',
+      'claude-3.5-sonnet'
+    ].filter(Boolean) as string[];
+
+    for (const id of candidates) {
+      const provider = AI_PROVIDERS[id];
+      if (provider.isAvailable() && await provider.checkAvailability()) {
+        return provider;
+      }
     }
-    
-    // Fallback vers DeepSeek (toujours économique)
-    if (AI_PROVIDERS['deepseek-v3'].isAvailable()) {
-      return AI_PROVIDERS['deepseek-v3'];
-    }
-    
-    // Fallback final vers Claude si budget permet
-    if (AI_PROVIDERS['claude-3.5-sonnet'].isAvailable()) {
-      return AI_PROVIDERS['claude-3.5-sonnet'];
-    }
-    
+
     throw new Error('Aucun provider IA disponible');
   }
   

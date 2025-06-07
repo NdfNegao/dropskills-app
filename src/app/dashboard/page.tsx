@@ -6,6 +6,7 @@ import Link from 'next/link';
 import LayoutWithSidebar from '@/components/LayoutWithSidebar';
 import PageBentoLayout from '@/components/PageBentoLayout';
 import { useAuth } from '@/hooks/useAuth';
+import dynamic from 'next/dynamic';
 import { 
   BarChart3, TrendingUp, Users, Zap, Bot, Target, Plus, Crown, Lock,
   CheckCircle, Rocket, Trophy, Clock, DollarSign, Package, Star, Gift, 

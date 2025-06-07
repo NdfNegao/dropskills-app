@@ -293,3 +293,36 @@ a {
 .border-border {
   border-color: var(--border);
 }
+
+/* New utility classes for theme variables */
+.bg-background {
+  background-color: var(--background);
+}
+
+.bg-foreground {
+  background-color: var(--foreground);
+}
+
+.bg-primary {
+  background-color: var(--primary);
+}
+
+.text-primary {
+  color: var(--primary);
+}
+
+.text-primary-foreground {
+  color: var(--primary-foreground);
+}
+
+.bg-muted {
+  background-color: var(--muted);
+}
+
+.border-primary {
+  border-color: var(--primary);
+}
+
+.text-card-foreground {
+  color: var(--card-foreground);
+}

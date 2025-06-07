@@ -20,7 +20,7 @@ export function AiToolCard({ tool, className = '' }: AiToolCardProps) {
   return (
     <Link 
       href={tool.href}
-      className={`block p-6 rounded-xl border border-[#232323] bg-[#111] hover:border-[#ff0033] transition-colors ${className}`}
+      className={`block p-6 rounded-xl border border-border bg-card hover:border-primary transition-colors ${className}`}
     >
       <div className="flex items-start gap-4">
         {/* Icône avec dégradé */}
@@ -31,18 +31,18 @@ export function AiToolCard({ tool, className = '' }: AiToolCardProps) {
         {/* Contenu */}
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-lg font-semibold text-white">{tool.name}</h3>
+            <h3 className="text-lg font-semibold text-card-foreground">{tool.name}</h3>
             {tool.isPremium && (
               <Crown size="sm" color="yellow" />
             )}
           </div>
-          <p className="text-gray-400 text-sm mb-3">{tool.description}</p>
+          <p className="text-muted-foreground text-sm mb-3">{tool.description}</p>
           
           {/* Badge étape */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1a1a1a] text-xs">
-            <span className="text-[#ff0033] font-medium">{tool.stepTitle}</span>
-            <span className="text-gray-400">•</span>
-            <span className="text-gray-300">{tool.stepDescription}</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted/20 text-xs">
+            <span className="text-primary font-medium">{tool.stepTitle}</span>
+            <span className="text-muted-foreground">•</span>
+            <span className="text-muted-foreground">{tool.stepDescription}</span>
           </div>
         </div>
       </div>

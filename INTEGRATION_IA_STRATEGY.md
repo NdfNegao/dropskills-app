@@ -75,7 +75,12 @@ const result = await provider.generateText(prompt);
 // Aucune interruption de service
 ```
 
-### 3. Monitoring Coûts
+### 3. Vérification des endpoints
+```typescript
+// getOptimalProvider teste chaque provider via checkAvailability()
+// Les endpoints des API sont pingés avant validation
+```
+### 4. Monitoring Coûts
 ```typescript
 // Tracking automatique des coûts par outil
 const cost = AIProviderManager.estimateCost('lead-magnet', inputTokens, outputTokens);
