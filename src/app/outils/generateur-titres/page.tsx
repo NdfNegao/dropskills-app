@@ -9,7 +9,8 @@ import {
   TrendingUp, 
   Copy,
   RefreshCw,
-  Lightbulb
+  Lightbulb,
+  Zap // Added Zap for consistency if needed, or use RefreshCw
 } from 'lucide-react';
 
 interface TitleData {
@@ -33,8 +34,11 @@ function GenerateurTitresContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Modified handleSubmit to accept an optional event
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
     setIsLoading(true);
 
     try {
@@ -263,6 +267,26 @@ function GenerateurTitresContent() {
                   </div>
                 </div>
               ))}
+              {/* New button added below the results list */}
+              <div className="mt-6 pt-4 border-t border-[#333]">
+                <button
+                  onClick={() => handleSubmit()} // Call handleSubmit without event
+                  disabled={isLoading}
+                  className="w-full bg-[#1a1a1a] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[#333] transition-colors border border-[#333] flex items-center justify-center gap-2"
+                >
+                  {isLoading ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Régénération en cours...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="w-4 h-4" />
+                      Générer de nouveaux titres
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           ) : (
             <div className="bg-[#1a1a1a] border border-[#333] rounded-lg p-12 text-center">
