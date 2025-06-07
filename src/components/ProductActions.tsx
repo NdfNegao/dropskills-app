@@ -1,4 +1,5 @@
-import { Heart, Download, Crown } from "lucide-react";
+import { Heart, Download } from "lucide-react";
+import Crown from '@/components/ui/Crown';
 import { useSavedProducts } from "@/context/SavedProductsContext";
 import { useLikedProducts } from '@/context/LikedProductsContext';
 import { Product } from "@/data/products";
@@ -40,11 +41,11 @@ const ProductActions: React.FC<ProductActionsProps> = ({ product, onDownload, sh
       {/* Badge Premium */}
       {showPremium && product.isPremium && (
         <span className="inline-flex items-center gap-1 px-2 py-1 bg-[#ff0033] text-white rounded text-xs font-medium">
-          <Crown className="w-4 h-4" /> Premium
+          <Crown size="sm" color="white" /> Premium
         </span>
       )}
     </div>
   );
 };
 
-export default ProductActions; 
+export default ProductActions;

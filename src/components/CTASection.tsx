@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, Zap, Crown } from 'lucide-react';
+import { ArrowRight, Zap } from 'lucide-react';
+import Crown from '@/components/ui/Crown';
 
 export default function CTASection() {
   return (
@@ -8,7 +9,7 @@ export default function CTASection() {
       <div className="max-w-4xl mx-auto text-center">
         <div className="bg-gradient-to-r from-[#ff0033]/10 to-red-600/10 border border-[#ff0033]/20 rounded-2xl p-12">
           <div className="w-16 h-16 bg-gradient-to-br from-[#ff0033] to-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Crown className="w-8 h-8 text-white" />
+            <Crown size="xl" color="white" />
           </div>
           
           <h2 className="text-4xl font-bold text-white mb-4">
@@ -45,4 +46,4 @@ export default function CTASection() {
       </div>
     </section>
   );
-} 
+}

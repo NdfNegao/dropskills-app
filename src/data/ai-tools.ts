@@ -16,6 +16,7 @@ import {
 // Types pour les outils IA
 export type AiToolType = 
   | 'ICP_MAKER'
+  | 'ICP_GENERATOR'
   | 'OFFER_GENERATOR'
   | 'TITLE_GENERATOR'
   | 'CONTENT_SYSTEM'
@@ -68,6 +69,25 @@ export const AI_TOOLS: AiTool[] = [
     temperature: 0.7,
     maxTokens: 1000,
     systemPrompt: 'Tu es un expert en stratégie marketing, persona et IA. À partir des informations fournies, dresse le portrait ultra-précis du client idéal (ICP) pour ce business.'
+  },
+  {
+    id: 'icp-generator',
+    name: 'ICP Generator',
+    description: 'Générateur avancé de profil client idéal avec analyse approfondie',
+    icon: 'Users',
+    type: 'ICP_GENERATOR',
+    category: 'Acquisition',
+    href: '/outils/icp-generator',
+    color: 'from-blue-500 to-purple-600',
+    isPremium: true,
+    step: 1,
+    stepTitle: 'ACQUISITION',
+    stepDescription: 'Analyser en profondeur',
+    endpoint: '/api/icp/generate-v2',
+    model: 'gpt-4o-mini',
+    temperature: 0.7,
+    maxTokens: 2000,
+    systemPrompt: 'Tu es un expert en stratégie marketing et analyse comportementale. Génère une analyse ICP complète et détaillée avec profil sociodémographique, psychologie, motivations et stratégies d\'acquisition.'
   },
   {
     id: 'offer-generator',
@@ -367,7 +387,8 @@ export function getToolProvider(toolId: string): string {
     'agent-veille': 'veille',
     'content-system': 'content',
     'usp-maker': 'usp',
-    'icp-maker': 'icp'
+    'icp-maker': 'icp',
+    'icp-generator': 'icp'
   };
   
   return providerMapping[toolId] || 'openai'; // fallback

@@ -1,465 +1,430 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Download, ArrowRight, ArrowLeft, User, Brain, AlertTriangle, MapPin, MessageCircle, DollarSign, Target, CheckCircle, Sparkles } from 'lucide-react';
-import { ICPAnalysis } from '@/app/outils/icp-maker/page';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  User,
+  Brain,
+  AlertTriangle,
+  MapPin,
+  MessageSquare,
+  DollarSign,
+  Users,
+  FileText,
+  ChevronDown,
+  ChevronUp,
+  Copy,
+  Check,
+  Target,
+  Heart,
+  Zap,
+  TrendingUp,
+  Calendar,
+  Star,
+  Lightbulb
+} from 'lucide-react';
+import { ICPAnalysis } from '@/app/outils/icp-generator/page';
 
 interface ICPResultProps {
   analysis: ICPAnalysis;
-  onBackToWizard: () => void;
-  onReformulate: () => void;
-  isReformulating: boolean;
+  onCopy: (text: string) => void;
 }
 
-export function ICPResult({ analysis, onBackToWizard, onReformulate, isReformulating }: ICPResultProps) {
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
-  const [copiedText, setCopiedText] = useState<string | null>(null);
-  const router = useRouter();
+interface SectionProps {
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  defaultExpanded?: boolean;
+  gradient?: string;
+}
 
-  const handleDownloadPDF = async () => {
-    setIsGeneratingPDF(true);
-    
-    try {
-      // Ici on pourrait intégrer une librairie comme jsPDF ou appeler une API
-      // Pour l'instant, on simule le téléchargement
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Simulation du téléchargement
-      const element = document.createElement('a');
-      const file = new Blob([JSON.stringify(analysis, null, 2)], { type: 'application/json' });
-      element.href = URL.createObjectURL(file);
-      element.download = 'icp-analysis.json';
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
-      
-    } catch (error) {
-      console.error('Erreur lors de la génération du PDF:', error);
-      alert('Erreur lors de la génération du PDF');
-    } finally {
-      setIsGeneratingPDF(false);
-    }
+function Section({ title, icon, children, defaultExpanded = false, gradient = "from-blue-500/20 to-purple-500/20" }: SectionProps) {
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    const textContent = extractTextContent(children);
+    navigator.clipboard.writeText(textContent);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleGenerateUSP = () => {
-    // Sauvegarder les données ICP pour l'USP Maker
-    localStorage.setItem('dropskills_icp_data', JSON.stringify(analysis));
-    // Redirection vers USP Maker IA
-    router.push('/outils/usp-maker');
+  const extractTextContent = (element: any): string => {
+    if (typeof element === 'string') return element;
+    if (typeof element === 'number') return element.toString();
+    if (Array.isArray(element)) return element.map(extractTextContent).join(' ');
+    if (element?.props?.children) return extractTextContent(element.props.children);
+    return '';
   };
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="bg-white rounded-xl shadow-lg p-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              🎯 Votre ICP est prêt !
-            </h1>
-            <p className="text-gray-600">
-              Analyse complète de votre client idéal générée par l'IA
-            </p>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-[#111111] rounded-xl border border-[#232323] overflow-hidden"
+    >
+      <div 
+        className="p-4 cursor-pointer hover:bg-[#1a1a1a] transition-colors"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className={`p-2 bg-gradient-to-r ${gradient} rounded-lg`}>
+              {icon}
+            </div>
+            <h3 className="text-lg font-semibold text-white">{title}</h3>
           </div>
-          <div className="flex space-x-3">
-            <button
-              onClick={onBackToWizard}
-              className="flex items-center space-x-2 px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+          
+          <div className="flex items-center gap-2">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCopy();
+              }}
+              className="p-2 text-gray-400 hover:text-white transition-colors"
             >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Retour</span>
-            </button>
-            <button
-              onClick={handleDownloadPDF}
-              disabled={isGeneratingPDF}
-              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
-            >
-              {isGeneratingPDF ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Génération...</span>
-                </>
-              ) : (
-                <>
-                  <Download className="w-4 h-4" />
-                  <span>Télécharger PDF</span>
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Profil Sociodémographique */}
-      <div className="bg-white rounded-xl shadow-lg p-8">
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-            <User className="w-5 h-5 text-blue-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900">Profil Sociodémographique</h2>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="font-semibold text-gray-900 mb-2">Âge</h3>
-            <p className="text-gray-700">{analysis.profilSociodemographique.age}</p>
-          </div>
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="font-semibold text-gray-900 mb-2">Sexe</h3>
-            <p className="text-gray-700">{analysis.profilSociodemographique.sexe}</p>
-          </div>
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="font-semibold text-gray-900 mb-2">Localisation</h3>
-            <p className="text-gray-700">{analysis.profilSociodemographique.localisation}</p>
-          </div>
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="font-semibold text-gray-900 mb-2">Situation Pro</h3>
-            <p className="text-gray-700">{analysis.profilSociodemographique.situationPro}</p>
-          </div>
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="font-semibold text-gray-900 mb-2">Niveau de Revenus</h3>
-            <p className="text-gray-700">{analysis.profilSociodemographique.niveauRevenus}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Psychologie et Motivations */}
-      <div className="bg-white rounded-xl shadow-lg p-8">
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-            <Brain className="w-5 h-5 text-purple-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900">Psychologie & Motivations</h2>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h3 className="font-semibold text-green-700 mb-3 flex items-center">
-              <CheckCircle className="w-4 h-4 mr-2" />
-              Besoins
-            </h3>
-            <ul className="space-y-2">
-              {analysis.psychologieMotivations.besoins.map((besoin, index) => (
-                <li key={index} className="text-gray-700 flex items-start">
-                  <span className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                  {besoin}
-                </li>
-              ))}
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="font-semibold text-blue-700 mb-3 flex items-center">
-              <Target className="w-4 h-4 mr-2" />
-              Désirs
-            </h3>
-            <ul className="space-y-2">
-              {analysis.psychologieMotivations.desirs.map((desir, index) => (
-                <li key={index} className="text-gray-700 flex items-start">
-                  <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                  {desir}
-                </li>
-              ))}
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="font-semibold text-red-700 mb-3 flex items-center">
-              <AlertTriangle className="w-4 h-4 mr-2" />
-              Peurs
-            </h3>
-            <ul className="space-y-2">
-              {analysis.psychologieMotivations.peurs.map((peur, index) => (
-                <li key={index} className="text-gray-700 flex items-start">
-                  <span className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                  {peur}
-                </li>
-              ))}
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="font-semibold text-orange-700 mb-3 flex items-center">
-              <AlertTriangle className="w-4 h-4 mr-2" />
-              Objections
-            </h3>
-            <ul className="space-y-2">
-              {analysis.psychologieMotivations.objections.map((objection, index) => (
-                <li key={index} className="text-gray-700 flex items-start">
-                  <span className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                  {objection}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* Problèmes Principaux */}
-      <div className="bg-white rounded-xl shadow-lg p-8">
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-            <AlertTriangle className="w-5 h-5 text-red-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900">Problèmes Principaux</h2>
-        </div>
-        
-        <div className="space-y-3">
-          {analysis.problemePrincipaux.map((probleme, index) => (
-            <div key={index} className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-              <p className="text-gray-800">{probleme}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Où le trouver */}
-      <div className="bg-white rounded-xl shadow-lg p-8">
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-            <MapPin className="w-5 h-5 text-green-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900">Où le trouver ?</h2>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Canaux</h3>
-            <div className="flex flex-wrap gap-2">
-              {analysis.ouLeTrouver.canaux.map((canal, index) => (
-                <span key={index} className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-                  {canal}
-                </span>
-              ))}
-            </div>
-          </div>
-          
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Plateformes</h3>
-            <div className="flex flex-wrap gap-2">
-              {analysis.ouLeTrouver.plateformes.map((plateforme, index) => (
-                <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                  {plateforme}
-                </span>
-              ))}
-            </div>
-          </div>
-          
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Groupes</h3>
-            <div className="flex flex-wrap gap-2">
-              {analysis.ouLeTrouver.groupes.map((groupe, index) => (
-                <span key={index} className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
-                  {groupe}
-                </span>
-              ))}
-            </div>
-          </div>
-          
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Événements</h3>
-            <div className="flex flex-wrap gap-2">
-              {analysis.ouLeTrouver.evenements.map((evenement, index) => (
-                <span key={index} className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm">
-                  {evenement}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Messaging Impactant */}
-      <div className="bg-white rounded-xl shadow-lg p-8">
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-            <MessageCircle className="w-5 h-5 text-indigo-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900">Messaging Impactant</h2>
-        </div>
-        
-        <div className="space-y-6">
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Expressions clés</h3>
-            <div className="flex flex-wrap gap-2">
-              {analysis.messagingImpactant.expressions.map((expression, index) => (
-                <span key={index} className="px-3 py-2 bg-indigo-100 text-indigo-800 rounded-lg text-sm font-medium">
-                  "{expression}"
-                </span>
-              ))}
-            </div>
-          </div>
-          
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Accroches efficaces</h3>
-            <div className="space-y-2">
-              {analysis.messagingImpactant.accroches.map((accroche, index) => (
-                <div key={index} className="bg-indigo-50 border-l-4 border-indigo-500 p-3 rounded-r-lg">
-                  <p className="text-gray-800 italic">"{accroche}"</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Style de discours</h3>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-gray-800">{analysis.messagingImpactant.styleDiscours}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Budget & Pouvoir d'achat */}
-      <div className="bg-white rounded-xl shadow-lg p-8">
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-            <DollarSign className="w-5 h-5 text-yellow-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900">Budget & Pouvoir d'achat</h2>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-yellow-50 rounded-lg p-4">
-            <h3 className="font-semibold text-gray-900 mb-2">Budget Typique</h3>
-            <p className="text-gray-700 text-lg font-medium">{analysis.budgetPouvoirAchat.budgetTypique}</p>
-          </div>
-          <div className="bg-yellow-50 rounded-lg p-4">
-            <h3 className="font-semibold text-gray-900 mb-2">Fréquence d'achat</h3>
-            <p className="text-gray-700">{analysis.budgetPouvoirAchat.frequenceAchat}</p>
-          </div>
-          <div className="bg-yellow-50 rounded-lg p-4">
-            <h3 className="font-semibold text-gray-900 mb-2">Facteurs Prix</h3>
-            <ul className="space-y-1">
-              {analysis.budgetPouvoirAchat.facteursPrix.map((facteur, index) => (
-                <li key={index} className="text-gray-700 text-sm">• {facteur}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* Segments */}
-      <div className="bg-white rounded-xl shadow-lg p-8">
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
-            <Target className="w-5 h-5 text-teal-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900">Segmentation</h2>
-        </div>
-        
-        <div className="space-y-6">
-          {/* Segment Principal */}
-          <div className="border-2 border-teal-200 rounded-lg p-6 bg-teal-50">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-xl font-bold text-teal-900">{analysis.segments.principal.nom}</h3>
-              <span className="px-3 py-1 bg-teal-200 text-teal-800 rounded-full text-sm font-medium">
-                {analysis.segments.principal.pourcentage}
-              </span>
-            </div>
-            <p className="text-teal-800">{analysis.segments.principal.description}</p>
-          </div>
-          
-          {/* Variantes */}
-          {analysis.segments.variantes.map((variante, index) => (
-            <div key={index} className="border border-gray-200 rounded-lg p-6 bg-gray-50">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-semibold text-gray-900">{variante.nom}</h3>
-                <span className="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm font-medium">
-                  {variante.pourcentage}
-                </span>
-              </div>
-              <p className="text-gray-700">{variante.description}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Fiche Actionable */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-8 text-white">
-        <h2 className="text-2xl font-bold mb-6">🚀 Fiche Actionable</h2>
-        
-        <div className="space-y-6">
-          <div>
-            <h3 className="text-xl font-semibold mb-3">Résumé Exécutif</h3>
-            <p className="text-blue-100 leading-relaxed">{analysis.ficheActionable.resumeExecutif}</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h3 className="text-lg font-semibold mb-3">Priorités Marketing</h3>
-              <ul className="space-y-2">
-                {analysis.ficheActionable.prioritesMarketing.map((priorite, index) => (
-                  <li key={index} className="flex items-start text-blue-100">
-                    <CheckCircle className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />
-                    {priorite}
-                  </li>
-                ))}
-              </ul>
-            </div>
+              {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+            </motion.button>
             
-            <div>
-              <h3 className="text-lg font-semibold mb-3">Prochaines Étapes</h3>
-              <ul className="space-y-2">
-                {analysis.ficheActionable.prochainEtapes.map((etape, index) => (
-                  <li key={index} className="flex items-start text-blue-100">
-                    <ArrowRight className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />
-                    {etape}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold mb-3">Métriques à Suivre</h3>
-            <div className="flex flex-wrap gap-2">
-              {analysis.ficheActionable.metriquesACles.map((metrique, index) => (
-                <span key={index} className="px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm">
-                  {metrique}
-                </span>
-              ))}
-            </div>
+            <motion.div
+              animate={{ rotate: isExpanded ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ChevronDown className="w-5 h-5 text-gray-400" />
+            </motion.div>
           </div>
         </div>
       </div>
+      
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="border-t border-[#232323]"
+          >
+            <div className="p-6">
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
 
-      {/* Actions */}
-      <div className="bg-white rounded-xl shadow-lg p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-          Prêt à passer à l'action ?
-        </h2>
-        
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button
-            onClick={handleDownloadPDF}
-            disabled={isGeneratingPDF}
-            className="flex items-center justify-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
-          >
-            {isGeneratingPDF ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>Génération PDF...</span>
-              </>
-            ) : (
-              <>
-                <Download className="w-5 h-5" />
-                <span>Télécharger l'ICP complet</span>
-              </>
-            )}
-          </button>
-          
-          <button
-            onClick={handleGenerateUSP}
-            className="flex items-center justify-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all"
-          >
-            <Sparkles className="w-5 h-5" />
-            <span>Enchaîner avec USP Maker IA</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
+function InfoCard({ label, value, icon }: { label: string; value: string; icon?: React.ReactNode }) {
+  return (
+    <div className="bg-[#1a1a1a] rounded-lg p-4 border border-[#2a2a2a]">
+      <div className="flex items-center gap-2 mb-2">
+        {icon && <div className="text-blue-400">{icon}</div>}
+        <span className="text-gray-400 text-sm font-medium">{label}</span>
       </div>
+      <p className="text-white font-semibold">{value}</p>
     </div>
   );
-} 
+}
+
+function ListCard({ title, items, icon, color = "blue" }: { title: string; items: string[]; icon?: React.ReactNode; color?: string }) {
+  const colorClasses = {
+    blue: "border-blue-500/20 bg-blue-500/5",
+    green: "border-green-500/20 bg-green-500/5",
+    red: "border-red-500/20 bg-red-500/5",
+    purple: "border-purple-500/20 bg-purple-500/5",
+    orange: "border-orange-500/20 bg-orange-500/5"
+  };
+
+  return (
+    <div className={`rounded-lg p-4 border ${colorClasses[color as keyof typeof colorClasses]}`}>
+      <div className="flex items-center gap-2 mb-3">
+        {icon && <div className={`text-${color}-400`}>{icon}</div>}
+        <h4 className="text-white font-semibold">{title}</h4>
+      </div>
+      <ul className="space-y-2">
+        {items.map((item, index) => (
+          <li key={index} className="flex items-start gap-2">
+            <div className={`w-1.5 h-1.5 bg-${color}-400 rounded-full mt-2 flex-shrink-0`} />
+            <span className="text-gray-300 text-sm">{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
+  return (
+    <div className="space-y-6">
+      {/* Profil Sociodémographique */}
+      <Section 
+        title="Profil Sociodémographique" 
+        icon={<User className="w-5 h-5 text-blue-400" />}
+        defaultExpanded={true}
+        gradient="from-blue-500/20 to-cyan-500/20"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <InfoCard 
+            label="Âge" 
+            value={analysis.profilSociodemographique.age}
+            icon={<Calendar className="w-4 h-4" />}
+          />
+          <InfoCard 
+            label="Sexe" 
+            value={analysis.profilSociodemographique.sexe}
+            icon={<Users className="w-4 h-4" />}
+          />
+          <InfoCard 
+            label="Localisation" 
+            value={analysis.profilSociodemographique.localisation}
+            icon={<MapPin className="w-4 h-4" />}
+          />
+          <InfoCard 
+            label="Situation Professionnelle" 
+            value={analysis.profilSociodemographique.situationPro}
+            icon={<Target className="w-4 h-4" />}
+          />
+          <InfoCard 
+            label="Niveau de Revenus" 
+            value={analysis.profilSociodemographique.niveauRevenus}
+            icon={<DollarSign className="w-4 h-4" />}
+          />
+        </div>
+      </Section>
+
+      {/* Psychologie & Motivations */}
+      <Section 
+        title="Psychologie & Motivations" 
+        icon={<Brain className="w-5 h-5 text-purple-400" />}
+        gradient="from-purple-500/20 to-pink-500/20"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <ListCard 
+              title="Besoins Principaux"
+              items={analysis.psychologieMotivations.besoins}
+              icon={<Heart className="w-4 h-4" />}
+              color="green"
+            />
+            <ListCard 
+              title="Désirs & Aspirations"
+              items={analysis.psychologieMotivations.desirs}
+              icon={<Star className="w-4 h-4" />}
+              color="blue"
+            />
+          </div>
+          <div className="space-y-4">
+            <ListCard 
+              title="Peurs & Freins"
+              items={analysis.psychologieMotivations.peurs}
+              icon={<AlertTriangle className="w-4 h-4" />}
+              color="red"
+            />
+            <ListCard 
+              title="Objections Courantes"
+              items={analysis.psychologieMotivations.objections}
+              icon={<MessageSquare className="w-4 h-4" />}
+              color="orange"
+            />
+          </div>
+        </div>
+      </Section>
+
+      {/* Problèmes Principaux */}
+      <Section 
+        title="Problèmes Principaux" 
+        icon={<AlertTriangle className="w-5 h-5 text-red-400" />}
+        gradient="from-red-500/20 to-orange-500/20"
+      >
+        <ListCard 
+          title="Points de Douleur Identifiés"
+          items={analysis.problemePrincipaux}
+          icon={<Zap className="w-4 h-4" />}
+          color="red"
+        />
+      </Section>
+
+      {/* Où le Trouver */}
+      <Section 
+        title="Où Trouver Votre ICP" 
+        icon={<MapPin className="w-5 h-5 text-green-400" />}
+        gradient="from-green-500/20 to-emerald-500/20"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <ListCard 
+              title="Canaux de Communication"
+              items={analysis.ouLeTrouver.canaux}
+              icon={<MessageSquare className="w-4 h-4" />}
+              color="green"
+            />
+            <ListCard 
+              title="Plateformes Digitales"
+              items={analysis.ouLeTrouver.plateformes}
+              icon={<TrendingUp className="w-4 h-4" />}
+              color="blue"
+            />
+          </div>
+          <div className="space-y-4">
+            <ListCard 
+              title="Groupes & Communautés"
+              items={analysis.ouLeTrouver.groupes}
+              icon={<Users className="w-4 h-4" />}
+              color="purple"
+            />
+            <ListCard 
+              title="Événements & Lieux"
+              items={analysis.ouLeTrouver.evenements}
+              icon={<Calendar className="w-4 h-4" />}
+              color="orange"
+            />
+          </div>
+        </div>
+      </Section>
+
+      {/* Messaging Impactant */}
+      <Section 
+        title="Messaging Impactant" 
+        icon={<MessageSquare className="w-5 h-5 text-yellow-400" />}
+        gradient="from-yellow-500/20 to-orange-500/20"
+      >
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ListCard 
+              title="Expressions Clés"
+              items={analysis.messagingImpactant.expressions}
+              icon={<MessageSquare className="w-4 h-4" />}
+              color="orange"
+            />
+            <ListCard 
+              title="Accroches Efficaces"
+              items={analysis.messagingImpactant.accroches}
+              icon={<Zap className="w-4 h-4" />}
+              color="purple"
+            />
+          </div>
+          <InfoCard 
+            label="Style de Discours Recommandé" 
+            value={analysis.messagingImpactant.styleDiscours}
+            icon={<Lightbulb className="w-4 h-4" />}
+          />
+        </div>
+      </Section>
+
+      {/* Budget & Pouvoir d'Achat */}
+      <Section 
+        title="Budget & Pouvoir d'Achat" 
+        icon={<DollarSign className="w-5 h-5 text-green-400" />}
+        gradient="from-green-500/20 to-teal-500/20"
+      >
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InfoCard 
+              label="Budget Typique" 
+              value={analysis.budgetPouvoirAchat.budgetTypique}
+              icon={<DollarSign className="w-4 h-4" />}
+            />
+            <InfoCard 
+              label="Fréquence d'Achat" 
+              value={analysis.budgetPouvoirAchat.frequenceAchat}
+              icon={<Calendar className="w-4 h-4" />}
+            />
+          </div>
+          <ListCard 
+            title="Facteurs Influençant le Prix"
+            items={analysis.budgetPouvoirAchat.facteursPrix}
+            icon={<TrendingUp className="w-4 h-4" />}
+            color="green"
+          />
+        </div>
+      </Section>
+
+      {/* Segments */}
+      <Section 
+        title="Segmentation" 
+        icon={<Users className="w-5 h-5 text-purple-400" />}
+        gradient="from-purple-500/20 to-indigo-500/20"
+      >
+        <div className="space-y-6">
+          {/* Segment Principal */}
+          <div className="bg-gradient-to-r from-purple-500/10 to-indigo-500/10 rounded-lg p-6 border border-purple-500/20">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-purple-500/20 rounded-lg">
+                <Target className="w-5 h-5 text-purple-400" />
+              </div>
+              <div>
+                <h4 className="text-white font-bold text-lg">{analysis.segments.principal.nom}</h4>
+                <span className="text-purple-400 font-semibold">{analysis.segments.principal.pourcentage}</span>
+              </div>
+            </div>
+            <p className="text-gray-300">{analysis.segments.principal.description}</p>
+          </div>
+
+          {/* Segments Variantes */}
+          {analysis.segments.variantes.length > 0 && (
+            <div className="space-y-4">
+              <h4 className="text-white font-semibold flex items-center gap-2">
+                <Users className="w-4 h-4 text-indigo-400" />
+                Segments Secondaires
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {analysis.segments.variantes.map((segment, index) => (
+                  <div key={index} className="bg-[#1a1a1a] rounded-lg p-4 border border-[#2a2a2a]">
+                    <div className="flex items-center justify-between mb-2">
+                      <h5 className="text-white font-semibold">{segment.nom}</h5>
+                      <span className="text-indigo-400 text-sm font-medium">{segment.pourcentage}</span>
+                    </div>
+                    <p className="text-gray-400 text-sm">{segment.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </Section>
+
+      {/* Fiche Actionable */}
+      <Section 
+        title="Plan d'Action" 
+        icon={<FileText className="w-5 h-5 text-blue-400" />}
+        gradient="from-blue-500/20 to-cyan-500/20"
+        defaultExpanded={true}
+      >
+        <div className="space-y-6">
+          {/* Résumé Exécutif */}
+          <div className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-lg p-6 border border-blue-500/20">
+            <h4 className="text-white font-bold mb-3 flex items-center gap-2">
+              <Lightbulb className="w-5 h-5 text-blue-400" />
+              Résumé Exécutif
+            </h4>
+            <p className="text-gray-300 leading-relaxed">{analysis.ficheActionable.resumeExecutif}</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <ListCard 
+              title="Priorités Marketing"
+              items={analysis.ficheActionable.prioritesMarketing}
+              icon={<Target className="w-4 h-4" />}
+              color="blue"
+            />
+            <ListCard 
+              title="Prochaines Étapes"
+              items={analysis.ficheActionable.prochainEtapes}
+              icon={<Zap className="w-4 h-4" />}
+              color="green"
+            />
+            <ListCard 
+              title="Métriques Clés"
+              items={analysis.ficheActionable.metriquesACles}
+              icon={<TrendingUp className="w-4 h-4" />}
+              color="purple"
+            />
+          </div>
+        </div>
+      </Section>
+    </div>
+  );
+}

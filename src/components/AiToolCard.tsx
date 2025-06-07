@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { AiTool, ICON_MAP } from '@/data/ai-tools';
-import { Crown } from 'lucide-react';
+import Crown from '@/components/ui/Crown';
 
 interface AiToolCardProps {
   tool: AiTool;
@@ -33,7 +33,7 @@ export function AiToolCard({ tool, className = '' }: AiToolCardProps) {
           <div className="flex items-center gap-2 mb-1">
             <h3 className="text-lg font-semibold text-white">{tool.name}</h3>
             {tool.isPremium && (
-              <Crown className="w-4 h-4 text-yellow-400" />
+              <Crown size="sm" color="yellow" />
             )}
           </div>
           <p className="text-gray-400 text-sm mb-3">{tool.description}</p>

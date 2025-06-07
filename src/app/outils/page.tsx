@@ -28,32 +28,42 @@ export default function OutilsPage() {
         
         {/* Tabs */}
         <div className="flex justify-center">
-          <div className="bg-gray-900/50 rounded-lg p-1 border border-gray-800">
+          <div className="bg-[#111111] border border-[#232323] rounded-xl p-1.5 shadow-lg flex flex-row gap-2">
             <button
               onClick={() => setActiveTab('grid')}
               className={`
-                flex items-center gap-2 px-6 py-3 rounded-md font-medium transition-all
+                relative flex items-center gap-3 px-8 py-4 rounded-lg font-medium transition-all duration-300 group
                 ${activeTab === 'grid'
-                  ? 'bg-blue-600 text-white shadow-lg'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                  ? 'bg-gradient-to-r from-[#ff0033] to-[#cc0029] text-white shadow-lg shadow-[#ff0033]/25 transform scale-[1.02]'
+                  : 'text-gray-400 hover:text-white hover:bg-[#1a1a1a] hover:border-[#2a2a2a]'
                 }
               `}
             >
-              <Grid className="w-4 h-4" />
-              Grille d'outils
+              <Grid className={`w-5 h-5 transition-transform duration-300 ${
+                activeTab === 'grid' ? 'scale-110' : 'group-hover:scale-105'
+              }`} />
+              <span className="text-sm font-semibold tracking-wide">Grille d'outils</span>
+              {activeTab === 'grid' && (
+                <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-[#ff0033]/20 to-[#cc0029]/20 blur-xl -z-10" />
+              )}
             </button>
             <button
               onClick={() => setActiveTab('journey')}
               className={`
-                flex items-center gap-2 px-6 py-3 rounded-md font-medium transition-all
+                relative flex items-center gap-3 px-8 py-4 rounded-lg font-medium transition-all duration-300 group
                 ${activeTab === 'journey'
-                  ? 'bg-blue-600 text-white shadow-lg'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                  ? 'bg-gradient-to-r from-[#ff0033] to-[#cc0029] text-white shadow-lg shadow-[#ff0033]/25 transform scale-[1.02]'
+                  : 'text-gray-400 hover:text-white hover:bg-[#1a1a1a] hover:border-[#2a2a2a]'
                 }
               `}
             >
-              <Navigation className="w-4 h-4" />
-              Parcours AARRR
+              <Navigation className={`w-5 h-5 transition-transform duration-300 ${
+                activeTab === 'journey' ? 'scale-110' : 'group-hover:scale-105'
+              }`} />
+              <span className="text-sm font-semibold tracking-wide">Parcours AARRR</span>
+              {activeTab === 'journey' && (
+                <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-[#ff0033]/20 to-[#cc0029]/20 blur-xl -z-10" />
+              )}
             </button>
           </div>
         </div>

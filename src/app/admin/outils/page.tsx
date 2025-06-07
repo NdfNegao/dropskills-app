@@ -31,8 +31,8 @@ interface AiTool {
 const CATEGORIES = ['Acquisition', 'Activation', 'Trafic', 'Contenu'];
 const MODELS = ['gpt-4o-mini', 'gpt-4o', 'gpt-3.5-turbo'];
 const TYPES = [
-  'ICP_MAKER', 'OFFER_GENERATOR', 'TITLE_GENERATOR', 'CONTENT_SYSTEM',
-  'TUNNEL_BUILDER', 'EMAIL_SEQUENCE', 'LEAD_MAGNET', 'VEILLE_STRATEGIQUE'
+  'ICP_MAKER', 'OFFER_GENERATOR', 'TITLE_GENERATOR', 'DESCRIPTION_GENERATOR',
+  'CONTENT_SYSTEM', 'TUNNEL_BUILDER', 'EMAIL_SEQUENCE', 'LEAD_MAGNET', 'VEILLE_STRATEGIQUE'
 ];
 
 export default function AdminOutilsPage() {

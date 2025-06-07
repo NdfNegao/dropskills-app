@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Nicolas - Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="80" cy="20" r="15" fill="rgba(255,255,255,0.1)"/><circle cx="20" cy="80" r="10" fill="rgba(255,255,255,0.05)"/></svg>');
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .wine-bottle {
+            position: absolute;
+            right: 30px;
+            top: 20px;
+            width: 60px;
+            height: 120px;
+            background: linear-gradient(to bottom, #2d1810 0%, #4a2c1a 50%, #2d1810 100%);
+            border-radius: 8px 8px 4px 4px;
+        }
+        
+        .wine-bottle::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: #2d1810;
+            border-radius: 4px;
+        }
+        
+        .wine-bottle::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 60px;
+            background: rgba(139, 69, 19, 0.3);
+            border-radius: 4px;
+        }
+        
+        .logo {
+            border: 3px solid white;
+            padding: 15px 25px;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: white;
+            font-size: 28px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        
+        .logo .since {
+            color: white;
+            font-size: 12px;
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+        
+        .header-text {
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .message {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        
+        .satisfaction-question {
+            font-size: 16px;
+            font-weight: 600;
+            color: #c41e3a;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+        
+        .star {
+            width: 40px;
+            height: 40px;
+            background-color: #e0e0e0;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .star:hover {
+            background-color: #ffd700;
+        }
+        
+        .cta-button {
+            display: block;
+            width: fit-content;
+            margin: 0 auto 40px;
+            background-color: #c41e3a;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .cta-button:hover {
+            background-color: #a01729;
+        }
+        
+        .contact-info {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .contact-link {
+            color: #c41e3a;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .footer {
+            background-color: #ffc107;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .footer-logo {
+            color: white;
+            font-size: 24px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #ffc107;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+        
+        .social-icon:hover {
+            transform: scale(1.1);
+        }
+        
+        .disclaimer {
+            margin-top: 30px;
+            font-size: 11px;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .unsubscribe {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="wine-bottle"></div>
+            <div class="logo">
+                <h1>NICOLAS</h1>
+                <div class="since">DEPUIS 1822</div>
+            </div>
+            <div class="header-text">
+                Nous vous remercions de votre confiance<br>
+                suite à votre commande sur notre site.
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">Bonjour Charles,</div>
+            
+            <div class="message">
+                Partagez-nous votre expérience*, votre avis nous permettra de proposer un service qui réponde toujours plus à vos attentes.
+            </div>
+            
+            <div class="satisfaction-question">
+                Êtes-vous globalement satisfait de votre dernière visite sur le site nicolas.com ?
+            </div>
+            
+            <div class="stars">
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+            </div>
+            
+            <a href="#" class="cta-button">JE DONNE MON AVIS</a>
+            
+            <div class="contact-info">
+                N'hésitez pas à contacter directement notre Service Clients <a href="#" class="contact-link">ICI</a> (lien vers le formulaire de contact).<br><br>
+                
+                Nous sommes disponibles pour répondre à toutes vos questions !<br><br>
+                
+                <strong>Nous espérons vous revoir bientôt !</strong><br><br>
+                
+                L'équipe Nicolas.com
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-logo">NICOLAS</div>
+            
+            <div class="social-icons">
+                <a href="#" class="social-icon">f</a>
+                <a href="#" class="social-icon">📷</a>
+            </div>
+            
+            <div class="disclaimer">
+                *Avis recueilli par Goodays<br>
+                Organisme indépendant d'évaluation client<br><br>
+                
+                <a href="#" class="unsubscribe">Me désabonner</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

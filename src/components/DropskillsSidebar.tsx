@@ -4,8 +4,9 @@ import { useRouter } from "next/navigation";
 import { signOut } from 'next-auth/react';
 import { useAuth } from "@/hooks/useAuth";
 import {
-  Home, Lock, GraduationCap, FolderOpen, Settings, LogOut, ChevronLeft, ChevronRight, Users, HelpCircle, User, MessageSquarePlus, Heart, Crown, Shield
+  Home, Lock, GraduationCap, FolderOpen, Settings, LogOut, ChevronLeft, ChevronRight, Users, HelpCircle, User, MessageSquarePlus, Heart, Shield
 } from "lucide-react";
+import Crown from '@/components/ui/Crown';
 import DollarConfetti from './DollarConfetti';
 
 interface DropskillsSidebarProps {
@@ -281,7 +282,7 @@ function SidebarCTA({ icon, label, cta, collapsed, href }: SidebarCTAProps) {
     return (
       <div className="relative flex items-center justify-center w-12 h-12 mx-auto my-2">
         <a href={href} onClick={handleClick} className="flex items-center justify-center w-12 h-12 rounded-full bg-[#ff0033] shadow-lg hover:scale-110 transition-transform">
-          <Crown className="w-7 h-7 text-white" />
+          <Crown size="lg" color="white" />
         </a>
         <DollarConfetti trigger={confetti} onComplete={() => setConfetti(false)} />
       </div>

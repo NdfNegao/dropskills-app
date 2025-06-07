@@ -1,22 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
+import ICPWizardV2 from '@/components/ICPWizardV2';
+import ICPResult from '@/components/ICPResult';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  BrainCog, 
-  Sparkles, 
-  TrendingUp, 
-  Users, 
-  Target,
-  Lightbulb,
-  Zap,
-  CheckCircle,
-  Copy,
+  Plus,
   RefreshCw,
   Download,
-  ChevronDown,
-  ChevronUp
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 
 export interface ICPFormData {
@@ -25,8 +20,10 @@ export interface ICPFormData {
   promesseUnique: string;
   budgetCible: string;
   canaux: string[];
-  zoneGeographique: string;
   tonalite: string;
+  objectifs: string;
+  defis: string;
+  valeurs: string;
 }
 
 export interface ICPAnalysis {
@@ -80,101 +77,124 @@ export interface ICPAnalysis {
   };
 }
 
-const CANAUX_OPTIONS = [
-  'Facebook Ads', 'Google Ads', 'LinkedIn', 'Instagram', 'TikTok', 
-  'YouTube', 'Email Marketing', 'SEO/Blog', 'Webinaires', 'Podcasts',
-  'Événements', 'Partenariats', 'Bouche-à-oreille', 'Affiliation'
-];
 
-const TONALITE_OPTIONS = [
-  'Professionnel et expert', 'Amical et accessible', 'Inspirant et motivant',
-  'Direct et sans détour', 'Éducatif et pédagogue', 'Luxe et premium',
-  'Jeune et dynamique', 'Rassurant et bienveillant'
-];
 
 function ICPMakerContent() {
-  const [formData, setFormData] = useState<ICPFormData>({
-    secteur: '',
-    produitService: '',
-    promesseUnique: '',
-    budgetCible: '',
-    canaux: [],
-    zoneGeographique: '',
-    tonalite: ''
-  });
-
   const [icpResult, setIcpResult] = useState<ICPAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [expandedSections, setExpandedSections] = useState({
-    secteur: true,
-    produit: false,
-    promesse: false,
-    budget: false,
-    canaux: false,
-    geo: false,
-    tonalite: false
-  });
+  const [showWizard, setShowWizard] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [lastFormData, setLastFormData] = useState<ICPFormData | null>(null);
 
-  const handleGenerate = async () => {
-    if (!formData.secteur || !formData.produitService) {
-      alert('Veuillez remplir au moins le secteur et le produit/service');
-      return;
+
+  // Charger les données sauvegardées au démarrage
+  useEffect(() => {
+    const savedResult = localStorage.getItem('dropskills_icp_maker_data');
+    const savedFormData = localStorage.getItem('dropskills_icp_maker_form_data');
+    
+    if (savedResult && savedFormData) {
+      try {
+        setIcpResult(JSON.parse(savedResult));
+        setLastFormData(JSON.parse(savedFormData));
+        setShowWizard(false);
+      } catch (error) {
+        console.error('Erreur lors du chargement des données sauvegardées:', error);
+        localStorage.removeItem('dropskills_icp_maker_data');
+        localStorage.removeItem('dropskills_icp_maker_form_data');
+      }
     }
+  }, []);
 
+  const handleGenerate = async (formData: ICPFormData) => {
     setIsLoading(true);
+    setError(null);
+    setLastFormData(formData);
     
     try {
-      const response = await fetch('/api/icp/generate', {
+      const response = await fetch('/api/ai/icp/generate', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
       });
-
+      
       if (!response.ok) {
-        throw new Error('Erreur lors de la génération');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erreur lors de la génération');
       }
-
-      const data = await response.json();
-      setIcpResult(data.analysis);
+      
+      const result = await response.json();
+      setIcpResult(result.analysis);
+      setShowWizard(false);
       
       // Sauvegarder les données
-      localStorage.setItem('dropskills_icp_data', JSON.stringify(data.analysis));
-      localStorage.setItem('dropskills_icp_form_data', JSON.stringify(formData));
+      localStorage.setItem('dropskills_icp_maker_data', JSON.stringify(result.analysis));
+      localStorage.setItem('dropskills_icp_maker_form_data', JSON.stringify(formData));
       
     } catch (error) {
       console.error('Erreur:', error);
-      alert('Erreur lors de la génération de l\'ICP');
+      setError(error instanceof Error ? error.message : 'Une erreur est survenue');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleInputChange = (field: keyof ICPFormData, value: string | string[]) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+  const handleNewGeneration = () => {
+    setShowWizard(true);
+    setIcpResult(null);
+    setError(null);
+    localStorage.removeItem('dropskills_icp_maker_data');
+    localStorage.removeItem('dropskills_icp_maker_form_data');
   };
 
-  const handleCanalToggle = (canal: string) => {
-    const newCanaux = formData.canaux.includes(canal)
-      ? formData.canaux.filter(c => c !== canal)
-      : [...formData.canaux, canal];
-    
-    handleInputChange('canaux', newCanaux);
-  };
-
-  const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
+  const handleRegenerate = () => {
+    if (lastFormData) {
+      handleGenerate(lastFormData);
+    }
   };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
+  };
+
+  const exportToPDF = () => {
+    if (icpResult) {
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>ICP Analysis - Dropskills</title>
+              <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                h1, h2, h3 { color: #333; }
+                .section { margin-bottom: 20px; }
+                ul { margin: 10px 0; }
+                li { margin: 5px 0; }
+              </style>
+            </head>
+            <body>
+              <h1>Profil Client Idéal (ICP)</h1>
+              ${JSON.stringify(icpResult, null, 2).replace(/\n/g, '<br>').replace(/\{|\}/g, '')}
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+      }
+    }
+  };
+
+  // Données initiales pour le wizard
+  const initialData: ICPFormData = lastFormData || {
+    secteur: '',
+    produitService: '',
+    promesseUnique: '',
+    budgetCible: '',
+    canaux: [],
+    tonalite: '',
+    objectifs: '',
+    defis: '',
+    valeurs: ''
   };
 
   return (

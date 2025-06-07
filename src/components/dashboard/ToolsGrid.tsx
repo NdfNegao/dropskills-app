@@ -3,7 +3,8 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Link from 'next/link';
-import { Bot, Search, Filter, Crown, Lock, ChevronRight, Grid, List } from 'lucide-react';
+import { Bot, Search, Filter, Lock, ChevronRight, Grid, List } from 'lucide-react';
+import Crown from '@/components/ui/Crown';
 import { AiToolsGrid } from '@/components/AiToolsGrid';
 
 interface ToolsGridProps {
@@ -75,7 +76,7 @@ export default function ToolsGrid({ canAccessPremium }: ToolsGridProps) {
                 href="/premium"
                 className="bg-gradient-to-r from-[#ff0033] to-[#cc0029] text-white px-4 py-2 rounded-xl hover:from-[#cc0029] hover:to-[#990022] transition-all duration-200 flex items-center gap-2 text-sm font-semibold"
               >
-                <Crown className="w-4 h-4" />
+                <Crown size="sm" color="white" />
                 Débloquer Tout
               </Link>
             </motion.div>
@@ -229,7 +230,7 @@ export default function ToolsGrid({ canAccessPremium }: ToolsGridProps) {
                 href="/premium"
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-[#ff0033] to-[#cc0029] text-white px-8 py-4 rounded-xl font-semibold hover:from-[#cc0029] hover:to-[#990022] transition-all duration-200"
               >
-                <Crown className="w-5 h-5" />
+                <Crown size="sm" color="white" />
                 Débloquer tous les outils
                 <ChevronRight className="w-4 h-4" />
               </Link>
@@ -239,4 +240,4 @@ export default function ToolsGrid({ canAccessPremium }: ToolsGridProps) {
       )}
     </div>
   );
-} 
+}

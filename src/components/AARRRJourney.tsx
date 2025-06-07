@@ -98,6 +98,27 @@ export function AARRRJourney() {
     <div className="space-y-8">
       {/* Header - Titre géré par la page parent */}
 
+      {/* Framework Info */}
+      <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 rounded-xl p-6 border border-blue-800/30">
+        <h3 className="text-xl font-bold text-white mb-4">À propos du Framework AARRR</h3>
+        <div className="grid md:grid-cols-2 gap-6 text-gray-300">
+          <div>
+            <h4 className="font-semibold text-blue-400 mb-2">Origine</h4>
+            <p className="text-sm">
+              Créé par Dave McClure, le framework AARRR (aussi appelé "Pirate Metrics") 
+              est devenu la référence en growth marketing pour optimiser la croissance.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-semibold text-purple-400 mb-2">Avantages</h4>
+            <p className="text-sm">
+              Approche data-driven, identification des goulots d'étranglement, 
+              optimisation continue et vision globale du parcours client.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Journey Visualization */}
       <div className="relative">
         {/* Progress Line */}
@@ -199,26 +220,7 @@ export function AARRRJourney() {
         </div>
       )}
 
-      {/* Framework Info */}
-      <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 rounded-xl p-6 border border-blue-800/30">
-        <h3 className="text-xl font-bold text-white mb-4">À propos du Framework AARRR</h3>
-        <div className="grid md:grid-cols-2 gap-6 text-gray-300">
-          <div>
-            <h4 className="font-semibold text-blue-400 mb-2">Origine</h4>
-            <p className="text-sm">
-              Créé par Dave McClure, le framework AARRR (aussi appelé "Pirate Metrics") 
-              est devenu la référence en growth marketing pour optimiser la croissance.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-semibold text-purple-400 mb-2">Avantages</h4>
-            <p className="text-sm">
-              Approche data-driven, identification des goulots d'étranglement, 
-              optimisation continue et vision globale du parcours client.
-            </p>
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }

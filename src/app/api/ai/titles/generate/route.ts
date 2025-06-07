@@ -28,16 +28,38 @@ export async function POST(request: NextRequest) {
     // Parsing des titres (format JSON attendu)
     let titles: string[] = [];
     try {
-      const parsed = JSON.parse(response.content);
+      // Nettoyer le contenu avant parsing
+      let cleanContent = response.content.trim();
+      
+      // Extraire le JSON s'il y a du texte avant/après
+      const jsonMatch = cleanContent.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanContent = jsonMatch[0];
+      }
+      
+      const parsed = JSON.parse(cleanContent);
       titles = parsed.titles || [];
-    } catch {
+      
+      // Validation des titres
+      titles = titles
+        .filter(title => typeof title === 'string' && title.trim().length > 0)
+        .map(title => title.trim())
+        .slice(0, 8);
+        
+    } catch (parseError) {
+      console.warn('Erreur parsing JSON, utilisation du fallback:', parseError);
       // Fallback: split par lignes si pas JSON
       titles = response.content
         .split('\n')
         .filter(line => line.trim())
-        .map(line => line.replace(/^\d+\.\s*/, '').trim())
-        .filter(title => title.length > 0)
+        .map(line => line.replace(/^\d+\.\s*/, '').replace(/^[-*]\s*/, '').trim())
+        .filter(title => title.length > 0 && !title.includes('{') && !title.includes('}'))
         .slice(0, 8);
+    }
+    
+    // Vérification finale
+    if (titles.length === 0) {
+      titles = ['Erreur: Aucun titre généré'];
     }
 
     return NextResponse.json({
@@ -78,12 +100,18 @@ CONTRAINTES:
 STYLE ${tone.toUpperCase()}:
 ${getToneGuidelines(tone)}
 
-FORMAT DE RÉPONSE (JSON uniquement):
+IMPORTANT: Réponds UNIQUEMENT avec le JSON suivant, sans texte avant ou après:
+
 {
   "titles": [
     "🚀 Titre 1 ici",
     "💡 Titre 2 ici",
-    "..."
+    "✨ Titre 3 ici",
+    "🎯 Titre 4 ici",
+    "💪 Titre 5 ici",
+    "🔥 Titre 6 ici",
+    "⚡ Titre 7 ici",
+    "🌟 Titre 8 ici"
   ]
 }`;
 }

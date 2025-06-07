@@ -2,7 +2,8 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Lightbulb, Target, Package, Calendar, Crown, Brain, ChevronRight, CheckCircle } from 'lucide-react';
+import { Lightbulb, Target, Package, Calendar, Brain, ChevronRight, CheckCircle } from 'lucide-react';
+import Crown from '@/components/ui/Crown';
 
 interface PersonalizedSuggestionsProps {
   canAccessPremium: boolean;
@@ -128,7 +129,7 @@ export default function PersonalizedSuggestions({ canAccessPremium, stats }: Per
             animate={{ scale: [1, 1.02, 1] }}
             transition={{ duration: 3, repeat: Infinity }}
           >
-            <Crown className="w-4 h-4 text-yellow-400" />
+            <Crown size="sm" color="yellow" />
             <span className="text-yellow-400 font-semibold text-sm">Premium Actif</span>
           </motion.div>
         )}
@@ -273,4 +274,4 @@ export default function PersonalizedSuggestions({ canAccessPremium, stats }: Per
       )}
     </div>
   );
-} 
+}

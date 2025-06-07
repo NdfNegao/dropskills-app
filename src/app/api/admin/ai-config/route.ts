@@ -91,15 +91,30 @@ export async function POST(req: NextRequest) {
 // PUT: Réinitialiser la configuration par défaut
 export async function PUT() {
   try {
-    // Configuration par défaut optimisée
+    // Configuration par défaut optimisée avec tous les outils
     const defaultMapping = {
-      'titles': 'deepseek',
-      'descriptions': 'deepseek', 
-      'emails': 'deepseek',
-      'veille': 'deepseek',
-      'content': 'openai', // Garde OpenAI pour le contenu long
-      'usp': 'deepseek',
-      'icp': 'deepseek'
+      // Anciens noms pour compatibilité
+      'titles': 'deepseek-v3',
+      'descriptions': 'deepseek-v3', 
+      'emails': 'deepseek-v3',
+      'veille': 'deepseek-v3',
+      'content': 'claude-3.5-sonnet',
+      'usp': 'deepseek-v3',
+      'icp': 'deepseek-v3',
+      // Nouveaux noms standardisés
+      'icp-maker': 'deepseek-v3',
+      'offer-generator': 'grok-3',
+      'title-generator': 'deepseek-v3',
+      'description-generator': 'deepseek-v3',
+      'content-system': 'claude-3.5-sonnet',
+      'email-sequence': 'deepseek-v3',
+      'lead-magnet': 'deepseek-v3',
+      'veille-strategique': 'deepseek-v3',
+      'agent-veille': 'deepseek-v3',
+      'tunnel-maker': 'deepseek-v3',
+      'usp-maker': 'deepseek-v3',
+      'calculateur': 'deepseek-v3',
+      'pdf-rebrander': 'deepseek-v3'
     };
     
     // Mise à jour du mapping

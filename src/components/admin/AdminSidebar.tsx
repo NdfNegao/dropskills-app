@@ -8,7 +8,7 @@ import {
   Home, Users, Settings, LogOut, ChevronLeft, ChevronRight, 
   BarChart3, FileText, MessageSquare, Shield, Database,
   Zap, Crown, HelpCircle, TrendingUp, Wrench, UserCheck,
-  Package, MessageCircle, HeadphonesIcon
+  Package, MessageCircle, HeadphonesIcon, Brain
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -42,6 +42,7 @@ export default function AdminSidebar({
     { icon: <FileText />, label: "Produits", href: "/admin/produits", tooltip: "Gestion des produits" },
     { icon: <Package />, label: "Packs", href: "/admin/packs", tooltip: "Gestion des packs" },
     { icon: <Zap />, label: "Outils IA", href: "/admin/outils", tooltip: "Gestion des outils IA" },
+    { icon: <Brain />, label: "Config Providers", href: "/admin/ai-config", tooltip: "Configuration des providers IA" },
     { icon: <MessageSquare />, label: "Prompts", href: "/admin/prompts", tooltip: "Gestion des prompts" },
     { icon: <UserCheck />, label: "Affiliés", href: "/admin/affiliates", tooltip: "Gestion des affiliés" },
     { icon: <MessageCircle />, label: "Demandes produits", href: "/admin/product-requests", tooltip: "Demandes de produits" },

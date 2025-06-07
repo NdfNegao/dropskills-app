@@ -1,5 +1,6 @@
 import React from "react";
-import { Search, Filter, Grid3X3, List, Crown } from "lucide-react";
+import { Search, Filter, Grid3X3, List } from "lucide-react";
+import Crown from '@/components/ui/Crown';
 
 interface ProductFiltersProps {
   search: string;
@@ -117,7 +118,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
             className="w-4 h-4 text-[#ff0033] bg-transparent border-gray-300 rounded focus:ring-[#ff0033]"
           />
           <span className="flex items-center gap-1">
-            <Crown className="w-4 h-4 text-yellow-400 flex-shrink-0" />
+            <Crown size="sm" color="yellow" />
             <span className="text-foreground text-sm">{labels.premiumOnly || "Premium uniquement"}</span>
           </span>
         </label>
@@ -126,4 +127,4 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
   );
 };
 
-export default ProductFilters; 
+export default ProductFilters;
