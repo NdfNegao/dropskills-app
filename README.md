@@ -1,7 +1,7 @@
 # DropSkills App
 
 ## 🎯 Status Projet
-- **Projet IA Veille Premium** mis en **STANDBY** (voir `PROJET_IA_VEILLE_STANDBY.md`)
+- **Projet IA Veille Premium** mis en **STANDBY**
 - Raison : Trop avancé pour l'équipe actuelle
 - Pages supprimées : `/ai-veille`, `/veille/[jobId]`, `/demo-results`
 - Focus actuel : Projets plus simples
