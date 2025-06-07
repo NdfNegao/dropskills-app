@@ -429,7 +429,6 @@ export default function AIDashboardPage() {
             </div>
           </div>
         </div>
-      </div>
       )}
     </AdminLayoutWithSidebar>
   );
