@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import AdminPageLayout from '@/components/admin/AdminPageLayout';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
 import { 
   Brain, 
   Plus, 
@@ -14,7 +16,8 @@ import {
   CheckCircle,
   AlertTriangle,
   TrendingUp,
-  Users
+  Users,
+  Loader2
 } from 'lucide-react';
 
 interface AITool {
@@ -40,24 +43,73 @@ interface PerformanceMetrics {
 }
 
 export default function AIDashboardPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [tools, setTools] = useState<AITool[]>([]);
   const [metrics, setMetrics] = useState<PerformanceMetrics | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedTool, setSelectedTool] = useState<AITool | null>(null);
-  const [showAddModal, setShowAddModal] = useState(false);
   const [timeRange, setTimeRange] = useState('7d');
 
+  // Vérification des permissions
   useEffect(() => {
+    if (status === 'loading') return;
+    
+    if (!session?.user?.email) {
+      router.push('/');
+      return;
+    }
+    
+    if (session.user.email !== 'cyril.iriebi@gmail.com') {
+      router.push('/dashboard');
+      return;
+    }
+
     loadDashboardData();
+  }, [session, status, router, timeRange]);
+
+  useEffect(() => {
+    if (session?.user?.email === 'cyril.iriebi@gmail.com') {
+      loadDashboardData();
+    }
   }, [timeRange]);
 
   const loadDashboardData = async () => {
     try {
-      const response = await fetch(`/api/admin/ai-metrics?timeRange=${timeRange}`);
-      if (response.ok) {
-        const result = await response.json();
-        setTools(result.data.tools);
-        setMetrics(result.data.metrics);
+      // Charger les métriques analytics
+      const analyticsResponse = await fetch(`/api/admin/analytics?period=${timeRange}`);
+      const toolsResponse = await fetch('/api/admin/ai-tools');
+      
+      if (analyticsResponse.ok && toolsResponse.ok) {
+        const analyticsResult = await analyticsResponse.json();
+        const toolsResult = await toolsResponse.json();
+        
+        // Transformer les données analytics en métriques
+        const analytics = analyticsResult.data;
+        setMetrics({
+          totalRequests: analytics.totalRequests || 0,
+          totalCost: analytics.totalCost || 0,
+          avgResponseTime: analytics.avgResponseTime || 0,
+          successRate: analytics.successRate || 0,
+          topPerformingTool: analytics.topTool || 'N/A',
+          costSavings: analytics.costSavings || 0
+        });
+        
+        // Transformer les outils pour correspondre à l'interface
+        const transformedTools = toolsResult.data.map((tool: any) => ({
+          id: tool.id,
+          name: tool.name,
+          type: tool.type || 'AI Tool',
+          status: tool.is_active ? 'active' : 'paused',
+          provider: tool.provider || 'Unknown',
+          usageCount: tool.usage_count || 0,
+          avgResponseTime: tool.avg_response_time || 0,
+          avgCost: tool.avg_cost || 0,
+          successRate: tool.success_rate || 0,
+          lastUsed: tool.last_used || new Date().toISOString()
+        }));
+        
+        setTools(transformedTools);
       } else {
         console.error('Erreur chargement métriques IA');
       }
@@ -95,93 +147,76 @@ export default function AIDashboardPage() {
     minute: '2-digit'
   });
 
+  // Stats pour le header
+  const statsData = metrics ? [
+    {
+      title: "Requêtes Totales",
+      value: metrics.totalRequests.toLocaleString(),
+      icon: <BarChart3 className="w-5 h-5" />
+    },
+    {
+      title: "Coût Total",
+      value: formatCurrency(metrics.totalCost),
+      icon: <DollarSign className="w-5 h-5" />
+    },
+    {
+      title: "Temps Réponse",
+      value: formatTime(metrics.avgResponseTime),
+      icon: <Zap className="w-5 h-5" />
+    },
+    {
+      title: "Taux de Succès",
+      value: `${metrics.successRate.toFixed(1)}%`,
+      icon: <CheckCircle className="w-5 h-5" />
+    }
+  ] : [];
+
+  // Actions du header
+  const actions = [
+    {
+      label: "Gérer Outils",
+      onClick: () => router.push('/admin/outils-ia'),
+      icon: <Plus className="w-4 h-4" />
+    },
+    {
+      label: "Prompts",
+      onClick: () => router.push('/admin/prompts'),
+      icon: <Edit className="w-4 h-4" />
+    },
+    {
+      label: "Configuration",
+      onClick: () => router.push('/admin/config-providers'),
+      icon: <Settings className="w-4 h-4" />
+    }
+  ];
+
   if (loading) {
     return (
-      <AdminPageLayout
-        icon={<Brain size={24} />}
+      <AdminLayoutWithSidebar
+        icon={<Brain className="w-5 h-5" />}
         title="Dashboard IA"
         subtitle="Chargement des métriques..."
+        stats={[]}
       >
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+          <span className="ml-3 text-gray-600">Chargement des données...</span>
         </div>
-      </AdminPageLayout>
+      </AdminLayoutWithSidebar>
     );
   }
 
   return (
-    <AdminPageLayout
-      icon={<Brain size={24} />}
+    <AdminLayoutWithSidebar
+      icon={<Brain className="w-5 h-5" />}
       title="Dashboard IA"
       subtitle="Gestion et monitoring des outils d'intelligence artificielle"
+      stats={statsData}
+      actions={actions}
     >
       <div className="space-y-6">
         
-        {/* Métriques Globales */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-lg p-6 shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Requêtes Totales</p>
-                <p className="text-2xl font-bold text-gray-900">{metrics?.totalRequests.toLocaleString()}</p>
-              </div>
-              <div className="p-3 bg-blue-100 rounded-full">
-                <BarChart3 className="w-6 h-6 text-blue-600" />
-              </div>
-            </div>
-            <div className="mt-4 flex items-center text-sm">
-              <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
-              <span className="text-green-600">+12% cette semaine</span>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg p-6 shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Coût Total</p>
-                <p className="text-2xl font-bold text-gray-900">{formatCurrency(metrics?.totalCost || 0)}</p>
-              </div>
-              <div className="p-3 bg-green-100 rounded-full">
-                <DollarSign className="w-6 h-6 text-green-600" />
-              </div>
-            </div>
-            <div className="mt-4 flex items-center text-sm">
-              <span className="text-green-600">Économie: {formatCurrency(metrics?.costSavings || 0)}</span>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg p-6 shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Temps Réponse Moyen</p>
-                <p className="text-2xl font-bold text-gray-900">{formatTime(metrics?.avgResponseTime || 0)}</p>
-              </div>
-              <div className="p-3 bg-purple-100 rounded-full">
-                <Zap className="w-6 h-6 text-purple-600" />
-              </div>
-            </div>
-            <div className="mt-4 flex items-center text-sm">
-              <span className="text-purple-600">-0.3s vs. semaine dernière</span>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg p-6 shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Taux de Succès</p>
-                <p className="text-2xl font-bold text-gray-900">{metrics?.successRate.toFixed(1)}%</p>
-              </div>
-              <div className="p-3 bg-green-100 rounded-full">
-                <CheckCircle className="w-6 h-6 text-green-600" />
-              </div>
-            </div>
-            <div className="mt-4 flex items-center text-sm">
-              <span className="text-green-600">Excellent performance</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Filtres et Actions */}
+        {/* Filtres */}
         <div className="bg-white rounded-lg p-6 shadow-sm border">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
@@ -189,29 +224,12 @@ export default function AIDashboardPage() {
               <select 
                 value={timeRange}
                 onChange={(e) => setTimeRange(e.target.value)}
-                className="border rounded-lg px-3 py-1 text-sm"
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               >
                 <option value="24h">24 dernières heures</option>
                 <option value="7d">7 derniers jours</option>
                 <option value="30d">30 derniers jours</option>
               </select>
-            </div>
-            
-            <div className="flex gap-3">
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
-              >
-                <Plus className="w-4 h-4" />
-                Ajouter Outil
-              </button>
-              <button
-                onClick={() => window.location.href = '/admin/ai-config'}
-                className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 flex items-center gap-2"
-              >
-                <Settings className="w-4 h-4" />
-                Configuration
-              </button>
             </div>
           </div>
         </div>
@@ -274,14 +292,14 @@ export default function AIDashboardPage() {
                           <BarChart3 className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => {/* TODO: Edit modal */}}
+                          onClick={() => window.location.href = `/admin/outils-ia/${tool.id}`}
                           className="text-gray-600 hover:text-gray-800"
                           title="Modifier"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => {/* TODO: Settings */}}
+                          onClick={() => window.location.href = `/admin/outils-ia/${tool.id}/config`}
                           className="text-gray-600 hover:text-gray-800"
                           title="Configuration"
                         >
@@ -400,7 +418,10 @@ export default function AIDashboardPage() {
                 Fermer
               </button>
               <button
-                onClick={() => {/* TODO: Navigate to config */}}
+                onClick={() => {
+                  setSelectedTool(null);
+                  window.location.href = `/admin/outils-ia/${selectedTool.id}/config`;
+                }}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               >
                 Configurer
@@ -408,8 +429,8 @@ export default function AIDashboardPage() {
             </div>
           </div>
         </div>
+      </div>
       )}
-
-    </AdminPageLayout>
+    </AdminLayoutWithSidebar>
   );
-} 
+}

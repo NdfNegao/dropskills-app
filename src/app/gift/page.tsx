@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { Gift, Users, Share2, Copy, Check, Mail, Zap } from "lucide-react";
+import LayoutWithSidebar from "@/components/LayoutWithSidebar";
 
-export default function GiftPage() {
+function GiftPageContent() {
   const [referralLink] = useState("https://dropskills.com/ref/USER123");
   const [isCopied, setIsCopied] = useState(false);
   const [emails, setEmails] = useState("");
@@ -217,4 +218,12 @@ export default function GiftPage() {
       </div>
     </div>
   );
-} 
+}
+
+export default function GiftPage() {
+  return (
+    <LayoutWithSidebar>
+      <GiftPageContent />
+    </LayoutWithSidebar>
+  );
+}

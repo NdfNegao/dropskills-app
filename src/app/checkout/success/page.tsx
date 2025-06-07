@@ -147,7 +147,7 @@ function CheckoutSuccessContent() {
           Besoin d'aide ? Notre équipe est là pour vous accompagner.
         </p>
         <a 
-          href="mailto:support@dropskills.com" 
+          href="mailto:contact@dropskills.fr" 
           className="text-[#ff0033] hover:underline font-medium"
         >
           Contacter le support premium

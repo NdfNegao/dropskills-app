@@ -1,11 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { AI_PROVIDERS, TOOL_PROVIDER_MAPPING } from '@/lib/ai-providers';
+import { supabaseAdmin } from '@/lib/supabase';
 import fs from 'fs';
 import path from 'path';
 
+export const dynamic = 'force-dynamic';
+
 // GET: Récupérer la configuration actuelle
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.isAdmin) {
+      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+    }
     return NextResponse.json({
       providers: Object.entries(AI_PROVIDERS).map(([key, provider]) => ({
         key,
@@ -36,6 +45,11 @@ export async function GET() {
 // POST: Mettre à jour le mapping des outils
 export async function POST(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.isAdmin) {
+      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+    }
+
     const { toolId, providerId } = await req.json();
     
     // Validation

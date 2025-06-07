@@ -37,8 +37,8 @@ export default function AdminSettingsPage() {
       setSettings({
         siteName: 'DropSkills',
         siteDescription: 'Plateforme de formations et outils IA pour entrepreneurs',
-        contactEmail: 'contact@dropskills.com',
-        supportEmail: 'support@dropskills.com',
+        contactEmail: 'contact@dropskills.fr',
+        supportEmail: 'contact@dropskills.fr',
         maintenanceMode: false,
         registrationEnabled: true,
         emailNotifications: true,

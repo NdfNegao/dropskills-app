@@ -630,7 +630,7 @@ function BillingTab({ user }: { user: any }) {
               En tant qu'utilisateur Premium, vous bénéficiez d'un support prioritaire.
             </p>
             <button 
-              onClick={() => window.open('mailto:support@dropskills.fr?subject=Support Premium', '_blank')}
+              onClick={() => window.open('mailto:contact@dropskills.fr?subject=Support Premium', '_blank')}
               className="bg-[#ff0033] hover:bg-[#cc0029] text-white px-4 py-2 rounded-lg font-medium transition-colors"
             >
               Contacter le Support

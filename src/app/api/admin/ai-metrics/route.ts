@@ -1,10 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { supabaseAdmin } from '@/lib/supabase';
 
+export const dynamic = 'force-dynamic';
+
+// GET /api/admin/ai-metrics - Récupérer les métriques IA
 export async function GET(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.isAdmin) {
+      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+    }
+
     const { searchParams } = new URL(request.url);
-    const timeRange = searchParams.get('timeRange') || '7d';
+    const timeRange = searchParams.get('timeRange') || '24h';
+    const toolId = searchParams.get('toolId');
+    const model = searchParams.get('model');
     
     // Calculer la date de début selon la période
     const now = new Date();
@@ -24,12 +36,22 @@ export async function GET(request: NextRequest) {
         startDate.setDate(now.getDate() - 7);
     }
 
-    // Récupérer les logs d'utilisation IA (à créer)
-    const { data: aiLogs, error: logsError } = await supabase
+    // Construire la requête de base
+    let query = supabaseAdmin
       .from('ai_usage_logs')
       .select('*')
       .gte('created_at', startDate.toISOString())
       .order('created_at', { ascending: false });
+
+    // Appliquer les filtres
+    if (toolId) {
+      query = query.eq('tool_id', toolId);
+    }
+    if (model) {
+      query = query.eq('model', model);
+    }
+
+    const { data: aiLogs, error: logsError } = await query;
 
     if (logsError) {
       console.warn('Table ai_usage_logs non trouvée, utilisation de données mock');
@@ -216,4 +238,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-} 
+}

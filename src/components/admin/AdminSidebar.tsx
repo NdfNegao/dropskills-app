@@ -8,7 +8,7 @@ import {
   Home, Users, Settings, LogOut, ChevronLeft, ChevronRight, 
   BarChart3, FileText, MessageSquare, Shield, Database,
   Zap, Crown, HelpCircle, TrendingUp, Wrench, UserCheck,
-  Package, MessageCircle, HeadphonesIcon, Brain
+  Package, MessageCircle, HeadphonesIcon, Brain, Gift
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -42,9 +42,11 @@ export default function AdminSidebar({
     { icon: <FileText />, label: "Produits", href: "/admin/produits", tooltip: "Gestion des produits" },
     { icon: <Package />, label: "Packs", href: "/admin/packs", tooltip: "Gestion des packs" },
     { icon: <Zap />, label: "Outils IA", href: "/admin/outils", tooltip: "Gestion des outils IA" },
+    { icon: <Brain />, label: "Dashboard IA", href: "/admin/ai-dashboard", tooltip: "Dashboard des outils IA" },
     { icon: <Brain />, label: "Config Providers", href: "/admin/ai-config", tooltip: "Configuration des providers IA" },
     { icon: <MessageSquare />, label: "Prompts", href: "/admin/prompts", tooltip: "Gestion des prompts" },
     { icon: <UserCheck />, label: "Affiliés", href: "/admin/affiliates", tooltip: "Gestion des affiliés" },
+    { icon: <Gift />, label: "Parrainage", href: "/admin/sponsorship", tooltip: "Gestion du parrainage" },
     { icon: <MessageCircle />, label: "Demandes produits", href: "/admin/product-requests", tooltip: "Demandes de produits" },
     { icon: <HeadphonesIcon />, label: "Support", href: "/admin/support", tooltip: "Support client" },
     { icon: <Database />, label: "Base de données", href: "/admin/database", tooltip: "Gestion de la base de données" }

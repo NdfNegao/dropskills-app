@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { signOut } from 'next-auth/react';
 import { useAuth } from "@/hooks/useAuth";
 import {
-  Home, Lock, GraduationCap, FolderOpen, Settings, LogOut, ChevronLeft, ChevronRight, Users, HelpCircle, User, MessageSquarePlus, Heart, Shield
+  Home, Lock, GraduationCap, FolderOpen, Settings, LogOut, ChevronLeft, ChevronRight, Users, HelpCircle, User, MessageSquarePlus, Heart, Shield, Gift, BarChart3
 } from "lucide-react";
 import Crown from '@/components/ui/Crown';
 import DollarConfetti from './DollarConfetti';
@@ -49,6 +49,7 @@ export default function DropskillsSidebar({
   const accountNavigation = [
     { icon: <User />, label: "Mon Compte", href: "/compte", tooltip: "Profil et paramètres" },
     { icon: <Users />, label: "Affiliation", href: "/affiliate", tooltip: "Gagnez de l'argent en recommandant DropSkills" },
+    { icon: <Gift />, label: "Parrainage", href: "/gift", tooltip: "Programme de parrainage" },
     { icon: <HelpCircle />, label: "Support", href: "/support", tooltip: "Aide et support" }
   ];
 

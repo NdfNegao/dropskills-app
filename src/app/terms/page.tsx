@@ -74,8 +74,8 @@ export default function TermsPage() {
           <h2 className="text-xl font-bold text-white mb-4">9. Contact</h2>
           <p className="text-neutral-300">
             Pour toute question concernant ces conditions d'utilisation, contactez-nous à : 
-            <a href="mailto:support@dropskills.com" className="text-[#ff0033] hover:underline ml-1">
-              support@dropskills.com
+            <a href="mailto:contact@dropskills.fr" className="text-[#ff0033] hover:underline ml-1">
+            contact@dropskills.fr
             </a>
           </p>
         </div>

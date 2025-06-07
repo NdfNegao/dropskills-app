@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { supabaseAdmin } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,6 +24,146 @@ interface PromptData {
   lastModified: string;
   version: number;
   createdBy: string;
+  systemPrompt?: string;
+  tags?: string[];
+  usageCount?: number;
+  lastUsed?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  stats?: {
+    totalUsage: number;
+    successRate: number;
+    avgResponseTime: number;
+  };
+  versions?: any[];
+}
+
+// Fonction pour obtenir des prompts de démonstration
+async function getMockPrompts(): Promise<PromptData[]> {
+  return [
+    {
+      id: '1',
+      name: 'ICP Maker - Système',
+      description: 'Prompt principal pour la génération de profils clients idéaux',
+      category: 'Stratégie',
+      type: 'complex',
+      content: `Tu es un expert en stratégie marketing, persona et IA.
+À partir des informations suivantes, dresse le portrait ultra-précis du client idéal (ICP) pour ce business.
+
+Tu dois répondre UNIQUEMENT avec un JSON valide suivant EXACTEMENT cette structure :
+
+{
+  "profilSociodemographique": {
+    "age": "Tranche d'âge précise",
+    "sexe": "Répartition hommes/femmes",
+    "localisation": "Zone géographique détaillée",
+    "situationPro": "Statut professionnel",
+    "niveauRevenus": "Revenus mensuels/annuels"
+  },
+  "psychologieMotivations": {
+    "besoins": ["Besoin 1", "Besoin 2", "Besoin 3"],
+    "desirs": ["Désir 1", "Désir 2", "Désir 3"],
+    "peurs": ["Peur 1", "Peur 2", "Peur 3"],
+    "objections": ["Objection 1", "Objection 2", "Objection 3"]
+  },
+  "problemePrincipaux": ["Problème 1", "Problème 2", "Problème 3"],
+  "ouLeTrouver": {
+    "canaux": ["Canal 1", "Canal 2", "Canal 3"],
+    "plateformes": ["Plateforme 1", "Plateforme 2"],
+    "groupes": ["Groupe 1", "Groupe 2"],
+    "evenements": ["Événement 1", "Événement 2"]
+  },
+  "messagingImpactant": {
+    "expressions": ["Expression 1", "Expression 2", "Expression 3"],
+    "accroches": ["Accroche 1", "Accroche 2", "Accroche 3"],
+    "styleDiscours": "Description du style de communication"
+  },
+  "budgetPouvoirAchat": {
+    "budgetTypique": "Montant précis",
+    "frequenceAchat": "Fréquence d'achat",
+    "facteursPrix": ["Facteur 1", "Facteur 2", "Facteur 3"]
+  },
+  "segments": {
+    "principal": {
+      "nom": "Nom du segment principal",
+      "description": "Description détaillée",
+      "pourcentage": "70%"
+    },
+    "variantes": [
+      {
+        "nom": "Segment secondaire 1",
+        "description": "Description",
+        "pourcentage": "20%"
+      },
+      {
+        "nom": "Segment secondaire 2", 
+        "description": "Description",
+        "pourcentage": "10%"
+      }
+    ]
+  },
+  "ficheActionable": {
+    "resumeExecutif": "Synthèse en 2-3 phrases de l'ICP",
+    "prioritesMarketing": ["Priorité 1", "Priorité 2", "Priorité 3"],
+    "prochainEtapes": ["Étape 1", "Étape 2", "Étape 3"],
+    "metriquesACles": ["Métrique 1", "Métrique 2", "Métrique 3"]
+  }
+}
+
+Sois concis, opérationnel, sans bullshit, et mets-toi à la place d'un marketer qui doit vendre demain matin.`,
+      tool: 'icp-maker',
+      isActive: true,
+      parameters: JSON.stringify({
+        temperature: 0.7,
+        max_tokens: 2000,
+        model: 'gpt-4o-mini'
+      }),
+      performance: { usage: 156, successRate: 94, avgResponseTime: 3.2 },
+      lastModified: '2024-01-15',
+      version: 3,
+      createdBy: 'admin'
+    },
+    {
+      id: '2',
+      name: 'Générateur Titres - Accrocheur',
+      description: 'Prompt pour générer des titres accrocheurs et impactants',
+      category: 'Contenu',
+      type: 'user',
+      content: `Génère 8 titres accrocheurs et impactants pour {type} sur le sujet "{subject}"{audience}.
+
+CONTRAINTES:
+- Titres en français
+- Maximum 80 caractères par titre
+- Utilise des émojis pertinents
+- Varie les structures (questions, affirmations, listes)
+- Optimisés pour le clic et l'engagement
+
+STYLE ACCROCHEUR:
+- Utilise des mots puissants (révolutionnaire, secret, incroyable)
+- Crée de la curiosité
+- Promets un bénéfice clair
+
+FORMAT DE RÉPONSE (JSON uniquement):
+{
+  "titles": [
+    "🚀 Titre 1 ici",
+    "💡 Titre 2 ici",
+    "..."
+  ]
+}`,
+      tool: 'titles',
+      isActive: true,
+      parameters: JSON.stringify({
+        temperature: 0.8,
+        max_tokens: 800,
+        model: 'gpt-3.5-turbo'
+      }),
+      performance: { usage: 89, successRate: 91, avgResponseTime: 2.1 },
+      lastModified: '2024-01-12',
+      version: 2,
+      createdBy: 'admin'
+    }
+  ];
 }
 
 // Données de démonstration (à remplacer par une vraie base de données)
