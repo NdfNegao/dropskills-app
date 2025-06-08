@@ -90,7 +90,7 @@ function USPMakerContent() {
       const savedFormData = localStorage.getItem('dropskills_usp_form_data');
       if (savedFormData) {
         const formData = JSON.parse(savedFormData);
-        await handleWizardComplete(formData);
+        await handleUSPComplete(formData);
       }
     } catch (error) {
       console.error('Erreur lors de la reformulation:', error);
