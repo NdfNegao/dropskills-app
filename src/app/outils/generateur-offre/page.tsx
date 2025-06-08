@@ -15,7 +15,6 @@ import {
   CheckCircle,
   Copy,
   RefreshCw,
-  HelpCircle,
   Lightbulb,
   TrendingUp
 } from 'lucide-react';
@@ -104,7 +103,13 @@ const TONE_OPTIONS = [
 ];
 
 // Composants des étapes
-function BusinessTypeStep({ data, onChange, errors }: any) {
+interface StepProps {
+  data: OfferFormData;
+  onChange: (updates: Partial<OfferFormData>) => void;
+  errors: Record<string, string>;
+}
+
+function BusinessTypeStep({ data, onChange, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -156,7 +161,7 @@ function BusinessTypeStep({ data, onChange, errors }: any) {
   );
 }
 
-function AudienceStep({ data, onChange, errors }: any) {
+function AudienceStep({ data, onChange, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -195,7 +200,7 @@ function AudienceStep({ data, onChange, errors }: any) {
   );
 }
 
-function ProductStep({ data, onChange, errors }: any) {
+function ProductStep({ data, onChange, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -250,7 +255,7 @@ function ProductStep({ data, onChange, errors }: any) {
   );
 }
 
-function PricingStep({ data, onChange, errors }: any) {
+function PricingStep({ data, onChange, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -332,7 +337,7 @@ function PricingStep({ data, onChange, errors }: any) {
   );
 }
 
-function ToneStep({ data, onChange, errors }: any) {
+function ToneStep({ data, onChange, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -394,7 +399,12 @@ function ToneStep({ data, onChange, errors }: any) {
   );
 }
 
-function SummaryStep({ data, onGenerate }: any) {
+interface SummaryStepProps {
+  data: OfferFormData;
+  onGenerate: () => void;
+}
+
+function SummaryStep({ data, onGenerate }: SummaryStepProps) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -751,7 +761,6 @@ function OfferGeneratorContent() {
 
   const handleRegenerate = () => {
     // Logique pour régénérer avec les mêmes données
-    console.log('Régénération...');
   };
 
   const handleReset = () => {
@@ -814,10 +823,9 @@ function OfferGeneratorContent() {
                   exit={{ opacity: 0, y: -20 }}
                   className="bg-[#111111] rounded-xl border border-[#232323] p-6"
                 >
-                  <AILoadingLogs 
+                  <AILoadingLogs
                     isVisible={true}
                     toolName="Générateur d'Offre IA"
-                    onComplete={() => console.log('Génération terminée')}
                   />
                 </motion.div>
               ) : results ? (
