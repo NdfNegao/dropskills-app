@@ -253,16 +253,28 @@ export default function SponsorshipPage() {
     }
   ];
 
-  const actions = [
+  interface ActionData {
+    label: string;
+    onClick: () => void;
+    variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+    icon?: React.ReactNode;
+    loading?: boolean;
+  }
+
+  const actions: ActionData[] = [
     {
       label: "Exporter données",
-      href: "#export",
-      variant: "primary" as const
+      variant: "default",
+      onClick: () => {
+        window.location.href = "#export";
+      }
     },
     {
       label: "Envoyer rappels",
-      href: "#remind",
-      variant: "secondary" as const
+      variant: "secondary",
+      onClick: () => {
+        window.location.href = "#remind";
+      }
     }
   ];
 
@@ -272,15 +284,7 @@ export default function SponsorshipPage() {
       title="Gestion du parrainage"
       subtitle="Administration du programme de parrainage"
       stats={statsData}
-      actions={actions.map(action => ({
-        ...action,
-        href: action.href,
-        variant: action.variant === 'primary' ? 'default' : action.variant,
-        ...action,
-        variant: action.variant as "default" | "destructive" | "outline" | "secondary" | "ghost" | "link",
-        ...action,
-        onClick: () => window.location.href = action.href
-      }))}
+      actions={actions}
     >
       <SponsorshipManagement />
     </AdminLayoutWithSidebar>
