@@ -1,4 +1,3 @@
-// AI Providers System - Version Optimisée 2024
 export interface AIProvider {
   name: string;
   apiKey: string;
@@ -13,8 +12,8 @@ export interface AIProvider {
   maxTokens: number;
   isAvailable: () => boolean;
   checkAvailability: () => Promise<boolean>;
-  generateText: (_prompt: string, _options?: unknown) => Promise<string>;
-  getCost: (_inputTokens: number, _outputTokens: number) => number;
+  generateText: (prompt: string, options?: unknown) => Promise<string>;
+  getCost: (inputTokens: number, outputTokens: number) => number;
 }
 
 // Définir un type explicite pour les options d'IA

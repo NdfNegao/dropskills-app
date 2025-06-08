@@ -3,26 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
-import AILoadingLogs from '@/components/AILoadingLogs';
-import { 
-  Sparkles, 
-  Target, 
-  Download, 
-  FileText, 
-  Users, 
-  TrendingUp, 
-  Copy,
-  RefreshCw,
-  CheckCircle,
-  Lightbulb,
-  Gift,
-  Zap,
-  Video,
-  CheckSquare,
-  BookOpen,
-  Image
-} from 'lucide-react';
+import { Gift, Users, TrendingUp, Lightbulb, FileText, CheckCircle, Copy, Download, RefreshCw, Sparkles, Zap, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import AILoadingLogs from '@/components/AILoadingLogs';
 
 interface LeadMagnetData {
   business: string;
@@ -33,6 +16,15 @@ interface LeadMagnetData {
   tone: string;
 }
 
+interface LeadMagnetResult {
+  title: string;
+  subtitle: string;
+  outline: string[];
+  cta: string;
+  landingPageCopy: string;
+  emailSequence: string[];
+}
+
 function LeadMagnetContent() {
   const [formData, setFormData] = useState<LeadMagnetData>({
     business: '',
@@ -40,39 +32,39 @@ function LeadMagnetContent() {
     problem: '',
     solution: '',
     format: 'ebook',
-    tone: 'professionnel'
+    tone: 'professionnel',
   });
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [showLogs, setShowLogs] = useState(false);
-  const [results, setResults] = useState<any>(null);
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [showLogs, setShowLogs] = useState<boolean>(false);
+  const [results, setResults] = useState<LeadMagnetResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const formats = [
     { id: 'ebook', label: 'E-book', icon: <FileText className="w-4 h-4" /> },
     { id: 'checklist', label: 'Checklist', icon: <CheckCircle className="w-4 h-4" /> },
     { id: 'template', label: 'Template', icon: <Copy className="w-4 h-4" /> },
     { id: 'guide', label: 'Guide PDF', icon: <Download className="w-4 h-4" /> },
-    { id: 'webinar', label: 'Webinaire', icon: <Users className="w-4 h-4" /> }
+    { id: 'webinar', label: 'Webinaire', icon: <Users className="w-4 h-4" /> },
   ];
 
   const tones = [
     { id: 'professionnel', label: 'Professionnel' },
     { id: 'amical', label: 'Amical' },
     { id: 'expert', label: 'Expert' },
-    { id: 'accessible', label: 'Accessible' }
+    { id: 'accessible', label: 'Accessible' },
   ];
 
   const handleGenerate = async () => {
     if (!formData.business || !formData.audience || !formData.problem) {
-      alert('Veuillez remplir tous les champs obligatoires');
+      setError('Veuillez remplir tous les champs obligatoires');
       return;
     }
-
+    setError(null);
     setIsGenerating(true);
     setShowLogs(true);
-    
-    // Simulation de génération IA
+    // Simulation de génération IA (à remplacer par appel API réel)
     setTimeout(() => {
-      const mockResults = {
+      const mockResults: LeadMagnetResult = {
         title: `Guide Complet: Comment ${formData.solution} pour ${formData.audience}`,
         subtitle: `Résolvez ${formData.problem} en 7 étapes simples`,
         outline: [
@@ -80,8 +72,8 @@ function LeadMagnetContent() {
           'Les 3 erreurs les plus communes',
           'La méthode en 7 étapes',
           'Outils et ressources recommandés',
-          'Plan d\'action immédiat',
-          'Bonus: Templates prêts à utiliser'
+          "Plan d'action immédiat",
+          'Bonus: Templates prêts à utiliser',
         ],
         cta: `Téléchargez votre ${formats.find(f => f.id === formData.format)?.label} gratuit`,
         landingPageCopy: `Découvrez comment ${formData.solution.toLowerCase()} grâce à notre ${formats.find(f => f.id === formData.format)?.label.toLowerCase()} exclusif.`,
@@ -89,13 +81,12 @@ function LeadMagnetContent() {
           'Email 1: Bienvenue + Livraison du lead magnet',
           'Email 2: Cas d\'étude concret',
           'Email 3: Erreurs à éviter absolument',
-          'Email 4: Offre spéciale (si applicable)'
-        ]
+          'Email 4: Offre spéciale (si applicable)',
+        ],
       };
-      
       setResults(mockResults);
       setIsGenerating(false);
-    }, 3000);
+    }, 2000);
   };
 
   // Masquer les logs après la génération
@@ -117,8 +108,6 @@ function LeadMagnetContent() {
     <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-
-
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
@@ -150,12 +139,10 @@ function LeadMagnetContent() {
           </div>
         </div>
       </div>
-
       {/* Conseils */}
       <div className="mb-8 bg-emerald-900/20 border border-emerald-500/30 rounded-xl p-6">
         <h3 className="text-emerald-400 font-semibold mb-4 flex items-center gap-2">
-          <Lightbulb className="w-5 h-5" />
-          💡 Conseils pour un lead magnet efficace
+          <Lightbulb className="w-5 h-5" /> 💡 Conseils pour un lead magnet efficace
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-emerald-300 text-sm">
           <div>
@@ -178,7 +165,6 @@ function LeadMagnetContent() {
           </div>
         </div>
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Formulaire */}
         <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
@@ -186,7 +172,6 @@ function LeadMagnetContent() {
             <Lightbulb className="w-5 h-5 text-yellow-400" />
             Informations sur votre lead magnet
           </h2>
-
           <div className="space-y-6">
             <div>
               <label className="block text-white font-medium mb-2">
@@ -200,7 +185,6 @@ function LeadMagnetContent() {
                 className="w-full p-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
               />
             </div>
-
             <div>
               <label className="block text-white font-medium mb-2">
                 Votre audience cible *
@@ -213,7 +197,6 @@ function LeadMagnetContent() {
                 className="w-full p-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
               />
             </div>
-
             <div>
               <label className="block text-white font-medium mb-2">
                 Problème principal à résoudre *
@@ -226,7 +209,6 @@ function LeadMagnetContent() {
                 className="w-full p-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
               />
             </div>
-
             <div>
               <label className="block text-white font-medium mb-2">
                 Solution que vous proposez
@@ -239,7 +221,6 @@ function LeadMagnetContent() {
                 className="w-full p-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
               />
             </div>
-
             <div>
               <label className="block text-white font-medium mb-2">
                 Format du lead magnet
@@ -261,7 +242,6 @@ function LeadMagnetContent() {
                 ))}
               </div>
             </div>
-
             <div>
               <label className="block text-white font-medium mb-2">
                 Ton de communication
@@ -282,7 +262,6 @@ function LeadMagnetContent() {
                 ))}
               </div>
             </div>
-
             <button
               onClick={handleGenerate}
               disabled={isGenerating}
@@ -302,13 +281,17 @@ function LeadMagnetContent() {
             </button>
           </div>
         </div>
-
         {/* Résultats */}
         <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
           <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
             <Zap className="w-5 h-5 text-green-400" />
             Votre Lead Magnet Généré
           </h2>
+          {error && (
+            <div className="mb-4 p-3 bg-red-900/40 border border-red-700 text-red-300 rounded-lg">
+              {error}
+            </div>
+          )}
 
           <AnimatePresence>
             {showLogs && (
@@ -318,16 +301,17 @@ function LeadMagnetContent() {
                 exit={{ opacity: 0, height: 0 }}
                 className="mb-6"
               >
-                <AILoadingLogs />
+                <AILoadingLogs isVisible={showLogs} />
               </motion.div>
             )}
           </AnimatePresence>
+          <div className="text-gray-600 mx-auto mb-4" />
 
           {!results ? (
             <div className="text-center py-12">
               <Target className="w-16 h-16 text-gray-600 mx-auto mb-4" />
               <p className="text-gray-400">
-                Remplissez le formulaire et cliquez sur "Générer" pour créer votre lead magnet
+                Remplissez le formulaire et cliquez sur &quot;Générer&quot; pour créer votre lead magnet
               </p>
             </div>
           ) : (
@@ -337,7 +321,7 @@ function LeadMagnetContent() {
                   <h3 className="text-white font-medium">Titre principal</h3>
                   <button
                     onClick={() => copyToClipboard(results.title)}
-                    className="text-[#00D2FF] hover:text-blue-300 transition-colors"
+                    className="w-4 h-4 text-[#00D2FF] hover:text-blue-300 transition-colors"
                   >
                     <Copy className="w-4 h-4" />
                   </button>
@@ -346,13 +330,12 @@ function LeadMagnetContent() {
                   <p className="text-white">{results.title}</p>
                 </div>
               </div>
-
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-white font-medium">Sous-titre</h3>
                   <button
                     onClick={() => copyToClipboard(results.subtitle)}
-                    className="text-[#00D2FF] hover:text-blue-300 transition-colors"
+                    className="w-4 h-4 text-[#00D2FF] hover:text-blue-300 transition-colors"
                   >
                     <Copy className="w-4 h-4" />
                   </button>
@@ -361,12 +344,11 @@ function LeadMagnetContent() {
                   <p className="text-gray-300">{results.subtitle}</p>
                 </div>
               </div>
-
               <div>
                 <h3 className="text-white font-medium mb-2">Plan du contenu</h3>
                 <div className="bg-[#1a1a1a] p-4 rounded-lg border border-[#333]">
                   <ul className="space-y-2">
-                    {results.outline.map((item: string, index: number) => (
+                    {results.outline.map((item, index) => (
                       <li key={index} className="text-gray-300 flex items-start gap-2">
                         <span className="text-green-400 font-bold">{index + 1}.</span>
                         {item}
@@ -375,13 +357,12 @@ function LeadMagnetContent() {
                   </ul>
                 </div>
               </div>
-
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-white font-medium">Call-to-Action</h3>
                   <button
                     onClick={() => copyToClipboard(results.cta)}
-                    className="text-[#00D2FF] hover:text-blue-300 transition-colors"
+                    className="w-4 h-4 text-[#00D2FF] hover:text-blue-300 transition-colors"
                   >
                     <Copy className="w-4 h-4" />
                   </button>
@@ -390,12 +371,11 @@ function LeadMagnetContent() {
                   <p className="text-green-400 font-medium">{results.cta}</p>
                 </div>
               </div>
-
               <div>
                 <h3 className="text-white font-medium mb-2">Séquence email de suivi</h3>
                 <div className="bg-[#1a1a1a] p-4 rounded-lg border border-[#333]">
                   <ul className="space-y-2">
-                    {results.emailSequence.map((email: string, index: number) => (
+                    {results.emailSequence.map((email, index) => (
                       <li key={index} className="text-gray-300 flex items-start gap-2">
                         <span className="text-blue-400">📧</span>
                         {email}
@@ -408,8 +388,6 @@ function LeadMagnetContent() {
           )}
         </div>
       </div>
-
-
     </div>
   );
 }

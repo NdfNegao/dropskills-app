@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
 import { 
@@ -14,6 +14,7 @@ import {
   Download,
   CheckCircle
 } from 'lucide-react';
+import { getToolById } from '@/data/ai-tools';
 
 interface ContentSystemData {
   business: string;
@@ -47,29 +48,38 @@ function ContentSystemContent() {
 
   const [contentPlan, setContentPlan] = useState<ContentPlan[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [providerInfo, setProviderInfo] = useState<{provider?: string, model?: string, cost?: string} | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const tool = getToolById('content-system');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
+    setErrorMsg(null);
+    setProviderInfo(null);
+    setContentPlan([]);
     try {
       const response = await fetch('/api/ai/content-system/generate', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
-      if (!response.ok) {
-        throw new Error('Erreur lors de la génération');
-      }
-
       const data = await response.json();
+      if (!response.ok || !data.success) {
+        setErrorMsg(data.error || 'Erreur lors de la génération du système de contenu');
+        setContentPlan([]);
+        return;
+      }
       setContentPlan(data.contentPlan);
+      setProviderInfo({
+        provider: data.metadata?.provider,
+        model: data.metadata?.model,
+        cost: data.metadata?.cost,
+      });
     } catch (error) {
-      console.error('Erreur:', error);
-      alert('Erreur lors de la génération du système de contenu');
+      setErrorMsg('Erreur lors de la génération du système de contenu');
+      setContentPlan([]);
     } finally {
       setIsLoading(false);
     }
@@ -98,16 +108,6 @@ function ContentSystemContent() {
       `SEMAINE ${week.week}\n` +
       week.content.map(item => 
         `${item.platform} - ${item.type}\n` +
-        `Titre: ${item.title}\n` +
-        `Description: ${item.description}\n` +
-        `Hashtags: ${item.hashtags.join(' ')}\n`
-      ).join('\n') + '\n'
-    ).join('\n');
-    
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
     a.download = `content-system-${formData.business.replace(/\s+/g, '-')}.txt`;
     a.click();
     URL.revokeObjectURL(url);

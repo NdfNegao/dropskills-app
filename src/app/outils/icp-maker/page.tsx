@@ -48,6 +48,7 @@ const BUDGET_OPTIONS = [
 
 function ICPMakerContent() {
   const [icpResult, setIcpResult] = useState<ICPAnalysis | null>(null);
+  const [metadata, setMetadata] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showWizard, setShowWizard] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -97,37 +98,29 @@ function ICPMakerContent() {
     setIsLoading(true);
     setError(null);
     setLastFormData(formData);
-    
+    setMetadata(null);
     try {
       // Construction du prompt dynamique
       const dynamicPrompt = buildPrompt(formData);
-      
       const payload = {
         ...formData,
         prompt: dynamicPrompt
       };
-      
       const response = await fetch('/api/icp/generate-v2', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Erreur lors de la génération');
-      }
-      
       const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || 'Erreur lors de la génération');
+      }
       setIcpResult(result.analysis);
+      setMetadata(result.metadata || null);
       setShowWizard(false);
-      
-      // Sauvegarder les données
       localStorage.setItem('dropskills_icp_maker_data', JSON.stringify(result.analysis));
       localStorage.setItem('dropskills_icp_maker_form_data', JSON.stringify(formData));
-      
     } catch (error) {
-      console.error('Erreur:', error);
       setError(error instanceof Error ? error.message : 'Une erreur est survenue');
     } finally {
       setIsLoading(false);
@@ -220,6 +213,15 @@ function ICPMakerContent() {
     <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
+        {/* Badge premium */}
+        <div className="flex items-center gap-3 mb-4">
+          <span className="px-3 py-1 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-xs font-bold text-gray-900 shadow border border-yellow-300 animate-pulse">Premium IA</span>
+          {metadata?.generatedBy && (
+            <span className="px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 text-xs font-semibold text-white shadow border border-blue-300 ml-2">
+              {metadata.generatedBy}
+            </span>
+          )}
+        </div>
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -486,6 +488,33 @@ function ICPMakerContent() {
             <Users className="w-5 h-5 text-purple-400" />
             Votre Client Idéal
           </h2>
+
+          {/* Affichage des infos IA */}
+          {metadata && (
+            <div className="mb-4 flex flex-wrap gap-3 text-xs">
+              {metadata.model && (
+                <span className="px-2 py-0.5 rounded bg-[#232a3a] text-blue-300 font-semibold">Modèle : {metadata.model}</span>
+              )}
+              {metadata.tokensUsed && (
+                <span className="px-2 py-0.5 rounded bg-[#232a3a] text-green-300 font-semibold">Tokens : {metadata.tokensUsed}</span>
+              )}
+              {metadata.version && (
+                <span className="px-2 py-0.5 rounded bg-[#232a3a] text-gray-300 font-semibold">Version : {metadata.version}</span>
+              )}
+              {metadata.timestamp && (
+                <span className="px-2 py-0.5 rounded bg-[#232a3a] text-gray-400">{new Date(metadata.timestamp).toLocaleString()}</span>
+              )}
+            </div>
+          )}
+
+          {/* Affichage des erreurs IA */}
+          {error && (
+            <div className="mb-4 p-4 rounded-lg bg-gradient-to-r from-red-500/80 to-pink-600/80 text-white flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-white" />
+              <span className="font-semibold">Erreur IA :</span>
+              <span>{error}</span>
+            </div>
+          )}
 
           {!icpResult ? (
             <div className="text-center py-12">
