@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle } from 'lucide-react';
-import StepWizard from './StepWizard';
+import {
+  CheckCircle,
+  Target,
+  AlertTriangle,
+  Zap,
+  Trophy,
+  Users,
+  MessageSquare,
+  Settings
+} from 'lucide-react';
+import StepWizard, { WizardStep } from './StepWizard';
 import { USPFormData } from '@/types/usp';
 import { PromesseStep } from './usp-steps/PromesseStep';
 import { ProblemeStep } from './usp-steps/ProblemeStep';
@@ -31,7 +40,6 @@ const defaultData: USPFormData = {
 
 export function USPWizardV2({ onComplete, isLoading = false, initialData = {}, icpData }: USPWizardV2Props) {
   const [formData, setFormData] = useState<USPFormData>({ ...defaultData, ...initialData });
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Pré-remplir avec les données ICP si disponibles
   useEffect(() => {
@@ -46,64 +54,7 @@ export function USPWizardV2({ onComplete, isLoading = false, initialData = {}, i
     }
   }, [icpData]);
 
-  const handleFieldChange = (field: keyof USPFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  };
 
-  const validateStep = (stepIndex: number): boolean => {
-
-
-
-
-    const newErrors: Record<string, string> = {};
-    
-    switch (stepIndex) {
-      case 0: // Promesse
-        if (!formData.resultatPromesse.trim()) {
-          newErrors.resultatPromesse = 'Le résultat/promesse est requis';
-        }
-        break;
-      case 1: // Problème
-        if (!formData.problemePrincipal.trim()) {
-          newErrors.problemePrincipal = 'Le problème principal est requis';
-        }
-        break;
-      case 2: // Différence
-        if (!formData.differenceUnique.trim()) {
-          newErrors.differenceUnique = 'La différence unique est requise';
-        }
-        break;
-      case 3: // Preuve
-        if (!formData.preuveArgument.trim()) {
-          newErrors.preuveArgument = 'La preuve/argument est requise';
-        }
-        break;
-      case 4: // Concurrents
-        if (!formData.concurrents.trim()) {
-          newErrors.concurrents = 'Les informations sur les concurrents sont requises';
-        }
-        break;
-      case 5: // Client
-        if (!formData.clientIdeal.trim()) {
-          newErrors.clientIdeal = 'La description du client idéal est requise';
-        }
-        break;
-      case 6: // Tonalité
-        if (!formData.tonalite.trim()) {
-          newErrors.tonalite = 'La tonalité est requise';
-        }
-        break;
-      // Étape 7 (contraintes) est optionnelle
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
 
   const handleComplete = () => {
     // Sauvegarder les données du formulaire
@@ -111,90 +62,70 @@ export function USPWizardV2({ onComplete, isLoading = false, initialData = {}, i
     onComplete(formData);
   };
 
-  const steps = [
+  const steps: WizardStep[] = [
     {
+      id: 'promesse',
       title: 'Résultat/Promesse',
-      component: (
-        <PromesseStep
-          data={formData}
-          onChange={handleFieldChange}
-          errors={errors}
-        />
-      )
+      description: 'Que promettez-vous ?',
+      icon: Target,
+      component: PromesseStep
     },
     {
+      id: 'probleme',
       title: 'Problème Principal',
-      component: (
-        <ProblemeStep
-          data={formData}
-          onChange={handleFieldChange}
-          errors={errors}
-        />
-      )
+      description: 'Quel problème résolvez-vous ?',
+      icon: AlertTriangle,
+      component: ProblemeStep
     },
     {
+      id: 'difference',
       title: 'Différence Unique',
-      component: (
-        <DifferenceStep
-          data={formData}
-          onChange={handleFieldChange}
-          errors={errors}
-        />
-      )
+      description: 'Votre avantage concurrentiel',
+      icon: Zap,
+      component: DifferenceStep
     },
     {
+      id: 'preuve',
       title: 'Preuve & Crédibilité',
-      component: (
-        <PreuveStep
-          data={formData}
-          onChange={handleFieldChange}
-          errors={errors}
-        />
-      )
+      description: 'Votre crédibilité',
+      icon: Trophy,
+      component: PreuveStep
     },
     {
+      id: 'concurrents',
       title: 'Concurrents',
-      component: (
-        <ConcurrentsStep
-          data={formData}
-          onChange={handleFieldChange}
-          errors={errors}
-        />
-      )
+      description: 'Votre environnement',
+      icon: Users,
+      component: ConcurrentsStep
     },
     {
+      id: 'client',
       title: 'Client Idéal',
-      component: (
-        <ClientStep
-          data={formData}
-          onChange={handleFieldChange}
-          errors={errors}
-        />
-      )
+      description: 'Votre cible',
+      icon: Users,
+      component: ClientStep
     },
     {
+      id: 'tonalite',
       title: 'Tonalité',
-      component: (
-        <TonaliteStep
-          data={formData}
-          onChange={handleFieldChange}
-          errors={errors}
-        />
-      )
+      description: 'Votre style',
+      icon: MessageSquare,
+      component: TonaliteStep
     },
     {
+      id: 'contraintes',
       title: 'Contraintes',
-      component: (
-        <ContraintesStep
-          data={formData}
-          onChange={handleFieldChange}
-          errors={errors}
-        />
-      )
+      description: 'Vos spécificités',
+      icon: Settings,
+      component: ContraintesStep,
+      isOptional: true
     },
     {
+      id: 'finalisation',
       title: 'Finalisation',
-      component: (
+      description: 'Vérifiez vos informations avant génération',
+      icon: CheckCircle,
+      component: ({ data }: { data: USPFormData }) => (
         <div className="space-y-6">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#ff0033] to-[#ff3366] rounded-full mb-4">
@@ -207,19 +138,19 @@ export function USPWizardV2({ onComplete, isLoading = false, initialData = {}, i
           <div className="bg-[#1a1a1a] rounded-lg p-6 space-y-4">
             <div>
               <h3 className="text-white font-medium mb-2">Résultat/Promesse :</h3>
-              <p className="text-gray-300 text-sm">{formData.resultatPromesse}</p>
+              <p className="text-gray-300 text-sm">{data.resultatPromesse}</p>
             </div>
             <div>
               <h3 className="text-white font-medium mb-2">Problème principal :</h3>
-              <p className="text-gray-300 text-sm">{formData.problemePrincipal}</p>
+              <p className="text-gray-300 text-sm">{data.problemePrincipal}</p>
             </div>
             <div>
               <h3 className="text-white font-medium mb-2">Différence unique :</h3>
-              <p className="text-gray-300 text-sm">{formData.differenceUnique}</p>
+              <p className="text-gray-300 text-sm">{data.differenceUnique}</p>
             </div>
             <div>
               <h3 className="text-white font-medium mb-2">Tonalité :</h3>
-              <p className="text-gray-300 text-sm">{formData.tonalite}</p>
+              <p className="text-gray-300 text-sm">{data.tonalite}</p>
             </div>
           </div>
         </div>
