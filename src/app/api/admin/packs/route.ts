@@ -6,6 +6,8 @@ import { z } from 'zod';
 export const dynamic = 'force-dynamic';
 
 // GET : Liste des packs
+
+
 export async function GET() {
   try {
     // Essayer d'abord avec la vraie table (sans les relations si elles n'existent pas)

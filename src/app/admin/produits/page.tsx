@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
-import { Crown, Search, Plus, Edit, Trash2, Eye, Filter, Users, Download, Star } from 'lucide-react';
+import { Crown, Search, Plus, Edit, Trash2, Eye, Filter, Users, Download, Star, Package } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -193,7 +193,11 @@ export default function AdminProduitsPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <AdminLayoutWithSidebar>
+      <AdminLayoutWithSidebar
+        icon={<Package className="w-5 h-5" />}
+        title="Gestion des Produits"
+        subtitle="Chargement des produits..."
+      >
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
         </div>
@@ -202,7 +206,11 @@ export default function AdminProduitsPage() {
   }
 
   return (
-    <AdminLayoutWithSidebar>
+    <AdminLayoutWithSidebar
+      icon={<Package className="w-5 h-5" />}
+      title="Gestion des Produits"
+      subtitle="Gérez vos produits et leurs configurations"
+    >
       <div className="space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">

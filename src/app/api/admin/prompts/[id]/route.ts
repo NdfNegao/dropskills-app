@@ -12,6 +12,8 @@ interface RouteParams {
 }
 
 // GET /api/admin/prompts/[id] - Récupérer un prompt spécifique
+
+
 export async function GET(
   request: NextRequest,
   { params }: RouteParams

@@ -272,7 +272,10 @@ export default function SponsorshipPage() {
       title="Gestion du parrainage"
       subtitle="Administration du programme de parrainage"
       stats={statsData}
-      actions={actions}
+      actions={actions.map(action => ({
+        ...action,
+        onClick: () => window.location.href = action.href
+      }))}
     >
       <SponsorshipManagement />
     </AdminLayoutWithSidebar>

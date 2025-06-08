@@ -75,6 +75,8 @@ export async function PUT(
 }
 
 // GET : Récupérer un ticket spécifique
+
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }

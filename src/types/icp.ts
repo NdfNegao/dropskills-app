@@ -6,6 +6,14 @@ export interface ICPFormData {
   canaux: string[];
   zoneGeographique: string;
   tonalite: string;
+  // Nouveaux champs pour l'enrichissement
+  objectifs?: string;
+  defis?: string;
+  valeurs?: string;
+  situationActuelle?: string;
+  situationDesiree?: string;
+  solutionsEssayees?: string;
+  solutionIdeale?: string;
 }
 
 export interface ICPAnalysis {
@@ -50,6 +58,16 @@ export interface ICPAnalysis {
       description: string;
       pourcentage: string;
     }>;
+  };
+  // Nouvelles sections
+  journauxIntimes?: {
+    douleur: string;
+    victoire: string;
+  };
+  resumeExpress?: string[];
+  accrochesCiblees?: {
+    douleur: string[];
+    situationRevee: string[];
   };
   ficheActionable: {
     resumeExecutif: string;

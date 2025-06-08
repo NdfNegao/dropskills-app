@@ -6,6 +6,8 @@ import { supabaseAdmin } from '@/lib/supabase';
 export const dynamic = 'force-dynamic';
 
 // GET /api/admin/prompts/[id]/versions - Récupérer toutes les versions d'un prompt
+
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Download, RefreshCw, ArrowLeft, ArrowRight, Mail, Target, Lightbulb, Zap, BarChart3, CheckCircle, ExternalLink, ChevronRight, Clock, TrendingUp } from 'lucide-react';
-import { TunnelAnalysis } from '@/app/outils/tunnel-maker/page';
+import { TunnelAnalysis } from '@/types/tunnel';
 
 interface TunnelResultProps {
   analysis: TunnelAnalysis;
@@ -27,7 +27,7 @@ export function TunnelResult({ analysis, onBackToWizard, onRegenerate, isRegener
 PLAN DE TUNNEL DE VENTE - ${new Date().toLocaleDateString()}
 
 SCHÉMA DU TUNNEL:
-${analysis.schemaTunnel.etapes.map((etape, index) => `${index + 1}. ${etape}`).join('\n')}
+${analysis.schemaTunnel.etapes.map((etape: string, index: number) => `${index + 1}. ${etape}`).join('\n')}
 
 DESCRIPTION:
 ${analysis.schemaTunnel.description}
@@ -35,7 +35,7 @@ ${analysis.schemaTunnel.description}
 DURÉE ESTIMÉE: ${analysis.schemaTunnel.dureeEstimee}
 
 ÉTAPES DÉTAILLÉES:
-${analysis.etapesDetaillees.map((etape, index) => `
+${analysis.etapesDetaillees.map((etape: any, index: number) => `
 ${index + 1}. ${etape.nom}
    Objectif: ${etape.objectif}
    Message clé: ${etape.messageCle}
@@ -77,11 +77,7 @@ ${analysis.outilsRecommandes.join(', ')}
     router.push('/outils/copymoneymail');
   };
 
-  const getMetriqueColor = (score: number) => {
-    if (score >= 80) return 'text-green-600 bg-green-100';
-    if (score >= 60) return 'text-yellow-600 bg-yellow-100';
-    return 'text-red-600 bg-red-100';
-  };
+
 
   const getMetriqueIcon = (score: number) => {
     if (score >= 80) return '🔥';
@@ -146,7 +142,7 @@ ${analysis.outilsRecommandes.join(', ')}
         {/* Visualisation du tunnel */}
         <div className="bg-white bg-opacity-10 rounded-lg p-6 mb-6">
           <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
-            {analysis.schemaTunnel.etapes.map((etape, index) => (
+            {analysis.schemaTunnel.etapes.map((etape: string, index: number) => (
               <div key={index} className="flex items-center">
                 <div className="bg-white bg-opacity-20 rounded-lg px-4 py-2 text-center min-w-0">
                   <div className="text-sm font-medium">{etape}</div>
@@ -203,7 +199,7 @@ ${analysis.outilsRecommandes.join(', ')}
         </div>
         
         <div className="space-y-6">
-          {analysis.etapesDetaillees.map((etape, index) => (
+          {analysis.etapesDetaillees.map((etape: any, index: number) => (
             <div key={index} className="border border-gray-200 rounded-lg p-6">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold text-sm">
@@ -239,7 +235,7 @@ ${analysis.outilsRecommandes.join(', ')}
                   <div>
                     <h4 className="font-medium text-gray-900 mb-2">✍️ Conseils copywriting</h4>
                     <ul className="space-y-1">
-                      {etape.conseilsCopywriting.map((conseil, idx) => (
+                      {etape.conseilsCopywriting.map((conseil: string, idx: number) => (
                         <li key={idx} className="text-gray-700 text-sm flex items-start">
                           <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-2 flex-shrink-0" />
                           {conseil}
@@ -251,7 +247,7 @@ ${analysis.outilsRecommandes.join(', ')}
                   <div>
                     <h4 className="font-medium text-gray-900 mb-2">🤖 Automatisation</h4>
                     <ul className="space-y-1">
-                      {etape.automatisationSuggestions.map((suggestion, idx) => (
+                      {etape.automatisationSuggestions.map((suggestion: string, idx: number) => (
                         <li key={idx} className="text-gray-700 text-sm flex items-start">
                           <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 mr-2 flex-shrink-0" />
                           {suggestion}
@@ -282,7 +278,7 @@ ${analysis.outilsRecommandes.join(', ')}
               Copywriting
             </h3>
             <ul className="space-y-2">
-              {analysis.conseilsGeneraux.copywriting.map((conseil, index) => (
+              {analysis.conseilsGeneraux.copywriting.map((conseil: string, index: number) => (
                 <li key={index} className="text-blue-800 text-sm flex items-start">
                   <CheckCircle className="w-3 h-3 mt-0.5 mr-2 flex-shrink-0" />
                   {conseil}
@@ -297,7 +293,7 @@ ${analysis.outilsRecommandes.join(', ')}
               Automatisation
             </h3>
             <ul className="space-y-2">
-              {analysis.conseilsGeneraux.automatisation.map((conseil, index) => (
+              {analysis.conseilsGeneraux.automatisation.map((conseil: string, index: number) => (
                 <li key={index} className="text-green-800 text-sm flex items-start">
                   <CheckCircle className="w-3 h-3 mt-0.5 mr-2 flex-shrink-0" />
                   {conseil}
@@ -312,7 +308,7 @@ ${analysis.outilsRecommandes.join(', ')}
               Optimisation
             </h3>
             <ul className="space-y-2">
-              {analysis.conseilsGeneraux.optimisation.map((conseil, index) => (
+              {analysis.conseilsGeneraux.optimisation.map((conseil: string, index: number) => (
                 <li key={index} className="text-purple-800 text-sm flex items-start">
                   <CheckCircle className="w-3 h-3 mt-0.5 mr-2 flex-shrink-0" />
                   {conseil}
@@ -337,7 +333,7 @@ ${analysis.outilsRecommandes.join(', ')}
         </div>
         
         <div className="space-y-4">
-          {analysis.sequenceEmail.emails.map((email, index) => (
+          {analysis.sequenceEmail.emails.map((email: any, index: number) => (
             <div key={index} className="border border-gray-200 rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-3">
@@ -367,7 +363,7 @@ ${analysis.outilsRecommandes.join(', ')}
         </div>
         
         <div className="flex flex-wrap gap-3">
-          {analysis.outilsRecommandes.map((outil, index) => (
+          {analysis.outilsRecommandes.map((outil: string, index: number) => (
             <span key={index} className="px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm font-medium">
               {outil}
             </span>
@@ -430,4 +426,4 @@ ${analysis.outilsRecommandes.join(', ')}
       </div>
     </div>
   );
-} 
+}

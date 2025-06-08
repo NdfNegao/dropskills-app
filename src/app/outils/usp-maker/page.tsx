@@ -3,49 +3,17 @@
 import React, { useState, useEffect } from 'react';
 import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
-import { USPWizard } from '@/components/USPWizard';
+import { USPWizardV2 } from '@/components/USPWizardV2';
 import { USPResult } from '@/components/USPResult';
-
-export interface USPFormData {
-  resultatPromesse: string;
-  problemePrincipal: string;
-  differenceUnique: string;
-  preuveArgument: string;
-  concurrents: string;
-  clientIdeal: string;
-  tonalite: string;
-  contraintes: string;
-}
-
-export interface USPAnalysis {
-  uspPrincipale: string;
-  variantes: {
-    rationnel: string;
-    emotionnel: string;
-    exclusif: string;
-  };
-  explication: {
-    pourquoi: string;
-    differenciateur: string;
-    impact: string;
-  };
-  conseilUtilisation: {
-    pageSale: string;
-    publicite: string;
-    reseauxSociaux: string;
-    emailMarketing: string;
-  };
-  metriques: {
-    scoreImpact: number;
-    memorabilite: number;
-    clarte: number;
-  };
-}
+import { USPFormData, USPAnalysis } from '@/types/usp';
+import { Copy, RefreshCw, CheckCircle, Target, TrendingUp, Zap, Trophy } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 function USPMakerContent() {
-  const [currentStep, setCurrentStep] = useState<'wizard' | 'result'>('wizard');
   const [uspResult, setUSPResult] = useState<USPAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showWizard, setShowWizard] = useState(true);
+  const [currentFormData, setCurrentFormData] = useState<USPFormData | null>(null);
   const [icpData, setIcpData] = useState<any>(null);
 
   // Récupération des données ICP si disponibles
@@ -61,8 +29,10 @@ function USPMakerContent() {
     }
   }, []);
 
-  const handleWizardComplete = async (formData: USPFormData) => {
+  const handleUSPComplete = async (formData: USPFormData) => {
+    setCurrentFormData(formData);
     setIsLoading(true);
+    setShowWizard(false);
     
     try {
       const response = await fetch('/api/usp/generate', {
@@ -83,7 +53,6 @@ function USPMakerContent() {
 
       const data = await response.json();
       setUSPResult(data.analysis);
-      setCurrentStep('result');
       
       // Sauvegarder l'USP générée
       localStorage.setItem('dropskills_usp_data', JSON.stringify(data.analysis));
@@ -97,8 +66,19 @@ function USPMakerContent() {
   };
 
   const handleBackToWizard = () => {
-    setCurrentStep('wizard');
+    setShowWizard(true);
     setUSPResult(null);
+  };
+
+  const handleRegenerate = () => {
+    if (currentFormData) {
+      handleUSPComplete(currentFormData);
+    }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    // Vous pouvez ajouter une notification ici
   };
 
   const handleReformulate = async () => {
@@ -140,21 +120,72 @@ function USPMakerContent() {
       </div>
 
       {/* Content */}
-      {currentStep === 'wizard' && (
-        <USPWizard 
-          onComplete={handleWizardComplete}
+      {showWizard ? (
+        <USPWizardV2 
+          onComplete={handleUSPComplete}
           isLoading={isLoading}
           icpData={icpData}
         />
-      )}
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-8"
+        >
+          {/* Header avec actions */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={handleBackToWizard}
+                className="flex items-center space-x-2 px-4 py-2 bg-[#232323] text-white rounded-lg hover:bg-[#2a2a2a] transition-colors"
+              >
+                <Target className="w-4 h-4" />
+                <span>Nouveau USP</span>
+              </button>
+            </div>
+            
+            <div className="flex items-center space-x-3">
+              {uspResult && (
+                <>
+                  <button
+                    onClick={() => copyToClipboard(uspResult.uspPrincipale)}
+                    className="flex items-center space-x-2 px-4 py-2 bg-[#ff0033] text-white rounded-lg hover:bg-[#ff1a4d] transition-colors"
+                  >
+                    <Copy className="w-4 h-4" />
+                    <span>Copier</span>
+                  </button>
+                  
+                  <button
+                    onClick={handleRegenerate}
+                    disabled={isLoading}
+                    className="flex items-center space-x-2 px-4 py-2 bg-[#232323] text-white rounded-lg hover:bg-[#2a2a2a] transition-colors disabled:opacity-50"
+                  >
+                    <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                    <span>Régénérer</span>
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
 
-      {currentStep === 'result' && uspResult && (
-        <USPResult 
-          analysis={uspResult}
-          onBackToWizard={handleBackToWizard}
-          onReformulate={handleReformulate}
-          isReformulating={isLoading}
-        />
+          {/* Résultat USP */}
+          {uspResult ? (
+            <USPResult 
+              analysis={uspResult}
+              onBackToWizard={handleBackToWizard}
+              onReformulate={handleReformulate}
+              isReformulating={isLoading}
+            />
+          ) : (
+            <div className="text-center py-12">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#ff0033] to-[#ff3366] rounded-full mb-4">
+                <Zap className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">Génération en cours...</h3>
+              <p className="text-gray-400">Création de votre USP personnalisée</p>
+            </div>
+          )}
+        </motion.div>
       )}
     </div>
   );
@@ -168,4 +199,4 @@ export default function USPMakerPage() {
       </PremiumGuard>
     </ToolLayout>
   );
-} 
+}

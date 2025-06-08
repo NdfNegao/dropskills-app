@@ -6,6 +6,8 @@ import { supabaseAdmin } from '@/lib/supabase';
 export const dynamic = 'force-dynamic';
 
 // GET /api/admin/ai-tools/[id] - Récupérer un outil spécifique
+
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }

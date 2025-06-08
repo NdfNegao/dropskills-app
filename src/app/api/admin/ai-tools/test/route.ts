@@ -94,6 +94,8 @@ export async function POST(request: NextRequest) {
 }
 
 // GET /api/admin/ai-tools/test - Récupérer l'historique des tests
+
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

@@ -6,6 +6,8 @@ import { supabase } from '@/lib/supabase';
 export const dynamic = 'force-dynamic';
 
 // Récupérer les préférences de notifications
+
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

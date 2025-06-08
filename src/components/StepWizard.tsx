@@ -6,11 +6,8 @@ import {
   ChevronLeft, 
   ChevronRight, 
   CheckCircle, 
-  Clock, 
   Sparkles,
-  Brain,
-  Zap,
-  Target
+  Brain
 } from 'lucide-react';
 import AILoadingLogs from './AILoadingLogs';
 
@@ -35,7 +32,7 @@ export interface StepWizardProps {
   className?: string;
 }
 
-export function StepWizard({
+function StepWizard({
   steps,
   onComplete,
   onStepChange,
@@ -68,10 +65,11 @@ export function StepWizard({
       }, 1000);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [isLoading, showLogs]);
 
   const validateCurrentStep = (): boolean => {
-    if (!currentStep.validation) return true;
+    if (!currentStep?.validation) return true;
     
     const validation = currentStep.validation(formData);
     setErrors(validation.errors);
@@ -98,7 +96,9 @@ export function StepWizard({
       const newHistory = stepHistory.slice(0, -1);
       const previousStepIndex = newHistory[newHistory.length - 1];
       setStepHistory(newHistory);
-      setCurrentStepIndex(previousStepIndex);
+      if (previousStepIndex !== undefined) {
+        setCurrentStepIndex(previousStepIndex);
+      }
       setErrors({});
     }
   };

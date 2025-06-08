@@ -3,6 +3,8 @@ import { supabaseAdmin } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
+
+
 export async function GET() {
   try {
     // Statistiques utilisateurs

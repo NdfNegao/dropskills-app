@@ -6,6 +6,8 @@ import { supabaseAdmin } from '@/lib/supabase';
 export const dynamic = 'force-dynamic';
 
 // GET /api/admin/analytics - Récupérer les analytics avancées
+
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

@@ -1,5 +1,38 @@
 # 🤖 DEVBOOK - Outils IA DropSkills
 
+# AI Tools Development Book - Standards & Guidelines
+
+## 🎯 STANDARD ICP GENERATOR - LA RÉFÉRENCE ABSOLUE
+
+**IMPORTANT**: Le **ICP Generator** (ICP Maker) est désormais le standard de référence OBLIGATOIRE pour tous les outils IA de Dropskills. Aucun outil ne doit déroger à cette norme.
+
+### 📋 Éléments Standard Obligatoires
+
+#### 1. **Wizard Complet avec StepWizard** ✅
+- Utilisation du composant `StepWizard` unifié
+- Progression visuelle avec barre de progression
+- Navigation entre étapes (précédent/suivant)
+- Validation par étape avec gestion d'erreurs
+- Icônes pour chaque étape
+- Descriptions claires pour chaque section
+
+#### 2. **Infobulles (Tooltips) Obligatoires** ✅
+- Icône `HelpCircle` sur CHAQUE champ important
+- Tooltip au survol avec exemples concrets
+- Positionnement cohérent (bottom-6 left-0)
+- Style uniforme : `bg-[#232323] text-white text-xs rounded-lg px-3 py-2`
+
+#### 3. **Blocs Conseil Dropskills AI** ✅
+- Bloc conseil sur chaque étape importante
+- Style uniforme : `bg-blue-500/10 border border-blue-500/20 rounded-lg p-4`
+- Icône point bleu + titre "Conseil Dropskills AI"
+- Conseils contextuels et actionables
+
+#### 4. **PAS DE SPLIT - Wizard Complet Uniquement** ✅
+- Abandon total des interfaces "split" ou à sections expandables
+- Wizard complet obligatoire pour tous les outils
+- Navigation linéaire et guidée
+
 ## 🎯 Vue d'ensemble
 
 Ce devbook détaille les standards UX, la composition et les bonnes pratiques pour créer et améliorer les outils IA de DropSkills. Il inclut une checklist complète pour s'assurer que tous les éléments d'expérience utilisateur sont optimisés.
@@ -492,10 +525,79 @@ const getToolMessages = (toolName: string) => {
 - **Taux de régénération** des résultats
 - **Réduction du taux d'abandon** pendant la génération
 
+## 🚀 PLAN D'ACTION IMMÉDIAT - MISE À JOUR TOUS LES OUTILS
+
+### ❌ Outils Non-Conformes (À Mettre à Jour)
+
+#### Priorité 1 - Critique
+1. **Tunnel Maker** (`/tunnel-maker`)
+   - ❌ Interface avec sections expandables
+   - ❌ Pas d'infobulles
+   - ❌ Pas de blocs conseil
+   - 🎯 **Action**: Convertir vers StepWizard complet
+
+2. **Lead Magnet Generator** (`/lead-magnet`)
+   - ❌ Interface simple sans wizard
+   - ❌ Pas d'infobulles
+   - ❌ Pas de blocs conseil
+   - 🎯 **Action**: Créer wizard en 3-4 étapes
+
+3. **Générateur d'Offre** (`/generateur-offre`)
+   - ❌ Wizard basique non standardisé
+   - ❌ Pas d'infobulles
+   - ❌ Pas de blocs conseil
+   - 🎯 **Action**: Migrer vers standard ICP
+
+#### Priorité 2 - Important
+4. **USP Maker** (`/usp-maker`)
+5. **Content System** (`/content-system`)
+6. **Agent de Veille** (`/agent-veille`)
+7. **Descriptions Generator** (`/descriptions`)
+
+#### Priorité 3 - Secondaire
+8. **Générateur de Titres** (`/generateur-titres`)
+9. **PDF Rebrander** (`/pdf-rebrander`)
+10. **CopyMoneyMail** (`/copymoneymail`)
+
+### ✅ Outils Conformes
+- **ICP Maker** (`/icp-maker`) - ✅ STANDARD DE RÉFÉRENCE
+- **ICP Generator** (`/icp-generator`) - ✅ Conforme
+
+### 📋 Étapes d'Exécution
+
+#### Phase 1: Préparation (Immédiate)
+1. **Créer composants réutilisables**
+   - `ConseilBlock` component
+   - `TooltipField` component
+   - `StandardInput` component
+
+2. **Définir types TypeScript standards**
+   - Types pour formulaires
+   - Types pour validation
+   - Types pour résultats IA
+
+#### Phase 2: Mise à Jour (Semaine 1-2)
+1. **Tunnel Maker** - Conversion complète vers StepWizard
+2. **Lead Magnet** - Création wizard multi-étapes
+3. **Générateur d'Offre** - Standardisation interface
+
+#### Phase 3: Finalisation (Semaine 3)
+1. **Outils restants** - Application du standard
+2. **Tests utilisateur** - Validation UX
+3. **Documentation** - Mise à jour complète
+
+### 🎯 Critères de Validation
+- ✅ StepWizard utilisé partout
+- ✅ Infobulles sur tous les champs
+- ✅ Blocs conseil sur chaque étape
+- ✅ Validation robuste
+- ✅ Sauvegarde automatique
+- ✅ Interface cohérente
+
 ---
 
 *Ce devbook est un document vivant qui doit être mis à jour avec chaque nouvelle fonctionnalité ou amélioration des outils IA.*
 
 **Dernière mise à jour :** Janvier 2025  
-**Version :** 1.0  
+**Version :** 3.0 - Standard ICP Generator  
 **Contributeurs :** Équipe DropSkills

@@ -23,7 +23,7 @@ import {
   Star,
   Lightbulb
 } from 'lucide-react';
-import { ICPAnalysis } from '@/app/outils/icp-generator/page';
+import { ICPAnalysis } from '@/types/icp';
 
 interface ICPResultProps {
   analysis: ICPAnalysis;
@@ -385,6 +385,86 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
           )}
         </div>
       </Section>
+
+      {/* Journaux Intimes */}
+      {analysis.journauxIntimes && (
+        <Section 
+          title="Journaux Intimes" 
+          icon={<Heart className="w-5 h-5 text-pink-400" />}
+          gradient="from-pink-500/20 to-rose-500/20"
+          defaultExpanded={true}
+        >
+          <div className="space-y-4">
+            <div className="bg-gradient-to-r from-red-500/10 to-pink-500/10 rounded-lg p-6 border border-red-500/20">
+              <h4 className="text-white font-bold mb-3 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-red-400" />
+                Journal "Douleur"
+              </h4>
+              <p className="text-gray-300 leading-relaxed italic">"{analysis.journauxIntimes.douleur}"</p>
+            </div>
+            <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-lg p-6 border border-green-500/20">
+              <h4 className="text-white font-bold mb-3 flex items-center gap-2">
+                <Star className="w-5 h-5 text-green-400" />
+                Journal "Victoire"
+              </h4>
+              <p className="text-gray-300 leading-relaxed italic">"{analysis.journauxIntimes.victoire}"</p>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* Résumé Express */}
+      {analysis.resumeExpress && (
+        <Section 
+          title="Résumé Express" 
+          icon={<Zap className="w-5 h-5 text-yellow-400" />}
+          gradient="from-yellow-500/20 to-orange-500/20"
+          defaultExpanded={true}
+        >
+          <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-lg p-6 border border-yellow-500/20">
+            <div className="space-y-2">
+              {analysis.resumeExpress.map((ligne, index) => (
+                <p key={index} className="text-gray-300 leading-relaxed">• {ligne}</p>
+              ))}
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* Accroches Marketing */}
+      {analysis.accrochesCiblees && (
+        <Section 
+          title="Accroches Marketing" 
+          icon={<MessageSquare className="w-5 h-5 text-cyan-400" />}
+          gradient="from-cyan-500/20 to-blue-500/20"
+          defaultExpanded={true}
+        >
+          <div className="space-y-4">
+            <div className="bg-gradient-to-r from-red-500/10 to-pink-500/10 rounded-lg p-6 border border-red-500/20">
+              <h4 className="text-white font-bold mb-3 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-red-400" />
+                Accroches "Douleur"
+              </h4>
+              <div className="space-y-2">
+                {analysis.accrochesCiblees.douleur.map((accroche, index) => (
+                  <p key={index} className="text-gray-300">• {accroche}</p>
+                ))}
+              </div>
+            </div>
+            <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-lg p-6 border border-green-500/20">
+              <h4 className="text-white font-bold mb-3 flex items-center gap-2">
+                <Star className="w-5 h-5 text-green-400" />
+                Accroches "Situation Rêvée"
+              </h4>
+              <div className="space-y-2">
+                {analysis.accrochesCiblees.situationRevee.map((accroche, index) => (
+                  <p key={index} className="text-gray-300">• {accroche}</p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Section>
+      )}
 
       {/* Fiche Actionable */}
       <Section 

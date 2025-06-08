@@ -6,6 +6,8 @@ import { supabaseAdmin } from '@/lib/supabase';
 export const dynamic = 'force-dynamic';
 
 // GET /api/admin/ai-metrics - Récupérer les métriques IA
+
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

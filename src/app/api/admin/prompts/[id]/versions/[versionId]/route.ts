@@ -6,6 +6,8 @@ import { supabaseAdmin } from '@/lib/supabase';
 export const dynamic = 'force-dynamic';
 
 // GET /api/admin/prompts/[id]/versions/[versionId] - Récupérer une version spécifique
+
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string; versionId: string } }

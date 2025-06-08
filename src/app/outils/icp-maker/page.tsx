@@ -7,77 +7,44 @@ import ICPWizardV2 from '@/components/ICPWizardV2';
 import ICPResult from '@/components/ICPResult';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Plus,
-  RefreshCw,
-  Download,
-  Loader2,
-  AlertCircle
+  Plus, 
+  RefreshCw, 
+  Download, 
+  Loader2, 
+  AlertCircle,
+  Sparkles,
+  Target,
+  Users,
+  TrendingUp,
+  Lightbulb,
+  ChevronUp,
+  ChevronDown,
+  Copy,
+  BrainCog
 } from 'lucide-react';
 
-export interface ICPFormData {
-  secteur: string;
-  produitService: string;
-  promesseUnique: string;
-  budgetCible: string;
-  canaux: string[];
-  tonalite: string;
-  objectifs: string;
-  defis: string;
-  valeurs: string;
-}
+import { ICPFormData, ICPAnalysis } from '@/types/icp';
+import { buildPrompt } from '@/utils/icpPromptBuilder';
 
-export interface ICPAnalysis {
-  profilSociodemographique: {
-    age: string;
-    sexe: string;
-    localisation: string;
-    situationPro: string;
-    niveauRevenus: string;
-  };
-  psychologieMotivations: {
-    besoins: string[];
-    desirs: string[];
-    peurs: string[];
-    objections: string[];
-  };
-  problemePrincipaux: string[];
-  ouLeTrouver: {
-    canaux: string[];
-    plateformes: string[];
-    groupes: string[];
-    evenements: string[];
-  };
-  messagingImpactant: {
-    expressions: string[];
-    accroches: string[];
-    styleDiscours: string;
-  };
-  budgetPouvoirAchat: {
-    budgetTypique: string;
-    frequenceAchat: string;
-    facteursPrix: string[];
-  };
-  segments: {
-    principal: {
-      nom: string;
-      description: string;
-      pourcentage: string;
-    };
-    variantes: Array<{
-      nom: string;
-      description: string;
-      pourcentage: string;
-    }>;
-  };
-  ficheActionable: {
-    resumeExecutif: string;
-    prioritesMarketing: string[];
-    prochainEtapes: string[];
-    metriquesACles: string[];
-  };
-}
+// Constantes pour les options
+const CANAUX_OPTIONS = [
+  'Facebook Ads', 'Google Ads', 'LinkedIn', 'Instagram', 'TikTok', 
+  'YouTube', 'Email Marketing', 'SEO/Blog', 'Webinaires', 'Podcasts',
+  'Événements', 'Partenariats', 'Bouche-à-oreille', 'Affiliation'
+];
 
+const TONALITE_OPTIONS = [
+  'Professionnel et expert', 'Amical et accessible', 'Inspirant et motivant',
+  'Direct et sans détour', 'Éducatif et pédagogue', 'Luxe et premium',
+  'Jeune et dynamique', 'Rassurant et bienveillant'
+];
 
+const BUDGET_OPTIONS = [
+  { id: 'startup', label: 'Startup (< 10k€/mois)', range: '< 10k€/mois' },
+  { id: 'pme', label: 'PME (10k-50k€/mois)', range: '10k-50k€/mois' },
+  { id: 'entreprise', label: 'Entreprise (50k-200k€/mois)', range: '50k-200k€/mois' },
+  { id: 'corporation', label: 'Grande entreprise (> 200k€/mois)', range: '> 200k€/mois' }
+];
 
 function ICPMakerContent() {
   const [icpResult, setIcpResult] = useState<ICPAnalysis | null>(null);
@@ -85,6 +52,27 @@ function ICPMakerContent() {
   const [showWizard, setShowWizard] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastFormData, setLastFormData] = useState<ICPFormData | null>(null);
+  const [expandedSections, setExpandedSections] = useState({
+    secteur: true,
+    produit: false,
+    promesse: false,
+    budget: false,
+    canaux: false,
+    geo: false,
+    tonalite: false
+  });
+  const [formData, setFormData] = useState<ICPFormData>({
+    secteur: '',
+    produitService: '',
+    promesseUnique: '',
+    budgetCible: '',
+    canaux: [],
+    tonalite: '',
+    geographie: '',
+    objectifs: '',
+    defis: '',
+    valeurs: ''
+  });
 
 
   // Charger les données sauvegardées au démarrage
@@ -111,10 +99,18 @@ function ICPMakerContent() {
     setLastFormData(formData);
     
     try {
+      // Construction du prompt dynamique
+      const dynamicPrompt = buildPrompt(formData);
+      
+      const payload = {
+        ...formData,
+        prompt: dynamicPrompt
+      };
+      
       const response = await fetch('/api/icp/generate-v2', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload)
       });
       
       if (!response.ok) {
@@ -154,6 +150,29 @@ function ICPMakerContent() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
+  };
+
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  const handleInputChange = (field: keyof ICPFormData, value: string | string[]) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleCanalToggle = (canal: string) => {
+    setFormData(prev => ({
+      ...prev,
+      canaux: prev.canaux.includes(canal)
+        ? prev.canaux.filter(c => c !== canal)
+        : [...prev.canaux, canal]
+    }));
   };
 
   const exportToPDF = () => {

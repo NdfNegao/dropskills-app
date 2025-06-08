@@ -1,13 +1,15 @@
 'use client';
 
 import React from 'react';
-import { Building, Package, Users, MessageSquare } from 'lucide-react';
+import { Building, Package, Users, MessageSquare, Target, TrendingUp } from 'lucide-react';
 import StepWizard, { WizardStep } from './StepWizard';
 import BusinessContextStep from './icp-steps/BusinessContextStep';
 import ProductServiceStep from './icp-steps/ProductServiceStep';
 import MarketingChannelsStep from './icp-steps/MarketingChannelsStep';
 import TonalityStep from './icp-steps/TonalityStep';
-import { ICPFormData } from '@/app/outils/icp-maker/page';
+import ObjectifsDefiStep from './icp-steps/ObjectifsDefiStep';
+import SituationClientStep from './icp-steps/SituationClientStep';
+import { ICPFormData } from '@/types/icp';
 
 interface ICPWizardV2Props {
   onComplete: (data: ICPFormData) => void;
@@ -86,6 +88,36 @@ export function ICPWizardV2({ onComplete, isLoading, initialData = {} }: ICPWiza
         
         return {
           isValid: Object.keys(errors).length === 0,
+          errors
+        };
+      }
+    },
+    {
+      id: 'objectifs-defis',
+      title: 'Objectifs & Défis',
+      description: 'Définissez vos objectifs business et vos principaux défis',
+      icon: Target,
+      component: ObjectifsDefiStep,
+      validation: (data: ICPFormData) => {
+        const errors: Record<string, string> = {};
+        // Validation optionnelle pour ces champs enrichis
+        return {
+          isValid: true,
+          errors
+        };
+      }
+    },
+    {
+      id: 'situation-client',
+      title: 'Situation Client',
+      description: 'Décrivez la situation actuelle et désirée de votre client cible',
+      icon: TrendingUp,
+      component: SituationClientStep,
+      validation: (data: ICPFormData) => {
+        const errors: Record<string, string> = {};
+        // Validation optionnelle pour ces champs enrichis
+        return {
+          isValid: true,
           errors
         };
       }

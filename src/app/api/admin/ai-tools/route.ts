@@ -6,6 +6,8 @@ import { supabaseAdmin } from '@/lib/supabase';
 export const dynamic = 'force-dynamic';
 
 // GET : Liste tous les outils IA avec analytics
+
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);

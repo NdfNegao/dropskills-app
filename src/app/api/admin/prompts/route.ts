@@ -293,6 +293,8 @@ FORMAT DE RÉPONSE (JSON uniquement):
 ];
 
 // GET - Récupérer tous les prompts
+
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

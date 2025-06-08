@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { openai } from '@/lib/openai';
-import { ICPFormData } from '@/app/outils/icp-maker/page';
+import { ICPFormData } from '@/types/icp';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,7 +41,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const formData: ICPFormData = await request.json();
+    const requestData = await request.json();
+    const formData: ICPFormData = requestData;
+    const customPrompt = requestData.prompt;
     
     // Validation des données
     if (!formData.secteur?.trim() || !formData.produitService?.trim()) {
@@ -51,8 +53,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Construction du prompt optimisé pour Dropskills AI
-const systemPrompt = `Tu es Dropskills AI, un expert en marketing et analyse de clientèle. Tu vas analyser les informations business fournies pour créer un profil client idéal (ICP) détaillé et actionnable.
+    // Utilisation du prompt dynamique ou fallback vers le prompt statique
+    const systemPrompt = `Tu es Dropskills AI, un expert en marketing et analyse de clientèle. Tu vas analyser les informations business fournies pour créer un profil client idéal (ICP) détaillé et actionnable.
 
 Ton analyse doit être :
 - Précise et basée sur les données fournies
@@ -63,7 +65,7 @@ Ton analyse doit être :
 
 Tu dois retourner UNIQUEMENT un JSON valide sans texte supplémentaire.`;
 
-    const userPrompt = `Analyse ces informations business pour créer un ICP détaillé :
+    const userPrompt = customPrompt || `Analyse ces informations business pour créer un ICP détaillé :
 
 **CONTEXTE BUSINESS :**
 - Secteur : ${formData.secteur}
@@ -135,6 +137,29 @@ Crée un ICP complet au format JSON suivant :
     "prioritesMarketing": ["3-4 priorités marketing basées sur cet ICP"],
     "prochainEtapes": ["3-4 actions concrètes à mettre en place"],
     "metriquesACles": ["3-4 KPIs à suivre"]
+  },
+  "journauxIntimes": {
+    "douleur": "texte de 150 mots à la première personne décrivant les difficultés et frustrations",
+    "victoire": "texte de 150 mots à la première personne décrivant la situation de réussite"
+  },
+  "resumeExpress": [
+    "ligne 1 du résumé",
+    "ligne 2 du résumé",
+    "ligne 3 du résumé",
+    "ligne 4 du résumé",
+    "ligne 5 du résumé"
+  ],
+  "accrochesCiblees": {
+    "douleur": [
+      "accroche douleur 1",
+      "accroche douleur 2",
+      "accroche douleur 3"
+    ],
+    "situationRevee": [
+      "accroche situation rêvée 1",
+      "accroche situation rêvée 2",
+      "accroche situation rêvée 3"
+    ]
   }
 }`;
 

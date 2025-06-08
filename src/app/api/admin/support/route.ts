@@ -6,6 +6,8 @@ import { z } from 'zod';
 export const dynamic = 'force-dynamic';
 
 // GET : Liste des tickets de support avec filtres
+
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

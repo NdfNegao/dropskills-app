@@ -116,11 +116,7 @@ function getIconComponent(iconName: string) {
   return iconMap[iconName] || <FileText className="w-5 h-5" />;
 }
 
-interface ProductFeature {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}
+
 
 interface ProductPageTemplateProps {
   product: Product;
@@ -294,7 +290,7 @@ export default function ProductPageTemplate({
                 ) : (
                   <div className="aspect-video bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg overflow-hidden">
                     <img 
-                      src={product.previewImages[selectedPreview] || '/api/placeholder/800/450'}
+                      src={product.previewImages?.[selectedPreview] || '/api/placeholder/800/450'}
                       alt={`Aperçu ${selectedPreview + 1}`}
                       className="w-full h-full object-cover"
                     />
@@ -303,9 +299,9 @@ export default function ProductPageTemplate({
               </div>
 
               {/* Miniatures */}
-              {product.previewImages.length > 1 && (
+              {product.previewImages && product.previewImages.length > 1 && (
                 <div className="grid grid-cols-4 gap-3">
-                  {product.previewImages.map((image, index) => (
+                  {product.previewImages?.map((image: string, index: number) => (
                     <button
                       key={index}
                       onClick={() => setSelectedPreview(index)}
@@ -331,7 +327,7 @@ export default function ProductPageTemplate({
               <h2 className="text-xl font-semibold text-white mb-6">Ce que contient ce produit</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {product.features.map((feature, index) => (
+                {product.features?.map((feature: any, index: number) => (
                   <div key={index} className="flex items-start gap-3 p-4 bg-[#1a1a1a] rounded-lg">
                     <div className="text-[#ff0033] mt-1">
                       {feature.icon}

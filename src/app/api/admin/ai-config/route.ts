@@ -9,6 +9,8 @@ import path from 'path';
 export const dynamic = 'force-dynamic';
 
 // GET: Récupérer la configuration actuelle
+
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
