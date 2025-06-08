@@ -181,7 +181,7 @@ export interface PackCreateurInput {
   niveau: 'debutant' | 'intermediaire' | 'avance';
 }
 
-
+export interface OffreGenerateurInput {
   produit: string;
   caracteristiques: string[];
   audience: string;

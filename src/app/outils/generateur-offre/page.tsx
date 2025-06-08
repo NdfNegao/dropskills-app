@@ -763,7 +763,8 @@ function OfferGeneratorContent() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
               <div className="flex items-center gap-3">
                 <Sparkles className="w-6 h-6 text-green-400" />
@@ -792,62 +793,62 @@ function OfferGeneratorContent() {
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Wizard */}
-          <div>
-            <OfferGeneratorWizard 
-              onComplete={handleGenerate}
-              isLoading={isGenerating}
-            />
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Wizard */}
+            <div>
+              <OfferGeneratorWizard 
+                onComplete={handleGenerate}
+                isLoading={isGenerating}
+              />
+            </div>
 
-          {/* Résultats */}
-          <div>
-            <AnimatePresence mode="wait">
-              {showLogs && isGenerating ? (
-                <motion.div
-                  key="loading"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="bg-[#111111] rounded-xl border border-[#232323] p-6"
-                >
-                  <AILoadingLogs 
-                    isVisible={true}
-                    toolName="Générateur d'Offre IA"
-                    onComplete={() => console.log('Génération terminée')}
+            {/* Résultats */}
+            <div>
+              <AnimatePresence mode="wait">
+                {showLogs && isGenerating ? (
+                  <motion.div
+                    key="loading"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="bg-[#111111] rounded-xl border border-[#232323] p-6"
+                  >
+                    <AILoadingLogs 
+                      isVisible={true}
+                      toolName="Générateur d'Offre IA"
+                      onComplete={() => console.log('Génération terminée')}
+                    />
+                  </motion.div>
+                ) : results ? (
+                  <OfferResult
+                    key="results"
+                    result={results}
+                    onCopy={handleCopy}
+                    onRegenerate={handleRegenerate}
+                    onReset={handleReset}
+                    isLoading={isGenerating}
                   />
-                </motion.div>
-              ) : results ? (
-                <OfferResult
-                  key="results"
-                  result={results}
-                  onCopy={handleCopy}
-                  onRegenerate={handleRegenerate}
-                  onReset={handleReset}
-                  isLoading={isGenerating}
-                />
-              ) : (
-                <motion.div
-                  key="empty"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-[#111111] rounded-xl border border-[#232323] p-6 text-center py-12"
-                >
-                  <Target className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                  <h3 className="text-white text-xl font-semibold mb-2">
-                    Prêt à créer votre offre irrésistible ?
-                  </h3>
-                  <p className="text-gray-400">
-                    Complétez le wizard et générez votre offre optimisée
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                ) : (
+                  <motion.div
+                    key="empty"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-[#111111] rounded-xl border border-[#232323] p-6 text-center py-12"
+                  >
+                    <Target className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                    <h3 className="text-white text-xl font-semibold mb-2">
+                      Prêt à créer votre offre irrésistible ?
+                    </h3>
+                    <p className="text-gray-400">
+                      Complétez le wizard et générez votre offre optimisée
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
-        </div>
+        </>
       </div>
     </div>
   );

@@ -124,8 +124,6 @@ function ICPMakerContent() {
     navigator.clipboard.writeText(text);
   };
 
-
-
   const exportToPDF = () => {
     if (icpResult) {
       const printWindow = window.open('', '_blank');
@@ -226,38 +224,39 @@ function ICPMakerContent() {
           </div>
         </div>
       </div>
-    </div>
 
-    {/* Wizard ou Résultats */}
-    {showWizard ? (
-      <ICPWizardV2
-        initialData={initialData}
-        onComplete={handleGenerate}
-        isLoading={isLoading}
-      />
-    ) : (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Bouton Nouveau */}
-        <div className="lg:col-span-2 flex justify-center mb-6">
-          <button
-            onClick={handleNewGeneration}
-            className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Nouveau ICP
-          </button>
-        </div>
-        {/* Résultats */}
-        <ICPResult
-          result={icpResult}
-          metadata={metadata}
-          error={error}
-          onRegenerate={handleRegenerate}
-          onExport={exportToPDF}
-          isLoading={isLoading}
-        />
+      <div>
+        {/* Wizard ou Résultats */}
+        {showWizard ? (
+          <ICPWizardV2
+            initialData={initialData}
+            onComplete={handleGenerate}
+            isLoading={isLoading}
+          />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Bouton Nouveau */}
+            <div className="lg:col-span-2 flex justify-center mb-6">
+              <button
+                onClick={handleNewGeneration}
+                className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Nouveau ICP
+              </button>
+            </div>
+            {/* Résultats */}
+            <ICPResult
+              result={icpResult}
+              metadata={metadata}
+              error={error}
+              onRegenerate={handleRegenerate}
+              onExport={exportToPDF}
+              isLoading={isLoading}
+            />
+          </div>
+        )}
       </div>
-    )}
     </div>
   );
 }

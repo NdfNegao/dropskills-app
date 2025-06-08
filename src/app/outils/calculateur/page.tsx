@@ -329,253 +329,100 @@ function CalculateurContent() {
     }).format(amount);
   };
 
-  if (showWizard) {
-    return (
-      <div className="max-w-4xl mx-auto">
-        <StepWizard
-          steps={steps}
-          onComplete={handleCalculate}
-          isLoading={isLoading}
-          title="Calculateur de Revenus"
-          description="Analysez la rentabilité de votre business avec des projections détaillées"
-          initialData={{}}
-        />
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Header avec bouton retour */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Analyse de Rentabilité</h1>
-            <p className="text-gray-400">Résultats détaillés de votre projection financière</p>
-          </div>
-          <button
-            onClick={handleNewCalculation}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2"
-          >
-            <RefreshCw className="w-5 h-5" />
-            Nouveau calcul
-          </button>
+      {showWizard ? (
+        <div className="max-w-4xl mx-auto">
+          <StepWizard
+            steps={steps}
+            onComplete={handleCalculate}
+            isLoading={isLoading}
+            title="Calculateur de Revenus"
+            description="Analysez la rentabilité de votre business avec des projections détaillées"
+            initialData={{}}
+          />
         </div>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
-          <div className="flex items-center gap-3">
-            <Calculator className="w-5 h-5 text-indigo-400" />
-            <div>
-              <p className="text-white font-semibold">3,247</p>
-              <p className="text-gray-400 text-sm">Calculs effectués</p>
+      ) : (
+        <>
+          {/* Header avec bouton retour */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-white mb-2">Analyse de Rentabilité</h1>
+                <p className="text-gray-400">Résultats détaillés de votre projection financière</p>
+              </div>
+              <button
+                onClick={handleNewCalculation}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2"
+              >
+                <RefreshCw className="w-5 h-5" />
+                Nouveau calcul
+              </button>
             </div>
           </div>
-        </div>
-        <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
-          <div className="flex items-center gap-3">
-            <TrendingUp className="w-5 h-5 text-green-400" />
-            <div>
-              <p className="text-white font-semibold">€2.4M</p>
-              <p className="text-gray-400 text-sm">Revenus projetés</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
-          <div className="flex items-center gap-3">
-            <Users className="w-5 h-5 text-blue-400" />
-            <div>
-              <p className="text-white font-semibold">1,456</p>
-              <p className="text-gray-400 text-sm">Entrepreneurs actifs</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Résumé des paramètres */}
-      <div className="mb-8 bg-[#111111] rounded-xl p-6 border border-[#232323]">
-        <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-          <Settings className="w-5 h-5 text-indigo-400" />
-          Paramètres utilisés
-        </h3>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
-          <div>
-            <p className="text-gray-400">Prix unitaire</p>
-            <p className="text-white font-semibold">{formatCurrency(parseFloat(results?.formData.productPrice || '0'))}</p>
-          </div>
-          <div>
-            <p className="text-gray-400">Ventes/mois</p>
-            <p className="text-white font-semibold">{results?.formData.monthlySales} unités</p>
-          </div>
-          <div>
-            <p className="text-gray-400">Coûts fixes</p>
-            <p className="text-white font-semibold">{formatCurrency(parseFloat(results?.formData.fixedCosts || '0'))}</p>
-          </div>
-          <div>
-            <p className="text-gray-400">Coûts variables</p>
-            <p className="text-white font-semibold">{formatCurrency(parseFloat(results?.formData.variableCosts || '0'))}</p>
-          </div>
-          <div>
-            <p className="text-gray-400">Croissance</p>
-            <p className="text-white font-semibold">{results?.formData.growthRate || '0'}%/mois</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-8">
-          {results ? (
-            <>
-              {/* Métriques principales */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div className="bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-500/30 rounded-xl p-6">
-                   <div className="flex items-center justify-between mb-2">
-                     <TrendingUp className="w-8 h-8 text-green-400" />
-                     <span className="text-green-400 text-sm font-medium">+{((results.monthlyProfit / results.monthlyRevenue) * 100).toFixed(1)}%</span>
-                   </div>
-                   <p className="text-gray-400 text-sm mb-1">Revenus mensuels</p>
-                   <p className="text-2xl font-bold text-white">{formatCurrency(results.monthlyRevenue)}</p>
-                 </div>
-                 
-                 <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 border border-blue-500/30 rounded-xl p-6">
-                   <div className="flex items-center justify-between mb-2">
-                     <BarChart3 className="w-8 h-8 text-blue-400" />
-                     <span className="text-blue-400 text-sm font-medium">x12</span>
-                   </div>
-                   <p className="text-gray-400 text-sm mb-1">Revenus annuels</p>
-                   <p className="text-2xl font-bold text-white">{formatCurrency(results.yearlyRevenue)}</p>
-                 </div>
-                 
-                 <div className="bg-gradient-to-br from-red-500/20 to-red-600/20 border border-red-500/30 rounded-xl p-6">
-                   <div className="flex items-center justify-between mb-2">
-                     <DollarSign className="w-8 h-8 text-red-400" />
-                     <span className="text-red-400 text-sm font-medium">Coûts</span>
-                   </div>
-                   <p className="text-gray-400 text-sm mb-1">Coûts totaux/mois</p>
-                   <p className="text-2xl font-bold text-white">{formatCurrency(results.totalCosts)}</p>
-                 </div>
-                 
-                 <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 border border-purple-500/30 rounded-xl p-6">
-                   <div className="flex items-center justify-between mb-2">
-                     <Target className="w-8 h-8 text-purple-400" />
-                     <span className="text-purple-400 text-sm font-medium">Net</span>
-                   </div>
-                   <p className="text-gray-400 text-sm mb-1">Bénéfice mensuel</p>
-                   <p className="text-2xl font-bold text-white">{formatCurrency(results.monthlyProfit)}</p>
-                 </div>
-              </div>
-
-              {/* Projections de croissance */}
-              <div className="bg-[#111111] rounded-xl p-6 border border-[#232323] mb-8">
-                <h3 className="text-white font-semibold mb-6 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-green-400" />
-                  Projections de croissance
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                   <div className="text-center">
-                     <p className="text-gray-400 text-sm mb-2">Dans 6 mois</p>
-                     <p className="text-2xl font-bold text-blue-400">
-                       {formatCurrency(results.monthlyRevenue * Math.pow(1 + parseFloat(results.formData.growthRate) / 100, 6))}
-                     </p>
-                     <p className="text-gray-500 text-xs mt-1">Revenus mensuels</p>
-                   </div>
-                   <div className="text-center">
-                     <p className="text-gray-400 text-sm mb-2">Dans 12 mois</p>
-                     <p className="text-2xl font-bold text-purple-400">
-                       {formatCurrency(results.monthlyRevenue * Math.pow(1 + parseFloat(results.formData.growthRate) / 100, 12))}
-                     </p>
-                     <p className="text-gray-500 text-xs mt-1">Revenus mensuels</p>
-                   </div>
-                   <div className="text-center">
-                     <p className="text-gray-400 text-sm mb-2">Total année 1</p>
-                     <p className="text-2xl font-bold text-green-400">
-                       {formatCurrency(
-                         Array.from({length: 12}, (_, i) => 
-                           results.monthlyRevenue * Math.pow(1 + parseFloat(results.formData.growthRate) / 100, i)
-                         ).reduce((sum, revenue) => sum + revenue, 0)
-                       )}
-                     </p>
-                     <p className="text-gray-500 text-xs mt-1">Revenus cumulés</p>
-                   </div>
-                 </div>
-              </div>
-
-              {/* Analyse et recommandations */}
-              <div className="bg-gradient-to-r from-indigo-900/30 to-purple-900/30 border border-indigo-500/30 rounded-xl p-6">
-                <h3 className="text-indigo-400 font-semibold mb-4 flex items-center gap-2">
-                  <Lightbulb className="w-5 h-5" />
-                  Analyse et recommandations
-                </h3>
-                <div className="space-y-4">
-                   {results.monthlyProfit > 0 ? (
-                     <>
-                       <div className="flex items-start gap-3">
-                         <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
-                         <div>
-                           <p className="text-white font-medium">Rentabilité positive</p>
-                           <p className="text-gray-400 text-sm">Votre modèle économique est viable avec une marge de {((results.monthlyProfit / results.monthlyRevenue) * 100).toFixed(1)}%</p>
-                         </div>
-                       </div>
-                       {((results.monthlyProfit / results.monthlyRevenue) * 100) < 20 && (
-                         <div className="flex items-start gap-3">
-                           <div className="w-2 h-2 bg-yellow-400 rounded-full mt-2 flex-shrink-0"></div>
-                           <div>
-                             <p className="text-white font-medium">Optimisation possible</p>
-                             <p className="text-gray-400 text-sm">Votre marge est correcte mais pourrait être améliorée en optimisant les coûts ou en ajustant les prix</p>
-                           </div>
-                         </div>
-                       )}
-                       <div className="flex items-start gap-3">
-                         <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
-                         <div>
-                           <p className="text-white font-medium">Potentiel de croissance</p>
-                           <p className="text-gray-400 text-sm">Avec {results.formData.growthRate}% de croissance mensuelle, vous pourriez multiplier vos revenus par {(Math.pow(1 + parseFloat(results.formData.growthRate) / 100, 12)).toFixed(1)} en un an</p>
-                         </div>
-                       </div>
-                     </>
-                   ) : (
-                     <>
-                       <div className="flex items-start gap-3">
-                         <div className="w-2 h-2 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
-                         <div>
-                           <p className="text-white font-medium">Rentabilité négative</p>
-                           <p className="text-gray-400 text-sm">Vos coûts dépassent vos revenus. Une restructuration est nécessaire.</p>
-                         </div>
-                       </div>
-                       <div className="flex items-start gap-3">
-                         <div className="w-2 h-2 bg-yellow-400 rounded-full mt-2 flex-shrink-0"></div>
-                         <div>
-                           <p className="text-white font-medium">Actions recommandées</p>
-                           <p className="text-gray-400 text-sm">Réduisez les coûts, augmentez les prix ou améliorez le volume de ventes</p>
-                         </div>
-                       </div>
-                     </>
-                   )}
-                 </div>
-              </div>
-            </>
-          ) : (
-            <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-              <div className="text-center py-12">
-                <Calculator className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                <h3 className="text-white font-semibold mb-2">Calculateur de Revenus</h3>
-                <p className="text-gray-400 mb-4">
-                  Remplissez le formulaire pour calculer vos projections de revenus
-                </p>
-                <div className="space-y-2 text-sm text-gray-500">
-                  <p>📊 Analyse détaillée de rentabilité</p>
-                  <p>📈 Projections avec croissance</p>
-                  <p>💡 Recommandations personnalisées</p>
-                  <p>⚡ Calculs instantanés</p>
+          {/* Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
+              <div className="flex items-center gap-3">
+                <Calculator className="w-5 h-5 text-indigo-400" />
+                <div>
+                  <p className="text-white font-semibold">3,247</p>
+                  <p className="text-gray-400 text-sm">Calculs effectués</p>
                 </div>
               </div>
             </div>
-          )}
-        </div>
-      </div>
+            <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
+              <div className="flex items-center gap-3">
+                <TrendingUp className="w-5 h-5 text-green-400" />
+                <div>
+                  <p className="text-white font-semibold">€2.4M</p>
+                  <p className="text-gray-400 text-sm">Revenus projetés</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
+              <div className="flex items-center gap-3">
+                <Users className="w-5 h-5 text-blue-400" />
+                <div>
+                  <p className="text-white font-semibold">1,456</p>
+                  <p className="text-gray-400 text-sm">Entrepreneurs actifs</p>
+                </div>
+              </div>
+            </div>
+          </div>
 
-
+          {/* Résumé des paramètres */}
+          <div className="mb-8 bg-[#111111] rounded-xl p-6 border border-[#232323]">
+            <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+              <Settings className="w-5 h-5 text-indigo-400" />
+              Paramètres utilisés
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
+              <div>
+                <p className="text-gray-400">Prix unitaire</p>
+                <p className="text-white font-semibold">{formatCurrency(parseFloat(results?.formData.productPrice || '0'))}</p>
+              </div>
+              <div>
+                <p className="text-gray-400">Ventes/mois</p>
+                <p className="text-white font-semibold">{results?.formData.monthlySales} unités</p>
+              </div>
+              <div>
+                <p className="text-gray-400">Coûts fixes</p>
+                <p className="text-white font-semibold">{formatCurrency(parseFloat(results?.formData.fixedCosts || '0'))}</p>
+              </div>
+              <div>
+                <p className="text-gray-400">Coûts variables</p>
+                <p className="text-white font-semibold">{formatCurrency(parseFloat(results?.formData.variableCosts || '0'))}</p>
+              </div>
+              <div>
+                <p className="text-gray-400">Croissance</p>
+                <p className="text-white font-semibold">{results?.formData.growthRate || '0'}%/mois</p>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
