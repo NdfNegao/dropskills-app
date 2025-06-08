@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
 import { 
-  Bot, Plus, Search, Filter, Edit2, Trash2, Copy, 
+  Bot, Plus, Search, Edit2, Trash2, Copy,
   X, Check, AlertCircle, Loader2, Crown, Zap
 } from 'lucide-react';
 

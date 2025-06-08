@@ -19,8 +19,8 @@ import {
   Lightbulb,
   TrendingUp
 } from 'lucide-react';
-import { StepWizard, WizardStep } from '@/components/StepWizard';
-import { ToolLayout } from '@/components/ToolLayout';
+import StepWizard, { WizardStep } from '@/components/StepWizard';
+import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
 import ConseilBlock from '@/components/ui/ConseilBlock';
 import TooltipField from '@/components/ui/TooltipField';

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Gift, Users, TrendingUp, Euro, Mail, Eye, Edit, Trash2 } from "lucide-react";
+import { Gift, Users, TrendingUp, Euro, Eye, Edit, Trash2 } from "lucide-react";
 import AdminLayoutWithSidebar from "@/components/admin/AdminLayoutWithSidebar";
 
 interface SponsorshipData {
@@ -273,6 +273,11 @@ export default function SponsorshipPage() {
       subtitle="Administration du programme de parrainage"
       stats={statsData}
       actions={actions.map(action => ({
+        ...action,
+        href: action.href,
+        variant: action.variant === 'primary' ? 'default' : action.variant,
+        ...action,
+        variant: action.variant as "default" | "destructive" | "outline" | "secondary" | "ghost" | "link",
         ...action,
         onClick: () => window.location.href = action.href
       }))}
