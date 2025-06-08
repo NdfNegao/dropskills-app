@@ -227,9 +227,25 @@ export const AI_TOOLS: AiTool[] = [
     maxTokens: 800,
     systemPrompt: 'Tu es un expert en analyse financière et ROI. Calcule et présente des métriques précises.'
   },
-
-
-
+  {
+    id: 'tunnel-vente',
+    name: 'Tunnel de Vente',
+    description: 'Créez des tunnels de vente optimisés (redirection)',
+    icon: 'Zap',
+    type: 'TUNNEL_BUILDER',
+    category: 'Activation',
+    href: '/outils/tunnel-vente',
+    color: 'from-emerald-500 to-green-600',
+    isPremium: true,
+    step: 3,
+    stepTitle: 'ACTIVATION',
+    stepDescription: 'Construire des tunnels',
+    endpoint: '/api/ai/tunnel/generate',
+    model: 'gpt-4o-mini',
+    temperature: 0.8,
+    maxTokens: 2000,
+    systemPrompt: 'Tu es un expert en tunnel de vente et conversion. Crée des tunnels optimisés pour maximiser les ventes.'
+  }
 ];
 
 // Map des icônes pour utilisation dans les composants

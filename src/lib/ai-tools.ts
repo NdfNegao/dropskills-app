@@ -21,8 +21,7 @@ export interface AiToolResponse {
 
 // Templates de prompts pour chaque outil
 const TOOL_PROMPTS = {
-
-
+  titleGenerator: (input: any) => `
 MISSION : Génère ${input.nombreTitres} titres ${input.type === 'formation' ? 'de formation' : input.type === 'article' ? "d'article" : input.type === 'video' ? 'de vidéo' : "d'ebook"} ultra-créatifs et engageants.
 
 SUJET : ${input.sujet}
@@ -69,8 +68,7 @@ STRUCTURE À RETOURNER :
 
 Sois créatif, pratique et orienté résultats pour maximiser l'impact commercial.`,
 
-
-
+  productDescription: (input: any) => `
 MISSION : Crée une description ${input.tonalite} pour le produit "${input.produit}".
 
 AUDIENCE CIBLE : ${input.audience}
@@ -134,6 +132,7 @@ export async function processAiTool(request: AiToolRequest): Promise<AiToolRespo
     // Parser la réponse selon le type d'outil
     let parsedData;
 
+    if (request.toolType === 'titleGenerator') {
       // Extraire les titres numérotés
       const titres = response
         .split('\n')

@@ -763,7 +763,7 @@ function OfferGeneratorContent() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] p-6">
       <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
               <div className="flex items-center gap-3">
                 <Sparkles className="w-6 h-6 text-green-400" />

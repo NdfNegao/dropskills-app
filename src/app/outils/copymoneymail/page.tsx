@@ -3,70 +3,59 @@
 import React, { useState, useEffect } from 'react';
 import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
+import StepWizard, { WizardStep } from '@/components/StepWizard';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Mail, 
-  Sparkles, 
-  TrendingUp, 
+  Target, 
   Users, 
-  Target,
-  Lightbulb,
-  Zap,
-  CheckCircle,
-  Copy,
-  RefreshCw,
-  ChevronDown,
-  ChevronUp,
-  Send
+  Zap, 
+  Copy, 
+  RefreshCw, 
+  Settings,
+  MessageSquare,
+  Palette,
+  Sparkles,
+  TrendingUp,
+  Clock,
+  DollarSign,
+  Eye,
+  MousePointer,
+  HelpCircle,
+  CheckCircle
 } from 'lucide-react';
 
 export interface EmailFormData {
-  objectifSequence: string;
-  offreProduitService: string;
-  icpCible: string;
-  painPoints: string;
-  nombreEmails: number;
-  tonaliteStyle: string;
-  bonusContent: string;
-  callToAction: string;
+  objectif: string;
+  produitService: string;
+  audience: string;
+  problemes: string;
+  nombreEmails: string;
+  tonalite: string;
+  cta: string;
 }
 
 export interface EmailContent {
-  numeroEmail: number;
   sujet: string;
-  varianteSujet: string;
-  corpsMessage: string;
-  momentEnvoi: string;
-  conseilsEnvoi: string;
-  objectifEmail: string;
-  metriquesEstimees: {
-    tauxOuverture: number;
-    tauxClic: number;
-    tauxConversion: number;
-  };
+  contenu: string;
+  cta: string;
+  conseils: string[];
 }
 
 export interface EmailSequenceAnalysis {
-  sequenceInfo: {
-    titre: string;
-    description: string;
-    dureeTotal: string;
-    objectifGlobal: string;
+  informationsGenerales: {
+    objectifPrincipal: string;
+    dureeSequence: string;
+    frequenceEnvoi: string;
+    tonaliteGlobale: string;
+  };
+  metriquesEstimees: {
+    tauxOuverture: string;
+    tauxClic: string;
+    tauxConversion: string;
+    roiEstime: string;
   };
   emails: EmailContent[];
-  conseilsGeneraux: {
-    segmentation: string[];
-    automatisation: string[];
-    optimisation: string[];
-    delivrabilite: string[];
-  };
-  metriquesGlobales: {
-    tauxOuvertureEstime: number;
-    tauxClicEstime: number;
-    tauxConversionEstime: number;
-    revenusEstimes: string;
-  };
-  outilsRecommandes: string[];
-  prochainEtapes: string[];
 }
 
 const OBJECTIFS_OPTIONS = [
@@ -74,575 +63,804 @@ const OBJECTIFS_OPTIONS = [
   'Générer des leads qualifiés',
   'Nurturing et fidélisation',
   'Lancement de produit',
-  'Réactivation clients',
-  'Formation/éducation'
+  'Réactivation clients inactifs',
+  'Formation et éducation',
+  'Promotion événement/webinar'
 ];
 
 const TONALITES_OPTIONS = [
   'Professionnel et expert',
-  'Amical et accessible', 
+  'Amical et décontracté',
   'Urgent et persuasif',
-  'Éducatif et pédagogue',
-  'Luxe et premium',
-  'Décontracté et fun'
+  'Éducatif et informatif',
+  'Inspirant et motivant',
+  'Exclusif et premium',
+  'Storytelling et émotionnel'
 ];
 
-const NOMBRE_EMAILS_OPTIONS = [3, 5, 7, 10];
+const NOMBRE_EMAILS_OPTIONS = [
+  '3 emails',
+  '5 emails',
+  '7 emails',
+  '10 emails'
+];
+
+// Composants d'étapes
+function ConfigurationStep({ data, onChange, errors }: any) {
+  return (
+    <div className="space-y-6">
+      <div className="space-y-3">
+        <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+          <Target className="w-4 h-4" />
+          Objectif de la séquence
+          <div className="group relative">
+            <div className="w-4 h-4 text-gray-500 cursor-help rounded-full border border-gray-500 flex items-center justify-center text-xs">?</div>
+            <div className="absolute bottom-6 left-0 bg-[#232323] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg">
+              Quel est le but principal de cette séquence email ?
+            </div>
+          </div>
+        </label>
+        <div className="grid grid-cols-1 gap-3">
+          {OBJECTIFS_OPTIONS.map((objectif) => (
+            <button
+              key={objectif}
+              onClick={() => onChange({ objectif: objectif })}
+              className={`p-4 rounded-lg border text-left transition-colors ${
+                data.objectif === objectif
+                  ? 'bg-blue-500/20 border-blue-500 text-blue-300'
+                  : 'bg-[#1a1a1a] border-[#333] text-white hover:border-blue-500/50'
+              }`}
+            >
+              {objectif}
+            </button>
+          ))}
+        </div>
+        {errors.objectif && (
+          <p className="text-red-400 text-sm flex items-center gap-1">
+            <div className="w-1 h-1 bg-red-400 rounded-full" />
+            {errors.objectif}
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-3">
+        <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+          <Zap className="w-4 h-4" />
+          Produit/Service/Offre
+          <div className="group relative">
+            <div className="w-4 h-4 text-gray-500 cursor-help rounded-full border border-gray-500 flex items-center justify-center text-xs">?</div>
+            <div className="absolute bottom-6 left-0 bg-[#232323] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg">
+              Décrivez précisément ce que vous vendez
+            </div>
+          </div>
+        </label>
+        <textarea
+          value={data.produitService || ''}
+          onChange={(e) => onChange({ produitService: e.target.value })}
+          placeholder="Ex: Formation en ligne sur le dropshipping, coaching 1-to-1 en marketing digital, logiciel SaaS de gestion..."
+          rows={4}
+          className={`w-full px-4 py-3 bg-[#1a1a1a] border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none ${
+            errors.produitService ? 'border-red-500' : 'border-[#232323] hover:border-[#333333]'
+          }`}
+        />
+        {errors.produitService && (
+          <p className="text-red-400 text-sm flex items-center gap-1">
+            <div className="w-1 h-1 bg-red-400 rounded-full" />
+            {errors.produitService}
+          </p>
+        )}
+      </div>
+
+      <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+        <div className="flex items-start gap-3">
+          <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
+          <div>
+            <h4 className="text-blue-400 font-medium mb-1">Conseil Dropskills AI</h4>
+            <p className="text-blue-300 text-sm leading-relaxed">
+              Plus vous êtes précis sur votre objectif et votre offre, plus la séquence email sera personnalisée et efficace.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AudienceStep({ data, onChange, errors }: any) {
+  return (
+    <div className="space-y-6">
+      <div className="space-y-3">
+        <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+          <Users className="w-4 h-4" />
+          Audience cible
+          <div className="group relative">
+            <div className="w-4 h-4 text-gray-500 cursor-help rounded-full border border-gray-500 flex items-center justify-center text-xs">?</div>
+            <div className="absolute bottom-6 left-0 bg-[#232323] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg">
+              Qui sont vos prospects ? Âge, profession, situation...
+            </div>
+          </div>
+        </label>
+        <textarea
+          value={data.audience || ''}
+          onChange={(e) => onChange({ audience: e.target.value })}
+          placeholder="Ex: Entrepreneurs débutants 25-40 ans, salariés cherchant revenus complémentaires, e-commerçants expérimentés..."
+          rows={4}
+          className={`w-full px-4 py-3 bg-[#1a1a1a] border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none ${
+            errors.audience ? 'border-red-500' : 'border-[#232323] hover:border-[#333333]'
+          }`}
+        />
+        {errors.audience && (
+          <p className="text-red-400 text-sm flex items-center gap-1">
+            <div className="w-1 h-1 bg-red-400 rounded-full" />
+            {errors.audience}
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-3">
+        <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+          <Target className="w-4 h-4" />
+          Problèmes/Pain Points
+          <div className="group relative">
+            <div className="w-4 h-4 text-gray-500 cursor-help rounded-full border border-gray-500 flex items-center justify-center text-xs">?</div>
+            <div className="absolute bottom-6 left-0 bg-[#232323] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg">
+              Quels problèmes votre audience rencontre-t-elle ?
+            </div>
+          </div>
+        </label>
+        <textarea
+          value={data.problemes || ''}
+          onChange={(e) => onChange({ problemes: e.target.value })}
+          placeholder="Ex: Manque de temps, difficulté à générer du trafic, problèmes de conversion, budget limité..."
+          rows={4}
+          className={`w-full px-4 py-3 bg-[#1a1a1a] border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none ${
+            errors.problemes ? 'border-red-500' : 'border-[#232323] hover:border-[#333333]'
+          }`}
+        />
+        {errors.problemes && (
+          <p className="text-red-400 text-sm flex items-center gap-1">
+            <div className="w-1 h-1 bg-red-400 rounded-full" />
+            {errors.problemes}
+          </p>
+        )}
+      </div>
+
+      <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+        <div className="flex items-start gap-3">
+          <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
+          <div>
+            <h4 className="text-blue-400 font-medium mb-1">Conseil Dropskills AI</h4>
+            <p className="text-blue-300 text-sm leading-relaxed">
+              Identifiez précisément les douleurs de votre audience pour créer des emails qui résonnent émotionnellement.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ContenuStep({ data, onChange, errors }: any) {
+  return (
+    <div className="space-y-6">
+      <div className="space-y-3">
+        <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+          <Mail className="w-4 h-4" />
+          Nombre d'emails
+          <div className="group relative">
+            <div className="w-4 h-4 text-gray-500 cursor-help rounded-full border border-gray-500 flex items-center justify-center text-xs">?</div>
+            <div className="absolute bottom-6 left-0 bg-[#232323] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg">
+              Combien d'emails voulez-vous dans votre séquence ?
+            </div>
+          </div>
+        </label>
+        <select
+          value={data.nombreEmails || ''}
+          onChange={(e) => onChange({ nombreEmails: e.target.value })}
+          className={`w-full px-4 py-3 bg-[#1a1a1a] border rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+            errors.nombreEmails ? 'border-red-500' : 'border-[#232323] hover:border-[#333333]'
+          }`}
+        >
+          <option value="">Sélectionnez le nombre d'emails</option>
+          {NOMBRE_EMAILS_OPTIONS.map(option => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
+        {errors.nombreEmails && (
+          <p className="text-red-400 text-sm flex items-center gap-1">
+            <div className="w-1 h-1 bg-red-400 rounded-full" />
+            {errors.nombreEmails}
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-3">
+        <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+          <MousePointer className="w-4 h-4" />
+          Call-to-Action principal
+          <div className="group relative">
+            <div className="w-4 h-4 text-gray-500 cursor-help rounded-full border border-gray-500 flex items-center justify-center text-xs">?</div>
+            <div className="absolute bottom-6 left-0 bg-[#232323] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg">
+              Quelle action voulez-vous que vos prospects effectuent ?
+            </div>
+          </div>
+        </label>
+        <textarea
+          value={data.cta || ''}
+          onChange={(e) => onChange({ cta: e.target.value })}
+          placeholder="Ex: Acheter la formation, réserver un appel découverte, s'inscrire au webinar, télécharger le guide..."
+          rows={3}
+          className={`w-full px-4 py-3 bg-[#1a1a1a] border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none ${
+            errors.cta ? 'border-red-500' : 'border-[#232323] hover:border-[#333333]'
+          }`}
+        />
+        {errors.cta && (
+          <p className="text-red-400 text-sm flex items-center gap-1">
+            <div className="w-1 h-1 bg-red-400 rounded-full" />
+            {errors.cta}
+          </p>
+        )}
+      </div>
+
+      <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+        <div className="flex items-start gap-3">
+          <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
+          <div>
+            <h4 className="text-blue-400 font-medium mb-1">Conseil Dropskills AI</h4>
+            <p className="text-blue-300 text-sm leading-relaxed">
+              Un CTA clair et spécifique augmente significativement vos taux de conversion. Évitez les formulations vagues.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StyleStep({ data, onChange, errors }: any) {
+  return (
+    <div className="space-y-6">
+      <div className="space-y-3">
+        <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+          <Palette className="w-4 h-4" />
+          Tonalité et style
+          <div className="group relative">
+            <div className="w-4 h-4 text-gray-500 cursor-help rounded-full border border-gray-500 flex items-center justify-center text-xs">?</div>
+            <div className="absolute bottom-6 left-0 bg-[#232323] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg">
+              Quel ton voulez-vous adopter dans vos emails ?
+            </div>
+          </div>
+        </label>
+        <select
+          value={data.tonalite || ''}
+          onChange={(e) => onChange({ tonalite: e.target.value })}
+          className={`w-full px-4 py-3 bg-[#1a1a1a] border rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+            errors.tonalite ? 'border-red-500' : 'border-[#232323] hover:border-[#333333]'
+          }`}
+        >
+          <option value="">Sélectionnez une tonalité</option>
+          {TONALITES_OPTIONS.map(option => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
+        {errors.tonalite && (
+          <p className="text-red-400 text-sm flex items-center gap-1">
+            <div className="w-1 h-1 bg-red-400 rounded-full" />
+            {errors.tonalite}
+          </p>
+        )}
+      </div>
+
+      <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+        <div className="flex items-start gap-3">
+          <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
+          <div>
+            <h4 className="text-blue-400 font-medium mb-1">Conseil Dropskills AI</h4>
+            <p className="text-blue-300 text-sm leading-relaxed">
+              La tonalité doit correspondre à votre marque et à votre audience. Un ton cohérent renforce la confiance.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
+        <div className="flex items-start gap-3">
+          <Sparkles className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
+          <div>
+            <h4 className="text-green-400 font-medium mb-2">Prêt pour la génération !</h4>
+            <p className="text-green-300 text-sm leading-relaxed mb-3">
+              Dropskills AI va maintenant créer votre séquence email personnalisée en analysant :
+            </p>
+            <ul className="text-green-300 text-sm space-y-1">
+              <li>• Votre objectif et votre offre</li>
+              <li>• Le profil de votre audience</li>
+              <li>• Les problèmes identifiés</li>
+              <li>• La tonalité choisie</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function CopyMoneyMailContent() {
-  const [formData, setFormData] = useState<EmailFormData>({
-    objectifSequence: '',
-    offreProduitService: '',
-    icpCible: '',
-    painPoints: '',
-    nombreEmails: 5,
-    tonaliteStyle: '',
-    bonusContent: '',
-    callToAction: ''
-  });
-
-  const [emailResult, setEmailResult] = useState<EmailSequenceAnalysis | null>(null);
+  const [emailSequence, setEmailSequence] = useState<EmailSequenceAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [icpData, setIcpData] = useState<any>(null);
-  const [uspData, setUspData] = useState<any>(null);
-  const [tunnelData, setTunnelData] = useState<any>(null);
-  const [expandedSections, setExpandedSections] = useState({
-    objectif: true,
-    offre: false,
-    audience: false,
-    pain: false,
-    sequence: false,
-    tonalite: false,
-    bonus: false,
-    cta: false
-  });
+  const [showWizard, setShowWizard] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [lastFormData, setLastFormData] = useState<EmailFormData | null>(null);
 
-  // Récupération des données ICP, USP et Tunnel si disponibles
+  // Charger les données sauvegardées au démarrage
   useEffect(() => {
-    const savedICP = localStorage.getItem('dropskills_icp_data');
-    const savedUSP = localStorage.getItem('dropskills_usp_data');
-    const savedTunnel = localStorage.getItem('dropskills_tunnel_data');
+    const savedResult = localStorage.getItem('dropskills_copymoneymail_data');
+    const savedFormData = localStorage.getItem('dropskills_copymoneymail_form_data');
     
-    if (savedICP) {
+    if (savedResult && savedFormData) {
       try {
-        const parsedICP = JSON.parse(savedICP);
-        setIcpData(parsedICP);
-        // Pré-remplir avec les données ICP
-        setFormData(prev => ({
-          ...prev,
-          icpCible: `${parsedICP.profilSociodemographique?.age || ''} ${parsedICP.profilSociodemographique?.situationPro || ''}`.trim()
-        }));
-      } catch (error) {
-        console.error('Erreur lors du parsing des données ICP:', error);
-      }
-    }
-    
-    if (savedUSP) {
-      try {
-        const parsedUSP = JSON.parse(savedUSP);
-        setUspData(parsedUSP);
-      } catch (error) {
-        console.error('Erreur lors du parsing des données USP:', error);
-      }
-    }
-    
-    if (savedTunnel) {
-      try {
-        const parsedTunnel = JSON.parse(savedTunnel);
-        setTunnelData(parsedTunnel);
-      } catch (error) {
-        console.error('Erreur lors du parsing des données Tunnel:', error);
+        setEmailSequence(JSON.parse(savedResult));
+        setLastFormData(JSON.parse(savedFormData));
+        setShowWizard(false);
+      } catch (e) {
+        console.log('Erreur lors du chargement des données sauvegardées');
       }
     }
   }, []);
 
-  const handleGenerate = async () => {
-    if (!formData.objectifSequence || !formData.offreProduitService) {
-      alert('Veuillez remplir au moins l\'objectif et l\'offre');
-      return;
-    }
-
+  const generateEmailSequence = async (formData: EmailFormData) => {
     setIsLoading(true);
+    setError(null);
     
     try {
-      // Simulation de génération IA
-      setTimeout(() => {
-        const mockResult: EmailSequenceAnalysis = {
-          sequenceInfo: {
-            titre: `Séquence ${formData.objectifSequence}`,
-            description: `Séquence de ${formData.nombreEmails} emails pour ${formData.offreProduitService}`,
-            dureeTotal: `${formData.nombreEmails * 2} jours`,
-            objectifGlobal: formData.objectifSequence
-          },
-          emails: Array.from({ length: formData.nombreEmails }, (_, i) => ({
-            numeroEmail: i + 1,
-            sujet: `Email ${i + 1}: ${i === 0 ? 'Bienvenue' : i === formData.nombreEmails - 1 ? 'Dernière chance' : `Valeur ${i}`}`,
-            varianteSujet: `[URGENT] ${i === 0 ? 'Votre accès est prêt' : i === formData.nombreEmails - 1 ? 'Offre expire dans 24h' : `Secret ${i} révélé`}`,
-            corpsMessage: `Contenu de l'email ${i + 1} adapté à votre ${formData.tonaliteStyle.toLowerCase()} pour ${formData.offreProduitService}...`,
-            momentEnvoi: `Jour ${(i * 2) + 1} - ${i === 0 ? '9h00' : i % 2 === 0 ? '14h00' : '10h00'}`,
-            conseilsEnvoi: `Optimisé pour ${i === 0 ? 'l\'accueil' : i === formData.nombreEmails - 1 ? 'la conversion finale' : 'l\'engagement'}`,
-            objectifEmail: i === 0 ? 'Accueil et première valeur' : i === formData.nombreEmails - 1 ? 'Conversion finale' : 'Nurturing et valeur',
-            metriquesEstimees: {
-              tauxOuverture: Math.max(20, 45 - (i * 3)),
-              tauxClic: Math.max(3, 12 - (i * 1.5)),
-              tauxConversion: i === formData.nombreEmails - 1 ? 8 : Math.max(1, 3 - (i * 0.5))
-            }
-          })),
-          conseilsGeneraux: {
-            segmentation: ['Segmentez par engagement', 'Adaptez selon le comportement'],
-            automatisation: ['Configurez les délais', 'Testez les horaires d\'envoi'],
-            optimisation: ['A/B testez les objets', 'Mesurez les performances'],
-            delivrabilite: ['Réchauffez votre domaine', 'Nettoyez votre liste']
-          },
-          metriquesGlobales: {
-            tauxOuvertureEstime: 35,
-            tauxClicEstime: 8,
-            tauxConversionEstime: 12,
-            revenusEstimes: '2,500€'
-          },
-          outilsRecommandes: ['Mailchimp', 'ConvertKit', 'ActiveCampaign'],
-          prochainEtapes: ['Configurer l\'automatisation', 'Tester la séquence', 'Analyser les résultats']
-        };
-        
-        setEmailResult(mockResult);
-        setIsLoading(false);
-        
-        // Sauvegarder la séquence générée
-        localStorage.setItem('dropskills_email_sequence_data', JSON.stringify(mockResult));
-        localStorage.setItem('dropskills_email_form_data', JSON.stringify(formData));
-      }, 3000);
+      const response = await fetch('/api/ai/copymoneymail', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          objectif: formData.objectif,
+          produitService: formData.produitService,
+          audience: formData.audience,
+          problemes: formData.problemes,
+          nombreEmails: formData.nombreEmails,
+          tonalite: formData.tonalite,
+          cta: formData.cta
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la génération');
+      }
+
+      const result = await response.json();
+      setEmailSequence(result);
+      setLastFormData(formData);
+      setShowWizard(false);
+      
+      // Sauvegarder les données
+      localStorage.setItem('dropskills_copymoneymail_data', JSON.stringify(result));
+      localStorage.setItem('dropskills_copymoneymail_form_data', JSON.stringify(formData));
       
     } catch (error) {
       console.error('Erreur:', error);
-      alert('Erreur lors de la génération de la séquence');
+      setError('Une erreur est survenue lors de la génération. Veuillez réessayer.');
+    } finally {
       setIsLoading(false);
     }
   };
 
-  const handleInputChange = (field: keyof EmailFormData, value: string | number) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+  const regenerateSequence = () => {
+    if (lastFormData) {
+      generateEmailSequence(lastFormData);
+    }
   };
 
-  const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
+  const resetForm = () => {
+    setEmailSequence(null);
+    setLastFormData(null);
+    setShowWizard(true);
+    setError(null);
+    localStorage.removeItem('dropskills_copymoneymail_data');
+    localStorage.removeItem('dropskills_copymoneymail_form_data');
   };
+
+  // Composant pour l'étape de résultats
+  const ResultStep = ({ data, onUpdate }: { data: any; onUpdate: (field: string, value: any) => void }) => {
+    if (!emailSequence) {
+      return (
+        <div className="text-center py-12">
+          <Mail className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+          <p className="text-gray-400 text-lg mb-2">Génération en cours...</p>
+          <p className="text-gray-500 text-sm">Votre séquence email sera affichée ici</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-6">
+        {/* Informations générales */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-[#1a1a1a] rounded-lg p-4 border border-[#232323]">
+            <h3 className="font-medium text-gray-300 mb-3 flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" />
+              Informations générales
+            </h3>
+            <div className="space-y-2 text-sm">
+              <div><span className="text-gray-400">Objectif:</span> <span className="text-white">{emailSequence.informationsGenerales.objectifPrincipal}</span></div>
+              <div><span className="text-gray-400">Durée:</span> <span className="text-white">{emailSequence.informationsGenerales.dureeSequence}</span></div>
+              <div><span className="text-gray-400">Fréquence:</span> <span className="text-white">{emailSequence.informationsGenerales.frequenceEnvoi}</span></div>
+            </div>
+          </div>
+          
+          <div className="bg-[#1a1a1a] rounded-lg p-4 border border-[#232323]">
+            <h3 className="font-medium text-gray-300 mb-3 flex items-center gap-2">
+              <DollarSign className="w-4 h-4" />
+              Métriques estimées
+            </h3>
+            <div className="space-y-2 text-sm">
+              <div><span className="text-gray-400">Taux d'ouverture:</span> <span className="text-green-400">{emailSequence.metriquesEstimees.tauxOuverture}</span></div>
+              <div><span className="text-gray-400">Taux de clic:</span> <span className="text-blue-400">{emailSequence.metriquesEstimees.tauxClic}</span></div>
+              <div><span className="text-gray-400">Conversion:</span> <span className="text-yellow-400">{emailSequence.metriquesEstimees.tauxConversion}</span></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Conseil Dropskills AI */}
+        <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-lg p-4">
+          <h4 className="font-medium text-blue-400 mb-3 flex items-center gap-2">
+            <Sparkles className="w-4 h-4" />
+            💡 Conseil Dropskills AI
+          </h4>
+          <p className="text-blue-300 text-sm leading-relaxed">
+            Votre séquence a été optimisée selon les meilleures pratiques. Pour maximiser vos résultats, 
+            testez différents horaires d'envoi et personnalisez les emails selon les segments de votre audience.
+          </p>
+        </div>
+
+        {/* Liste des emails */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+            <Mail className="w-5 h-5" />
+            Emails de la séquence ({emailSequence.emails.length})
+          </h3>
+          {emailSequence.emails.map((email, index) => (
+            <div key={index} className="bg-[#1a1a1a] rounded-lg border border-[#232323] p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="font-medium text-white flex items-center gap-2">
+                  <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-xs font-bold">
+                    {index + 1}
+                  </div>
+                  Email {index + 1}
+                </h4>
+                <button
+                  onClick={() => copyToClipboard(`${email.sujet}\n\n${email.contenu}`)}
+                  className="p-2 bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors"
+                  title="Copier l'email complet"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
+              
+              <div className="space-y-3">
+                <div>
+                  <span className="text-sm font-medium text-gray-300 mb-1 block">Sujet</span>
+                  <div className="p-3 bg-[#0f0f0f] rounded border border-[#232323] text-white">
+                    {email.sujet}
+                  </div>
+                </div>
+                
+                <div>
+                  <span className="text-sm font-medium text-gray-300 mb-1 block">Contenu</span>
+                  <div className="p-3 bg-[#0f0f0f] rounded border border-[#232323] text-white whitespace-pre-wrap text-sm leading-relaxed max-h-40 overflow-y-auto">
+                    {email.contenu}
+                  </div>
+                </div>
+                
+                <div>
+                  <span className="text-sm font-medium text-gray-300 mb-1 block">Call-to-Action</span>
+                  <div className="p-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded text-blue-300 text-sm">
+                    {email.cta}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const steps: WizardStep[] = [
+    {
+      id: 'configuration',
+      title: 'Configuration',
+      description: 'Définissez l\'objectif et votre offre',
+      icon: Settings,
+      component: ConfigurationStep,
+      validation: (data: EmailFormData) => {
+        const errors: Record<string, string> = {};
+        
+        if (!data.objectif?.trim()) {
+          errors.objectif = 'L\'objectif est requis';
+        }
+        
+        if (!data.produitService?.trim()) {
+          errors.produitService = 'La description du produit/service est requise';
+        } else if (data.produitService.trim().length < 20) {
+          errors.produitService = 'Veuillez fournir une description plus détaillée (minimum 20 caractères)';
+        }
+        
+        return {
+          isValid: Object.keys(errors).length === 0,
+          errors
+        };
+      }
+    },
+    {
+      id: 'audience',
+      title: 'Audience',
+      description: 'Définissez votre audience et ses problèmes',
+      icon: Users,
+      component: AudienceStep,
+      validation: (data: EmailFormData) => {
+        const errors: Record<string, string> = {};
+        
+        if (!data.audience?.trim()) {
+          errors.audience = 'L\'audience cible est requise';
+        } else if (data.audience.trim().length < 15) {
+          errors.audience = 'Veuillez détailler davantage votre audience (minimum 15 caractères)';
+        }
+        
+        if (!data.problemes?.trim()) {
+          errors.problemes = 'Les problèmes/pain points sont requis';
+        } else if (data.problemes.trim().length < 15) {
+          errors.problemes = 'Veuillez détailler davantage les problèmes (minimum 15 caractères)';
+        }
+        
+        return {
+          isValid: Object.keys(errors).length === 0,
+          errors
+        };
+      }
+    },
+    {
+      id: 'contenu',
+      title: 'Contenu',
+      description: 'Configurez le nombre d\'emails et le CTA',
+      icon: MessageSquare,
+      component: ContenuStep,
+      validation: (data: EmailFormData) => {
+        const errors: Record<string, string> = {};
+        
+        if (!data.nombreEmails?.trim()) {
+          errors.nombreEmails = 'Le nombre d\'emails est requis';
+        }
+        
+        if (!data.cta?.trim()) {
+          errors.cta = 'Le call-to-action est requis';
+        } else if (data.cta.trim().length < 10) {
+          errors.cta = 'Veuillez détailler davantage votre CTA (minimum 10 caractères)';
+        }
+        
+        return {
+          isValid: Object.keys(errors).length === 0,
+          errors
+        };
+      }
+    },
+    {
+      id: 'style',
+      title: 'Style',
+      description: 'Choisissez la tonalité de vos emails',
+      icon: Palette,
+      component: StyleStep,
+      validation: (data: EmailFormData) => {
+        const errors: Record<string, string> = {};
+        
+        if (!data.tonalite?.trim()) {
+          errors.tonalite = 'La tonalité est requise';
+        }
+        
+        return {
+          isValid: Object.keys(errors).length === 0,
+          errors
+        };
+      }
+    }
+  ];
+
+  if (showWizard) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] text-white p-6">
+        <div className="max-w-4xl mx-auto">
+          <StepWizard
+            steps={steps}
+            onComplete={generateEmailSequence}
+            isLoading={isLoading}
+            title="CopyMoneyMail"
+            description="Générez des séquences email qui convertissent avec l'IA"
+            initialData={lastFormData || {}}
+          />
+          
+          {error && (
+            <div className="mt-6 bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-2 h-2 bg-red-500 rounded-full" />
+                <span className="text-red-400 font-medium">Erreur</span>
+              </div>
+              <p className="text-red-400 text-sm">{error}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="mb-8">
-
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
-            <div className="flex items-center gap-3">
-              <Sparkles className="w-5 h-5 text-pink-400" />
+    <div className="min-h-screen bg-[#0a0a0a] text-white p-6">
+      <div className="max-w-6xl mx-auto">
+        {/* Header des résultats */}
+        <div className="bg-[#111111] rounded-xl border border-[#232323] p-6 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-xl">
+                <Mail className="w-8 h-8 text-purple-400" />
+              </div>
               <div>
-                <p className="text-white font-semibold">3,247</p>
-                <p className="text-gray-400 text-sm">Séquences générées</p>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  Votre Séquence Email
+                </h1>
+                <p className="text-gray-400 mt-1">
+                  Séquence générée avec succès
+                </p>
               </div>
             </div>
+            <div className="flex gap-3">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={regenerateSequence}
+                disabled={isLoading}
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+              >
+                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                Régénérer
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={resetForm}
+                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+              >
+                Nouvelle séquence
+              </motion.button>
+            </div>
           </div>
-          <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
-            <div className="flex items-center gap-3">
-              <TrendingUp className="w-5 h-5 text-green-400" />
-              <div>
-                <p className="text-white font-semibold">+42%</p>
-                <p className="text-gray-400 text-sm">Taux d'ouverture moyen</p>
+
+          {emailSequence && (
+            <>
+              {/* Informations générales */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div className="bg-[#1a1a1a] rounded-lg p-4 border border-[#232323]">
+                  <h3 className="font-medium text-gray-300 mb-3 flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4" />
+                    Informations générales
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div><span className="text-gray-400">Objectif:</span> <span className="text-white">{emailSequence.informationsGenerales.objectifPrincipal}</span></div>
+                    <div><span className="text-gray-400">Durée:</span> <span className="text-white">{emailSequence.informationsGenerales.dureeSequence}</span></div>
+                    <div><span className="text-gray-400">Fréquence:</span> <span className="text-white">{emailSequence.informationsGenerales.frequenceEnvoi}</span></div>
+                    <div><span className="text-gray-400">Tonalité:</span> <span className="text-white">{emailSequence.informationsGenerales.tonaliteGlobale}</span></div>
+                  </div>
+                </div>
+                
+                <div className="bg-[#1a1a1a] rounded-lg p-4 border border-[#232323]">
+                  <h3 className="font-medium text-gray-300 mb-3 flex items-center gap-2">
+                    <DollarSign className="w-4 h-4" />
+                    Métriques estimées
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div><span className="text-gray-400">Taux d'ouverture:</span> <span className="text-green-400">{emailSequence.metriquesEstimees.tauxOuverture}</span></div>
+                    <div><span className="text-gray-400">Taux de clic:</span> <span className="text-blue-400">{emailSequence.metriquesEstimees.tauxClic}</span></div>
+                    <div><span className="text-gray-400">Conversion:</span> <span className="text-yellow-400">{emailSequence.metriquesEstimees.tauxConversion}</span></div>
+                    <div><span className="text-gray-400">ROI estimé:</span> <span className="text-purple-400">{emailSequence.metriquesEstimees.roiEstime}</span></div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
-            <div className="flex items-center gap-3">
-              <Users className="w-5 h-5 text-blue-400" />
-              <div>
-                <p className="text-white font-semibold">1,456</p>
-                <p className="text-gray-400 text-sm">Marketeurs actifs</p>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Données détectées */}
-        {(icpData || uspData || tunnelData) && (
-          <div className="bg-[#111111] rounded-xl p-4 border border-[#232323] mb-6">
-            <div className="flex items-center gap-2 mb-3">
-              <CheckCircle className="w-5 h-5 text-green-400" />
-              <span className="text-white font-medium">Données détectées pour optimisation</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {icpData && (
-                <div className="inline-flex items-center px-3 py-1 bg-blue-500/10 text-blue-400 rounded-lg text-sm border border-blue-500/20">
-                  <span className="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
-                  ICP détecté
-                </div>
-              )}
-              {uspData && (
-                <div className="inline-flex items-center px-3 py-1 bg-purple-500/10 text-purple-400 rounded-lg text-sm border border-purple-500/20">
-                  <span className="w-2 h-2 bg-purple-400 rounded-full mr-2"></span>
-                  USP détectée
-                </div>
-              )}
-              {tunnelData && (
-                <div className="inline-flex items-center px-3 py-1 bg-orange-500/10 text-orange-400 rounded-lg text-sm border border-orange-500/20">
-                  <span className="w-2 h-2 bg-orange-400 rounded-full mr-2"></span>
-                  Tunnel détecté
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Conseils */}
-      <div className="mb-8 bg-pink-900/20 border border-pink-500/30 rounded-xl p-6">
-        <h3 className="text-pink-400 font-semibold mb-4 flex items-center gap-2">
-          <Lightbulb className="w-5 h-5" />
-          💡 Conseils pour des emails efficaces
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-pink-300 text-sm">
-          <div>
-            <h4 className="font-medium mb-3 text-pink-200">✨ Optimisation des campagnes</h4>
-            <ul className="space-y-2 text-pink-300">
-              <li>• <strong>Segmentez votre liste :</strong> Adaptez le message selon le profil</li>
-              <li>• <strong>Objets accrocheurs :</strong> 30-50 caractères, évitez le spam</li>
-              <li>• <strong>Personnalisation :</strong> Utilisez le prénom et les données client</li>
-              <li>• <strong>Mobile-first :</strong> 70% des emails sont lus sur mobile</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium mb-3 text-pink-200">🎯 Conversion et engagement</h4>
-            <ul className="space-y-2 text-pink-300">
-              <li>• <strong>Un seul CTA :</strong> Concentrez l'attention sur une action</li>
-              <li>• <strong>Storytelling :</strong> Racontez une histoire qui résonne</li>
-              <li>• <strong>Preuve sociale :</strong> Témoignages et résultats clients</li>
-              <li>• <strong>Testez et mesurez :</strong> A/B testez objets, contenus et CTA</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Formulaire */}
-        <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-          <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-            <Target className="w-5 h-5 text-pink-400" />
-            Configuration de la séquence
-          </h2>
-
-          <div className="space-y-4">
-            {/* Objectif */}
-            <div className="border border-[#232323] rounded-lg">
-              <button
-                onClick={() => toggleSection('objectif')}
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-[#1a1a1a] transition-colors"
-              >
-                <span className="text-white font-medium">Objectif de la séquence *</span>
-                {expandedSections.objectif ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
-              </button>
-              {expandedSections.objectif && (
-                <div className="p-4 pt-0">
-                  <div className="grid grid-cols-1 gap-2">
-                    {OBJECTIFS_OPTIONS.map((objectif) => (
-                      <button
-                        key={objectif}
-                        onClick={() => handleInputChange('objectifSequence', objectif)}
-                        className={`p-3 rounded-lg border text-sm transition-colors text-left ${
-                          formData.objectifSequence === objectif
-                            ? 'bg-[#00D2FF] border-[#00D2FF] text-black'
-                            : 'bg-[#1a1a1a] border-[#333] text-white hover:border-[#00D2FF]'
-                        }`}
-                      >
-                        {objectif}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Offre */}
-            <div className="border border-[#232323] rounded-lg">
-              <button
-                onClick={() => toggleSection('offre')}
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-[#1a1a1a] transition-colors"
-              >
-                <span className="text-white font-medium">Offre/Produit/Service *</span>
-                {expandedSections.offre ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
-              </button>
-              {expandedSections.offre && (
-                <div className="p-4 pt-0">
-                  <textarea
-                    value={formData.offreProduitService}
-                    onChange={(e) => handleInputChange('offreProduitService', e.target.value)}
-                    placeholder="Décrivez votre offre, produit ou service..."
-                    rows={3}
-                    className="w-full p-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Audience */}
-            <div className="border border-[#232323] rounded-lg">
-              <button
-                onClick={() => toggleSection('audience')}
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-[#1a1a1a] transition-colors"
-              >
-                <span className="text-white font-medium">Audience cible</span>
-                {expandedSections.audience ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
-              </button>
-              {expandedSections.audience && (
-                <div className="p-4 pt-0">
-                  <input
-                    type="text"
-                    value={formData.icpCible}
-                    onChange={(e) => handleInputChange('icpCible', e.target.value)}
-                    placeholder="Ex: Entrepreneurs débutants, E-commerçants..."
-                    className="w-full p-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Pain Points */}
-            <div className="border border-[#232323] rounded-lg">
-              <button
-                onClick={() => toggleSection('pain')}
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-[#1a1a1a] transition-colors"
-              >
-                <span className="text-white font-medium">Problèmes/Pain Points</span>
-                {expandedSections.pain ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
-              </button>
-              {expandedSections.pain && (
-                <div className="p-4 pt-0">
-                  <textarea
-                    value={formData.painPoints}
-                    onChange={(e) => handleInputChange('painPoints', e.target.value)}
-                    placeholder="Quels problèmes votre audience rencontre-t-elle ?"
-                    rows={2}
-                    className="w-full p-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Nombre d'emails */}
-            <div className="border border-[#232323] rounded-lg">
-              <button
-                onClick={() => toggleSection('sequence')}
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-[#1a1a1a] transition-colors"
-              >
-                <span className="text-white font-medium">Nombre d'emails</span>
-                {expandedSections.sequence ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
-              </button>
-              {expandedSections.sequence && (
-                <div className="p-4 pt-0">
-                  <div className="grid grid-cols-4 gap-2">
-                    {NOMBRE_EMAILS_OPTIONS.map((nombre) => (
-                      <button
-                        key={nombre}
-                        onClick={() => handleInputChange('nombreEmails', nombre)}
-                        className={`p-3 rounded-lg border text-sm transition-colors ${
-                          formData.nombreEmails === nombre
-                            ? 'bg-[#00D2FF] border-[#00D2FF] text-black'
-                            : 'bg-[#1a1a1a] border-[#333] text-white hover:border-[#00D2FF]'
-                        }`}
-                      >
-                        {nombre}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Tonalité */}
-            <div className="border border-[#232323] rounded-lg">
-              <button
-                onClick={() => toggleSection('tonalite')}
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-[#1a1a1a] transition-colors"
-              >
-                <span className="text-white font-medium">Tonalité et style</span>
-                {expandedSections.tonalite ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
-              </button>
-              {expandedSections.tonalite && (
-                <div className="p-4 pt-0">
-                  <div className="grid grid-cols-1 gap-2">
-                    {TONALITES_OPTIONS.map((tonalite) => (
-                      <button
-                        key={tonalite}
-                        onClick={() => handleInputChange('tonaliteStyle', tonalite)}
-                        className={`p-3 rounded-lg border text-sm transition-colors text-left ${
-                          formData.tonaliteStyle === tonalite
-                            ? 'bg-[#00D2FF] border-[#00D2FF] text-black'
-                            : 'bg-[#1a1a1a] border-[#333] text-white hover:border-[#00D2FF]'
-                        }`}
-                      >
-                        {tonalite}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Call to Action */}
-            <div className="border border-[#232323] rounded-lg">
-              <button
-                onClick={() => toggleSection('cta')}
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-[#1a1a1a] transition-colors"
-              >
-                <span className="text-white font-medium">Call-to-Action principal</span>
-                {expandedSections.cta ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
-              </button>
-              {expandedSections.cta && (
-                <div className="p-4 pt-0">
-                  <input
-                    type="text"
-                    value={formData.callToAction}
-                    onChange={(e) => handleInputChange('callToAction', e.target.value)}
-                    placeholder="Ex: Acheter maintenant, S'inscrire, Télécharger..."
-                    className="w-full p-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none"
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-
-          <button
-            onClick={handleGenerate}
-            disabled={isLoading || !formData.objectifSequence || !formData.offreProduitService}
-            className="w-full mt-6 bg-gradient-to-r from-pink-500 to-rose-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-pink-600 hover:to-rose-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {isLoading ? (
-              <>
-                <RefreshCw className="w-4 h-4 animate-spin" />
-                Génération en cours...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4" />
-                Générer ma séquence
-              </>
-            )}
-          </button>
-        </div>
-
-        {/* Résultats */}
-        <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-          <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-            <Send className="w-5 h-5 text-pink-400" />
-            Votre Séquence Email
-          </h2>
-
-          {!emailResult ? (
-            <div className="text-center py-12">
-              <Mail className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-400 text-lg mb-2">Prêt à créer votre séquence email ?</p>
-              <p className="text-gray-500 text-sm">Remplissez le formulaire et cliquez sur "Générer ma séquence"</p>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {/* Info séquence */}
-              <div className="bg-[#1a1a1a] rounded-lg p-4">
-                <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
-                  <Target className="w-4 h-4 text-pink-400" />
-                  Informations générales
+              {/* Liste des emails */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                  <Mail className="w-5 h-5" />
+                  Emails de la séquence ({emailSequence.emails.length})
                 </h3>
-                <div className="space-y-2 text-sm">
-                  <p className="text-gray-300"><span className="text-pink-400">Titre:</span> {emailResult.sequenceInfo.titre}</p>
-                  <p className="text-gray-300"><span className="text-pink-400">Durée:</span> {emailResult.sequenceInfo.dureeTotal}</p>
-                  <p className="text-gray-300"><span className="text-pink-400">Objectif:</span> {emailResult.sequenceInfo.objectifGlobal}</p>
-                </div>
-              </div>
-
-              {/* Métriques globales */}
-              <div className="bg-[#1a1a1a] rounded-lg p-4">
-                <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-green-400" />
-                  Métriques estimées
-                </h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-green-400 font-medium">Taux d'ouverture</p>
-                    <p className="text-white text-lg">{emailResult.metriquesGlobales.tauxOuvertureEstime}%</p>
-                  </div>
-                  <div>
-                    <p className="text-blue-400 font-medium">Taux de clic</p>
-                    <p className="text-white text-lg">{emailResult.metriquesGlobales.tauxClicEstime}%</p>
-                  </div>
-                  <div>
-                    <p className="text-purple-400 font-medium">Conversion</p>
-                    <p className="text-white text-lg">{emailResult.metriquesGlobales.tauxConversionEstime}%</p>
-                  </div>
-                  <div>
-                    <p className="text-yellow-400 font-medium">Revenus estimés</p>
-                    <p className="text-white text-lg">{emailResult.metriquesGlobales.revenusEstimes}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Emails */}
-              <div className="bg-[#1a1a1a] rounded-lg p-4">
-                <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-blue-400" />
-                  Emails de la séquence
-                </h3>
-                <div className="space-y-3 max-h-60 overflow-y-auto">
-                  {emailResult.emails.map((email, index) => (
-                    <div key={index} className="bg-[#111111] p-3 rounded border border-[#333]">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-blue-400 font-medium text-sm">Email {email.numeroEmail}</span>
+                {emailSequence.emails.map((email, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-[#1a1a1a] rounded-lg border border-[#232323] overflow-hidden"
+                  >
+                    <div className="p-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="font-medium text-white flex items-center gap-2">
+                          <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-xs font-bold">
+                            {index + 1}
+                          </div>
+                          Email {index + 1}
+                        </h4>
                         <button
-                          onClick={() => copyToClipboard(email.sujet)}
-                          className="text-gray-500 hover:text-[#00D2FF] transition-colors"
+                          onClick={() => copyToClipboard(`${email.sujet}\n\n${email.contenu}`)}
+                          className="p-2 bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors"
+                          title="Copier l'email complet"
                         >
-                          <Copy className="w-3 h-3" />
+                          <Copy className="w-4 h-4" />
                         </button>
                       </div>
-                      <p className="text-white text-sm font-medium mb-1">{email.sujet}</p>
-                      <p className="text-gray-400 text-xs">{email.momentEnvoi} • {email.objectifEmail}</p>
+                      
+                      <div className="space-y-4">
+                        <div>
+                          <span className="text-sm font-medium text-gray-300 flex items-center gap-2 mb-2">
+                            <Eye className="w-4 h-4" />
+                            Sujet de l'email
+                          </span>
+                          <div className="p-3 bg-[#0f0f0f] rounded border border-[#232323] text-white">
+                            {email.sujet}
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <span className="text-sm font-medium text-gray-300 flex items-center gap-2 mb-2">
+                            <MessageSquare className="w-4 h-4" />
+                            Contenu de l'email
+                          </span>
+                          <div className="p-4 bg-[#0f0f0f] rounded border border-[#232323] text-white whitespace-pre-wrap leading-relaxed">
+                            {email.contenu}
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <span className="text-sm font-medium text-gray-300 flex items-center gap-2 mb-2">
+                            <MousePointer className="w-4 h-4" />
+                            Call-to-Action
+                          </span>
+                          <div className="p-3 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded text-blue-300">
+                            {email.cta}
+                          </div>
+                        </div>
+                        
+                        {email.conseils && email.conseils.length > 0 && (
+                          <div>
+                            <span className="text-sm font-medium text-gray-300 flex items-center gap-2 mb-2">
+                              <Sparkles className="w-4 h-4" />
+                              Conseils d'optimisation
+                            </span>
+                            <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3">
+                              <ul className="space-y-1 text-green-300 text-sm">
+                                {email.conseils.map((conseil, conseilIndex) => (
+                                  <li key={conseilIndex} className="flex items-start gap-2">
+                                    <div className="w-1 h-1 bg-green-400 rounded-full mt-2 flex-shrink-0" />
+                                    {conseil}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  ))}
-                </div>
+                  </motion.div>
+                ))}
               </div>
-
-              {/* Actions */}
-              <div className="flex gap-2">
-                <button
-                  onClick={() => copyToClipboard(JSON.stringify(emailResult, null, 2))}
-                  className="flex-1 bg-[#1a1a1a] text-white py-2 px-4 rounded-lg hover:bg-[#232323] transition-colors flex items-center justify-center gap-2"
-                >
-                  <Copy className="w-4 h-4" />
-                  Copier
-                </button>
-                <button
-                  onClick={handleGenerate}
-                  disabled={isLoading}
-                  className="flex-1 bg-[#1a1a1a] text-white py-2 px-4 rounded-lg hover:bg-[#232323] transition-colors flex items-center justify-center gap-2"
-                >
-                  <RefreshCw className="w-4 h-4" />
-                  Régénérer
-                </button>
-              </div>
-            </div>
+            </>
           )}
         </div>
       </div>
-
-
     </div>
   );
 }
