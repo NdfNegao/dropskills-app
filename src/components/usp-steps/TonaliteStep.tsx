@@ -61,10 +61,12 @@ export function TonaliteStep({ data, onChange, errors }: TonaliteStepProps) {
         </TooltipField>
       </div>
 
-      <ConseilBlock
-        title="Conseil Dropskills AI"
-        content="La tonalité doit être cohérente avec votre audience cible et votre positionnement. Une tonalité professionnelle convient aux services B2B, tandis qu'une approche plus décontractée peut mieux fonctionner pour le B2C."
-      />
+      <ConseilBlock title="Conseil Dropskills AI">
+        La tonalité doit être cohérente avec votre audience cible et votre
+        positionnement. Une tonalité professionnelle convient aux services B2B,
+        tandis qu'une approche plus décontractée peut mieux fonctionner pour le
+        B2C.
+      </ConseilBlock>
     </div>
   );
 }
