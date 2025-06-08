@@ -2,29 +2,19 @@
 
 import React, { useState, useEffect } from 'react';
 import ToolLayout from '@/components/ToolLayout';
-import PremiumGuard from '@/components/PremiumGuard';
+import PremiumGuard from '@/components/auth/PremiumGuard';
 import ICPWizardV2 from '@/components/ICPWizardV2';
 import ICPResult from '@/components/ICPResult';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Plus, 
-  RefreshCw, 
-  Download, 
-  Loader2, 
-  AlertCircle,
+import {
+  Plus,
   Sparkles,
-  Target,
   Users,
   TrendingUp,
-  Lightbulb,
-  ChevronUp,
-  ChevronDown,
-  Copy,
-  BrainCog
+  Lightbulb
 } from 'lucide-react';
 
 import { ICPFormData, ICPAnalysis } from '@/types/icp';
-import { buildPrompt } from '@/lib/icpPromptBuilder';
+import { buildPrompt } from '@/utils/icpPromptBuilder';
 
 
 
@@ -33,20 +23,7 @@ function ICPMakerContent() {
   const [metadata, setMetadata] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showWizard, setShowWizard] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [lastFormData, setLastFormData] = useState<ICPFormData | null>(null);
-  const [formData, setFormData] = useState<ICPFormData>({
-    secteur: '',
-    produitService: '',
-    promesseUnique: '',
-    budgetCible: '',
-    canaux: [],
-    tonalite: '',
-    geographie: '',
-    objectifs: '',
-    defis: '',
-    valeurs: ''
-  });
 
 
   // Charger les données sauvegardées au démarrage
@@ -69,13 +46,10 @@ function ICPMakerContent() {
 
   const handleGenerate = async (wizardData: ICPFormData) => {
     if (!wizardData.secteur || !wizardData.produitService) {
-      setError('Veuillez remplir au minimum le secteur et le produit/service.');
       return;
     }
 
     setIsLoading(true);
-    setError(null);
-    setFormData(wizardData);
     setLastFormData(wizardData);
     setMetadata(null);
     try {
@@ -100,7 +74,7 @@ function ICPMakerContent() {
       localStorage.setItem('dropskills_icp_maker_data', JSON.stringify(result.analysis));
       localStorage.setItem('dropskills_icp_maker_form_data', JSON.stringify(wizardData));
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Une erreur est survenue');
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -109,50 +83,14 @@ function ICPMakerContent() {
   const handleNewGeneration = () => {
     setShowWizard(true);
     setIcpResult(null);
-    setError(null);
     localStorage.removeItem('dropskills_icp_maker_data');
     localStorage.removeItem('dropskills_icp_maker_form_data');
-  };
-
-  const handleRegenerate = async () => {
-    if (lastFormData) {
-      await handleGenerate(lastFormData);
-    }
   };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
   };
 
-
-
-  const exportToPDF = () => {
-    if (icpResult) {
-      const printWindow = window.open('', '_blank');
-      if (printWindow) {
-        printWindow.document.write(`
-          <html>
-            <head>
-              <title>ICP Analysis - Dropskills</title>
-              <style>
-                body { font-family: Arial, sans-serif; margin: 20px; }
-                h1, h2, h3 { color: #333; }
-                .section { margin-bottom: 20px; }
-                ul { margin: 10px 0; }
-                li { margin: 5px 0; }
-              </style>
-            </head>
-            <body>
-              <h1>Profil Client Idéal (ICP)</h1>
-              ${JSON.stringify(icpResult, null, 2).replace(/\n/g, '<br>').replace(/\{|\}/g, '')}
-            </body>
-          </html>
-        `);
-        printWindow.document.close();
-        printWindow.print();
-      }
-    }
-  };
 
   // Données initiales pour le wizard
   const initialData: ICPFormData = lastFormData || {
@@ -161,6 +99,7 @@ function ICPMakerContent() {
     promesseUnique: '',
     budgetCible: '',
     canaux: [],
+    zoneGeographique: '',
     tonalite: '',
     objectifs: '',
     defis: '',
@@ -248,14 +187,9 @@ function ICPMakerContent() {
           </button>
         </div>
         {/* Résultats */}
-        <ICPResult
-          result={icpResult}
-          metadata={metadata}
-          error={error}
-          onRegenerate={handleRegenerate}
-          onExport={exportToPDF}
-          isLoading={isLoading}
-        />
+        {icpResult && (
+          <ICPResult analysis={icpResult} onCopy={copyToClipboard} />
+        )}
       </div>
     )}
     </div>
