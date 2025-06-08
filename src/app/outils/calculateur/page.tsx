@@ -2,25 +2,20 @@
 
 import React, { useState } from 'react';
 import ToolLayout from '@/components/ToolLayout';
-import PremiumGuard from '@/components/auth/PremiumGuard';
 import StepWizard, { WizardStep } from '@/components/StepWizard';
-import { 
-  Calculator, 
-  TrendingUp, 
-  DollarSign, 
-  BarChart3, 
-  PieChart,
-  Sparkles,
+import {
+  Calculator,
+  TrendingUp,
+  DollarSign,
+  BarChart3,
   Users,
   Target,
   Lightbulb,
-  Zap,
   Package,
   Euro,
   Settings,
   RefreshCw
 } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface CalculationFormData {
   productPrice: string;
@@ -39,8 +34,15 @@ interface CalculationResult {
   formData: CalculationFormData;
 }
 
+interface StepProps {
+  data: CalculationFormData;
+  onChange: (updates: Partial<CalculationFormData>) => void;
+  errors: Record<string, string>;
+  isActive?: boolean;
+}
+
 // Composant pour l'étape des informations produit
-function ProductInfoStep({ data, onChange, errors }: any) {
+function ProductInfoStep({ data, onChange, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-6">
@@ -76,7 +78,7 @@ function ProductInfoStep({ data, onChange, errors }: any) {
       <div>
         <label className="block text-white font-medium mb-2">
           Ventes mensuelles estimées (unités) *
-          <span className="text-gray-400 text-sm ml-2">Nombre d'unités vendues par mois</span>
+          <span className="text-gray-400 text-sm ml-2">Nombre d&#39;unités vendues par mois</span>
         </label>
         <input
           type="number"
@@ -94,7 +96,7 @@ function ProductInfoStep({ data, onChange, errors }: any) {
 }
 
 // Composant pour l'étape des coûts
-function CostsStep({ data, onChange, errors }: any) {
+function CostsStep({ data, onChange, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-6">
@@ -149,7 +151,7 @@ function CostsStep({ data, onChange, errors }: any) {
 }
 
 // Composant pour l'étape de croissance
-function GrowthStep({ data, onChange, errors }: any) {
+function GrowthStep({ data, onChange, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-6">
@@ -301,8 +303,7 @@ function CalculateurContent() {
 
     const monthlyRevenue = price * sales;
     const yearlyRevenue = monthlyRevenue * 12;
-    const totalVariableCosts = variable * sales;
-    const totalCosts = fixed + totalVariableCosts;
+    const totalCosts = fixed + variable * sales;
     const profit = monthlyRevenue - totalCosts;
 
     setResults({
