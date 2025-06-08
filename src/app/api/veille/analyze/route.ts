@@ -100,7 +100,7 @@ Contraintes :
 - Le scoreGlobal doit être la moyenne pondérée des autres scores`;
 
     // Construction du prompt utilisateur avec toutes les données
-    let userPrompt = `Analyse le marché et détecte des opportunités pour ce profil :
+    const userPrompt = `Analyse le marché et détecte des opportunités pour ce profil :
 
 **SECTEUR :** ${formData.secteur}
 

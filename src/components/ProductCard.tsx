@@ -162,20 +162,20 @@ export default function ProductCard({ product, onOpen, onDownload, bookmarkDisab
   const { likedProducts, toggleLike } = useLikedProducts();
   const [likes, setLikes] = useState(product.likes);
   const bookmarked = savedProducts.includes(product.id);
-  const liked = likedProducts.includes(product.id);
+  // const liked = likedProducts.includes(product.id);
 
-  const handleBookmark = () => {
-    if (bookmarkDisabled) return;
-    toggleBookmark(product.id);
-  };
+  // const handleBookmark = () => {
+  //   if (bookmarkDisabled) return;
+  //   toggleBookmark(product.id);
+  // };
 
-  const handleOpen = () => {
-    if (onOpen) {
-      onOpen();
-    } else {
-      router.push(`/produits/${product.id}`);
-    }
-  };
+  // const handleOpen = () => {
+  //   if (onOpen) {
+  //     onOpen();
+  //   } else {
+  //     router.push(`/produits/${product.id}`);
+  //   }
+  // };
 
   return (
     variant === 'grid' ? (

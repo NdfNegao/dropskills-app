@@ -13,8 +13,14 @@ export interface AIProvider {
   maxTokens: number;
   isAvailable: () => boolean;
   checkAvailability: () => Promise<boolean>;
-  generateText: (prompt: string, options?: any) => Promise<string>;
-  getCost: (inputTokens: number, outputTokens: number) => number;
+  generateText: (_prompt: string, _options?: unknown) => Promise<string>;
+  getCost: (_inputTokens: number, _outputTokens: number) => number;
+}
+
+// Définir un type explicite pour les options d'IA
+export interface AIOptions {
+  temperature?: number;
+  maxTokens?: number;
 }
 
 // Configuration des providers recommandés
@@ -34,15 +40,18 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     isAvailable: () => !!process.env.DEEPSEEK_API_KEY,
     checkAvailability: async () => {
       try {
-        const res = await fetch(AI_PROVIDERS['deepseek-v3'].baseURL);
+        const provider = AI_PROVIDERS['deepseek-v3'];
+        if (!provider || !provider.baseURL) throw new Error('baseURL non défini');
+        const res = await fetch(provider.baseURL);
         return res.ok;
       } catch {
         return false;
       }
     },
-    generateText: async (prompt: string, options = {}) => {
-      // Implémentation DeepSeek API
-      const response = await fetch(`${AI_PROVIDERS['deepseek-v3'].baseURL}/chat/completions`, {
+    generateText: async (prompt: string, options: unknown = {}) => {
+      const provider = AI_PROVIDERS['deepseek-v3'];
+      if (!provider || !provider.baseURL) throw new Error('baseURL non défini');
+      const response = await fetch(`${provider.baseURL}/chat/completions`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
@@ -51,8 +60,8 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
         body: JSON.stringify({
           model: 'deepseek-v3',
           messages: [{ role: 'user', content: prompt }],
-          temperature: options.temperature || 0.7,
-          max_tokens: options.maxTokens || 8000
+          temperature: (options && (options as AIOptions).temperature) || 0.7,
+          max_tokens: (options && (options as AIOptions).maxTokens) || 8000
         })
       });
       const data = await response.json();
@@ -78,15 +87,18 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     isAvailable: () => !!process.env.GROK_API_KEY,
     checkAvailability: async () => {
       try {
-        const res = await fetch(AI_PROVIDERS['grok-3'].baseURL);
+        const provider = AI_PROVIDERS['grok-3'];
+        if (!provider || !provider.baseURL) throw new Error('baseURL non défini');
+        const res = await fetch(provider.baseURL);
         return res.ok;
       } catch {
         return false;
       }
     },
-    generateText: async (prompt: string, options = {}) => {
-      // Implémentation Grok API (quand disponible)
-      const response = await fetch(`${AI_PROVIDERS['grok-3'].baseURL}/chat/completions`, {
+    generateText: async (prompt: string, options: unknown = {}) => {
+      const provider = AI_PROVIDERS['grok-3'];
+      if (!provider || !provider.baseURL) throw new Error('baseURL non défini');
+      const response = await fetch(`${provider.baseURL}/chat/completions`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${process.env.GROK_API_KEY}`,
@@ -95,8 +107,8 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
         body: JSON.stringify({
           model: 'grok-3',
           messages: [{ role: 'user', content: prompt }],
-          temperature: options.temperature || 0.8,
-          max_tokens: options.maxTokens || 4000
+          temperature: (options && (options as AIOptions).temperature) || 0.8,
+          max_tokens: (options && (options as AIOptions).maxTokens) || 4000
         })
       });
       const data = await response.json();
@@ -122,14 +134,18 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     isAvailable: () => !!process.env.ANTHROPIC_API_KEY,
     checkAvailability: async () => {
       try {
-        const res = await fetch(AI_PROVIDERS['claude-3.5-sonnet'].baseURL);
+        const provider = AI_PROVIDERS['claude-3.5-sonnet'];
+        if (!provider || !provider.baseURL) throw new Error('baseURL non défini');
+        const res = await fetch(provider.baseURL);
         return res.ok;
       } catch {
         return false;
       }
     },
-    generateText: async (prompt: string, options = {}) => {
-      const response = await fetch(`${AI_PROVIDERS['claude-3.5-sonnet'].baseURL}/messages`, {
+    generateText: async (prompt: string, options: unknown = {}) => {
+      const provider = AI_PROVIDERS['claude-3.5-sonnet'];
+      if (!provider || !provider.baseURL) throw new Error('baseURL non défini');
+      const response = await fetch(`${provider.baseURL}/messages`, {
         method: 'POST',
         headers: {
           'x-api-key': process.env.ANTHROPIC_API_KEY!,
@@ -138,9 +154,9 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
         },
         body: JSON.stringify({
           model: 'claude-3-5-sonnet-20241022',
-          max_tokens: options.maxTokens || 4000,
+          max_tokens: (options && (options as AIOptions).maxTokens) || 4000,
           messages: [{ role: 'user', content: prompt }],
-          temperature: options.temperature || 0.7
+          temperature: (options && (options as AIOptions).temperature) || 0.7
         })
       });
       const data = await response.json();
@@ -166,23 +182,27 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     isAvailable: () => !!process.env.GOOGLE_AI_API_KEY,
     checkAvailability: async () => {
       try {
-        const res = await fetch(AI_PROVIDERS['gemini-2.0-flash'].baseURL);
+        const provider = AI_PROVIDERS['gemini-2.0-flash'];
+        if (!provider || !provider.baseURL) throw new Error('baseURL non défini');
+        const res = await fetch(provider.baseURL);
         return res.ok;
       } catch {
         return false;
       }
     },
-    generateText: async (prompt: string, options = {}) => {
+    generateText: async (prompt: string, options: unknown = {}) => {
+      const provider = AI_PROVIDERS['gemini-2.0-flash'];
+      if (!provider || !provider.baseURL) throw new Error('baseURL non défini');
       const response = await fetch(
-        `${AI_PROVIDERS['gemini-2.0-flash'].baseURL}/models/gemini-2.0-flash:generateContent?key=${process.env.GOOGLE_AI_API_KEY}`,
+        `${provider.baseURL}/models/gemini-2.0-flash:generateContent?key=${process.env.GOOGLE_AI_API_KEY}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: {
-              temperature: options.temperature || 0.8,
-              maxOutputTokens: options.maxTokens || 4000
+              temperature: (options && (options as AIOptions).temperature) || 0.8,
+              maxOutputTokens: (options && (options as AIOptions).maxTokens) || 4000
             }
           })
         }
@@ -211,21 +231,20 @@ const DEFAULT_TOOL_PROVIDER_MAPPING: Record<string, string> = {
 function loadToolProviderMapping(): Record<string, string> {
   try {
     if (typeof window === 'undefined') {
-      // Côté serveur - essayer de charger depuis le fichier
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const fs = require('fs');
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const path = require('path');
       const configPath = path.join(process.cwd(), 'config', 'ai-mapping.json');
-      
       if (fs.existsSync(configPath)) {
         const configData = fs.readFileSync(configPath, 'utf8');
         const mapping = JSON.parse(configData);
         return { ...DEFAULT_TOOL_PROVIDER_MAPPING, ...mapping };
       }
     }
-  } catch (error) {
-    console.warn('Impossible de charger la configuration AI, utilisation des valeurs par défaut:', error);
+  } catch {
+    // TODO: Logger l'erreur de chargement de configuration
   }
-  
   return DEFAULT_TOOL_PROVIDER_MAPPING;
 }
 
@@ -244,18 +263,24 @@ export class AIProviderManager {
 
     for (const id of candidates) {
       const provider = AI_PROVIDERS[id];
-      if (provider.isAvailable() && await provider.checkAvailability()) {
+      if (provider && provider.isAvailable() && await provider.checkAvailability()) {
         return provider;
       }
     }
 
     throw new Error('Aucun provider IA disponible');
   }
-  
+
   static estimateCost(toolType: string, inputTokens: number, outputTokens: number): number {
-    const provider = AI_PROVIDERS[TOOL_PROVIDER_MAPPING[toolType]];
+    const providerId = TOOL_PROVIDER_MAPPING[toolType];
+    if (!providerId) throw new Error('Aucun provider configuré pour ce type d\'outil');
+    const provider = AI_PROVIDERS[providerId];
+    if (!provider) throw new Error('Provider IA non trouvé');
     return provider.getCost(inputTokens, outputTokens);
   }
 }
 
 export default AIProviderManager;
+
+// Pour tous les fetch utilisant baseURL, ajouter une vérification :
+// if (!AI_PROVIDERS['deepseek-v3'].baseURL) throw new Error('baseURL non défini');

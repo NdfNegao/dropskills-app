@@ -41,6 +41,7 @@ import {
 import Link from 'next/link';
 import ProductActions from './ProductActions';
 import { Product } from '@/data/products';
+import Image from 'next/image';
 
 // Composant YouTubePlayer
 interface YouTubePlayerProps {
@@ -289,10 +290,12 @@ export default function ProductPageTemplate({
                   />
                 ) : (
                   <div className="aspect-video bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg overflow-hidden">
-                    <img 
+                    <Image 
                       src={product.previewImages?.[selectedPreview] || '/api/placeholder/800/450'}
                       alt={`Aperçu ${selectedPreview + 1}`}
                       className="w-full h-full object-cover"
+                      width={800}
+                      height={450}
                     />
                   </div>
                 )}
@@ -301,7 +304,7 @@ export default function ProductPageTemplate({
               {/* Miniatures */}
               {product.previewImages && product.previewImages.length > 1 && (
                 <div className="grid grid-cols-4 gap-3">
-                  {product.previewImages?.map((image: string, index: number) => (
+                  {product.previewImages.map((image: string, index: number) => (
                     <button
                       key={index}
                       onClick={() => setSelectedPreview(index)}
@@ -311,10 +314,12 @@ export default function ProductPageTemplate({
                           : 'border-[#333] hover:border-[#555]'
                       }`}
                     >
-                      <img 
+                      <Image 
                         src={image}
                         alt={`Miniature ${index + 1}`}
                         className="w-full h-full object-cover"
+                        width={200}
+                        height={112}
                       />
                     </button>
                   ))}
@@ -327,7 +332,7 @@ export default function ProductPageTemplate({
               <h2 className="text-xl font-semibold text-white mb-6">Ce que contient ce produit</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {product.features?.map((feature: any, index: number) => (
+                {product.features?.map((feature: { icon: React.ReactNode; title: string; description: string }, index: number) => (
                   <div key={index} className="flex items-start gap-3 p-4 bg-[#1a1a1a] rounded-lg">
                     <div className="text-[#ff0033] mt-1">
                       {feature.icon}
@@ -347,10 +352,12 @@ export default function ProductPageTemplate({
             {/* Aperçu mobile */}
             <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
               <div className="aspect-square bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg mb-4 overflow-hidden">
-                <img 
+                <Image 
                   src={product.previewImages[0] || '/api/placeholder/300/300'}
                   alt="Aperçu mobile"
                   className="w-full h-full object-cover"
+                  width={300}
+                  height={300}
                 />
               </div>
               

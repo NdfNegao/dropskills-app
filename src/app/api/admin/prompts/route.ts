@@ -167,7 +167,7 @@ FORMAT DE RÉPONSE (JSON uniquement):
 }
 
 // Données de démonstration (à remplacer par une vraie base de données)
-let mockPrompts: PromptData[] = [
+const mockPrompts: PromptData[] = [
   {
     id: '1',
     name: 'ICP Maker - Système',

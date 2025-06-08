@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
 import { Crown, Search, Plus, Edit, Trash2, Eye, Filter, Users, Download, Star, Package } from 'lucide-react';
+import Image from 'next/image';
 
 interface Product {
   id: string;
@@ -97,8 +98,8 @@ export default function AdminProduitsPage() {
         avgRating
       });
 
-    } catch (error) {
-      console.error('Erreur:', error);
+    } catch {
+      // console.error('Erreur:', error);
     } finally {
       setLoading(false);
     }
@@ -154,8 +155,8 @@ export default function AdminProduitsPage() {
 
       setShowModal(false);
       fetchProducts();
-    } catch (error) {
-      console.error('Erreur:', error);
+    } catch {
+      // console.error('Erreur:', error);
     } finally {
       setSubmitting(false);
     }
@@ -174,8 +175,8 @@ export default function AdminProduitsPage() {
       }
 
       fetchProducts();
-    } catch (error) {
-      console.error('Erreur:', error);
+    } catch {
+      // console.error('Erreur:', error);
     }
   };
 
@@ -327,10 +328,12 @@ export default function AdminProduitsPage() {
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         {product.image && (
-                          <img 
+                          <Image 
                             src={product.image} 
                             alt={product.title}
                             className="w-12 h-12 rounded-lg object-cover"
+                            width={48}
+                            height={48}
                             onError={(e) => {
                               (e.target as HTMLImageElement).style.display = 'none';
                             }}

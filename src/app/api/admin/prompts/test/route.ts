@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Récupérer le prompt et sa version
-    let promptQuery = supabaseAdmin
+    const promptQuery = supabaseAdmin
       .from('ai_prompts')
       .select(`
         *,

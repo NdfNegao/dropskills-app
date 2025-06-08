@@ -4,9 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { 
-  User, 
   ChevronDown, 
-  Lock, 
   Users, 
   Gift, 
   Settings, 
@@ -14,6 +12,7 @@ import {
   Sparkles
 } from "lucide-react";
 import Link from "next/link";
+import Image from 'next/image';
 
 interface UserMenuProps {
   user: {
@@ -105,10 +104,12 @@ export default function UserMenu({ user }: UserMenuProps) {
         {/* Avatar ou initiales */}
         <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#00D2FF] to-[#3A7BD5] flex items-center justify-center text-white font-semibold">
           {user.avatar_url ? (
-            <img 
+            <Image 
               src={user.avatar_url} 
-              alt={getDisplayName()} 
+              alt={getDisplayName() || 'Utilisateur'} 
               className="w-full h-full rounded-full object-cover"
+              width={40}
+              height={40}
             />
           ) : (
             getInitials()
@@ -133,10 +134,12 @@ export default function UserMenu({ user }: UserMenuProps) {
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#00D2FF] to-[#3A7BD5] flex items-center justify-center text-white font-semibold">
                 {user.avatar_url ? (
-                  <img 
+                  <Image 
                     src={user.avatar_url} 
-                    alt={getDisplayName()} 
+                    alt={getDisplayName() || 'Utilisateur'} 
                     className="w-full h-full rounded-full object-cover"
+                    width={48}
+                    height={48}
                   />
                 ) : (
                   getInitials()
@@ -179,4 +182,4 @@ export default function UserMenu({ user }: UserMenuProps) {
       )}
     </div>
   );
-} 
+}

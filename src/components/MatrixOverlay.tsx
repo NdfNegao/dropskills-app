@@ -15,8 +15,8 @@ export default function MatrixOverlay({ visible }: MatrixOverlayProps) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let width = window.innerWidth;
-    let height = window.innerHeight;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
     canvas.width = width;
     canvas.height = height;
 
