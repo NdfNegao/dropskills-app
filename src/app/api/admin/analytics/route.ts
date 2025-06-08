@@ -383,7 +383,7 @@ async function generateMockAnalytics(timeRange: string) {
       totalTokensUsed: 45000,
       totalCost: 125.50,
       activeUsers: 23,
-      popularTools: ['icp-maker', 'generateur-titres', 'createur-offres']
+      popularTools: ['icp-maker', 'generateur-offre', 'lead-magnet']
     },
     timeSeriesData,
     toolMetrics: [
@@ -398,7 +398,7 @@ async function generateMockAnalytics(timeRange: string) {
         errors: []
       },
       {
-        toolId: 'generateur-titres',
+        toolId: 'generateur-offre',
         toolName: 'Générateur de Titres',
         requests: Math.floor(totalRequests * 0.3),
         successRate: 98,

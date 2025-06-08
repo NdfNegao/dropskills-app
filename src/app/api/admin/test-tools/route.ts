@@ -4,7 +4,7 @@ import { processAiTool } from '@/lib/ai-tools';
 export async function POST(req: NextRequest) {
   try {
     const { 
-      toolType = "generateur-titres",
+      toolType = "generateur-offre",
       input = {
         sujet: "Intelligence Artificielle pour PME",
         type: "formation", 
@@ -44,4 +44,4 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
-} 
+}

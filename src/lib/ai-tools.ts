@@ -21,7 +21,7 @@ export interface AiToolResponse {
 
 // Templates de prompts pour chaque outil
 const TOOL_PROMPTS = {
-  'generateur-titres': (input: any) => `Tu es un expert en copywriting créatif et accrocheur.
+
 
 MISSION : Génère ${input.nombreTitres} titres ${input.type === 'formation' ? 'de formation' : input.type === 'article' ? "d'article" : input.type === 'video' ? 'de vidéo' : "d'ebook"} ultra-créatifs et engageants.
 
@@ -69,7 +69,7 @@ STRUCTURE À RETOURNER :
 
 Sois créatif, pratique et orienté résultats pour maximiser l'impact commercial.`,
 
-  'descriptions-ia': (input: any) => `Tu es un expert en copywriting pour produits numériques.
+
 
 MISSION : Crée une description ${input.tonalite} pour le produit "${input.produit}".
 
@@ -110,9 +110,9 @@ export async function processAiTool(request: AiToolRequest): Promise<AiToolRespo
 
     // Mapper le toolType vers le provider optimal
     const toolMapping: Record<string, string> = {
-      'generateur-titres': 'titles',
+  
       'pack-createur': 'content',
-      'descriptions-ia': 'descriptions'
+  
     };
 
     const providerType = toolMapping[request.toolType] || 'content';
@@ -124,7 +124,7 @@ export async function processAiTool(request: AiToolRequest): Promise<AiToolRespo
 
     // Générer la réponse
     const response = await provider.generateText(prompt, {
-      temperature: request.toolType === 'generateur-titres' ? 0.9 : 0.7,
+      temperature: 0.7,
       maxTokens: 2000
     });
 
@@ -133,7 +133,7 @@ export async function processAiTool(request: AiToolRequest): Promise<AiToolRespo
 
     // Parser la réponse selon le type d'outil
     let parsedData;
-    if (request.toolType === 'generateur-titres') {
+
       // Extraire les titres numérotés
       const titres = response
         .split('\n')
@@ -182,9 +182,9 @@ export interface PackCreateurInput {
   niveau: 'debutant' | 'intermediaire' | 'avance';
 }
 
-export interface DescriptionsIaInput {
+
   produit: string;
   caracteristiques: string[];
   audience: string;
   tonalite: 'professionnel' | 'decontracte' | 'persuasif';
-} 
+}

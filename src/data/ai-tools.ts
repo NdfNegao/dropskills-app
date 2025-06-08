@@ -108,44 +108,8 @@ export const AI_TOOLS: AiTool[] = [
     maxTokens: 1500,
     systemPrompt: 'Tu es un expert en copywriting et création d\'offres commerciales. Génère des offres irrésistibles qui convertissent.'
   },
-  {
-    id: 'title-generator',
-    name: 'Générateur de Titres',
-    description: 'Créez des titres accrocheurs pour vos contenus',
-    icon: 'Type',
-    type: 'TITLE_GENERATOR',
-    category: 'Contenu',
-    href: '/outils/titres',
-    color: 'from-teal-500 to-cyan-600',
-    isPremium: false,
-    step: 5,
-    stepTitle: 'TRAFIC',
-    stepDescription: 'Optimiser vos contenus',
-    endpoint: '/api/ai/titles/generate',
-    model: 'gpt-3.5-turbo',
-    temperature: 0.8,
-    maxTokens: 800,
-    systemPrompt: 'Tu es un expert en copywriting et création de titres accrocheurs. Génère des titres optimisés pour maximiser le taux de clic et l\'engagement.'
-  },
-  {
-    id: 'description-generator',
-    name: 'Générateur de Descriptions',
-    description: 'Rédigez des descriptions qui convertissent',
-    icon: 'FileText',
-    type: 'DESCRIPTION_GENERATOR',
-    category: 'Contenu',
-    href: '/outils/descriptions',
-    color: 'from-emerald-500 to-teal-600',
-    isPremium: false,
-    step: 5,
-    stepTitle: 'TRAFIC',
-    stepDescription: 'Perfectionner vos textes',
-    endpoint: '/api/ai/descriptions/generate',
-    model: 'gpt-3.5-turbo',
-    temperature: 0.8,
-    maxTokens: 1000,
-    systemPrompt: 'Tu es un expert en copywriting produit et conversion. Crée des descriptions qui transforment les visiteurs en acheteurs.'
-  },
+
+
   {
     id: 'content-system',
     name: 'Content System 90J',
@@ -203,44 +167,9 @@ export const AI_TOOLS: AiTool[] = [
     maxTokens: 1500,
     systemPrompt: 'Tu es un expert en marketing d\'acquisition et conversion. Crée des lead magnets irrésistibles qui captent des prospects qualifiés.'
   },
-  {
-    id: 'veille-strategique',
-    name: 'Veille Stratégique',
-    description: 'Analysez votre marché et trouvez des opportunités',
-    icon: 'Brain',
-    type: 'VEILLE_STRATEGIQUE',
-    category: 'Acquisition',
-    href: '/outils/veille',
-    color: 'from-violet-500 to-purple-600',
-    isPremium: true,
-    step: 1,
-    stepTitle: 'ACQUISITION',
-    stepDescription: 'Analyser le marché',
-    endpoint: '/api/ai/veille/generate',
-    model: 'gpt-4o-mini',
-    temperature: 0.7,
-    maxTokens: 2000,
-    systemPrompt: 'Tu es un expert en veille stratégique, IA et business digital. Détecte des opportunités business innovantes et à fort potentiel.'
-  },
-  {
-    id: 'agent-veille',
-    name: 'Agent Veille IA',
-    description: 'Automatisez votre veille concurrentielle et technologique',
-    icon: 'Bot',
-    type: 'VEILLE_STRATEGIQUE',
-    category: 'Acquisition',
-    href: '/outils/agent-veille',
-    color: 'from-violet-500 to-purple-600',
-    isPremium: true,
-    step: 1,
-    stepTitle: 'ACQUISITION',
-    stepDescription: 'Surveiller automatiquement',
-    endpoint: '/api/ai/agent-veille/generate',
-    model: 'gpt-4o-mini',
-    temperature: 0.7,
-    maxTokens: 2000,
-    systemPrompt: 'Tu es un agent de veille IA expert. Analyse et surveille automatiquement les tendances et opportunités.'
-  },
+
+
+
   {
     id: 'tunnel-maker',
     name: 'Tunnel Maker',
@@ -298,44 +227,9 @@ export const AI_TOOLS: AiTool[] = [
     maxTokens: 800,
     systemPrompt: 'Tu es un expert en analyse financière et ROI. Calcule et présente des métriques précises.'
   },
-  {
-    id: 'pdf-rebrander',
-    name: 'PDF Rebrander',
-    description: 'Rebrandez vos PDF avec votre identité',
-    icon: 'PenTool',
-    type: 'DESCRIPTION_GENERATOR',
-    category: 'Contenu',
-    href: '/outils/pdf-rebrander',
-    color: 'from-red-500 to-pink-600',
-    isPremium: false,
-    step: 5,
-    stepTitle: 'CONTENU',
-    stepDescription: 'Personnaliser les PDF',
-    endpoint: '/api/ai/pdf-rebrand/generate',
-    model: 'gpt-3.5-turbo',
-    temperature: 0.7,
-    maxTokens: 1000,
-          systemPrompt: 'Tu es un expert en design et branding. Aide à rebrandir des contenus PDF.'
-  },
-  {
-    id: 'generateur-titres-pro',
-    name: 'Générateur Titres Pro',
-    description: 'Version premium avec techniques avancées de copywriting',
-    icon: 'Type',
-    type: 'TITLE_GENERATOR',
-    category: 'Contenu',
-    href: '/outils/generateur-titres',
-    color: 'from-purple-500 to-pink-600',
-    isPremium: true,
-    step: 5,
-    stepTitle: 'TRAFIC',
-    stepDescription: 'Titres premium avancés',
-    endpoint: '/api/ai/titles-pro/generate',
-    model: 'gpt-4o-mini',
-    temperature: 0.8,
-    maxTokens: 1000,
-    systemPrompt: 'Tu es un expert en copywriting premium. Génère des titres haute conversion avec techniques avancées et psychologie comportementale.'
-  }
+
+
+
 ];
 
 // Map des icônes pour utilisation dans les composants
@@ -380,11 +274,8 @@ export function getToolProvider(toolId: string): string {
   // Mapping des IDs d'outils vers les clés de providers
   const providerMapping: Record<string, string> = {
     'title-generator': 'titles',
-    'generateur-titres-pro': 'titles',
-    'description-generator': 'descriptions',
     'email-sequence': 'emails',
-    'veille-strategique': 'veille',
-    'agent-veille': 'veille',
+
     'content-system': 'content',
     'usp-maker': 'usp',
     'icp-maker': 'icp',

@@ -9,8 +9,7 @@ Tu dois répondre UNIQUEMENT avec un JSON valide suivant EXACTEMENT cette struct
   titles: `Tu es un expert en copywriting et création de titres accrocheurs.
 Génère des titres optimisés pour maximiser le taux de clic et l'engagement.`,
 
-  descriptions: `Tu es un expert en copywriting produit et conversion.
-Crée des descriptions qui transforment les visiteurs en acheteurs.`,
+
 
   emails: `Tu es un expert en copywriting et email marketing automation.
 Génère des séquences d'emails qui nurturent et convertissent.`,
@@ -25,7 +24,7 @@ Génère des USP percutantes qui différencient vraiment du marché.`,
 Détecte des opportunités business innovantes et à fort potentiel.`
 } as const;
 
-export const TONE_DESCRIPTIONS = {
+export const TONE_OPTIONS = {
   accrocheur: 'accrocheurs et impactants',
   professionnel: 'professionnels et crédibles',
   emotionnel: 'émotionnels et engageants',
@@ -89,12 +88,12 @@ export class PromptBuilder {
   }: {
     subject: string;
     audience?: string;
-    tone: keyof typeof TONE_DESCRIPTIONS;
+    tone: keyof typeof TONE_OPTIONS;
     type: keyof typeof CONTENT_TYPES;
   }) {
     const audienceText = audience ? ` pour ${audience}` : '';
     const typeText = CONTENT_TYPES[type] || 'un contenu';
-    const toneText = TONE_DESCRIPTIONS[tone] || 'engageants';
+    const toneText = TONE_OPTIONS[tone] || 'engageants';
 
     return `Génère 8 titres ${toneText} pour ${typeText} sur le sujet "${subject}"${audienceText}.
 
@@ -118,62 +117,13 @@ FORMAT DE RÉPONSE (JSON uniquement):
 }`;
   }
 
-  static buildDescriptionsPrompt({ 
-    productName, 
-    category, 
-    targetAudience, 
-    features, 
-    benefits, 
-    tone 
-  }: {
-    productName: string;
-    category: string;
-    targetAudience?: string;
-    features?: string;
-    benefits?: string;
-    tone?: keyof typeof TONE_DESCRIPTIONS;
-  }) {
-    const audienceText = targetAudience ? ` pour ${targetAudience}` : '';
-    const featuresText = features ? `\nFonctionnalités clés : ${features}` : '';
-    const benefitsText = benefits ? `\nBénéfices : ${benefits}` : '';
-    const toneKey = tone || 'professionnel';
-    const toneText = TONE_DESCRIPTIONS[toneKey];
 
-    return `Génère 5 descriptions ${toneText} pour le produit "${productName}" dans la catégorie ${category}${audienceText}.
-
-INFORMATIONS PRODUIT:
-- Nom : ${productName}
-- Catégorie : ${category}${featuresText}${benefitsText}
-- Audience cible : ${targetAudience || 'Grand public'}
-
-CONTRAINTES:
-- Descriptions en français
-- Entre 80 et 150 mots par description
-- Utilise des émojis pertinents (2-3 par description)
-- Varie les angles d'approche (bénéfices, fonctionnalités, émotions, résultats)
-- Optimisées pour la conversion
-- Inclus des mots-clés pertinents pour le SEO
-
-STYLE ${toneKey.toUpperCase()}:
-${TONE_GUIDELINES[toneKey]}
-
-FORMAT DE RÉPONSE (JSON uniquement):
-{
-  "descriptions": [
-    "🚀 Description 1 complète ici...",
-    "💡 Description 2 complète ici...",
-    "✨ Description 3 complète ici...",
-    "🎯 Description 4 complète ici...",
-    "⭐ Description 5 complète ici..."
-  ]
-}`;
-  }
 
   static buildCustomPrompt(
     systemPrompt: keyof typeof SYSTEM_PROMPTS,
     userPrompt: string,
     options?: {
-      tone?: keyof typeof TONE_DESCRIPTIONS;
+      tone?: keyof typeof TONE_OPTIONS;
       format?: 'json' | 'text';
       constraints?: string[];
     }
@@ -262,4 +212,4 @@ Tu dois répondre UNIQUEMENT avec un JSON valide suivant EXACTEMENT cette struct
 }
 
 Sois concis, opérationnel, sans bullshit, et mets-toi à la place d'un marketer qui doit vendre demain matin.`
-} as const; 
+} as const;

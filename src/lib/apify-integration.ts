@@ -51,7 +51,7 @@ export class ApifyDropSkillsIntegration {
     const rawData = await Promise.all(scrapePromises);
     
     // 2. Analyse intelligente avec vos providers IA optimisés
-    const aiProvider = await AIProviderManager.getOptimalProvider('veille-strategique');
+    const aiProvider = await AIProviderManager.getOptimalProvider('lead-magnet');
     
     const analysis = await aiProvider.generateText(`
       Analyse ces données de veille business collectées automatiquement :
@@ -161,7 +161,7 @@ export class ApifyDropSkillsIntegration {
     );
 
     // Analyse comparative avec IA
-    const aiProvider = await AIProviderManager.getOptimalProvider('veille-strategique');
+    const aiProvider = await AIProviderManager.getOptimalProvider('lead-magnet');
     
     const competitiveAnalysis = await aiProvider.generateText(`
       Analyse comparative des contenus concurrents scrapés :

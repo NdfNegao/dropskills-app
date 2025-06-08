@@ -119,8 +119,6 @@ export function LeadMagnetWizard({ onComplete, isLoading, initialData = {} }: Le
       steps={steps}
       onComplete={onComplete}
       isLoading={isLoading}
-      title="Générateur de Lead Magnet IA"
-      description="Créez un lead magnet irrésistible en 4 étapes simples"
       initialData={{
         business: '',
         audience: '',

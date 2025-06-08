@@ -763,18 +763,6 @@ function OfferGeneratorContent() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header avec statistiques */}
-        <div className="mb-8">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-4">
-              Générateur d'Offre IA
-            </h1>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Créez des offres irrésistibles qui convertissent grâce à l'intelligence artificielle
-            </p>
-          </div>
-
-          {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
               <div className="flex items-center gap-3">

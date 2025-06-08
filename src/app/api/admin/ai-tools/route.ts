@@ -164,7 +164,7 @@ async function createDefaultTools() {
       description: 'Création de titres accrocheurs pour vos contenus',
       category: 'Contenu',
       icon: '📝',
-      path: '/outils/generateur-titres',
+
       is_active: true,
       api_endpoint: '/api/ai/titles/generate',
       test_cases: []

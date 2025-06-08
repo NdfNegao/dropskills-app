@@ -111,7 +111,6 @@ export async function PUT() {
     const defaultMapping = {
       // Anciens noms pour compatibilité
       'titles': 'deepseek-v3',
-      'descriptions': 'deepseek-v3', 
       'emails': 'deepseek-v3',
       'veille': 'deepseek-v3',
       'content': 'claude-3.5-sonnet',
@@ -121,16 +120,16 @@ export async function PUT() {
       'icp-maker': 'deepseek-v3',
       'offer-generator': 'grok-3',
       'title-generator': 'deepseek-v3',
-      'description-generator': 'deepseek-v3',
+
       'content-system': 'claude-3.5-sonnet',
       'email-sequence': 'deepseek-v3',
       'lead-magnet': 'deepseek-v3',
-      'veille-strategique': 'deepseek-v3',
-      'agent-veille': 'deepseek-v3',
+
+  
       'tunnel-maker': 'deepseek-v3',
       'usp-maker': 'deepseek-v3',
       'calculateur': 'deepseek-v3',
-      'pdf-rebrander': 'deepseek-v3'
+  
     };
     
     // Mise à jour du mapping

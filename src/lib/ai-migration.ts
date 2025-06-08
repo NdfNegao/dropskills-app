@@ -19,7 +19,7 @@ export const MIGRATION_PHASES: MigrationPlan[] = [
   },
   {
     phase: 2,
-    tools: ['description-generator'],
+    tools: ['generateur-offre'],
     provider: 'gemini-2.0-flash',
     priority: 'next-week',
     estimatedSavings: '~75% de réduction des coûts'
@@ -122,4 +122,4 @@ export class AIMigrationManager {
   }
 }
 
-export default AIMigrationManager; 
+export default AIMigrationManager;

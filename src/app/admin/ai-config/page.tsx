@@ -199,19 +199,19 @@ export default function AIConfigPage() {
       'icp-maker': { name: 'ICP Maker', defaultProvider: 'deepseek-v3' },
       'offer-generator': { name: 'Générateur d\'Offres', defaultProvider: 'grok-3' },
       'title-generator': { name: 'Générateur de Titres', defaultProvider: 'deepseek-v3' },
-      'description-generator': { name: 'Générateur de Descriptions', defaultProvider: 'deepseek-v3' },
+  
       'content-system': { name: 'Content System 90J', defaultProvider: 'claude-3.5-sonnet' },
       'email-sequence': { name: 'CopyMoneyMail', defaultProvider: 'grok-3' },
       'lead-magnet': { name: 'Lead Magnet Creator', defaultProvider: 'grok-3' },
-      'veille-strategique': { name: 'Veille Stratégique', defaultProvider: 'claude-3.5-sonnet' },
-      'agent-veille': { name: 'Agent Veille IA', defaultProvider: 'claude-3.5-sonnet' },
+
+  
       'tunnel-maker': { name: 'Tunnel Maker', defaultProvider: 'grok-3' },
       'usp-maker': { name: 'USP Maker', defaultProvider: 'deepseek-v3' },
       'calculateur': { name: 'Calculateur ROI', defaultProvider: 'deepseek-v3' },
-      'pdf-rebrander': { name: 'PDF Rebrander', defaultProvider: 'deepseek-v3' },
+  
       // Anciens noms pour compatibilité
       'titles': { name: 'Titres', defaultProvider: 'deepseek-v3' },
-      'descriptions': { name: 'Descriptions', defaultProvider: 'deepseek-v3' },
+  
       'emails': { name: 'Emails', defaultProvider: 'deepseek-v3' },
       'veille': { name: 'Veille', defaultProvider: 'deepseek-v3' },
       'content': { name: 'Contenu', defaultProvider: 'claude-3.5-sonnet' },

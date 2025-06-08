@@ -59,14 +59,7 @@ const MASTERPIECES = [
     href: '/outils/content-system',
     color: 'text-red-400'
   },
-  {
-    id: 'agent-veille',
-    title: 'Agent Veille',
-    description: 'Détectez les opportunités business avec scoring IA',
-    icon: TrendingUp,
-    href: '/outils/agent-veille',
-    color: 'text-red-400'
-  }
+
 ];
 
 const BONUS_TOOLS = [

@@ -169,7 +169,7 @@ export function TunnelWizard({ onComplete, isLoading = false, initialData = {} }
       onComplete={onComplete}
       isLoading={isLoading}
       initialData={defaultData}
-      title="Générateur de Tunnel de Vente avec Dropskills AI"
+
       subtitle="Créez votre tunnel de conversion optimisé en 6 étapes avec l'intelligence artificielle"
     />
   );

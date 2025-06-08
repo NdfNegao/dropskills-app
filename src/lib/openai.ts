@@ -24,7 +24,7 @@ export interface AIResponse {
 export const AI_MODELS = {
   icp: 'gpt-4o-mini', // Analyse complexe
   titles: 'gpt-3.5-turbo', // Génération rapide
-  descriptions: 'gpt-3.5-turbo', // Textes courts
+
   emails: 'gpt-4o-mini', // Copywriting avancé
   offers: 'gpt-4o-mini', // Stratégie commerciale
   content: 'gpt-4o-mini', // Planning complexe
