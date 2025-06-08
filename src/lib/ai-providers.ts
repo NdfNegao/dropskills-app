@@ -165,13 +165,13 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
 
 // Configuration par défaut du mapping des outils vers les providers
 const DEFAULT_TOOL_PROVIDER_MAPPING: Record<string, string> = {
-  'titles': 'deepseek',
-  'descriptions': 'deepseek', 
-  'emails': 'deepseek',
-  'veille': 'deepseek',
+  'titles': 'deepseek-v3',
+  'descriptions': 'deepseek-v3',
+  'emails': 'deepseek-v3',
+  'veille': 'deepseek-v3',
   'content': 'openai', // Garde OpenAI pour le contenu long
-  'usp': 'deepseek',
-  'icp': 'deepseek'
+  'usp': 'deepseek-v3',
+  'icp': 'deepseek-v3'
 };
 
 // Fonction pour charger la configuration depuis le fichier ou utiliser les valeurs par défaut

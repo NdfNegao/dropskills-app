@@ -174,13 +174,13 @@ export default function AIConfigPage() {
 
   const getOptimalMapping = () => {
     const toolsConfig = {
-      'titles': { name: 'Titres', defaultProvider: 'deepseek' },
-      'descriptions': { name: 'Descriptions', defaultProvider: 'deepseek' },
-      'emails': { name: 'Emails', defaultProvider: 'deepseek' },
-      'veille': { name: 'Veille', defaultProvider: 'deepseek' },
+      'titles': { name: 'Titres', defaultProvider: 'deepseek-v3' },
+      'descriptions': { name: 'Descriptions', defaultProvider: 'deepseek-v3' },
+      'emails': { name: 'Emails', defaultProvider: 'deepseek-v3' },
+      'veille': { name: 'Veille', defaultProvider: 'deepseek-v3' },
       'content': { name: 'Contenu', defaultProvider: 'openai' },
-      'usp': { name: 'USP', defaultProvider: 'deepseek' },
-      'icp': { name: 'ICP', defaultProvider: 'deepseek' }
+      'usp': { name: 'USP', defaultProvider: 'deepseek-v3' },
+      'icp': { name: 'ICP', defaultProvider: 'deepseek-v3' }
     };
     
     return Object.entries(toolsConfig).map(([toolId, config]) => {

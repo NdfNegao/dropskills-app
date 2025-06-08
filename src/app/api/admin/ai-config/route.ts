@@ -93,13 +93,13 @@ export async function PUT() {
   try {
     // Configuration par défaut optimisée
     const defaultMapping = {
-      'titles': 'deepseek',
-      'descriptions': 'deepseek', 
-      'emails': 'deepseek',
-      'veille': 'deepseek',
+      'titles': 'deepseek-v3',
+      'descriptions': 'deepseek-v3',
+      'emails': 'deepseek-v3',
+      'veille': 'deepseek-v3',
       'content': 'openai', // Garde OpenAI pour le contenu long
-      'usp': 'deepseek',
-      'icp': 'deepseek'
+      'usp': 'deepseek-v3',
+      'icp': 'deepseek-v3'
     };
     
     // Mise à jour du mapping
