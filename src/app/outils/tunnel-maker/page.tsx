@@ -12,10 +12,10 @@ function TunnelMakerContent() {
   const [tunnelResult, setTunnelResult] = useState<TunnelAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showWizard, setShowWizard] = useState(true);
-  const [currentFormData, setCurrentFormData] = useState<TunnelFormData | null>(null);
+// Removed unused state variable currentFormData
 
   const handleTunnelComplete = async (formData: TunnelFormData) => {
-    setCurrentFormData(formData);
+// Remove this line since currentFormData state and setter were removed
     setIsLoading(true);
     setShowWizard(false);
     
@@ -196,7 +196,7 @@ function TunnelMakerContent() {
   const handleRestart = () => {
     setShowWizard(true);
     setTunnelResult(null);
-    setCurrentFormData(null);
+// Remove this line since currentFormData state was removed
   };
 
   const copyToClipboard = (text: string) => {

@@ -6,7 +6,7 @@ import PremiumGuard from '@/components/auth/PremiumGuard';
 import { USPWizardV2 } from '@/components/USPWizardV2';
 import { USPResult } from '@/components/USPResult';
 import { USPFormData, USPAnalysis } from '@/types/usp';
-import { Copy, RefreshCw, CheckCircle, Target, TrendingUp, Zap, Trophy } from 'lucide-react';
+import * as lucideReact from 'lucide-react';
 import { motion } from 'framer-motion';
 
 function USPMakerContent() {
@@ -139,7 +139,7 @@ function USPMakerContent() {
                 onClick={handleBackToWizard}
                 className="flex items-center space-x-2 px-4 py-2 bg-[#232323] text-white rounded-lg hover:bg-[#2a2a2a] transition-colors"
               >
-                <Target className="w-4 h-4" />
+                <lucideReact.Target className="w-4 h-4" />
                 <span>Nouveau USP</span>
               </button>
             </div>
@@ -151,7 +151,7 @@ function USPMakerContent() {
                     onClick={() => copyToClipboard(uspResult.uspPrincipale)}
                     className="flex items-center space-x-2 px-4 py-2 bg-[#ff0033] text-white rounded-lg hover:bg-[#ff1a4d] transition-colors"
                   >
-                    <Copy className="w-4 h-4" />
+                    <lucideReact.Copy className="w-4 h-4" />
                     <span>Copier</span>
                   </button>
                   
@@ -160,7 +160,7 @@ function USPMakerContent() {
                     disabled={isLoading}
                     className="flex items-center space-x-2 px-4 py-2 bg-[#232323] text-white rounded-lg hover:bg-[#2a2a2a] transition-colors disabled:opacity-50"
                   >
-                    <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                    <lucideReact.RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                     <span>Régénérer</span>
                   </button>
                 </>
@@ -179,7 +179,7 @@ function USPMakerContent() {
           ) : (
             <div className="text-center py-12">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#ff0033] to-[#ff3366] rounded-full mb-4">
-                <Zap className="w-8 h-8 text-white" />
+                <lucideReact.Zap className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">Génération en cours...</h3>
               <p className="text-gray-400">Création de votre USP personnalisée</p>

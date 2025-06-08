@@ -108,6 +108,15 @@ function ContentSystemContent() {
       `SEMAINE ${week.week}\n` +
       week.content.map(item => 
         `${item.platform} - ${item.type}\n` +
+        `Titre: ${item.title}\n` +
+        `Description: ${item.description}\n\n`
+      ).join('')
+    ).join('\n');
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
     a.download = `content-system-${formData.business.replace(/\s+/g, '-')}.txt`;
     a.click();
     URL.revokeObjectURL(url);

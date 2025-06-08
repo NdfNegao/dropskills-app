@@ -10,7 +10,7 @@ interface BusinessContextStepProps {
   isActive: boolean;
 }
 
-export function BusinessContextStep({ data, onChange, errors, isActive }: BusinessContextStepProps) {
+export function BusinessContextStep({ data, onChange, errors }: BusinessContextStepProps) {
   const handleInputChange = (field: string, value: string) => {
     onChange({ [field]: value });
   };

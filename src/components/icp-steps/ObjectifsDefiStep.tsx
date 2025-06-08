@@ -8,7 +8,7 @@ interface ObjectifsDefiStepProps {
   isActive: boolean;
 }
 
-export function ObjectifsDefiStep({ data, onChange, errors, isActive }: ObjectifsDefiStepProps) {
+export function ObjectifsDefiStep({ data, onChange, errors }: ObjectifsDefiStepProps) {
   const handleInputChange = (field: string, value: string) => {
     onChange({ [field]: value });
   };

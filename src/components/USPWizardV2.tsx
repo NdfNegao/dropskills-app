@@ -56,6 +56,10 @@ export function USPWizardV2({ onComplete, isLoading = false, initialData = {}, i
   };
 
   const validateStep = (stepIndex: number): boolean => {
+
+
+
+
     const newErrors: Record<string, string> = {};
     
     switch (stepIndex) {
