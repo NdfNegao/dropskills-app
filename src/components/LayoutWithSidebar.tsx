@@ -5,7 +5,7 @@ import DropskillsSidebar from './DropskillsSidebar';
 import { useAuth } from '@/hooks/useAuth';
 import Link from 'next/link';
 import {
-  Home, Lock, BookOpen, User, Settings, LogOut, 
+  Home, Lock, User, LogOut, 
   Sparkles, BrainCog, Rocket, FolderKanban, Mail, 
   CalendarCheck, LineChart, GraduationCap, Target, X, Users, HelpCircle
 } from "lucide-react";

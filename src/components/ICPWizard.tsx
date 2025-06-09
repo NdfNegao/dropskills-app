@@ -149,7 +149,7 @@ export function ICPWizard({ onComplete, isLoading }: ICPWizardProps) {
     }));
     
     // Clear error when user starts typing
-    if (errors[field]) {
+    if (errors[field as keyof typeof errors]) {
       setErrors(prev => ({
         ...prev,
         [field]: ''
@@ -159,7 +159,7 @@ export function ICPWizard({ onComplete, isLoading }: ICPWizardProps) {
 
   const handleCanalToggle = (canal: string) => {
     const newCanaux = formData.canaux.includes(canal)
-      ? formData.canaux.filter(c => c !== canal)
+      ? formData.canaux.filter((c: string) => c !== canal)
       : [...formData.canaux, canal];
     
     handleInputChange('canaux', newCanaux);
@@ -443,7 +443,7 @@ export function ICPWizard({ onComplete, isLoading }: ICPWizardProps) {
       {/* Current Step Content */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-white mb-6">
-          {steps[currentStep - 1].title}
+          {steps[currentStep - 1]?.title || 'Étape'}
         </h2>
         {renderStepContent()}
       </div>
@@ -483,4 +483,4 @@ export function ICPWizard({ onComplete, isLoading }: ICPWizardProps) {
       </div>
     </div>
   );
-} 
+}

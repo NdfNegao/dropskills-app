@@ -26,6 +26,7 @@ function ICPMakerContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [showWizard, setShowWizard] = useState(true);
   const [lastFormData, setLastFormData] = useState<ICPFormData | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
 
   // Charger les données sauvegardées au démarrage
@@ -54,6 +55,7 @@ function ICPMakerContent() {
     setIsLoading(true);
     setLastFormData(wizardData);
     setMetadata(null);
+    setError(null);
     try {
       // Construction du prompt dynamique
       const dynamicPrompt = buildPrompt(wizardData);
@@ -75,8 +77,9 @@ function ICPMakerContent() {
       setShowWizard(false);
       localStorage.setItem('dropskills_icp_maker_data', JSON.stringify(result.analysis));
       localStorage.setItem('dropskills_icp_maker_form_data', JSON.stringify(wizardData));
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : 'Erreur lors de la génération de l\'ICP');
     } finally {
       setIsLoading(false);
     }
@@ -85,6 +88,7 @@ function ICPMakerContent() {
   const handleNewGeneration = () => {
     setShowWizard(true);
     setIcpResult(null);
+    setError(null);
     localStorage.removeItem('dropskills_icp_maker_data');
     localStorage.removeItem('dropskills_icp_maker_form_data');
   };
@@ -188,7 +192,6 @@ function ICPMakerContent() {
               result={icpResult}
               metadata={metadata}
               error={error}
-              onRegenerate={handleRegenerate}
               onExport={exportToPDF}
               isLoading={isLoading}
             />

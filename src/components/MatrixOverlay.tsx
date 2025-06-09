@@ -26,13 +26,16 @@ export default function MatrixOverlay({ visible }: MatrixOverlayProps) {
     const chars = "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズヅブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     function draw() {
+      if (!ctx) return;
       ctx.fillStyle = "rgba(0,0,0,0.18)";
       ctx.fillRect(0, 0, width, height);
       ctx.font = `${fontSize}px monospace`;
       ctx.fillStyle = "#00ff66";
       for (let i = 0; i < drops.length; i++) {
         const text = chars[Math.floor(Math.random() * chars.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (text) {
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        }
         if (drops[i] * fontSize > height && Math.random() > 0.975) {
           drops[i] = 0;
         }
@@ -59,4 +62,4 @@ export default function MatrixOverlay({ visible }: MatrixOverlayProps) {
       <canvas ref={canvasRef} style={{ width: "100vw", height: "100vh", display: "block" }} />
     </div>
   );
-} 
+}

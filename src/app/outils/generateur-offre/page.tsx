@@ -274,7 +274,7 @@ function ProductStep({ data, onChange, errors }: StepProps) {
           placeholder="Ex: Une formation complète de 8 semaines qui enseigne les stratégies marketing digital les plus efficaces pour doubler son chiffre d'affaires..."
           className="w-full h-32 p-4 bg-[#1a1a1a] border border-[#232323] rounded-lg text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none resize-none"
         />
-        {errors?.productService && (
+        {errors.productService && (
           <p className="text-red-400 text-sm">{errors.productService}</p>
         )}
       </div>
@@ -295,7 +295,7 @@ function ProductStep({ data, onChange, errors }: StepProps) {
           placeholder="Ex: La seule méthode qui garantit des résultats en 30 jours grâce à notre système breveté de..."
           className="w-full h-24 p-4 bg-[#1a1a1a] border border-[#232323] rounded-lg text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none resize-none"
         />
-        {errors?.uniqueValue && (
+        {errors.uniqueValue && (
           <p className="text-red-400 text-sm">{errors.uniqueValue}</p>
         )}
         
@@ -503,7 +503,7 @@ function ToneStep({ data, onChange, errors }: StepProps) {
           ))}
         </div>
         
-        {errors?.tone && (
+        {errors.tone && (
           <p className="text-red-400 text-sm">{errors.tone}</p>
         )}
       </div>
@@ -527,7 +527,7 @@ function ToneStep({ data, onChange, errors }: StepProps) {
           className="w-full p-4 bg-[#1a1a1a] border border-[#232323] rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
         />
         
-        {errors?.brandKeywords && (
+        {errors.brandKeywords && (
           <p className="text-red-400 text-sm">{errors.brandKeywords}</p>
         )}
         

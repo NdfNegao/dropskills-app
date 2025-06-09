@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     } = await request.json();
 
     // Validation des données
-    if (!opportunityData || !opportunityData.title) {
+    if (!opportunityData?.title) {
       return NextResponse.json({ 
         error: 'Données d\'opportunité manquantes' 
       }, { status: 400 });

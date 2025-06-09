@@ -193,7 +193,7 @@ async function executePromptTest({
   try {
     // Vérifier que le provider est disponible
     const aiProvider = AI_PROVIDERS[provider];
-    if (!aiProvider || !aiProvider.isAvailable()) {
+    if (!aiProvider?.isAvailable()) {
       throw new Error(`Provider ${provider} non disponible`);
     }
 

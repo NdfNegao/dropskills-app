@@ -17,17 +17,20 @@ import {
   Check,
   Target,
   Heart,
+  Star,
+  Calendar,
   Zap,
   TrendingUp,
-  Calendar,
-  Star,
   Lightbulb
 } from 'lucide-react';
 import { ICPAnalysis } from '@/types/icp';
 
 interface ICPResultProps {
-  analysis: ICPAnalysis;
-  onCopy: (text: string) => void;
+  result: ICPAnalysis | null;
+  metadata?: any;
+  error?: string | null;
+  onExport?: () => void;
+  isLoading?: boolean;
 }
 
 interface SectionProps {
@@ -156,7 +159,24 @@ function ListCard({ title, items, icon, color = "blue" }: { title: string; items
   );
 }
 
-export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
+export default function ICPResult({ result, metadata, error }: ICPResultProps) {
+  // Afficher l'erreur si elle existe
+  if (error) {
+    return (
+      <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-6">
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 bg-red-500/20 rounded-full flex items-center justify-center">
+            <span className="text-red-400 text-lg">⚠️</span>
+          </div>
+          <div>
+            <h3 className="text-red-400 font-semibold">Erreur lors de la génération</h3>
+            <p className="text-red-300 text-sm mt-1">{error}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Profil Sociodémographique */}
@@ -169,27 +189,27 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <InfoCard 
             label="Âge" 
-            value={analysis.profilSociodemographique.age}
+            value={result?.profilSociodemographique?.age || 'Non défini'}
             icon={<Calendar className="w-4 h-4" />}
           />
           <InfoCard 
             label="Sexe" 
-            value={analysis.profilSociodemographique.sexe}
+            value={result?.profilSociodemographique?.sexe || 'Non défini'}
             icon={<Users className="w-4 h-4" />}
           />
           <InfoCard 
             label="Localisation" 
-            value={analysis.profilSociodemographique.localisation}
+            value={result?.profilSociodemographique?.localisation || 'Non défini'}
             icon={<MapPin className="w-4 h-4" />}
           />
           <InfoCard 
             label="Situation Professionnelle" 
-            value={analysis.profilSociodemographique.situationPro}
+            value={result?.profilSociodemographique?.situationPro || 'Non défini'}
             icon={<Target className="w-4 h-4" />}
           />
           <InfoCard 
             label="Niveau de Revenus" 
-            value={analysis.profilSociodemographique.niveauRevenus}
+            value={result?.profilSociodemographique?.niveauRevenus || 'Non défini'}
             icon={<DollarSign className="w-4 h-4" />}
           />
         </div>
@@ -205,13 +225,13 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
           <div className="space-y-4">
             <ListCard 
               title="Besoins Principaux"
-              items={analysis.psychologieMotivations.besoins}
+              items={result?.psychologieMotivations?.besoins || []}
               icon={<Heart className="w-4 h-4" />}
               color="green"
             />
             <ListCard 
               title="Désirs & Aspirations"
-              items={analysis.psychologieMotivations.desirs}
+              items={result?.psychologieMotivations?.desirs || []}
               icon={<Star className="w-4 h-4" />}
               color="blue"
             />
@@ -219,13 +239,13 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
           <div className="space-y-4">
             <ListCard 
               title="Peurs & Freins"
-              items={analysis.psychologieMotivations.peurs}
+              items={result?.psychologieMotivations?.peurs || []}
               icon={<AlertTriangle className="w-4 h-4" />}
               color="red"
             />
             <ListCard 
               title="Objections Courantes"
-              items={analysis.psychologieMotivations.objections}
+              items={result?.psychologieMotivations?.objections || []}
               icon={<MessageSquare className="w-4 h-4" />}
               color="orange"
             />
@@ -241,7 +261,7 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
       >
         <ListCard 
           title="Points de Douleur Identifiés"
-          items={analysis.problemePrincipaux}
+          items={result?.problemePrincipaux || []}
           icon={<Zap className="w-4 h-4" />}
           color="red"
         />
@@ -257,13 +277,13 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
           <div className="space-y-4">
             <ListCard 
               title="Canaux de Communication"
-              items={analysis.ouLeTrouver.canaux}
+              items={result?.ouLeTrouver?.canaux || []}
               icon={<MessageSquare className="w-4 h-4" />}
               color="green"
             />
             <ListCard 
               title="Plateformes Digitales"
-              items={analysis.ouLeTrouver.plateformes}
+              items={result?.ouLeTrouver?.plateformes || []}
               icon={<TrendingUp className="w-4 h-4" />}
               color="blue"
             />
@@ -271,13 +291,13 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
           <div className="space-y-4">
             <ListCard 
               title="Groupes & Communautés"
-              items={analysis.ouLeTrouver.groupes}
+              items={result?.ouLeTrouver?.groupes || []}
               icon={<Users className="w-4 h-4" />}
               color="purple"
             />
             <ListCard 
               title="Événements & Lieux"
-              items={analysis.ouLeTrouver.evenements}
+              items={result?.ouLeTrouver?.evenements || []}
               icon={<Calendar className="w-4 h-4" />}
               color="orange"
             />
@@ -295,20 +315,20 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <ListCard 
               title="Expressions Clés"
-              items={analysis.messagingImpactant.expressions}
+              items={result?.messagingImpactant?.expressions || []}
               icon={<MessageSquare className="w-4 h-4" />}
               color="orange"
             />
             <ListCard 
               title="Accroches Efficaces"
-              items={analysis.messagingImpactant.accroches}
+              items={result?.messagingImpactant?.accroches || []}
               icon={<Zap className="w-4 h-4" />}
               color="purple"
             />
           </div>
           <InfoCard 
             label="Style de Discours Recommandé" 
-            value={analysis.messagingImpactant.styleDiscours}
+            value={result?.messagingImpactant?.styleDiscours || 'Non défini'}
             icon={<Lightbulb className="w-4 h-4" />}
           />
         </div>
@@ -324,18 +344,18 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InfoCard 
               label="Budget Typique" 
-              value={analysis.budgetPouvoirAchat.budgetTypique}
+              value={result?.budgetPouvoirAchat?.budgetTypique || 'Non défini'}
               icon={<DollarSign className="w-4 h-4" />}
             />
             <InfoCard 
               label="Fréquence d'Achat" 
-              value={analysis.budgetPouvoirAchat.frequenceAchat}
+              value={result?.budgetPouvoirAchat?.frequenceAchat || 'Non défini'}
               icon={<Calendar className="w-4 h-4" />}
             />
           </div>
           <ListCard 
             title="Facteurs Influençant le Prix"
-            items={analysis.budgetPouvoirAchat.facteursPrix}
+            items={result?.budgetPouvoirAchat?.facteursPrix || []}
             icon={<TrendingUp className="w-4 h-4" />}
             color="green"
           />
@@ -356,22 +376,22 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
                 <Target className="w-5 h-5 text-purple-400" />
               </div>
               <div>
-                <h4 className="text-white font-bold text-lg">{analysis.segments.principal.nom}</h4>
-                <span className="text-purple-400 font-semibold">{analysis.segments.principal.pourcentage}</span>
+                <h4 className="text-white font-bold text-lg">{result?.segments?.principal?.nom || 'Non défini'}</h4>
+                <span className="text-purple-400 font-semibold">{result?.segments?.principal?.pourcentage || '0%'}</span>
               </div>
             </div>
-            <p className="text-gray-300">{analysis.segments.principal.description}</p>
+            <p className="text-gray-300">{result?.segments?.principal?.description || 'Aucune description disponible'}</p>
           </div>
 
           {/* Segments Variantes */}
-          {analysis.segments.variantes.length > 0 && (
+          {result?.segments?.variantes && result.segments.variantes.length > 0 && (
             <div className="space-y-4">
               <h4 className="text-white font-semibold flex items-center gap-2">
                 <Users className="w-4 h-4 text-indigo-400" />
                 Segments Secondaires
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {analysis.segments.variantes.map((segment, index) => (
+                {result.segments.variantes.map((segment, index) => (
                   <div key={index} className="bg-[#1a1a1a] rounded-lg p-4 border border-[#2a2a2a]">
                     <div className="flex items-center justify-between mb-2">
                       <h5 className="text-white font-semibold">{segment.nom}</h5>
@@ -387,7 +407,7 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
       </Section>
 
       {/* Journaux Intimes */}
-      {analysis.journauxIntimes && (
+      {result?.journauxIntimes && (
         <Section 
           title="Journaux Intimes" 
           icon={<Heart className="w-5 h-5 text-pink-400" />}
@@ -400,21 +420,21 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
                 <AlertTriangle className="w-5 h-5 text-red-400" />
                 Journal "Douleur"
               </h4>
-              <p className="text-gray-300 leading-relaxed italic">"{analysis.journauxIntimes.douleur}"</p>
+              <p className="text-gray-300 leading-relaxed italic">"{result.journauxIntimes.douleur}"</p>
             </div>
             <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-lg p-6 border border-green-500/20">
               <h4 className="text-white font-bold mb-3 flex items-center gap-2">
                 <Star className="w-5 h-5 text-green-400" />
                 Journal "Victoire"
               </h4>
-              <p className="text-gray-300 leading-relaxed italic">"{analysis.journauxIntimes.victoire}"</p>
+              <p className="text-gray-300 leading-relaxed italic">"{result.journauxIntimes.victoire}"</p>
             </div>
           </div>
         </Section>
       )}
 
       {/* Résumé Express */}
-      {analysis.resumeExpress && (
+      {result?.resumeExpress && (
         <Section 
           title="Résumé Express" 
           icon={<Zap className="w-5 h-5 text-yellow-400" />}
@@ -423,7 +443,7 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
         >
           <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-lg p-6 border border-yellow-500/20">
             <div className="space-y-2">
-              {analysis.resumeExpress.map((ligne, index) => (
+              {result.resumeExpress.map((ligne, index) => (
                 <p key={index} className="text-gray-300 leading-relaxed">• {ligne}</p>
               ))}
             </div>
@@ -432,7 +452,7 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
       )}
 
       {/* Accroches Marketing */}
-      {analysis.accrochesCiblees && (
+      {result?.accrochesCiblees && (
         <Section 
           title="Accroches Marketing" 
           icon={<MessageSquare className="w-5 h-5 text-cyan-400" />}
@@ -446,7 +466,7 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
                 Accroches "Douleur"
               </h4>
               <div className="space-y-2">
-                {analysis.accrochesCiblees.douleur.map((accroche, index) => (
+                {result.accrochesCiblees.douleur.map((accroche, index) => (
                   <p key={index} className="text-gray-300">• {accroche}</p>
                 ))}
               </div>
@@ -457,7 +477,7 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
                 Accroches "Situation Rêvée"
               </h4>
               <div className="space-y-2">
-                {analysis.accrochesCiblees.situationRevee.map((accroche, index) => (
+                {result.accrochesCiblees.situationRevee.map((accroche, index) => (
                   <p key={index} className="text-gray-300">• {accroche}</p>
                 ))}
               </div>
@@ -480,25 +500,25 @@ export default function ICPResult({ analysis, onCopy }: ICPResultProps) {
               <Lightbulb className="w-5 h-5 text-blue-400" />
               Résumé Exécutif
             </h4>
-            <p className="text-gray-300 leading-relaxed">{analysis.ficheActionable.resumeExecutif}</p>
+            <p className="text-gray-300 leading-relaxed">{result?.ficheActionable?.resumeExecutif || 'Aucun résumé disponible'}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <ListCard 
               title="Priorités Marketing"
-              items={analysis.ficheActionable.prioritesMarketing}
+              items={result?.ficheActionable?.prioritesMarketing || []}
               icon={<Target className="w-4 h-4" />}
               color="blue"
             />
             <ListCard 
               title="Prochaines Étapes"
-              items={analysis.ficheActionable.prochainEtapes}
+              items={result?.ficheActionable?.prochainEtapes || []}
               icon={<Zap className="w-4 h-4" />}
               color="green"
             />
             <ListCard 
               title="Métriques Clés"
-              items={analysis.ficheActionable.metriquesACles}
+              items={result?.ficheActionable?.metriquesACles || []}
               icon={<TrendingUp className="w-4 h-4" />}
               color="purple"
             />

@@ -41,7 +41,7 @@ interface LeadMagnetResultProps {
   formData: any;
 }
 
-export function LeadMagnetResult({ analysis, formData }: LeadMagnetResultProps) {
+export function LeadMagnetResult({ analysis }: LeadMagnetResultProps) {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     // Vous pourriez ajouter une notification toast ici

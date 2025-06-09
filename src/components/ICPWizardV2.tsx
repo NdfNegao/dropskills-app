@@ -98,7 +98,7 @@ export function ICPWizardV2({ onComplete, isLoading, initialData = {} }: ICPWiza
       description: 'Définissez vos objectifs business et vos principaux défis',
       icon: Target,
       component: ObjectifsDefiStep,
-      validation: (data: ICPFormData) => {
+      validation: () => {
         const errors: Record<string, string> = {};
         // Validation optionnelle pour ces champs enrichis
         return {
@@ -113,7 +113,7 @@ export function ICPWizardV2({ onComplete, isLoading, initialData = {} }: ICPWiza
       description: 'Décrivez la situation actuelle et désirée de votre client cible',
       icon: TrendingUp,
       component: SituationClientStep,
-      validation: (data: ICPFormData) => {
+      validation: () => {
         const errors: Record<string, string> = {};
         // Validation optionnelle pour ces champs enrichis
         return {

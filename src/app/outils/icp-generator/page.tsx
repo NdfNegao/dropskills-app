@@ -264,7 +264,7 @@ function ICPGeneratorContent() {
             {/* Résultats ICP */}
             {icpResult && (
               <ICPResult 
-                analysis={icpResult} 
+                result={icpResult} 
                 onCopy={copyToClipboard}
               />
             )}

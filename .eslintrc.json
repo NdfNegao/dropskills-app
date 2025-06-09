@@ -4,13 +4,45 @@
     "next/typescript"
   ],
   "rules": {
-    "no-undef": "error",
-    "no-unused-vars": "warn",
-    "@typescript-eslint/no-unused-vars": "warn",
+    // Variables et imports
+    "no-undef": "off", // Désactivé car TypeScript gère cela
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["warn", { 
+      "argsIgnorePattern": "^_",
+      "varsIgnorePattern": "^_",
+      "ignoreRestSiblings": true
+    }],
+    "@typescript-eslint/no-require-imports": "off",
+    
+    // TypeScript flexibilité
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/prefer-optional-chain": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
+    
+    // React et hooks
     "react-hooks/exhaustive-deps": "warn",
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/no-unescaped-entities": "warn",
+    "react/jsx-no-undef": "off",
+    
+    // Bonnes pratiques générales
     "prefer-const": "error",
     "no-var": "error",
-    "no-console": "warn"
+    "no-console": "warn",
+    "eqeqeq": ["error", "smart"],
+    "curly": ["error", "multi-line"],
+    
+    // Import/Export
+    "no-duplicate-imports": "warn",
+    "@typescript-eslint/no-empty-object-type": "off",
+    
+    // Sécurité
+    "no-eval": "error",
+    "no-implied-eval": "error",
+    "no-new-func": "error"
   },
   "env": {
     "browser": true,
@@ -24,5 +56,10 @@
     },
     "ecmaVersion": "latest",
     "sourceType": "module"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
   }
 }

@@ -43,7 +43,10 @@ export function TunnelWizard({ onComplete, isLoading = false, initialData = {} }
         } else if (data.offreProduitService.length < 20) {
           errors.offreProduitService = 'Veuillez fournir une description plus détaillée (minimum 20 caractères)';
         }
-        return errors;
+        return {
+          isValid: Object.keys(errors).length === 0,
+          errors
+        };
       }
     },
     {
@@ -57,7 +60,10 @@ export function TunnelWizard({ onComplete, isLoading = false, initialData = {} }
         if (!data.objectifTunnel) {
           errors.objectifTunnel = 'Veuillez sélectionner un objectif pour votre tunnel';
         }
-        return errors;
+        return {
+          isValid: Object.keys(errors).length === 0,
+          errors
+        };
       }
     },
     {
@@ -71,7 +77,10 @@ export function TunnelWizard({ onComplete, isLoading = false, initialData = {} }
         if (!data.maturiteAudience) {
           errors.maturiteAudience = 'Veuillez sélectionner le niveau de maturité de votre audience';
         }
-        return errors;
+        return {
+          isValid: Object.keys(errors).length === 0,
+          errors
+        };
       }
     },
     {
@@ -88,7 +97,10 @@ export function TunnelWizard({ onComplete, isLoading = false, initialData = {} }
         if (!data.canauxEntree || data.canauxEntree.length === 0) {
           errors.canauxEntree = 'Veuillez sélectionner au moins un canal d\'acquisition';
         }
-        return errors;
+        return {
+          isValid: Object.keys(errors).length === 0,
+          errors
+        };
       }
     },
     {
@@ -105,7 +117,10 @@ export function TunnelWizard({ onComplete, isLoading = false, initialData = {} }
         if (!data.longueurTunnel) {
           errors.longueurTunnel = 'Veuillez choisir la longueur de votre tunnel';
         }
-        return errors;
+        return {
+          isValid: Object.keys(errors).length === 0,
+          errors
+        };
       }
     },
     {
@@ -145,7 +160,10 @@ export function TunnelWizard({ onComplete, isLoading = false, initialData = {} }
           </div>
         </div>
       ),
-      validation: () => ({})
+      validation: () => ({
+        isValid: true,
+        errors: {}
+      })
     }
   ];
 

@@ -48,7 +48,7 @@ export function useUserData(userId?: string): UseUserDataReturn {
         
         // Déterminer le statut premium
         const isPremium = false || // À implémenter selon vos besoins
-                         (profile.packsPurchased && profile.packsPurchased.some((pack: any) => pack.price && pack.price > 0));
+                         (profile.packsPurchased?.some((pack: any) => pack.price && pack.price > 0));
 
         const userData: UserData = {
           id: profile.id,

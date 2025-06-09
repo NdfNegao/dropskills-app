@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Gift, Target, FileText, Palette, CheckCircle } from 'lucide-react';
+import { Target, FileText, Palette, CheckCircle } from 'lucide-react';
 import StepWizard, { WizardStep } from './StepWizard';
 import LeadMagnetContextStep from './lead-magnet-steps/LeadMagnetContextStep';
 import LeadMagnetContentStep from './lead-magnet-steps/LeadMagnetContentStep';

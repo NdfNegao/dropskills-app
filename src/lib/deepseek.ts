@@ -74,7 +74,7 @@ class DeepSeekService {
 
       const data = await response.json();
       
-      if (!data.choices || !data.choices[0]) {
+      if (!data.choices?.[0]) {
         throw new Error('Invalid response format from DeepSeek API');
       }
 

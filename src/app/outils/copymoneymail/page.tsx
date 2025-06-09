@@ -86,8 +86,15 @@ const NOMBRE_EMAILS_OPTIONS = [
   '10 emails'
 ];
 
+// Interface pour les props des étapes
+interface StepProps {
+  data: EmailFormData;
+  onChange: (updates: Partial<EmailFormData>) => void;
+  errors: Record<string, string>;
+}
+
 // Composants d'étapes
-function ConfigurationStep({ data, onChange, errors }: any) {
+function ConfigurationStep({ data, onChange, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="space-y-3">
@@ -167,7 +174,7 @@ function ConfigurationStep({ data, onChange, errors }: any) {
   );
 }
 
-function AudienceStep({ data, onChange, errors }: any) {
+function AudienceStep({ data, onChange, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="space-y-3">
@@ -241,7 +248,7 @@ function AudienceStep({ data, onChange, errors }: any) {
   );
 }
 
-function ContenuStep({ data, onChange, errors }: any) {
+function ContenuStep({ data, onChange, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="space-y-3">
@@ -318,7 +325,7 @@ function ContenuStep({ data, onChange, errors }: any) {
   );
 }
 
-function StyleStep({ data, onChange, errors }: any) {
+function StyleStep({ data, onChange, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="space-y-3">

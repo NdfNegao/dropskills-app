@@ -16,8 +16,8 @@ export interface WizardStep {
   id: string;
   title: string;
   description: string;
-  icon: React.ComponentType<any>;
-  component: React.ComponentType<any>;
+  icon: React.ComponentType<{ className?: string }>;
+  component: React.ComponentType<{ formData: any; updateFormData: (field: string, value: any) => void; errors: Record<string, string>; isActive: boolean }>;
   validation?: (data: any) => { isValid: boolean; errors: Record<string, string> };
   isOptional?: boolean;
 }
@@ -65,10 +65,10 @@ function StepWizard({
 
   useEffect(() => {
     if (!isLoading && showLogs) {
-      // Masquer les logs après un délai quand le chargement se termine
+      // Masquer les logs après un délai plus long quand le chargement se termine
       const timer = setTimeout(() => {
         setShowLogs(false);
-      }, 1000);
+      }, 3000); // Augmenté à 3 secondes pour laisser le temps de voir les logs
       return () => clearTimeout(timer);
     }
     return undefined;
@@ -227,7 +227,6 @@ function StepWizard({
             </motion.div>
           ) : (
             <motion.div
-              key={currentStepIndex}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
@@ -246,12 +245,12 @@ function StepWizard({
 
               {/* Step Component */}
               <div className="min-h-[200px]">
-                <currentStep.component 
-                  data={formData}
-                  onChange={updateFormData}
-                  errors={errors}
-                  isActive={true}
-                />
+                {React.createElement(currentStep.component, {
+                  data: formData,
+                  onChange: updateFormData,
+                  errors: errors,
+                  isActive: true
+                })}
               </div>
 
               {/* Error Display */}

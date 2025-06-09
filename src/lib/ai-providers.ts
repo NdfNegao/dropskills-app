@@ -40,7 +40,7 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     checkAvailability: async () => {
       try {
         const provider = AI_PROVIDERS['deepseek-v3'];
-        if (!provider || !provider.baseURL) throw new Error('baseURL non défini');
+        if (!provider?.baseURL) throw new Error('baseURL non défini');
         const res = await fetch(provider.baseURL);
         return res.ok;
       } catch {
@@ -49,7 +49,7 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     },
     generateText: async (prompt: string, options: unknown = {}) => {
       const provider = AI_PROVIDERS['deepseek-v3'];
-      if (!provider || !provider.baseURL) throw new Error('baseURL non défini');
+      if (!provider?.baseURL) throw new Error('baseURL non défini');
       const response = await fetch(`${provider.baseURL}/chat/completions`, {
         method: 'POST',
         headers: {
@@ -87,7 +87,7 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     checkAvailability: async () => {
       try {
         const provider = AI_PROVIDERS['grok-3'];
-        if (!provider || !provider.baseURL) throw new Error('baseURL non défini');
+        if (!provider?.baseURL) throw new Error('baseURL non défini');
         const res = await fetch(provider.baseURL);
         return res.ok;
       } catch {
@@ -96,7 +96,7 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     },
     generateText: async (prompt: string, options: unknown = {}) => {
       const provider = AI_PROVIDERS['grok-3'];
-      if (!provider || !provider.baseURL) throw new Error('baseURL non défini');
+      if (!provider?.baseURL) throw new Error('baseURL non défini');
       const response = await fetch(`${provider.baseURL}/chat/completions`, {
         method: 'POST',
         headers: {
@@ -134,7 +134,7 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     checkAvailability: async () => {
       try {
         const provider = AI_PROVIDERS['claude-3.5-sonnet'];
-        if (!provider || !provider.baseURL) throw new Error('baseURL non défini');
+        if (!provider?.baseURL) throw new Error('baseURL non défini');
         const res = await fetch(provider.baseURL);
         return res.ok;
       } catch {
@@ -143,7 +143,7 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     },
     generateText: async (prompt: string, options: unknown = {}) => {
       const provider = AI_PROVIDERS['claude-3.5-sonnet'];
-      if (!provider || !provider.baseURL) throw new Error('baseURL non défini');
+      if (!provider?.baseURL) throw new Error('baseURL non défini');
       const response = await fetch(`${provider.baseURL}/messages`, {
         method: 'POST',
         headers: {
@@ -182,7 +182,7 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     checkAvailability: async () => {
       try {
         const provider = AI_PROVIDERS['gemini-2.0-flash'];
-        if (!provider || !provider.baseURL) throw new Error('baseURL non défini');
+        if (!provider?.baseURL) throw new Error('baseURL non défini');
         const res = await fetch(provider.baseURL);
         return res.ok;
       } catch {
@@ -191,7 +191,7 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     },
     generateText: async (prompt: string, options: unknown = {}) => {
       const provider = AI_PROVIDERS['gemini-2.0-flash'];
-      if (!provider || !provider.baseURL) throw new Error('baseURL non défini');
+      if (!provider?.baseURL) throw new Error('baseURL non défini');
       const response = await fetch(
         `${provider.baseURL}/models/gemini-2.0-flash:generateContent?key=${process.env.GOOGLE_AI_API_KEY}`,
         {

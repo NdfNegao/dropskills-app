@@ -6,7 +6,7 @@ import PremiumGuard from '@/components/auth/PremiumGuard';
 import { USPWizardV2 } from '@/components/USPWizardV2';
 import { USPResult } from '@/components/USPResult';
 import { USPFormData, USPAnalysis } from '@/types/usp';
-import { Target, TrendingUp, Users, DollarSign, Zap, Lightbulb, Copy, RefreshCw } from 'lucide-react';
+import { Target, TrendingUp, Users, DollarSign, Zap, Lightbulb } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 function USPMakerContent() {
