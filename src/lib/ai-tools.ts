@@ -3,13 +3,13 @@ import { AIProviderManager } from './ai-providers';
 // Types pour les outils IA
 export interface AiToolRequest {
   toolType: string;
-  input: Record<string, any>;
+  input: Record<string, unknown>;
   userId?: string;
 }
 
 export interface AiToolResponse {
   success: boolean;
-  data?: any;
+  data?: unknown;
   error?: string;
   metadata?: {
     provider: string;
@@ -21,7 +21,7 @@ export interface AiToolResponse {
 
 // Templates de prompts pour chaque outil
 const TOOL_PROMPTS = {
-  titleGenerator: (input: any) => `
+  titleGenerator: (input: GenerateurTitresInput) => `
 MISSION : Génère ${input.nombreTitres} titres ${input.type === 'formation' ? 'de formation' : input.type === 'article' ? "d'article" : input.type === 'video' ? 'de vidéo' : "d'ebook"} ultra-créatifs et engageants.
 
 SUJET : ${input.sujet}
@@ -47,7 +47,7 @@ EXEMPLES de styles recherchés :
 
 Génère maintenant ${input.nombreTitres} titres créatifs pour "${input.sujet}" :`,
 
-  'pack-createur': (input: any) => `Tu es un expert en création de produits numériques et en stratégie marketing.
+  'pack-createur': (input: PackCreateurInput) => `Tu es un expert en création de produits numériques et en stratégie marketing.
 
 MISSION : Crée un plan complet de pack numérique pour la niche "${input.niche}" destiné à une audience "${input.audience}".
 
@@ -68,13 +68,13 @@ STRUCTURE À RETOURNER :
 
 Sois créatif, pratique et orienté résultats pour maximiser l'impact commercial.`,
 
-  productDescription: (input: any) => `
+  productDescription: (input: ProductDescriptionInput) => `
 MISSION : Crée une description ${input.tonalite} pour le produit "${input.produit}".
 
 AUDIENCE CIBLE : ${input.audience}
 
 CARACTÉRISTIQUES PRINCIPALES :
-${input.caracteristiques.map((c: string, i: number) => `- ${c}`).join('\n')}
+${input.caracteristiques.map((c: string) => `- ${c}`).join('\n')}
 
 STRUCTURE À RESPECTER :
 1. ACCROCHE (1 phrase qui capte l'attention)
@@ -117,8 +117,6 @@ export async function processAiTool(request: AiToolRequest): Promise<AiToolRespo
     
     // Obtenir le provider optimal
     const provider = await AIProviderManager.getOptimalProvider(providerType);
-    
-    console.log(`🤖 Processing ${request.toolType} with ${provider.name}`);
 
     // Générer la réponse
     const response = await provider.generateText(prompt, {
@@ -158,7 +156,6 @@ export async function processAiTool(request: AiToolRequest): Promise<AiToolRespo
     };
 
   } catch (error) {
-    console.error('Erreur traitement outil IA:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Erreur inconnue'

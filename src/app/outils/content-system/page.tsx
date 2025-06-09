@@ -1,16 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
 import StepWizard from '@/components/StepWizard';
-import AILoadingLogs from '@/components/AILoadingLogs';
-import { 
-  Sparkles, 
-  FileText, 
-  Calendar, 
-  Target, 
-  TrendingUp, 
+import {
+  Sparkles,
+  FileText,
+  Calendar,
+  Target,
   Copy,
   RefreshCw,
   Download,
@@ -22,7 +20,6 @@ import {
   Palette,
   BarChart3
 } from 'lucide-react';
-import { getToolById } from '@/data/ai-tools';
 
 interface ContentSystemData {
   business: string;
@@ -57,10 +54,7 @@ function ContentSystemContent() {
   const [contentPlan, setContentPlan] = useState<ContentPlan[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showWizard, setShowWizard] = useState(true);
-  const [providerInfo, setProviderInfo] = useState<{provider?: string, model?: string, cost?: string} | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const tool = getToolById('content-system');
 
   // Options pour les objectifs
   const GOALS_OPTIONS = [
@@ -121,8 +115,7 @@ function ContentSystemContent() {
   // Fonction de génération du système de contenu
   const generateContentSystem = async () => {
     setIsLoading(true);
-    setErrorMsg(null);
-    setProviderInfo(null);
+
     setContentPlan([]);
     
     try {
@@ -142,7 +135,6 @@ function ContentSystemContent() {
       const data = await response.json();
       
       if (!response.ok || !data.success) {
-        setErrorMsg(data.error || 'Erreur lors de la génération du système de contenu');
         setIsLoading(false);
         return;
       }
@@ -150,17 +142,11 @@ function ContentSystemContent() {
       // Délai pour laisser les logs se terminer
       setTimeout(() => {
         setContentPlan(data.contentPlan);
-        setProviderInfo({
-          provider: data.metadata?.provider,
-          model: data.metadata?.model,
-          cost: data.metadata?.cost,
-        });
         setIsLoading(false);
         setShowWizard(false);
       }, 1000);
       
     } catch (error) {
-      setErrorMsg('Erreur lors de la génération du système de contenu');
       setIsLoading(false);
     }
   };
@@ -182,8 +168,6 @@ function ContentSystemContent() {
       tone: 'professional'
     });
     setContentPlan([]);
-    setProviderInfo(null);
-    setErrorMsg(null);
     setShowWizard(true);
   };
 
@@ -724,7 +708,7 @@ function ContentSystemContent() {
       description: 'Votre activité',
       icon: Building2,
       component: () => <EntrepriseStep formData={formData} onUpdate={(data) => setFormData(prev => ({ ...prev, ...data }))} />,
-      validation: (data: any) => ({
+      validation: (_data: unknown) => ({
         isValid: formData.business.trim().length >= 3,
         errors: formData.business.trim().length >= 3 ? {} : { business: 'Le nom de l\'entreprise est requis' }
       })
@@ -735,7 +719,7 @@ function ContentSystemContent() {
       description: 'Votre cible',
       icon: Users,
       component: () => <AudienceStep formData={formData} onUpdate={(data) => setFormData(prev => ({ ...prev, ...data }))} />,
-      validation: (data: any) => ({
+      validation: (_data: unknown) => ({
         isValid: formData.audience.trim().length >= 3,
         errors: formData.audience.trim().length >= 3 ? {} : { audience: 'La description de l\'audience est requise' }
       })
@@ -746,7 +730,7 @@ function ContentSystemContent() {
       description: 'Buts & plateformes',
       icon: Megaphone,
       component: () => <ObjectifsStep formData={formData} onUpdate={(data) => setFormData(prev => ({ ...prev, ...data }))} />,
-      validation: (data: any) => ({
+      validation: (_data: unknown) => ({
         isValid: formData.goals.length > 0 && formData.platforms.length > 0,
         errors: {
           ...(formData.goals.length === 0 ? { goals: 'Sélectionnez au moins un objectif' } : {}),
@@ -760,7 +744,7 @@ function ContentSystemContent() {
       description: 'Ton & fréquence',
       icon: Palette,
       component: () => <StyleStep formData={formData} onUpdate={(data) => setFormData(prev => ({ ...prev, ...data }))} />,
-      validation: (data: any) => ({
+      validation: (_data: unknown) => ({
         isValid: formData.tone.length > 0,
         errors: formData.tone.length > 0 ? {} : { tone: 'Sélectionnez un ton' }
       })
@@ -771,7 +755,7 @@ function ContentSystemContent() {
       description: 'Validation finale',
       icon: CheckCircle,
       component: () => <RecapitulatifStep formData={formData} onGenerate={generateContentSystem} />,
-      validation: (data: any) => ({ isValid: true, errors: {} })
+      validation: (_data: unknown) => ({ isValid: true, errors: {} })
     }
   ];
 

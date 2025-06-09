@@ -2,29 +2,19 @@
 
 import React, { useState, useEffect } from 'react';
 import ToolLayout from '@/components/ToolLayout';
-import PremiumGuard from '@/components/PremiumGuard';
+import PremiumGuard from '@/components/auth/PremiumGuard';
 import ICPWizardV2 from '@/components/ICPWizardV2';
 import ICPResult from '@/components/ICPResult';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Plus, 
-  RefreshCw, 
-  Download, 
-  Loader2, 
-  AlertCircle,
+import {
+  Plus,
   Sparkles,
-  Target,
   Users,
   TrendingUp,
-  Lightbulb,
-  ChevronUp,
-  ChevronDown,
-  Copy,
-  BrainCog
+  Lightbulb
 } from 'lucide-react';
 
 import { ICPFormData, ICPAnalysis } from '@/types/icp';
-import { buildPrompt } from '@/lib/icpPromptBuilder';
+import { buildPrompt } from '@/utils/icpPromptBuilder';
 
 
 
@@ -33,20 +23,7 @@ function ICPMakerContent() {
   const [metadata, setMetadata] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showWizard, setShowWizard] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [lastFormData, setLastFormData] = useState<ICPFormData | null>(null);
-  const [formData, setFormData] = useState<ICPFormData>({
-    secteur: '',
-    produitService: '',
-    promesseUnique: '',
-    budgetCible: '',
-    canaux: [],
-    tonalite: '',
-    geographie: '',
-    objectifs: '',
-    defis: '',
-    valeurs: ''
-  });
 
 
   // Charger les données sauvegardées au démarrage
@@ -69,13 +46,10 @@ function ICPMakerContent() {
 
   const handleGenerate = async (wizardData: ICPFormData) => {
     if (!wizardData.secteur || !wizardData.produitService) {
-      setError('Veuillez remplir au minimum le secteur et le produit/service.');
       return;
     }
 
     setIsLoading(true);
-    setError(null);
-    setFormData(wizardData);
     setLastFormData(wizardData);
     setMetadata(null);
     try {
@@ -100,7 +74,7 @@ function ICPMakerContent() {
       localStorage.setItem('dropskills_icp_maker_data', JSON.stringify(result.analysis));
       localStorage.setItem('dropskills_icp_maker_form_data', JSON.stringify(wizardData));
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Une erreur est survenue');
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -109,15 +83,8 @@ function ICPMakerContent() {
   const handleNewGeneration = () => {
     setShowWizard(true);
     setIcpResult(null);
-    setError(null);
     localStorage.removeItem('dropskills_icp_maker_data');
     localStorage.removeItem('dropskills_icp_maker_form_data');
-  };
-
-  const handleRegenerate = async () => {
-    if (lastFormData) {
-      await handleGenerate(lastFormData);
-    }
   };
 
   const copyToClipboard = (text: string) => {
@@ -159,6 +126,7 @@ function ICPMakerContent() {
     promesseUnique: '',
     budgetCible: '',
     canaux: [],
+    zoneGeographique: '',
     tonalite: '',
     objectifs: '',
     defis: '',
