@@ -18,7 +18,9 @@ import {
   RefreshCw,
   Download,
   ArrowLeft,
-  Share2
+  Share2,
+  Eye,
+  DollarSign
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -166,44 +168,7 @@ function ICPGeneratorContent() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Header avec stats */}
-      <div className="mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-500/20 rounded-lg">
-                <Brain className="w-5 h-5 text-blue-400" />
-              </div>
-              <div>
-                <p className="text-white font-semibold">Dropskills AI</p>
-                <p className="text-gray-400 text-sm">Powered by</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-500/20 rounded-lg">
-                <TrendingUp className="w-5 h-5 text-green-400" />
-              </div>
-              <div>
-                <p className="text-white font-semibold">+89%</p>
-                <p className="text-gray-400 text-sm">Précision améliorée</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-500/20 rounded-lg">
-                <Sparkles className="w-5 h-5 text-purple-400" />
-              </div>
-              <div>
-                <p className="text-white font-semibold">4 étapes</p>
-                <p className="text-gray-400 text-sm">Flux optimisé</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+
 
       {/* Contenu principal */}
       <AnimatePresence mode="wait">
@@ -311,8 +276,39 @@ function ICPGeneratorContent() {
 }
 
 export default function ICPGeneratorPage() {
+  const stats = [
+    {
+      icon: <Target className="w-5 h-5" />,
+      label: "ICP générés",
+      value: "12,847",
+      color: "text-blue-400",
+      description: "Profils créés"
+    },
+    {
+      icon: <TrendingUp className="w-5 h-5" />,
+      label: "Précision",
+      value: "96.2%",
+      color: "text-green-400",
+      description: "Taux de précision"
+    },
+    {
+      icon: <Users className="w-5 h-5" />,
+      label: "Segments",
+      value: "847",
+      color: "text-purple-400",
+      description: "Segments identifiés"
+    },
+    {
+      icon: <Eye className="w-5 h-5" />,
+      label: "Insights",
+      value: "4.9/5",
+      color: "text-orange-400",
+      description: "Qualité moyenne"
+    }
+  ];
+
   return (
-    <ToolLayout toolId="icp-generator">
+    <ToolLayout toolId="icp-generator" stats={stats}>
       <PremiumGuard>
         <ICPGeneratorContent />
       </PremiumGuard>

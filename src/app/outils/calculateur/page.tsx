@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import ToolLayout from '@/components/ToolLayout';
+import PremiumGuard from '@/components/auth/PremiumGuard';
 import StepWizard, { WizardStep } from '@/components/StepWizard';
 import {
   Calculator,
@@ -16,6 +17,7 @@ import {
   Settings,
   RefreshCw
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface CalculationFormData {
   productPrice: string;
@@ -341,6 +343,7 @@ function CalculateurContent() {
             title="Calculateur de Revenus"
             description="Analysez la rentabilité de votre business avec des projections détaillées"
             initialData={{}}
+            toolId="calculateur-roi"
           />
         </div>
       ) : (
@@ -429,9 +432,54 @@ function CalculateurContent() {
 }
 
 export default function CalculateurPage() {
+  const stats = [
+    {
+      icon: <Calculator className="w-5 h-5" />,
+      label: "Calculs effectués",
+      value: "47,892",
+      color: "text-blue-400",
+      description: "ROI calculés"
+    },
+    {
+      icon: <DollarSign className="w-5 h-5" />,
+      label: "ROI moyen",
+      value: "347%",
+      color: "text-green-400",
+      description: "Retour investissement"
+    },
+    {
+      icon: <Target className="w-5 h-5" />,
+      label: "Précision",
+      value: "98.7%",
+      color: "text-purple-400",
+      description: "Fiabilité calculs"
+    },
+    {
+      icon: <TrendingUp className="w-5 h-5" />,
+      label: "Optimisation",
+      value: "+156%",
+      color: "text-orange-400",
+      description: "Amélioration moyenne"
+    }
+  ];
+
   return (
     <ToolLayout toolId="calculateur">
-      <CalculateurContent />
+      <PremiumGuard>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {stats.map((stat, idx) => (
+            <div key={idx} className="bg-[#111111] border border-[#232323] rounded-lg p-4">
+              <div className={`flex items-center gap-2 mb-1 ${stat.color}`}>
+                {stat.icon}
+                <span className="text-sm font-medium">{stat.label}</span>
+              </div>
+              <div className="text-2xl font-bold text-white">{stat.value}</div>
+              <div className="text-xs text-gray-400">{stat.description}</div>
+            </div>
+          ))}
+        </div>
+        <CalculateurContent />
+      </PremiumGuard>
     </ToolLayout>
   );
 }

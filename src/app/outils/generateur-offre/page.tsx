@@ -16,24 +16,32 @@ import {
   Copy,
   RefreshCw,
   Lightbulb,
-  TrendingUp
+  TrendingUp,
+  HelpCircle
 } from 'lucide-react';
-import StepWizard, { WizardStep } from '@/components/StepWizard';
 import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
 import ConseilBlock from '@/components/ui/ConseilBlock';
+import StepWizard, { WizardStep } from '@/components/StepWizard';
 import TooltipField from '@/components/ui/TooltipField';
 import AILoadingLogs from '@/components/AILoadingLogs';
 
 // Types
 interface OfferFormData {
-  businessType: string;
-  targetAudience: string;
-  productService: string;
-  uniqueValue: string;
-  priceRange: string;
-  urgency: string;
-  tone: string;
+  businessType?: string;
+  targetAudience?: string;
+  productName?: string;
+  productType?: string;
+  productDescription?: string;
+  productService?: string;
+  uniqueValue?: string;
+  price?: string;
+  pricePositioning?: string;
+  priceJustification?: string;
+  priceRange?: string;
+  urgency?: string;
+  tone?: string;
+  brandKeywords?: string;
 }
 
 interface GeneratedOffer {
@@ -107,6 +115,8 @@ interface StepProps {
   data: OfferFormData;
   onChange: (updates: Partial<OfferFormData>) => void;
   errors: Record<string, string>;
+  onGenerate?: () => void;
+  isGenerating?: boolean;
 }
 
 function BusinessTypeStep({ data, onChange, errors }: StepProps) {
@@ -122,37 +132,50 @@ function BusinessTypeStep({ data, onChange, errors }: StepProps) {
 
       <ConseilBlock variant="blue" icon={<Lightbulb className="w-4 h-4" />}>
         <p>
-          <strong>Conseil Dropskills AI :</strong> Soyez précis dans votre choix. 
-          Chaque secteur a ses spécificités et notre IA adaptera le ton et les arguments 
-          selon votre domaine d'expertise.
+          <strong>Conseil Dropskills AI :</strong> Choisir le bon secteur permet à notre IA 
+          d'adapter le ton, les arguments et la structure de votre offre selon les codes 
+          de votre marché.
         </p>
       </ConseilBlock>
 
-      <div className="space-y-3">
-        <TooltipField
-          label="Sélectionnez votre type de business"
-          tooltip="Choisissez le secteur qui correspond le mieux à votre activité principale"
-          required
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {BUSINESS_TYPES.map((type) => (
-              <button
-                key={type}
-                onClick={() => onChange({ businessType: type })}
-                className={`p-4 rounded-lg border-2 transition-all text-left ${
-                  data.businessType === type
-                    ? 'border-blue-500 bg-blue-500/10 text-white'
-                    : 'border-[#232323] bg-[#1a1a1a] text-gray-300 hover:border-blue-500/50'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">{type}</span>
-                  {data.businessType === type && <CheckCircle className="w-5 h-5 text-blue-400" />}
-                </div>
-              </button>
-            ))}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <label className="text-white font-medium">Secteur d'activité *</label>
+          <div className="relative group">
+            <HelpCircle className="w-4 h-4 text-gray-400 cursor-help" />
+            <div className="absolute bottom-6 left-0 bg-[#232323] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
+              Sélectionnez le secteur qui correspond le mieux à votre activité principale
+            </div>
           </div>
-        </TooltipField>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {[
+            { id: 'coaching', label: 'Coaching/Formation', icon: '🎯', example: 'Formation marketing digital' },
+            { id: 'ecommerce', label: 'E-commerce', icon: '🛒', example: 'Boutique en ligne' },
+            { id: 'saas', label: 'SaaS/Tech', icon: '💻', example: 'Logiciel de gestion' },
+            { id: 'consulting', label: 'Consulting', icon: '📊', example: 'Conseil en stratégie' },
+            { id: 'freelance', label: 'Freelance', icon: '✨', example: 'Services créatifs' },
+            { id: 'agency', label: 'Agence', icon: '🏢', example: 'Agence marketing' },
+            { id: 'health', label: 'Santé/Bien-être', icon: '🏥', example: 'Coaching nutrition' },
+            { id: 'other', label: 'Autre', icon: '🔧', example: 'Secteur spécialisé' }
+          ].map((option) => (
+            <button
+              key={option.id}
+              onClick={() => onChange({ businessType: option.id })}
+              className={`p-4 rounded-lg border-2 transition-all text-left group ${
+                data.businessType === option.id
+                  ? 'border-blue-500 bg-blue-500/10 text-blue-400'
+                  : 'border-[#232323] bg-[#1a1a1a] text-gray-300 hover:border-gray-600'
+              }`}
+            >
+              <div className="text-2xl mb-2">{option.icon}</div>
+              <div className="font-medium mb-1">{option.label}</div>
+              <div className="text-xs text-gray-500 group-hover:text-gray-400">{option.example}</div>
+            </button>
+          ))}
+        </div>
+        
         {errors.businessType && (
           <p className="text-red-400 text-sm">{errors.businessType}</p>
         )}
@@ -180,21 +203,38 @@ function AudienceStep({ data, onChange, errors }: StepProps) {
       </ConseilBlock>
 
       <div className="space-y-4">
-        <TooltipField
-          label="Décrivez votre audience cible"
-          tooltip="Soyez précis : âge, profession, problèmes, objectifs, niveau de revenus..."
-          required
-        >
-          <textarea
-            value={data.targetAudience || ''}
-            onChange={(e) => onChange({ targetAudience: e.target.value })}
-            placeholder="Ex: Entrepreneurs débutants 25-45 ans, qui luttent pour générer des leads qualifiés et cherchent une solution simple et efficace..."
-            className="w-full h-32 bg-[#1a1a1a] border border-[#232323] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none resize-none"
-          />
-        </TooltipField>
+        <div className="flex items-center gap-2">
+          <label className="text-white font-medium">Audience cible *</label>
+          <div className="relative group">
+            <HelpCircle className="w-4 h-4 text-gray-400 cursor-help" />
+            <div className="absolute bottom-6 left-0 bg-[#232323] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 w-64">
+              Soyez précis : âge, profession, problèmes, objectifs. Ex: "Entrepreneurs de 30-45 ans qui luttent pour générer des leads"
+            </div>
+          </div>
+        </div>
+        
+        <textarea
+          value={data.targetAudience || ''}
+          onChange={(e) => onChange({ targetAudience: e.target.value })}
+          placeholder="Ex: Entrepreneurs de 30-45 ans dans le e-commerce qui ont du mal à augmenter leur chiffre d'affaires et cherchent des stratégies marketing efficaces..."
+          className="w-full h-32 p-4 bg-[#1a1a1a] border border-[#232323] rounded-lg text-white placeholder-gray-500 focus:border-green-500 focus:outline-none resize-none"
+        />
+        
         {errors.targetAudience && (
           <p className="text-red-400 text-sm">{errors.targetAudience}</p>
         )}
+        
+        <div className="bg-[#1a1a1a] border border-[#232323] rounded-lg p-4">
+          <h4 className="text-green-400 font-medium mb-3 flex items-center gap-2">
+            <Lightbulb className="w-4 h-4" />
+            Exemples d'audiences bien définies
+          </h4>
+          <div className="space-y-2 text-sm text-gray-300">
+            <p>• <span className="text-green-400">Coaching :</span> "Femmes entrepreneures de 35-50 ans qui veulent équilibrer vie pro/perso"</p>
+            <p>• <span className="text-blue-400">E-commerce :</span> "Propriétaires de boutiques en ligne avec 10-50K€/mois de CA"</p>
+            <p>• <span className="text-purple-400">SaaS :</span> "PME de 20-100 employés cherchant à digitaliser leurs processus"</p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -211,45 +251,66 @@ function ProductStep({ data, onChange, errors }: StepProps) {
         <p className="text-gray-400">Que proposez-vous exactement ?</p>
       </div>
 
-      <ConseilBlock variant="purple" icon={<Package className="w-4 h-4" />}>
+      <ConseilBlock variant="purple" icon={<Lightbulb className="w-4 h-4" />}>
         <p>
-          <strong>Conseil Dropskills AI :</strong> Concentrez-vous sur les bénéfices plutôt que sur les caractéristiques. 
-          Que va obtenir concrètement votre client après avoir utilisé votre solution ?
+          <strong>Conseil Dropskills AI :</strong> Concentrez-vous sur les bénéfices et la transformation 
+          que votre produit apporte, pas seulement sur ses caractéristiques techniques.
         </p>
       </ConseilBlock>
 
       <div className="space-y-4">
-        <TooltipField
-          label="Décrivez votre produit/service"
-          tooltip="Expliquez clairement ce que vous vendez et les résultats que cela apporte"
-          required
-        >
-          <textarea
-            value={data.productService || ''}
-            onChange={(e) => onChange({ productService: e.target.value })}
-            placeholder="Ex: Formation complète en marketing digital avec 50 vidéos, templates prêts à l'emploi et accompagnement personnalisé pendant 3 mois..."
-            className="w-full h-32 bg-[#1a1a1a] border border-[#232323] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none resize-none"
-          />
-        </TooltipField>
-        {errors.productService && (
+        <div className="flex items-center gap-2">
+          <label className="text-white font-medium">Description de votre produit/service *</label>
+          <div className="relative group">
+            <HelpCircle className="w-4 h-4 text-gray-400 cursor-help" />
+            <div className="absolute bottom-6 left-0 bg-[#232323] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 w-64">
+              Décrivez votre produit, ses bénéfices, et comment il résout le problème de votre audience
+            </div>
+          </div>
+        </div>
+        <textarea
+          value={data.productService || ''}
+          onChange={(e) => onChange({ productService: e.target.value })}
+          placeholder="Ex: Une formation complète de 8 semaines qui enseigne les stratégies marketing digital les plus efficaces pour doubler son chiffre d'affaires..."
+          className="w-full h-32 p-4 bg-[#1a1a1a] border border-[#232323] rounded-lg text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none resize-none"
+        />
+        {errors?.productService && (
           <p className="text-red-400 text-sm">{errors.productService}</p>
         )}
+      </div>
 
-        <TooltipField
-          label="Votre proposition de valeur unique"
-          tooltip="Qu'est-ce qui vous différencie de vos concurrents ? Votre avantage unique ?"
-          required
-        >
-          <textarea
-            value={data.uniqueValue || ''}
-            onChange={(e) => onChange({ uniqueValue: e.target.value })}
-            placeholder="Ex: Seule méthode qui garantit 100 leads qualifiés en 30 jours ou remboursé, basée sur 10 ans d'expérience et 500+ clients satisfaits..."
-            className="w-full h-24 bg-[#1a1a1a] border border-[#232323] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none resize-none"
-          />
-        </TooltipField>
-        {errors.uniqueValue && (
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <label className="text-white font-medium">Proposition de valeur unique *</label>
+          <div className="relative group">
+            <HelpCircle className="w-4 h-4 text-gray-400 cursor-help" />
+            <div className="absolute bottom-6 left-0 bg-[#232323] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 w-64">
+              Qu'est-ce qui vous différencie de la concurrence ? Pourquoi choisir votre solution ?
+            </div>
+          </div>
+        </div>
+        <textarea
+          value={data.uniqueValue || ''}
+          onChange={(e) => onChange({ uniqueValue: e.target.value })}
+          placeholder="Ex: La seule méthode qui garantit des résultats en 30 jours grâce à notre système breveté de..."
+          className="w-full h-24 p-4 bg-[#1a1a1a] border border-[#232323] rounded-lg text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none resize-none"
+        />
+        {errors?.uniqueValue && (
           <p className="text-red-400 text-sm">{errors.uniqueValue}</p>
         )}
+        
+        <div className="bg-[#1a1a1a] border border-[#232323] rounded-lg p-4">
+          <h4 className="text-purple-400 font-medium mb-3 flex items-center gap-2">
+            <Package className="w-4 h-4" />
+            Structure recommandée
+          </h4>
+          <div className="space-y-2 text-sm text-gray-300">
+            <p>• <span className="text-purple-400">Problème :</span> Quel problème résolvez-vous ?</p>
+            <p>• <span className="text-blue-400">Solution :</span> Comment votre produit aide-t-il ?</p>
+            <p>• <span className="text-green-400">Résultat :</span> Quelle transformation apportez-vous ?</p>
+            <p>• <span className="text-yellow-400">Preuve :</span> Avez-vous des résultats à partager ?</p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -274,11 +335,16 @@ function PricingStep({ data, onChange, errors }: StepProps) {
       </ConseilBlock>
 
       <div className="space-y-6">
-        <TooltipField
-          label="Gamme de prix"
-          tooltip="Sélectionnez la fourchette de prix qui correspond à votre offre"
-          required
-        >
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <label className="text-white font-medium">Gamme de prix *</label>
+            <div className="relative group">
+              <HelpCircle className="w-4 h-4 text-gray-400 cursor-help" />
+              <div className="absolute bottom-6 left-0 bg-[#232323] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 w-64">
+                Sélectionnez la fourchette de prix qui correspond à votre offre
+              </div>
+            </div>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {PRICE_RANGES.map((range) => (
               <button
@@ -297,16 +363,21 @@ function PricingStep({ data, onChange, errors }: StepProps) {
               </button>
             ))}
           </div>
-        </TooltipField>
-        {errors.priceRange && (
-          <p className="text-red-400 text-sm">{errors.priceRange}</p>
-        )}
+          {errors.priceRange && (
+            <p className="text-red-400 text-sm">{errors.priceRange}</p>
+          )}
+        </div>
 
-        <TooltipField
-          label="Type d'urgence"
-          tooltip="Choisissez le levier d'urgence le plus adapté à votre offre"
-          required
-        >
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <label className="text-white font-medium">Type d'urgence *</label>
+            <div className="relative group">
+              <HelpCircle className="w-4 h-4 text-gray-400 cursor-help" />
+              <div className="absolute bottom-6 left-0 bg-[#232323] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 w-64">
+                Choisissez le levier d'urgence le plus adapté à votre offre
+              </div>
+            </div>
+          </div>
           <div className="space-y-3">
             {URGENCY_LEVELS.map((urgency) => (
               <button
@@ -328,16 +399,61 @@ function PricingStep({ data, onChange, errors }: StepProps) {
               </button>
             ))}
           </div>
-        </TooltipField>
-        {errors.urgency && (
-          <p className="text-red-400 text-sm">{errors.urgency}</p>
-        )}
+          {errors.urgency && (
+            <p className="text-red-400 text-sm">{errors.urgency}</p>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
 function ToneStep({ data, onChange, errors }: StepProps) {
+  const toneOptions = [
+    { 
+      value: 'professionnel', 
+      label: 'Professionnel', 
+      desc: 'Sérieux et expert',
+      example: '"Notre expertise vous garantit des résultats mesurables."',
+      color: 'blue'
+    },
+    { 
+      value: 'amical', 
+      label: 'Amical', 
+      desc: 'Chaleureux et accessible',
+      example: '"On va vous aider à atteindre vos objectifs ensemble !"',
+      color: 'green'
+    },
+    { 
+      value: 'dynamique', 
+      label: 'Dynamique', 
+      desc: 'Énergique et motivant',
+      example: '"Prêt à transformer votre business ? C\'est parti !"',
+      color: 'orange'
+    },
+    { 
+      value: 'premium', 
+      label: 'Premium', 
+      desc: 'Luxueux et exclusif',
+      example: '"Une expérience d\'exception pour une clientèle exigeante."',
+      color: 'purple'
+    },
+    { 
+      value: 'decontracte', 
+      label: 'Décontracté', 
+      desc: 'Relax et naturel',
+      example: '"Pas de blabla, juste ce qui marche vraiment."',
+      color: 'yellow'
+    },
+    { 
+      value: 'expert', 
+      label: 'Expert', 
+      desc: 'Technique et précis',
+      example: '"Méthodologie éprouvée basée sur 10 ans de R&D."',
+      color: 'indigo'
+    }
+  ];
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -356,44 +472,77 @@ function ToneStep({ data, onChange, errors }: StepProps) {
       </ConseilBlock>
 
       <div className="space-y-4">
-        <TooltipField
-          label="Choisissez votre tonalité"
-          tooltip="Sélectionnez le ton qui correspond le mieux à votre marque et audience"
-          required
-        >
-          <div className="space-y-4">
-            {TONE_OPTIONS.map((tone) => (
-              <button
-                key={tone.name}
-                onClick={() => onChange({ tone: tone.name })}
-                className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
-                  data.tone === tone.name
-                    ? 'border-pink-500 bg-pink-500/10 text-white'
-                    : 'border-[#232323] bg-[#1a1a1a] text-gray-300 hover:border-pink-500/50'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <h4 className="font-medium text-lg">{tone.name}</h4>
-                    <p className="text-sm text-gray-400">{tone.description}</p>
-                  </div>
-                  {data.tone === tone.name && <CheckCircle className="w-5 h-5 text-pink-400" />}
-                </div>
-                <div className={`p-3 rounded border-l-4 ${
-                  data.tone === tone.name
-                    ? 'bg-pink-500/20 border-pink-400 text-pink-100'
-                    : 'bg-[#0a0a0a] border-gray-600 text-gray-300'
-                }`}>
-                  <p className="text-xs opacity-70 mb-1">Exemple :</p>
-                  <p className="text-sm italic">{tone.example}</p>
-                </div>
-              </button>
-            ))}
+        <div className="flex items-center gap-2">
+          <label className="text-white font-medium">Ton de communication *</label>
+          <div className="relative group">
+            <HelpCircle className="w-4 h-4 text-gray-400 cursor-help" />
+            <div className="absolute bottom-6 left-0 bg-[#232323] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 w-64">
+              Choisissez le style qui correspond le mieux à votre marque et votre audience
+            </div>
           </div>
-        </TooltipField>
-        {errors.tone && (
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {toneOptions.map((tone) => (
+            <button
+              key={tone.value}
+              type="button"
+              onClick={() => onChange({ tone: tone.value })}
+              className={`group p-4 rounded-lg border-2 text-left transition-all ${
+                data.tone === tone.value
+                  ? `border-${tone.color}-500 bg-${tone.color}-500/10`
+                  : 'border-[#232323] bg-[#1a1a1a] hover:border-gray-600'
+              }`}
+            >
+              <div className="font-medium text-white">{tone.label}</div>
+              <div className="text-sm text-gray-400 mt-1">{tone.desc}</div>
+              <div className="text-xs text-gray-500 mt-2 italic group-hover:text-gray-400 transition-colors">
+                {tone.example}
+              </div>
+            </button>
+          ))}
+        </div>
+        
+        {errors?.tone && (
           <p className="text-red-400 text-sm">{errors.tone}</p>
         )}
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <label className="text-white font-medium">Mots-clés de votre marque</label>
+          <div className="relative group">
+            <HelpCircle className="w-4 h-4 text-gray-400 cursor-help" />
+            <div className="absolute bottom-6 left-0 bg-[#232323] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 w-64">
+              Listez 3-5 mots qui définissent l'essence de votre marque
+            </div>
+          </div>
+        </div>
+        
+        <input
+          type="text"
+          value={data.brandKeywords || ''}
+          onChange={(e) => onChange({ brandKeywords: e.target.value })}
+          placeholder="Ex: Innovation, Excellence, Proximité, Résultats, Authenticité"
+          className="w-full p-4 bg-[#1a1a1a] border border-[#232323] rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
+        />
+        
+        {errors?.brandKeywords && (
+          <p className="text-red-400 text-sm">{errors.brandKeywords}</p>
+        )}
+        
+        <div className="bg-[#1a1a1a] border border-[#232323] rounded-lg p-4">
+          <h4 className="text-blue-400 font-medium mb-3 flex items-center gap-2">
+            <MessageSquare className="w-4 h-4" />
+            Impact du ton sur votre offre
+          </h4>
+          <div className="space-y-2 text-sm text-gray-300">
+            <p>• <span className="text-blue-400">Professionnel :</span> Rassure et inspire confiance</p>
+            <p>• <span className="text-green-400">Amical :</span> Crée de la proximité et réduit les barrières</p>
+            <p>• <span className="text-orange-400">Dynamique :</span> Motive à l'action et crée l'urgence</p>
+            <p>• <span className="text-purple-400">Premium :</span> Justifie un prix élevé et attire une clientèle aisée</p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -415,76 +564,99 @@ function SummaryStep({ data, onGenerate }: SummaryStepProps) {
         <p className="text-gray-400">Vérifiez vos informations avant la génération</p>
       </div>
 
-      <div className="bg-[#1a1a1a] rounded-lg border border-[#232323] p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <CheckCircle className="w-5 h-5 text-green-500" />
-          <h3 className="text-lg font-semibold text-white">Récapitulatif de votre offre</h3>
+      <ConseilBlock variant="green" icon={<CheckCircle className="w-4 h-4" />}>
+        <p>
+          <strong>Conseil Dropskills AI :</strong> Prenez un moment pour relire vos informations. 
+          Plus elles sont précises, plus votre offre sera percutante et adaptée.
+        </p>
+      </ConseilBlock>
+
+      <div className="bg-[#1a1a1a] border border-[#232323] rounded-lg p-6 space-y-6">
+        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <CheckCircle className="w-5 h-5" />
+          Récapitulatif de votre offre
+        </h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <h4 className="text-blue-400 font-medium flex items-center gap-2">
+              <Building className="w-4 h-4" />
+              Type d'activité
+            </h4>
+            <p className="text-gray-300 bg-[#0a0a0a] p-3 rounded border-l-4 border-blue-500">
+              {data.businessType || 'Non renseigné'}
+            </p>
+          </div>
+          
+          <div className="space-y-2">
+            <h4 className="text-green-400 font-medium flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              Audience cible
+            </h4>
+            <p className="text-gray-300 text-sm bg-[#0a0a0a] p-3 rounded border-l-4 border-green-500">
+              {data.targetAudience ? data.targetAudience.substring(0, 120) + (data.targetAudience.length > 120 ? '...' : '') : 'Non renseigné'}
+            </p>
+          </div>
+          
+          <div className="space-y-2">
+            <h4 className="text-purple-400 font-medium flex items-center gap-2">
+              <Package className="w-4 h-4" />
+              Produit/Service
+            </h4>
+            <p className="text-gray-300 text-sm bg-[#0a0a0a] p-3 rounded border-l-4 border-purple-500">
+              {data.productService ? data.productService.substring(0, 120) + (data.productService.length > 120 ? '...' : '') : 'Non renseigné'}
+            </p>
+          </div>
+          
+          <div className="space-y-2">
+            <h4 className="text-yellow-400 font-medium flex items-center gap-2">
+              <DollarSign className="w-4 h-4" />
+              Gamme de prix
+            </h4>
+            <p className="text-gray-300 bg-[#0a0a0a] p-3 rounded border-l-4 border-yellow-500">
+              {data.priceRange || 'Non renseigné'}
+            </p>
+          </div>
+          
+          <div className="space-y-2">
+            <h4 className="text-pink-400 font-medium flex items-center gap-2">
+              <MessageSquare className="w-4 h-4" />
+              Ton de communication
+            </h4>
+            <p className="text-gray-300 bg-[#0a0a0a] p-3 rounded border-l-4 border-pink-500">
+              {data.tone || 'Non renseigné'}
+            </p>
+          </div>
+          
+          <div className="space-y-2">
+            <h4 className="text-indigo-400 font-medium flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Type d'urgence
+            </h4>
+            <p className="text-gray-300 bg-[#0a0a0a] p-3 rounded border-l-4 border-indigo-500">
+              {data.urgency || 'Non renseigné'}
+            </p>
+          </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-gray-400 font-medium">Type de business :</span>
-              <span className="text-white">{data.businessType || 'Non défini'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400 font-medium">Gamme de prix :</span>
-              <span className="text-white">{data.priceRange || 'Non définie'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400 font-medium">Urgence :</span>
-              <span className="text-white">{data.urgency || 'Non définie'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400 font-medium">Tonalité :</span>
-              <span className="text-white">{data.tone || 'Non définie'}</span>
-            </div>
-          </div>
-          <div className="space-y-3">
-            <div>
-              <span className="text-gray-400 font-medium block mb-1">Audience cible :</span>
-              <span className="text-white text-sm">
-                {data.targetAudience ? 
-                  (data.targetAudience.length > 60 ? 
-                    data.targetAudience.substring(0, 60) + '...' : 
-                    data.targetAudience
-                  ) : 'Non définie'
-                }
-              </span>
-            </div>
-            <div>
-              <span className="text-gray-400 font-medium block mb-1">Produit/Service :</span>
-              <span className="text-white text-sm">
-                {data.productService ? 
-                  (data.productService.length > 60 ? 
-                    data.productService.substring(0, 60) + '...' : 
-                    data.productService
-                  ) : 'Non défini'
-                }
-              </span>
-            </div>
-          </div>
+        <div className="bg-gradient-to-r from-green-500/10 to-teal-500/10 border border-green-500/20 rounded-lg p-4">
+          <h4 className="text-green-400 font-medium mb-2 flex items-center gap-2">
+            <Sparkles className="w-4 h-4" />
+            Prêt pour la génération
+          </h4>
+          <p className="text-gray-300 text-sm">
+            Notre IA va analyser toutes ces informations pour créer une offre personnalisée et irrésistible.
+          </p>
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
-        <div className="flex items-center gap-3 mb-3">
-          <Sparkles className="w-6 h-6 text-blue-600" />
-          <h3 className="text-lg font-semibold text-blue-900">
-            Prêt pour l'analyse Générateur d'Offre AI ?
-          </h3>
-        </div>
-        <p className="text-blue-700 mb-4">
-          Générateur d'Offre AI va analyser toutes ces informations pour créer votre offre irrésistible détaillée et optimisée pour la conversion.
-        </p>
-        <button 
-          onClick={onGenerate}
-          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all flex items-center justify-center gap-2"
-        >
-          <Sparkles className="w-5 h-5" />
-          Générer avec Générateur d'Offre AI
-        </button>
-      </div>
+      <button 
+        onClick={onGenerate}
+        className="w-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+      >
+        <Sparkles className="w-5 h-5" />
+        Générer mon offre irrésistible
+      </button>
     </div>
   );
 }
@@ -580,6 +752,7 @@ function OfferGeneratorWizard({ onComplete, isLoading }: { onComplete: (data: Of
       title="Générateur d'Offre IA"
       description="Créez des offres irrésistibles qui convertissent"
       className="max-w-4xl mx-auto"
+      toolId="offer-generator"
     />
   );
 }
@@ -705,8 +878,10 @@ function OfferGeneratorContent() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [results, setResults] = useState<GeneratedOffer | null>(null);
   const [showLogs, setShowLogs] = useState(false);
+  const [formData, setFormData] = useState<OfferFormData | null>(null);
 
   const handleGenerate = async (data: OfferFormData) => {
+    setFormData(data);
     setIsGenerating(true);
     setShowLogs(true);
     
@@ -760,113 +935,98 @@ function OfferGeneratorContent() {
   };
 
   const handleRegenerate = () => {
-    // Logique pour régénérer avec les mêmes données
+    if (formData) {
+      handleGenerate(formData);
+    }
   };
 
   const handleReset = () => {
     setResults(null);
     setShowLogs(false);
-    // Réinitialiser le wizard
+    setFormData(null);
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] p-6">
-      <div className="max-w-7xl mx-auto">
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-              <div className="flex items-center gap-3">
-                <Sparkles className="w-6 h-6 text-green-400" />
-                <div>
-                  <p className="text-white font-semibold text-2xl">12,847</p>
-                  <p className="text-gray-400">Offres générées</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-              <div className="flex items-center gap-3">
-                <TrendingUp className="w-6 h-6 text-blue-400" />
-                <div>
-                  <p className="text-white font-semibold text-2xl">+127%</p>
-                  <p className="text-gray-400">Taux de conversion</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-              <div className="flex items-center gap-3">
-                <DollarSign className="w-6 h-6 text-yellow-400" />
-                <div>
-                  <p className="text-white font-semibold text-2xl">€2.4M</p>
-                  <p className="text-gray-400">CA généré</p>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div className="space-y-8">
+      {/* Wizard */}
+      <OfferGeneratorWizard 
+        onComplete={handleGenerate}
+        isLoading={isGenerating}
+      />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Wizard */}
-            <div>
-              <OfferGeneratorWizard 
-                onComplete={handleGenerate}
-                isLoading={isGenerating}
-              />
-            </div>
-
-            {/* Résultats */}
-            <div>
-              <AnimatePresence mode="wait">
-                {showLogs && isGenerating ? (
-                  <motion.div
-                    key="loading"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    className="bg-[#111111] rounded-xl border border-[#232323] p-6"
-                  >
-                    <AILoadingLogs 
-                      isVisible={true}
-                      toolName="Générateur d'Offre IA"
-                      onComplete={() => console.log('Génération terminée')}
-                    />
-                  </motion.div>
-                ) : results ? (
-                  <OfferResult
-                    key="results"
-                    result={results}
-                    onCopy={handleCopy}
-                    onRegenerate={handleRegenerate}
-                    onReset={handleReset}
-                    isLoading={isGenerating}
-                  />
-                ) : (
-                  <motion.div
-                    key="empty"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-[#111111] rounded-xl border border-[#232323] p-6 text-center py-12"
-                  >
-                    <Target className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                    <h3 className="text-white text-xl font-semibold mb-2">
-                      Prêt à créer votre offre irrésistible ?
-                    </h3>
-                    <p className="text-gray-400">
-                      Complétez le wizard et générez votre offre optimisée
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-        </>
-      </div>
+      {/* Résultats */}
+      <AnimatePresence mode="wait">
+        {showLogs && isGenerating ? (
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="bg-[#111111] rounded-xl border border-[#232323] p-6"
+          >
+            <AILoadingLogs 
+              isVisible={true}
+              toolName="Générateur d'Offre IA"
+              onComplete={() => console.log('Génération terminée')}
+            />
+          </motion.div>
+        ) : results ? (
+          <OfferResult
+            key="results"
+            result={results}
+            onCopy={handleCopy}
+            onRegenerate={handleRegenerate}
+            onReset={handleReset}
+            isLoading={isGenerating}
+          />
+        ) : (
+          <motion.div
+            key="empty"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-[#111111] rounded-xl border border-[#232323] p-6 text-center py-12"
+          >
+            <Target className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+            <h3 className="text-white text-xl font-semibold mb-2">
+              Prêt à créer votre offre irrésistible ?
+            </h3>
+            <p className="text-gray-400">
+              Complétez le wizard et générez votre offre optimisée
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
 // Page principale
 export default function OfferGeneratorPage() {
+  const stats = [
+    {
+      icon: <Sparkles className="w-6 h-6 text-green-400" />,
+      value: "12,847",
+      label: "Offres générées"
+    },
+    {
+      icon: <TrendingUp className="w-6 h-6 text-blue-400" />,
+      value: "+127%",
+      label: "Taux de conversion"
+    },
+    {
+      icon: <DollarSign className="w-6 h-6 text-yellow-400" />,
+      value: "€2.4M",
+      label: "CA généré"
+    },
+    {
+      icon: <Target className="w-6 h-6 text-purple-400" />,
+      value: "4.8/5",
+      label: "Satisfaction client"
+    }
+  ];
+
   return (
-    <ToolLayout toolId="generateur-offre">
+    <ToolLayout toolId="generateur-offre" stats={stats}>
       <PremiumGuard feature="Générateur d'Offre IA">
         <OfferGeneratorContent />
       </PremiumGuard>

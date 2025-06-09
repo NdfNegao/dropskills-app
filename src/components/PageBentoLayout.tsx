@@ -1,4 +1,8 @@
+'use client';
+
 import React from 'react';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 interface Stat {
   icon: React.ReactNode;
@@ -14,23 +18,36 @@ interface PageBentoLayoutProps {
   subtitle: string;
   stats?: Stat[];
   children: React.ReactNode;
+  color?: string; // Couleur gradient personnalisée (ex: 'from-blue-500 to-purple-600')
 }
 
 // ATTENTION : La section stats doit contenir exactement 4 blocs pour garantir l'alignement parfait du gabarit Bento. Ne jamais dépasser 4.
 
-const PageBentoLayout: React.FC<PageBentoLayoutProps> = ({ icon, title, subtitle, stats, children }) => {
+const PageBentoLayout: React.FC<PageBentoLayoutProps> = ({ icon, title, subtitle, stats, children, color }) => {
   return (
     <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#ff0033] to-[#cc0029] rounded-lg flex items-center justify-center">
-            {icon}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className={`w-12 h-12 bg-gradient-to-br ${color || 'from-[#ff0033] to-[#cc0029]'} rounded-lg flex items-center justify-center`}>
+              {icon}
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">{title}</h1>
+              <p className="text-muted-foreground">{subtitle}</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">{title}</h1>
-            <p className="text-muted-foreground">{subtitle}</p>
-          </div>
+          
+          {/* Lien de retour vers la liste des outils IA */}
+          <Link 
+            href="/outils" 
+            className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200 text-sm font-medium group"
+          >
+            <ArrowLeft className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-1" />
+            <span className="hidden sm:inline">Retour aux outils IA</span>
+            <span className="sm:hidden">Retour</span>
+          </Link>
         </div>
       </div>
       {/* Stats (optionnel) */}
@@ -51,4 +68,4 @@ const PageBentoLayout: React.FC<PageBentoLayoutProps> = ({ icon, title, subtitle
   );
 };
 
-export default PageBentoLayout; 
+export default PageBentoLayout;

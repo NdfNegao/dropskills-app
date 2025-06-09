@@ -3,12 +3,12 @@
 import React, { useState } from 'react';
 import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
-import { LeadMagnetWizard, LeadMagnetFormData } from '@/components/LeadMagnetWizard';
+import { LeadMagnetWizard } from '@/components/LeadMagnetWizard';
+import { LeadMagnetFormData, LeadMagnetAnalysis } from '@/types/lead-magnet';
 import LeadMagnetResult from '@/components/LeadMagnetResult';
-import { Gift, Users, TrendingUp, Lightbulb } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Magnet, TrendingUp, Users, BarChart3, Copy, RefreshCw, Download, Eye, Gift, Lightbulb, Brain } from 'lucide-react';
 
-export default function LeadMagnetGenerator() {
+function LeadMagnetGenerator() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [results, setResults] = useState<any>(null);
   const [showLogs, setShowLogs] = useState(false);
@@ -41,80 +41,53 @@ export default function LeadMagnetGenerator() {
 
   if (results) {
     return (
-      <ToolLayout
-        title="Générateur de Lead Magnet"
-        description="Créez des lead magnets irrésistibles qui convertissent vos visiteurs en prospects qualifiés"
-        icon={<Gift className="w-8 h-8" />}
-      >
-        <PremiumGuard>
-          <LeadMagnetResult 
-            results={results} 
-            onBack={() => setResults(null)}
-          />
-        </PremiumGuard>
-      </ToolLayout>
+      <LeadMagnetResult 
+        results={results} 
+        onBack={() => setResults(null)}
+      />
     );
   }
+
   return (
-    <ToolLayout
-      title="Générateur de Lead Magnet"
-      description="Créez des lead magnets irrésistibles qui convertissent vos visiteurs en prospects qualifiés"
-      icon={<Gift className="w-8 h-8" />}
-    >
+    <div className="max-w-6xl mx-auto space-y-8">
+      {/* Wizard Component */}
+       <LeadMagnetWizard 
+         onComplete={handleGenerate}
+         isLoading={isGenerating}
+       />
+     </div>
+  );
+}
+
+export default function LeadMagnetPage() {
+  const stats = [
+    {
+      icon: <Magnet className="w-5 h-5" />,
+      label: "Lead magnets",
+      value: "9,847"
+    },
+    {
+      icon: <Download className="w-5 h-5" />,
+      label: "Téléchargements",
+      value: "247K+"
+    },
+    {
+      icon: <Users className="w-5 h-5" />,
+      label: "Conversion",
+      value: "34.7%"
+    },
+    {
+      icon: <Eye className="w-5 h-5" />,
+      label: "Engagement",
+      value: "4.8/5"
+    }
+  ];
+
+  return (
+    <ToolLayout toolId="lead-magnet" stats={stats}>
       <PremiumGuard>
-        <div className="max-w-6xl mx-auto">
-          {/* Header avec stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-[#111111] rounded-xl p-6 border border-[#232323]"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <Users className="w-6 h-6 text-blue-400" />
-                <h3 className="text-white font-semibold">Conversion</h3>
-              </div>
-              <p className="text-2xl font-bold text-blue-400">+340%</p>
-              <p className="text-gray-400 text-sm">Taux de conversion moyen</p>
-            </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-[#111111] rounded-xl p-6 border border-[#232323]"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <TrendingUp className="w-6 h-6 text-green-400" />
-                <h3 className="text-white font-semibold">ROI</h3>
-              </div>
-              <p className="text-2xl font-bold text-green-400">850%</p>
-              <p className="text-gray-400 text-sm">Retour sur investissement</p>
-            </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-[#111111] rounded-xl p-6 border border-[#232323]"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <Lightbulb className="w-6 h-6 text-yellow-400" />
-                <h3 className="text-white font-semibold">Leads</h3>
-              </div>
-              <p className="text-2xl font-bold text-yellow-400">12K+</p>
-              <p className="text-gray-400 text-sm">Générés ce mois</p>
-            </motion.div>
-          </div>
-
-          {/* Wizard Component */}
-           <LeadMagnetWizard 
-             onComplete={handleGenerate}
-             isLoading={isGenerating}
-           />
-         </div>
-       </PremiumGuard>
-     </ToolLayout>
-   );
- }
+        <LeadMagnetGenerator />
+      </PremiumGuard>
+    </ToolLayout>
+  );
+}

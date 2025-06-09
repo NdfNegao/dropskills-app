@@ -6,7 +6,7 @@ import PremiumGuard from '@/components/auth/PremiumGuard';
 import { USPWizardV2 } from '@/components/USPWizardV2';
 import { USPResult } from '@/components/USPResult';
 import { USPFormData, USPAnalysis } from '@/types/usp';
-import * as lucideReact from 'lucide-react';
+import { Target, TrendingUp, Users, DollarSign, Zap, Lightbulb, Copy, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 function USPMakerContent() {
@@ -102,22 +102,12 @@ function USPMakerContent() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-white mb-4">
-          ⚡ USP Maker
-        </h1>
-        <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-          Créez votre proposition de valeur unique en 8 étapes avec l'IA
-        </p>
-        
-        {icpData && (
-          <div className="mt-4 inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm">
-            <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-            Données ICP détectées - Génération optimisée
-          </div>
-        )}
-      </div>
+      {icpData && (
+        <div className="mb-6 inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm">
+          <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+          Données ICP détectées - Génération optimisée
+        </div>
+      )}
 
       {/* Content */}
       {showWizard ? (
@@ -139,7 +129,7 @@ function USPMakerContent() {
                 onClick={handleBackToWizard}
                 className="flex items-center space-x-2 px-4 py-2 bg-[#232323] text-white rounded-lg hover:bg-[#2a2a2a] transition-colors"
               >
-                <lucideReact.Target className="w-4 h-4" />
+                <Target className="w-4 h-4" />
                 <span>Nouveau USP</span>
               </button>
             </div>
@@ -151,7 +141,7 @@ function USPMakerContent() {
                     onClick={() => copyToClipboard(uspResult.uspPrincipale)}
                     className="flex items-center space-x-2 px-4 py-2 bg-[#ff0033] text-white rounded-lg hover:bg-[#ff1a4d] transition-colors"
                   >
-                    <lucideReact.Copy className="w-4 h-4" />
+                    <Copy className="w-4 h-4" />
                     <span>Copier</span>
                   </button>
                   
@@ -160,7 +150,7 @@ function USPMakerContent() {
                     disabled={isLoading}
                     className="flex items-center space-x-2 px-4 py-2 bg-[#232323] text-white rounded-lg hover:bg-[#2a2a2a] transition-colors disabled:opacity-50"
                   >
-                    <lucideReact.RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                    <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                     <span>Régénérer</span>
                   </button>
                 </>
@@ -179,7 +169,7 @@ function USPMakerContent() {
           ) : (
             <div className="text-center py-12">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#ff0033] to-[#ff3366] rounded-full mb-4">
-                <lucideReact.Zap className="w-8 h-8 text-white" />
+                <Zap className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">Génération en cours...</h3>
               <p className="text-gray-400">Création de votre USP personnalisée</p>
@@ -192,8 +182,31 @@ function USPMakerContent() {
 }
 
 export default function USPMakerPage() {
+  const stats = [
+    {
+      icon: <Lightbulb className="w-5 h-5" />,
+      label: "USP générées",
+      value: "8,934"
+    },
+    {
+      icon: <TrendingUp className="w-5 h-5" />,
+      label: "Conversion",
+      value: "+89%"
+    },
+    {
+      icon: <Users className="w-5 h-5" />,
+      label: "Différenciation",
+      value: "94%"
+    },
+    {
+      icon: <Target className="w-5 h-5" />,
+      label: "Impact",
+      value: "4.7/5"
+    }
+  ];
+
   return (
-    <ToolLayout toolId="usp-maker">
+    <ToolLayout toolId="usp-maker" stats={stats}>
       <PremiumGuard feature="USP Maker IA">
         <USPMakerContent />
       </PremiumGuard>

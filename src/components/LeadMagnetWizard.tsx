@@ -119,6 +119,9 @@ export function LeadMagnetWizard({ onComplete, isLoading, initialData = {} }: Le
       steps={steps}
       onComplete={onComplete}
       isLoading={isLoading}
+      title="Lead Magnet Creator avec Dropskills AI"
+      description="Créez votre lead magnet irrésistible en quelques étapes"
+      toolId="lead-magnet"
       initialData={{
         business: '',
         audience: '',

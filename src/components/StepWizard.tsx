@@ -10,6 +10,7 @@ import {
   Brain
 } from 'lucide-react';
 import AILoadingLogs from './AILoadingLogs';
+import { getWizardClasses } from '../data/tool-themes';
 
 export interface WizardStep {
   id: string;
@@ -30,6 +31,7 @@ export interface StepWizardProps {
   description: string;
   initialData?: any;
   className?: string;
+  toolId?: string; // Ajout pour identifier l'outil et appliquer le bon thème
 }
 
 function StepWizard({
@@ -40,7 +42,8 @@ function StepWizard({
   title,
   description,
   initialData = {},
-  className = ''
+  className = '',
+  toolId = 'default'
 }: StepWizardProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [formData, setFormData] = useState(initialData);
@@ -52,6 +55,9 @@ function StepWizard({
   const currentStep = steps[currentStepIndex];
   const isLastStep = currentStepIndex === steps.length - 1;
   const progress = ((currentStepIndex + 1) / steps.length) * 100;
+  
+  // Récupération des classes CSS thématiques
+  const wizardClasses = getWizardClasses(toolId);
 
   useEffect(() => {
     onStepChange?.(currentStepIndex, formData);
@@ -124,7 +130,7 @@ function StepWizard({
       {/* Header */}
       <div className="p-6 border-b border-[#232323]">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-lg">
+          <div className={wizardClasses.headerIcon}>
             <Brain className="w-6 h-6 text-blue-400" />
           </div>
           <div>
@@ -145,7 +151,7 @@ function StepWizard({
           </div>
           <div className="w-full bg-[#232323] rounded-full h-2">
             <motion.div 
-              className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full"
+              className={wizardClasses.progressBar}
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.3 }}
@@ -168,17 +174,15 @@ function StepWizard({
                 <button
                   onClick={() => handleStepClick(index)}
                   disabled={!isAccessible}
-                  className={`
-                    w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200
-                    ${isActive 
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg' 
+                  className={
+                    isActive 
+                      ? wizardClasses.stepActive
                       : isCompleted 
-                      ? 'bg-green-500 text-white' 
+                      ? wizardClasses.stepCompleted
                       : isAccessible
-                      ? 'bg-[#232323] text-gray-400 hover:bg-[#333333]'
-                      : 'bg-[#1a1a1a] text-gray-600 cursor-not-allowed'
-                    }
-                  `}
+                      ? wizardClasses.stepAccessible
+                      : wizardClasses.stepDisabled
+                  }
                 >
                   {isCompleted ? (
                     <CheckCircle className="w-6 h-6" />
@@ -278,11 +282,7 @@ function StepWizard({
           whileTap={{ scale: 0.98 }}
           onClick={handlePrevious}
           disabled={stepHistory.length <= 1}
-          className="
-            flex items-center gap-2 px-6 py-3 rounded-lg transition-all
-            bg-[#1a1a1a] text-gray-400 hover:bg-[#232323] hover:text-white
-            disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#1a1a1a]
-          "
+          className={`${wizardClasses.buttonSecondary} disabled:hover:bg-[#1a1a1a]`}
         >
           <ChevronLeft className="w-4 h-4" />
           <span>Précédent</span>
@@ -300,12 +300,7 @@ function StepWizard({
             whileTap={{ scale: 0.98 }}
             onClick={handleNext}
             disabled={isLoading}
-            className="
-              flex items-center gap-2 px-6 py-3 rounded-lg transition-all
-              bg-gradient-to-r from-blue-500 to-purple-500 text-white
-              hover:from-blue-600 hover:to-purple-600
-              disabled:opacity-50 disabled:cursor-not-allowed
-            "
+            className={wizardClasses.buttonPrimary}
           >
             {isLoading ? (
               <>

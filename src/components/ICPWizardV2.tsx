@@ -188,6 +188,7 @@ export function ICPWizardV2({ onComplete, isLoading, initialData = {} }: ICPWiza
       description="Créez votre profil client idéal en 4 étapes avec l'intelligence artificielle"
       initialData={defaultFormData}
       className="max-w-4xl mx-auto"
+      toolId="icp-generator"
     />
   );
 }

@@ -39,6 +39,62 @@ Ce devbook détaille les standards UX, la composition et les bonnes pratiques po
 
 ---
 
+## 🎨 Système de Couleurs par Outil
+
+### Principe
+Chaque outil IA possède sa propre couleur distinctive basée sur sa catégorie pour une meilleure identification visuelle et une cohérence thématique.
+
+### Configuration Centralisée
+Le système de couleurs est maintenant centralisé dans `src/data/tool-themes.ts` avec :
+
+#### Thèmes par Catégorie
+- **Acquisition** (ICP Maker, ICP Generator) : `from-purple-500 to-indigo-600`
+- **Activation** (Générateur d'Offres, USP Maker) : `from-orange-500 to-red-600`
+- **Trafic** (Email Sequence, Lead Magnet) : `from-blue-500 to-purple-600`
+- **Contenu** (Content System) : `from-green-500 to-teal-600`
+
+#### Structure du Thème
+Chaque thème inclut :
+- **Couleurs principales** : Primary, secondary, accent
+- **Couleurs de wizard** : Header, progress, steps, buttons
+- **Couleurs de highlight** : Info, success, warning, error
+
+### Application des Couleurs
+
+#### Sur les Wizards (StepWizard)
+- **Header** : Icône et barre de progression avec couleurs thématiques
+- **Étapes** : États actif/complété/accessible avec couleurs appropriées
+- **Boutons** : Primary et secondary avec couleurs cohérentes
+- **Highlights** : Messages d'info/succès/erreur avec couleurs contextuelles
+
+#### Sur les Pages d'Outils
+- **Header de l'outil** : Utilise `PageBentoLayout` avec couleur spécifique
+- **Éléments interactifs** : Boutons et liens utilisant le thème de l'outil
+- **Cohérence** : Même couleur entre grille et page individuelle
+
+### Utilisation Technique
+
+#### Dans StepWizard
+```tsx
+<StepWizard
+  // ... autres props
+  toolId="icp-maker" // Identifie l'outil pour appliquer le bon thème
+/>
+```
+
+#### Fonctions Utilitaires
+- `getThemeByCategory(category)` : Récupère le thème par catégorie
+- `getThemeByToolId(toolId)` : Récupère le thème par ID d'outil
+- `getWizardClasses(toolId)` : Génère les classes CSS pour les wizards
+
+### Avantages
+- **Factorisation** : Une seule source de vérité pour les couleurs
+- **Cohérence** : Thèmes cohérents par catégorie d'outils
+- **Maintenabilité** : Modifications centralisées et faciles
+- **Extensibilité** : Ajout simple de nouveaux thèmes
+
+---
+
 ## 🎨 Principes UX fondamentaux
 
 ### 1. Progression claire et engageante

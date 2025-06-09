@@ -65,11 +65,11 @@ const MASTERPIECES = [
 const BONUS_TOOLS = [
   {
     id: 'ideas-analyzer',
-    title: 'Analyse d\'Idées IA',
-    description: 'Analysez vos idées de produits avec IA',
+    title: 'Ideas Analyzer',
+    description: 'Analysez et validez vos idées business',
     icon: Lightbulb,
     href: '/outils/ideas-analyzer',
-    color: 'from-sky-500 to-indigo-500'
+    color: 'sky-500'
   },
   {
     id: 'copywriter',
@@ -77,7 +77,7 @@ const BONUS_TOOLS = [
     description: 'Générez du copywriting qui convertit',
     icon: FileText,
     href: '/outils/copywriter',
-    color: 'from-indigo-500 to-purple-500'
+    color: 'indigo-500'
   },
   {
     id: 'designer',
@@ -85,7 +85,7 @@ const BONUS_TOOLS = [
     description: 'Créez des designs professionnels',
     icon: Palette,
     href: '/outils/designer',
-    color: 'from-purple-500 to-pink-500'
+    color: 'purple-500'
   },
   {
     id: 'calculator',
@@ -93,7 +93,7 @@ const BONUS_TOOLS = [
     description: 'Calculez vos métriques business',
     icon: Calculator,
     href: '/outils/calculator',
-    color: 'from-pink-500 to-red-500'
+    color: 'pink-500'
   }
 ];
 
@@ -189,7 +189,7 @@ export function DropskillsRoadmap() {
                   transition={{ type: 'spring', duration: 0.5 }}
                   className="w-10 h-10 md:w-12 md:h-12 bg-neutral-800 border-2 border-red-500 rounded-full flex items-center justify-center shadow-lg"
                 >
-                  <Icon className={`w-5 h-5 md:w-6 md:h-6 ${tool.color}`} />
+                  <Icon className={`w-5 h-5 md:w-6 md:h-6 text-${tool.color}`} />
                 </motion.div>
                 <div className="flex-1 min-w-0">
                   <Link href={tool.href}>

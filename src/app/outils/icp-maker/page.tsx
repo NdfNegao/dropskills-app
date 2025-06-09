@@ -10,7 +10,9 @@ import {
   Sparkles,
   Users,
   TrendingUp,
-  Lightbulb
+  Lightbulb,
+  Brain,
+  Eye
 } from 'lucide-react';
 
 import { ICPFormData, ICPAnalysis } from '@/types/icp';
@@ -137,46 +139,14 @@ function ICPMakerContent() {
     <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        {/* Badge premium */}
-        <div className="flex items-center gap-3 mb-4">
-          <span className="px-3 py-1 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-xs font-bold text-gray-900 shadow border border-yellow-300 animate-pulse">Premium IA</span>
-          {metadata?.generatedBy && (
-            <span className="px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 text-xs font-semibold text-white shadow border border-blue-300 ml-2">
+        {/* Badge metadata */}
+        {metadata?.generatedBy && (
+          <div className="flex items-center gap-3 mb-4">
+            <span className="px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 text-xs font-semibold text-white shadow border border-blue-300">
               {metadata.generatedBy}
             </span>
-          )}
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
-            <div className="flex items-center gap-3">
-              <Sparkles className="w-5 h-5 text-blue-400" />
-              <div>
-                <p className="text-white font-semibold">4,892</p>
-                <p className="text-gray-400 text-sm">ICP générés</p>
-              </div>
-            </div>
           </div>
-          <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
-            <div className="flex items-center gap-3">
-              <TrendingUp className="w-5 h-5 text-green-400" />
-              <div>
-                <p className="text-white font-semibold">+89%</p>
-                <p className="text-gray-400 text-sm">Précision targeting</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-[#111111] rounded-xl p-4 border border-[#232323]">
-            <div className="flex items-center gap-3">
-              <Users className="w-5 h-5 text-purple-400" />
-              <div>
-                <p className="text-white font-semibold">2,347</p>
-                <p className="text-gray-400 text-sm">Entrepreneurs actifs</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Conseil */}
@@ -230,8 +200,31 @@ function ICPMakerContent() {
 }
 
 export default function ICPMakerPage() {
+  const stats = [
+    {
+      icon: <Brain className="w-6 h-6 text-blue-400" />,
+      value: "15,234",
+      label: "ICP détaillés"
+    },
+    {
+      icon: <TrendingUp className="w-6 h-6 text-green-400" />,
+      value: "+127%",
+      label: "ROI marketing"
+    },
+    {
+      icon: <Users className="w-6 h-6 text-purple-400" />,
+      value: "1,847",
+      label: "Niches identifiées"
+    },
+    {
+      icon: <Eye className="w-6 h-6 text-orange-400" />,
+      value: "97.8%",
+      label: "Taux de ciblage"
+    }
+  ];
+
   return (
-    <ToolLayout toolId="icp-maker">
+    <ToolLayout toolId="icp-maker" stats={stats}>
       <PremiumGuard feature="ICP Maker IA">
         <ICPMakerContent />
       </PremiumGuard>

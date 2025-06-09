@@ -163,9 +163,10 @@ export function USPWizardV2({ onComplete, isLoading = false, initialData = {}, i
       steps={steps}
       onComplete={handleComplete}
       isLoading={isLoading}
-
+      title="USP Maker avec Dropskills AI"
       description="Créez votre proposition de valeur unique en 8 étapes avec l'intelligence artificielle"
       initialData={formData}
+      toolId="usp-maker"
     />
   );
 }
