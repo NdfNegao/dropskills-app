@@ -351,7 +351,12 @@ function ResetPasswordContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
             >
-              DROP<span className="text-[#ff0033]">SKILLS</span>
+              <div>
+                DROP<span className="text-[#ff0033]">SKILLS</span>
+                <div className="text-xs text-gray-500 font-medium tracking-wider uppercase mt-1">
+                  beta
+                </div>
+              </div>
             </motion.h1>
             
             <motion.p

@@ -25,11 +25,7 @@ interface UserStats {
   totalRevenue: number;
 }
 
-interface WeeklyProgress {
-  day: string;
-  tools: number;
-  generations: number;
-}
+
 
 interface Achievement {
   id: string;
@@ -53,7 +49,7 @@ interface RecentActivity {
 export default function SimpleDashboardPage() {
   // States
   const [stats, setStats] = useState<UserStats | null>(null);
-  const [weeklyProgress, setWeeklyProgress] = useState<WeeklyProgress[]>([]);
+
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
   const [loading, setLoading] = useState(true);
@@ -98,15 +94,6 @@ export default function SimpleDashboardPage() {
       }
 
       // 2. Données simulées pour les nouvelles sections
-      setWeeklyProgress([
-        { day: 'Lun', tools: 3, generations: 12 },
-        { day: 'Mar', tools: 5, generations: 18 },
-        { day: 'Mer', tools: 2, generations: 8 },
-        { day: 'Jeu', tools: 4, generations: 15 },
-        { day: 'Ven', tools: 6, generations: 22 },
-        { day: 'Sam', tools: 1, generations: 5 },
-        { day: 'Dim', tools: 2, generations: 7 }
-      ]);
 
       setAchievements([
         {
@@ -177,7 +164,7 @@ export default function SimpleDashboardPage() {
         streakDays: 1,
         totalRevenue: 0
       });
-      setWeeklyProgress([]);
+
       setAchievements([]);
       setRecentActivity([]);
     } finally {
@@ -269,32 +256,7 @@ export default function SimpleDashboardPage() {
             </div>
           </div>
 
-          {/* Progression de la semaine */}
-          <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-[#ff0033]" />
-              Progression de la semaine
-            </h3>
-            <div className="grid grid-cols-7 gap-2">
-              {weeklyProgress.map((day, index) => (
-                <div key={index} className="text-center">
-                  <p className="text-xs text-gray-400 mb-2">{day.day}</p>
-                  <div className="bg-[#1a1a1a] rounded-lg p-3">
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center justify-center gap-1">
-                        <Bot className="w-3 h-3 text-blue-500" />
-                        <span className="text-xs text-white">{day.tools}</span>
-                      </div>
-                      <div className="flex items-center justify-center gap-1">
-                        <Zap className="w-3 h-3 text-yellow-500" />
-                        <span className="text-xs text-white">{day.generations}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+
 
           {/* Actions rapides */}
           <div className="bg-[#111111] rounded-xl p-6 border border-[#232323]">

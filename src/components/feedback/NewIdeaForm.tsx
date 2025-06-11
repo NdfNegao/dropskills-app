@@ -30,14 +30,34 @@ export default function NewIdeaForm() {
 
     setIsSubmitting(true);
 
-    // Fake: simulation d'une requête réseau
-    setTimeout(() => {
-      toast.success('Idée soumise (simulation) !');
+    try {
+      const response = await fetch('/api/feedback/ideas', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: title.trim(),
+          description: description.trim(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erreur lors de la soumission');
+      }
+
+      toast.success('Idée soumise avec succès !');
       setTitle('');
       setDescription('');
-      setIsSubmitting(false);
       router.refresh();
-    }, 1200);
+    } catch (error) {
+      console.error('Erreur lors de la soumission:', error);
+      toast.error(error instanceof Error ? error.message : 'Erreur lors de la soumission');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -79,4 +99,4 @@ export default function NewIdeaForm() {
       </Button>
     </form>
   );
-} 
+}

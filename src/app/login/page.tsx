@@ -49,7 +49,12 @@ export default function LoginPage() {
           {/* Logo */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-white tracking-tight">
-              DROP<span className="text-[#00D2FF]">SKILLS</span>
+              <div>
+                DROP<span className="text-[#00D2FF]">SKILLS</span>
+                <div className="text-xs text-gray-400 font-medium tracking-wider uppercase mt-1">
+                  beta
+                </div>
+              </div>
             </h1>
             <p className="text-gray-400 mt-2">Connectez-vous à votre espace</p>
           </div>
@@ -148,4 +153,4 @@ export default function LoginPage() {
       </div>
     </div>
   );
-} 
+}

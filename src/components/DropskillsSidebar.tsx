@@ -80,8 +80,13 @@ export default function DropskillsSidebar({
       
       {/* Logo & collapse button avec animation */}
       <div className="flex items-center justify-between px-4 py-5 border-b border-border">
-        <Link href="/" className={`text-2xl font-extrabold transition-all duration-300 hover:scale-105 ${collapsed ? "hidden" : "block"}`}>
-          DROP <span className="text-[#ff0033]">SKILLS</span>
+        <Link href="/" className={`transition-all duration-300 hover:scale-105 ${collapsed ? "hidden" : "block"}`}>
+          <div className="text-2xl font-extrabold">
+            DROP <span className="text-[#ff0033]">SKILLS</span>
+          </div>
+          <div className="text-xs text-neutral-400 font-medium tracking-wider uppercase mt-0.5">
+            beta
+          </div>
         </Link>
         <button 
           onClick={() => handleCollapse(!collapsed)} 

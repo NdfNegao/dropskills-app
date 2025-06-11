@@ -82,7 +82,7 @@ export default function SignUpPage() {
       if (response.ok) {
         setSuccess(true);
         setTimeout(() => {
-          router.push('/auth/signin?message=account-created');
+          router.push('/dashboard');
         }, 2000);
       } else {
         const data = await response.json();
@@ -162,7 +162,7 @@ export default function SignUpPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
             >
-              Votre compte a été créé. Vous allez être redirigé vers la page de connexion.
+              Votre compte a été créé. Vous allez être redirigé vers votre dashboard.
             </motion.p>
             
             <motion.div

@@ -7,6 +7,36 @@ interface AiToolCardProps {
   className?: string;
 }
 
+// Fonction pour mapper les couleurs dynamiques vers des classes Tailwind statiques
+const getColorClass = (color: string): string => {
+  const colorMap: Record<string, string> = {
+    'purple-500': 'bg-purple-500',
+    'blue-500': 'bg-blue-500',
+    'orange-500': 'bg-orange-500',
+    'green-500': 'bg-green-500',
+    'red-500': 'bg-red-500',
+    'yellow-500': 'bg-yellow-500',
+    'pink-500': 'bg-pink-500',
+    'indigo-500': 'bg-indigo-500',
+    'teal-500': 'bg-teal-500',
+    'cyan-500': 'bg-cyan-500',
+    'emerald-500': 'bg-emerald-500',
+    'violet-500': 'bg-violet-500',
+    'fuchsia-500': 'bg-fuchsia-500',
+    'rose-500': 'bg-rose-500',
+    'amber-500': 'bg-amber-500',
+    'lime-500': 'bg-lime-500',
+    'sky-500': 'bg-sky-500',
+    'slate-500': 'bg-slate-500',
+    'gray-500': 'bg-gray-500',
+    'zinc-500': 'bg-zinc-500',
+    'neutral-500': 'bg-neutral-500',
+    'stone-500': 'bg-stone-500'
+  };
+  
+  return colorMap[color] || 'bg-purple-500'; // Couleur par défaut
+};
+
 export function AiToolCard({ tool, className = '' }: AiToolCardProps) {
   // Récupérer le composant icône depuis la map
   const IconComponent = ICON_MAP[tool.icon] || ICON_MAP['Bot'];
@@ -24,7 +54,7 @@ export function AiToolCard({ tool, className = '' }: AiToolCardProps) {
     >
       <div className="flex items-start gap-4">
         {/* Icône avec dégradé */}
-        <div className={`w-12 h-12 rounded-lg bg-${tool.color} flex items-center justify-center flex-shrink-0`}>
+        <div className={`w-12 h-12 rounded-lg ${getColorClass(tool.color)} flex items-center justify-center flex-shrink-0`}>
           <IconComponent className="w-6 h-6 text-white" />
         </div>
 

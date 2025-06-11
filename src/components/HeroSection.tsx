@@ -8,7 +8,12 @@ export default function HeroSection() {
       <div className="max-w-7xl mx-auto text-center">
         {/* Titre principal */}
         <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-          DROP<span className="text-[#ff0033]">SKILLS</span>
+          <div className="relative inline-block">
+            DROP<span className="text-[#ff0033]">SKILLS</span>
+            <span className="absolute -top-2 -right-8 text-xs text-gray-400 font-medium tracking-wider uppercase">
+              beta
+            </span>
+          </div>
           <br />
           <span className="text-3xl md:text-5xl text-gray-400">Plateforme de Formation</span>
         </h1>
@@ -56,4 +61,4 @@ export default function HeroSection() {
       </div>
     </section>
   );
-} 
+}

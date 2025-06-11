@@ -185,6 +185,113 @@ export function getThemeByCategory(category: string): ToolTheme {
   return TOOL_THEMES[themeKey];
 }
 
+// Fonction pour mapper les couleurs vers des classes Tailwind statiques
+const getStaticColorClasses = (toolColor: string) => {
+  const colorMap: Record<string, any> = {
+    'purple-500': {
+      primary: 'bg-purple-500',
+      secondary: 'bg-purple-500/20',
+      accent: 'bg-purple-400',
+      icon: 'bg-purple-500/20',
+      progress: 'bg-purple-500',
+      active: 'bg-purple-500',
+      completed: 'bg-purple-500',
+      primaryHover: 'bg-purple-500 hover:bg-purple-600',
+      info: 'bg-purple-500/10 border-purple-500/20'
+    },
+    'blue-500': {
+      primary: 'bg-blue-500',
+      secondary: 'bg-blue-500/20',
+      accent: 'bg-blue-400',
+      icon: 'bg-blue-500/20',
+      progress: 'bg-blue-500',
+      active: 'bg-blue-500',
+      completed: 'bg-blue-500',
+      primaryHover: 'bg-blue-500 hover:bg-blue-600',
+      info: 'bg-blue-500/10 border-blue-500/20'
+    },
+    'orange-500': {
+      primary: 'bg-orange-500',
+      secondary: 'bg-orange-500/20',
+      accent: 'bg-orange-400',
+      icon: 'bg-orange-500/20',
+      progress: 'bg-orange-500',
+      active: 'bg-orange-500',
+      completed: 'bg-orange-500',
+      primaryHover: 'bg-orange-500 hover:bg-orange-600',
+      info: 'bg-orange-500/10 border-orange-500/20'
+    },
+    'green-500': {
+      primary: 'bg-green-500',
+      secondary: 'bg-green-500/20',
+      accent: 'bg-green-400',
+      icon: 'bg-green-500/20',
+      progress: 'bg-green-500',
+      active: 'bg-green-500',
+      completed: 'bg-green-500',
+      primaryHover: 'bg-green-500 hover:bg-green-600',
+      info: 'bg-green-500/10 border-green-500/20'
+    },
+    'red-500': {
+      primary: 'bg-red-500',
+      secondary: 'bg-red-500/20',
+      accent: 'bg-red-400',
+      icon: 'bg-red-500/20',
+      progress: 'bg-red-500',
+      active: 'bg-red-500',
+      completed: 'bg-red-500',
+      primaryHover: 'bg-red-500 hover:bg-red-600',
+      info: 'bg-red-500/10 border-red-500/20'
+    },
+    'yellow-500': {
+      primary: 'bg-yellow-500',
+      secondary: 'bg-yellow-500/20',
+      accent: 'bg-yellow-400',
+      icon: 'bg-yellow-500/20',
+      progress: 'bg-yellow-500',
+      active: 'bg-yellow-500',
+      completed: 'bg-yellow-500',
+      primaryHover: 'bg-yellow-500 hover:bg-yellow-600',
+      info: 'bg-yellow-500/10 border-yellow-500/20'
+    },
+    'pink-500': {
+      primary: 'bg-pink-500',
+      secondary: 'bg-pink-500/20',
+      accent: 'bg-pink-400',
+      icon: 'bg-pink-500/20',
+      progress: 'bg-pink-500',
+      active: 'bg-pink-500',
+      completed: 'bg-pink-500',
+      primaryHover: 'bg-pink-500 hover:bg-pink-600',
+      info: 'bg-pink-500/10 border-pink-500/20'
+    },
+    'indigo-500': {
+      primary: 'bg-indigo-500',
+      secondary: 'bg-indigo-500/20',
+      accent: 'bg-indigo-400',
+      icon: 'bg-indigo-500/20',
+      progress: 'bg-indigo-500',
+      active: 'bg-indigo-500',
+      completed: 'bg-indigo-500',
+      primaryHover: 'bg-indigo-500 hover:bg-indigo-600',
+      info: 'bg-indigo-500/10 border-indigo-500/20'
+    },
+    'teal-500': {
+      primary: 'bg-teal-500',
+      secondary: 'bg-teal-500/20',
+      accent: 'bg-teal-400',
+      icon: 'bg-teal-500/20',
+      progress: 'bg-teal-500',
+      active: 'bg-teal-500',
+      completed: 'bg-teal-500',
+      primaryHover: 'bg-teal-500 hover:bg-teal-600',
+      info: 'bg-teal-500/10 border-teal-500/20'
+    }
+  };
+  
+  return colorMap[toolColor] || colorMap['purple-500']; // Couleur par défaut
+};
+
 // Si tu utilises un module externe pour récupérer la catégorie à partir de l'ID
 export function getThemeByToolId(toolId: string): ToolTheme {
   // Import dynamique pour éviter les dépendances circulaires
@@ -193,37 +300,29 @@ export function getThemeByToolId(toolId: string): ToolTheme {
   
   if (!tool) return TOOL_THEMES.default;
   
-  // Créer un thème personnalisé basé sur la couleur spécifique de l'outil
-  const toolColor = tool.color; // ex: 'purple-500'
-  const colorName = toolColor.split('-')[0]; // ex: 'purple'
-  const colorShade = toolColor.split('-')[1]; // ex: '500'
-  
-  // Calculer une nuance plus foncée pour le hover (600 au lieu de 500, 700 au lieu de 600, etc.)
-  const hoverShade = colorShade === '500' ? '600' : 
-                     colorShade === '600' ? '700' : 
-                     colorShade === '400' ? '500' : '600';
+  const colors = getStaticColorClasses(tool.color);
   
   return {
-    primary: `bg-${toolColor}`,
-    secondary: `bg-${colorName}-${colorShade}/20`,
-    accent: `bg-${colorName}-400`,
+    primary: colors.primary,
+    secondary: colors.secondary,
+    accent: colors.accent,
     wizard: {
       header: {
-        icon: `bg-${toolColor}/20`,
-        progress: `bg-${toolColor}`
+        icon: colors.icon,
+        progress: colors.progress
       },
       steps: {
-        active: `bg-${toolColor}`,
-        completed: `bg-${toolColor}`,
+        active: colors.active,
+        completed: colors.completed,
         accessible: 'bg-[#232323] hover:bg-[#333333]',
         disabled: 'bg-[#1a1a1a]'
       },
       buttons: {
-        primary: `bg-${toolColor} hover:bg-${colorName}-${hoverShade}`,
+        primary: colors.primaryHover,
         secondary: 'bg-[#1a1a1a] hover:bg-[#232323]'
       },
       highlights: {
-        info: `bg-${toolColor}/10 border-${toolColor}/20`,
+        info: colors.info,
         success: 'bg-green-500/10 border-green-500/20',
         warning: 'bg-orange-500/10 border-orange-500/20',
         error: 'bg-red-500/10 border-red-500/20'

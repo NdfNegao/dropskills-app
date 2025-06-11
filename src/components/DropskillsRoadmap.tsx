@@ -18,6 +18,36 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
+// Fonction pour mapper les couleurs dynamiques vers des classes Tailwind statiques
+const getTextColorClass = (color: string): string => {
+  const colorMap: Record<string, string> = {
+    'purple-500': 'text-purple-500',
+    'blue-500': 'text-blue-500',
+    'orange-500': 'text-orange-500',
+    'green-500': 'text-green-500',
+    'red-500': 'text-red-500',
+    'yellow-500': 'text-yellow-500',
+    'pink-500': 'text-pink-500',
+    'indigo-500': 'text-indigo-500',
+    'teal-500': 'text-teal-500',
+    'cyan-500': 'text-cyan-500',
+    'emerald-500': 'text-emerald-500',
+    'violet-500': 'text-violet-500',
+    'fuchsia-500': 'text-fuchsia-500',
+    'rose-500': 'text-rose-500',
+    'amber-500': 'text-amber-500',
+    'lime-500': 'text-lime-500',
+    'sky-500': 'text-sky-500',
+    'slate-500': 'text-slate-500',
+    'gray-500': 'text-gray-500',
+    'zinc-500': 'text-zinc-500',
+    'neutral-500': 'text-neutral-500',
+    'stone-500': 'text-stone-500'
+  };
+  
+  return colorMap[color] || 'text-purple-500'; // Couleur par défaut
+};
+
 const MASTERPIECES = [
   {
     id: 'icp-maker',
@@ -189,7 +219,7 @@ export function DropskillsRoadmap() {
                   transition={{ type: 'spring', duration: 0.5 }}
                   className="w-10 h-10 md:w-12 md:h-12 bg-neutral-800 border-2 border-red-500 rounded-full flex items-center justify-center shadow-lg"
                 >
-                  <Icon className={`w-5 h-5 md:w-6 md:h-6 text-${tool.color}`} />
+                  <Icon className={`w-5 h-5 md:w-6 md:h-6 ${getTextColorClass(tool.color)}`} />
                 </motion.div>
                 <div className="flex-1 min-w-0">
                   <Link href={tool.href}>

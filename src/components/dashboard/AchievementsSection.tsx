@@ -86,12 +86,7 @@ export default function AchievementsSection({ achievements }: AchievementsSectio
           </div>
         </div>
         
-        {/* Overall Progress */}
-        <div className="text-right">
-          <div className="text-2xl font-bold text-yellow-400">{Math.round(progressPercentage)}%</div>
-          <div className="text-gray-400 text-sm">Progression globale</div>
-        </div>
-      </div>
+</div>
 
       {/* Progress Bar */}
       <motion.div
@@ -352,4 +347,4 @@ export default function AchievementsSection({ achievements }: AchievementsSectio
       </AnimatePresence>
     </div>
   );
-} 
+}
