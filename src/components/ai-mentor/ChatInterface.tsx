@@ -25,8 +25,7 @@ const getIcon = (iconName: string) => {
     'Zap': Zap
   };
   
-  const IconComponent = iconMap[iconName] || MessageSquare;
-  return <IconComponent className="w-6 h-6 text-white" />;
+  return iconMap[iconName] || MessageSquare;
 };
 
 export function ChatInterface({ mentorId, mentor, initialMessages = [] }: ChatInterfaceProps) {
@@ -111,7 +110,7 @@ export function ChatInterface({ mentorId, mentor, initialMessages = [] }: ChatIn
       {/* En-tête du chat */}
       <div className="flex items-center gap-3 p-4 border-b border-gray-800">
         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-semibold">
-          {getIcon(mentor.icon)}
+          {React.createElement(getIcon(mentor.icon), { className: "w-6 h-6 text-white" })}
         </div>
         <div className="flex-1">
           <h3 className="font-semibold text-white">{mentor.name}</h3>
@@ -156,7 +155,7 @@ export function ChatInterface({ mentorId, mentor, initialMessages = [] }: ChatIn
         {messages.length === 0 && (
           <div className="text-center py-8">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white text-2xl">
-              {getIcon(mentor.icon)}
+              {React.createElement(getIcon(mentor.icon), { className: "w-8 h-8 text-white" })}
             </div>
             <h3 className="text-lg font-semibold text-white mb-2">
               Commencez une conversation avec {mentor.name}

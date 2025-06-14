@@ -51,7 +51,7 @@ const getIcon = (iconName: string) => {
   
   const IconComponent = iconMap[iconName] || MessageSquare;
   return <IconComponent className="w-8 h-8 text-gray-600" />;
-};}}}
+}
 import type { AIMentor } from '@/types/ai-mentor';
 
 interface MentorFormData {
