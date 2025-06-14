@@ -43,6 +43,7 @@ export default function AdminSidebar({
     { icon: <Package />, label: "Packs", href: "/admin/packs", tooltip: "Gestion des packs" },
     { icon: <Zap />, label: "Outils IA", href: "/admin/outils", tooltip: "Gestion des outils IA" },
     { icon: <Brain />, label: "Dashboard IA", href: "/admin/ai-dashboard", tooltip: "Dashboard des outils IA" },
+    { icon: <MessageSquare />, label: "Mentors IA", href: "/admin/ai-dashboard/mentors", tooltip: "Gestion des mentors IA" },
     { icon: <Brain />, label: "Config Providers", href: "/admin/ai-config", tooltip: "Configuration des providers IA" },
     { icon: <MessageSquare />, label: "Prompts", href: "/admin/prompts", tooltip: "Gestion des prompts" },
     { icon: <UserCheck />, label: "Affiliés", href: "/admin/affiliates", tooltip: "Gestion des affiliés" },

@@ -28,9 +28,9 @@ export async function POST(req: NextRequest) {
     const modelNames = [
       'grok-2',
       'grok-3',
-      'grok-3-beta',
+      'grok-3',
       'grok-2-1212',
-      'grok-beta'
+      'grok-3-mini'
     ];
     
     const results = {};
@@ -101,4 +101,4 @@ export async function POST(req: NextRequest) {
       stack: error.stack
     });
   }
-} 
+}

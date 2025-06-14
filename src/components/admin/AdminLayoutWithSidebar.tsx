@@ -65,6 +65,7 @@ export default function AdminLayoutWithSidebar({
     { icon: <Users />, label: "Utilisateurs", href: "/admin/utilisateurs" },
     { icon: <FileText />, label: "Produits", href: "/admin/produits" },
     { icon: <Zap />, label: "Outils IA", href: "/admin/outils" },
+    { icon: <MessageSquare />, label: "Mentors IA", href: "/admin/ai-dashboard/mentors" },
     { icon: <MessageSquare />, label: "Prompts", href: "/admin/prompts" },
     { icon: <Database />, label: "Base de données", href: "/admin/database" },
     { icon: <Shield />, label: "Sécurité", href: "/admin/security" },

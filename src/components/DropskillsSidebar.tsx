@@ -37,7 +37,8 @@ export default function DropskillsSidebar({
     { icon: <Home />, label: "Accueil", href: "/dashboard", tooltip: "Accueil" },
     { icon: <GraduationCap />, label: "Centre de Formation", href: "/universite", tooltip: "Centre de formation" },
     { icon: <Heart />, label: "Favoris", href: "/favoris", tooltip: "Formations likées" },
-    { icon: <FolderOpen />, label: "Outils IA", href: "/outils", tooltip: "Tous les outils IA" }
+    { icon: <FolderOpen />, label: "Outils IA", href: "/outils", tooltip: "Tous les outils IA" },
+    { icon: <MessageSquarePlus />, label: "Mentors IA", href: "/ai-mentor", tooltip: "Mentors IA personnalisés" }
   ];
 
   // Section Aide & Personnalisation

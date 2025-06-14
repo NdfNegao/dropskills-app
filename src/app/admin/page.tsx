@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
+import MentorStatsCard from '@/components/admin/MentorStatsCard';
 import { Users, Package, Bot, Activity, BarChart3, TrendingUp, TrendingDown, Minus, Loader2, Settings, Brain, FileText } from 'lucide-react';
 import type { DashboardStats } from '@/types/admin';
 
@@ -202,7 +203,7 @@ export default function AdminDashboard() {
 
       {/* Métriques détaillées */}
       {stats && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 mt-6">
           {/* Utilisateurs */}
           <div className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
             <div className="flex items-center justify-between mb-4">
@@ -276,6 +277,11 @@ export default function AdminDashboard() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Mentors IA */}
+          <div className="lg:col-span-2 xl:col-span-1">
+            <MentorStatsCard />
           </div>
         </div>
       )}

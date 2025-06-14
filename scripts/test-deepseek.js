@@ -41,8 +41,8 @@ async function testDeepSeekAPI() {
   }
   console.log('✅ Configuration OK\n');
   
-  // Test 2: Test API simple
-  console.log('2️⃣ Test de l\'API DeepSeek...');
+  // Test 2: Test API DeepSeek V3
+  console.log('2️⃣ Test de l\'API DeepSeek V3...');
   try {
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
@@ -88,10 +88,52 @@ async function testDeepSeekAPI() {
     return;
   }
   
-  console.log('🎉 Test réussi!');
+  // Test 3: Test API DeepSeek R1 (Reasoner)
+  console.log('3️⃣ Test de l\'API DeepSeek R1 (Reasoner)...');
+  try {
+    const r1Response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'deepseek-reasoner',
+        messages: [{
+          role: 'user',
+          content: 'Résous ce problème étape par étape: Si j\'ai 3 pommes et que j\'en achète 2 fois plus, combien en ai-je au total?'
+        }],
+        max_tokens: 100
+      })
+    });
+    
+    if (r1Response.ok) {
+      const r1Data = await r1Response.json();
+      console.log('✅ API DeepSeek R1 fonctionnelle');
+      console.log(`📝 Réponse R1: ${r1Data.choices[0].message.content}`);
+      console.log(`📊 Tokens utilisés: ${r1Data.usage.total_tokens}`);
+      
+      // Calcul du coût R1 (plus cher mais plus performant)
+      const r1InputCost = (r1Data.usage.prompt_tokens * 0.55) / 1000000;
+      const r1OutputCost = (r1Data.usage.completion_tokens * 2.19) / 1000000;
+      const r1TotalCost = r1InputCost + r1OutputCost;
+      console.log(`💰 Coût R1: $${r1TotalCost.toFixed(6)}`);
+      console.log(`🧠 Capacités: Raisonnement avancé, mathématiques, résolution de problèmes complexes\n`);
+    } else {
+      const r1Error = await r1Response.json();
+      console.error('❌ Erreur API R1:', r1Error);
+    }
+  } catch (error) {
+    console.error('❌ Erreur de connexion R1:', error.message);
+  }
+  
+  console.log('🎉 Tests réussis!');
+  console.log('\n📋 Modèles disponibles:');
+  console.log('• DeepSeek V3 (deepseek-chat): Général, économique');
+  console.log('• DeepSeek R1 (deepseek-reasoner): Raisonnement avancé, plus cher');
   console.log('\n📋 Prochaines étapes:');
   console.log('1. Démarrer le serveur: npm run dev');
-  console.log('2. Tester l\'endpoint: /api/ai/titles/generate');
+  console.log('2. Tester un mentor IA: /ai-mentor/business-mentor');
   console.log('3. Vérifier les économies dans les logs');
   console.log('4. Déployer en production');
 }

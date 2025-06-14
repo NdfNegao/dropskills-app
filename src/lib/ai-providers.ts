@@ -71,6 +71,101 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     }
   },
 
+  'deepseek-r1': {
+    name: 'DeepSeek R1 (Reasoner)',
+    apiKey: process.env.DEEPSEEK_API_KEY || '',
+    baseURL: 'https://api.deepseek.com/v1',
+    model: 'deepseek-reasoner',
+    pricing: {
+      input: 0.55,   // $0.55 per 1M tokens (cache miss)
+      output: 2.19   // $2.19 per 1M tokens
+    },
+    capabilities: ['advanced-reasoning', 'mathematical-analysis', 'complex-problem-solving', 'chain-of-thought'],
+    temperature: 0.7,
+    maxTokens: 32000,  // Default 32K, max 64K
+    isAvailable: () => !!process.env.DEEPSEEK_API_KEY,
+    checkAvailability: async () => {
+      try {
+        const provider = AI_PROVIDERS['deepseek-r1'];
+        if (!provider?.baseURL) throw new Error('baseURL non défini');
+        const res = await fetch(provider.baseURL);
+        return res.ok;
+      } catch {
+        return false;
+      }
+    },
+    generateText: async (prompt: string, options: unknown = {}) => {
+      const provider = AI_PROVIDERS['deepseek-r1'];
+      if (!provider?.baseURL) throw new Error('baseURL non défini');
+      const response = await fetch(`${provider.baseURL}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'deepseek-reasoner',
+          messages: [{ role: 'user', content: prompt }],
+          temperature: (options && (options as AIOptions).temperature) || 0.7,
+          max_tokens: (options && (options as AIOptions).maxTokens) || 32000
+        })
+      });
+      const data = await response.json();
+      return data.choices[0].message.content;
+    },
+    getCost: (inputTokens: number, outputTokens: number) => {
+      // Note: Cache hit pricing is $0.14 per 1M tokens, but we use cache miss pricing for estimation
+      return (inputTokens * 0.55 / 1000000) + (outputTokens * 2.19 / 1000000);
+    }
+  },
+
+  'grok-2-1212': {
+    name: 'Grok 2.1212',
+    apiKey: process.env.GROK_API_KEY || '',
+    baseURL: 'https://api.x.ai/v1',
+    model: 'grok-2-1212',
+    pricing: {
+      input: 0.50,   // Estimation basée sur la compétitivité annoncée
+      output: 1.50
+    },
+    capabilities: ['creativity', 'copywriting', 'engagement'],
+    temperature: 0.8,
+    maxTokens: 4000,
+    isAvailable: () => !!process.env.GROK_API_KEY,
+    checkAvailability: async () => {
+      try {
+        const provider = AI_PROVIDERS['grok-2-1212'];
+        if (!provider?.baseURL) throw new Error('baseURL non défini');
+        const res = await fetch(provider.baseURL);
+        return res.ok;
+      } catch {
+        return false;
+      }
+    },
+    generateText: async (prompt: string, options: unknown = {}) => {
+      const provider = AI_PROVIDERS['grok-2-1212'];
+      if (!provider?.baseURL) throw new Error('baseURL non défini');
+      const response = await fetch(`${provider.baseURL}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.GROK_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'grok-2-1212',
+          messages: [{ role: 'user', content: prompt }],
+          temperature: (options && (options as AIOptions).temperature) || 0.8,
+          max_tokens: (options && (options as AIOptions).maxTokens) || 4000
+        })
+      });
+      const data = await response.json();
+      return data.choices[0].message.content;
+    },
+    getCost: (inputTokens: number, outputTokens: number) => {
+      return (inputTokens * 0.50 / 1000000) + (outputTokens * 1.50 / 1000000);
+    }
+  },
+
   'grok-3': {
     name: 'Grok 3',
     apiKey: process.env.GROK_API_KEY || '',
