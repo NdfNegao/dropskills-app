@@ -254,7 +254,13 @@ function AdminSidebarLink({
   );
   
   if (href === "#") {
-    return <div className="cursor-not-allowed">{content}</div>;
+    // Debug : afficher le contenu si c'est un objet
+    {typeof content === "object" && !React.isValidElement(content) ? (
+      <pre>{JSON.stringify(content, null, 2)}</pre>
+    ) : (
+      <div className="cursor-not-allowed">{content}</div>
+    )}
+    return null;
   }
   
   return <Link href={href}>{content}</Link>;

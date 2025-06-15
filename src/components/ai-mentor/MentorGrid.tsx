@@ -85,7 +85,7 @@ export default function MentorGrid({ mentors, className }: MentorGridProps) {
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
                   <div className="flex-shrink-0">
-                    {stat.icon}
+                    {stat.icon} 
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-2xl font-bold text-foreground">

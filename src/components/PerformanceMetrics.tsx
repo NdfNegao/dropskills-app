@@ -106,7 +106,7 @@ export default function PerformanceMetrics() {
       name: 'First Contentful Paint',
       value: `${metrics.fcp}ms`,
       description: 'Temps d\'affichage du premier contenu',
-      icon: Zap,
+      icon: <Zap className="w-5 h-5" />,
       score: getScoreLabel('fcp', metrics.fcp),
       color: getScoreColor('fcp', metrics.fcp)
     },
@@ -114,7 +114,7 @@ export default function PerformanceMetrics() {
       name: 'Largest Contentful Paint',
       value: `${metrics.lcp}ms`,
       description: 'Temps d\'affichage du contenu principal',
-      icon: TrendingUp,
+      icon: <TrendingUp className="w-5 h-5" />,
       score: getScoreLabel('lcp', metrics.lcp),
       color: getScoreColor('lcp', metrics.lcp)
     },
@@ -122,7 +122,7 @@ export default function PerformanceMetrics() {
       name: 'First Input Delay',
       value: `${metrics.fid}ms`,
       description: 'Délai de première interaction',
-      icon: Clock,
+      icon: <Clock className="w-5 h-5" />,
       score: getScoreLabel('fid', metrics.fid),
       color: getScoreColor('fid', metrics.fid)
     },
@@ -130,7 +130,7 @@ export default function PerformanceMetrics() {
       name: 'Cumulative Layout Shift',
       value: metrics.cls.toFixed(3),
       description: 'Stabilité visuelle de la page',
-      icon: Activity,
+      icon: <Activity className="w-5 h-5" />,
       score: getScoreLabel('cls', metrics.cls),
       color: getScoreColor('cls', metrics.cls)
     },
@@ -138,7 +138,7 @@ export default function PerformanceMetrics() {
       name: 'Time to First Byte',
       value: `${metrics.ttfb}ms`,
       description: 'Temps de réponse du serveur',
-      icon: Zap,
+      icon: <Zap className="w-5 h-5" />,
       score: getScoreLabel('ttfb', metrics.ttfb),
       color: getScoreColor('ttfb', metrics.ttfb)
     },
@@ -146,7 +146,7 @@ export default function PerformanceMetrics() {
       name: 'Performance Score',
       value: '95/100',
       description: 'Score global de performance',
-      icon: TrendingUp,
+      icon: <TrendingUp className="w-5 h-5" />,
       score: 'Excellent',
       color: 'text-green-400'
     }
@@ -213,4 +213,4 @@ export default function PerformanceMetrics() {
       </div>
     </div>
   );
-} 
+}

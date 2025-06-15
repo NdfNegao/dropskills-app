@@ -37,7 +37,7 @@ export default function StatsOverview({ stats, canAccessPremium }: StatsOverview
       borderColor: "border-blue-500/30"
     },
     {
-      icon: Bot,
+      icon: <Bot className="w-5 h-5" />,
       label: "Outils Utilisés",
       value: stats.toolsUsed,
       suffix: "/15",
@@ -47,7 +47,7 @@ export default function StatsOverview({ stats, canAccessPremium }: StatsOverview
       borderColor: canAccessPremium ? "border-green-500/30" : "border-orange-500/30"
     },
     {
-      icon: Zap,
+      icon: <Zap className="w-5 h-5" />,
       label: "Générations",
       value: stats.generationsThisMonth,
       suffix: "",
@@ -57,7 +57,7 @@ export default function StatsOverview({ stats, canAccessPremium }: StatsOverview
       borderColor: "border-purple-500/30"
     },
     {
-      icon: Trophy,
+      icon: <Trophy className="w-5 h-5" />,
       label: "Score Business",
       value: stats.businessScore,
       suffix: "/100",
@@ -158,7 +158,9 @@ export default function StatsOverview({ stats, canAccessPremium }: StatsOverview
                   ease: "easeInOut"
                 }}
               />
-              <stat.icon className="w-6 h-6 text-white relative z-10" />
+              {stat.icon && typeof stat.icon === 'function' ? (
+                <stat.icon className="w-6 h-6 text-white relative z-10" />
+              ) : null}
             </motion.div>
 
             {/* Content */}
@@ -244,4 +246,4 @@ export default function StatsOverview({ stats, canAccessPremium }: StatsOverview
       )}
     </div>
   );
-} 
+}

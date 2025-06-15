@@ -27,10 +27,10 @@ export function AiToolsGrid({ category, step, className = '' }: AiToolsGridProps
   }
 
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ${className}`}>
+    <div className={`grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 w-full ${className}`}>
       {filteredTools.map((tool) => (
-        <AiToolCard key={tool.id} tool={tool} />
+        <AiToolCard key={tool.id} tool={tool} className="w-full" />
       ))}
     </div>
   );
-} 
+}

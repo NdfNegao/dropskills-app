@@ -23,7 +23,7 @@ const achievements: Achievement[] = [
     id: '1',
     title: 'Premier Pas',
     description: 'Connectez-vous pour la première fois',
-    icon: Star,
+    icon: <Star className="w-6 h-6" />,
     progress: 100,
     maxProgress: 1,
     unlocked: true,
@@ -36,7 +36,7 @@ const achievements: Achievement[] = [
     id: '2',
     title: 'Stratège',
     description: 'Générez 5 stratégies business',
-    icon: Target,
+    icon: <Target className="w-6 h-6" />,
     progress: 3,
     maxProgress: 5,
     unlocked: false,
@@ -48,7 +48,7 @@ const achievements: Achievement[] = [
     id: '3',
     title: 'Machine à Idées',
     description: 'Utilisez 10 outils IA différents',
-    icon: Zap,
+    icon: <Zap className="w-6 h-6" />,
     progress: 7,
     maxProgress: 10,
     unlocked: false,
@@ -60,7 +60,7 @@ const achievements: Achievement[] = [
     id: '4',
     title: 'Entrepreneur Visionnaire',
     description: 'Lancez votre premier projet',
-    icon: Trophy,
+    icon: <Trophy className="w-6 h-6" />,
     progress: 0,
     maxProgress: 1,
     unlocked: false,
@@ -376,4 +376,4 @@ export function AchievementsSection({ userLevel, totalXp }: AchievementsSectionP
       )}
     </section>
   );
-} 
+}

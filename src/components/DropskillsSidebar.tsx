@@ -81,7 +81,7 @@ export default function DropskillsSidebar({
       
       {/* Logo & collapse button avec animation */}
       <div className="flex items-center justify-between px-4 py-5 border-b border-border">
-        <Link href="/" className={`transition-all duration-300 hover:scale-105 ${collapsed ? "hidden" : "block"}`}>
+        <Link href="/dashboard" className={`transition-all duration-300 hover:scale-105 ${collapsed ? "hidden" : "block"}`}>
           <div className="text-2xl font-extrabold">
             DROP <span className="text-[#ff0033]">SKILLS</span>
           </div>
@@ -256,7 +256,13 @@ function SidebarLink({
     </div>
   );
   if (href === "#") {
-    return <div className="cursor-not-allowed">{content}</div>;
+    // Debug : afficher le contenu si c'est un objet
+    {typeof content === "object" && !React.isValidElement(content) ? (
+      <pre>{JSON.stringify(content, null, 2)}</pre>
+    ) : (
+      <div className="cursor-not-allowed">{content}</div>
+    )}
+    return null;
   }
   return <Link href={href}>{content}</Link>;
 }

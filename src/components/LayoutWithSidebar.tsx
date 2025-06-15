@@ -7,7 +7,8 @@ import Link from 'next/link';
 import {
   Home, Lock, User, LogOut, 
   Sparkles, BrainCog, Rocket, FolderKanban, Mail, 
-  CalendarCheck, LineChart, GraduationCap, Target, X, Users, HelpCircle
+  CalendarCheck, LineChart, GraduationCap, Target, X, Users, HelpCircle,
+  Heart, FolderOpen, MessageSquarePlus, Gift
 } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
@@ -67,12 +68,12 @@ export default function LayoutWithSidebar({
       `}>
         {/* Header mobile */}
         <div className="flex items-center justify-between p-4 border-b border-border">
-          <Link href="/" className="text-2xl font-extrabold">
+          <Link href="/dashboard" className="text-2xl font-extrabold">
             DROP <span className="text-primary">SKILLS</span>
           </Link>
           <button
             onClick={() => setMobileMenuOpen(false)}
-            className="p-2 rounded-lg bg-muted text-muted-foreground hover:bg-muted/50 transition-colors"
+            className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -80,34 +81,13 @@ export default function LayoutWithSidebar({
 
         {/* Navigation mobile */}
         <nav className="flex-1 flex flex-col gap-1 px-4 py-4 overflow-y-auto">
-          <MobileNavLink icon={<Home />} label="Accueil" href="/" onClick={() => setMobileMenuOpen(false)} />
-          <MobileNavLink 
-            icon={<Lock />} 
-            label="Centre de formation" 
-            href="/universite" 
-            isPremium={!canAccessPremium}
-            onClick={() => setMobileMenuOpen(false)} 
-          />
+          {/* Navigation principale */}
+          <MobileNavLink icon={<Home />} label="Accueil" href="/dashboard" onClick={() => setMobileMenuOpen(false)} />
+          <MobileNavLink icon={<GraduationCap />} label="Centre de Formation" href="/universite" onClick={() => setMobileMenuOpen(false)} />
+          <MobileNavLink icon={<Heart />} label="Favoris" href="/favoris" onClick={() => setMobileMenuOpen(false)} />
+          <MobileNavLink icon={<FolderOpen />} label="Outils IA" href="/outils" onClick={() => setMobileMenuOpen(false)} />
+          <MobileNavLink icon={<MessageSquarePlus />} label="Mentors IA" href="/ai-mentor" onClick={() => setMobileMenuOpen(false)} />
           
-          {/* Divider */}
-          <div className="my-4 border-t border-border"></div>
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-            Outils IA Dropskills
-          </div>
-          
-          <MobileNavLink icon={<Sparkles />} label="Tous les Outils IA" href="/outils" onClick={() => setMobileMenuOpen(false)} />
-          
-          {IA_TOOLS.map(tool => (
-            <MobileNavLink 
-              key={tool.label}
-              icon={tool.icon} 
-              label={tool.label} 
-              href={tool.href}
-              isPremium={!canAccessPremium}
-              onClick={() => setMobileMenuOpen(false)}
-            />
-          ))}
-
           {/* CTA Premium */}
           {!canAccessPremium && (
             <div className="mt-4 p-4 bg-gradient-to-r from-[#ff0033] to-[#cc0029] rounded-lg">
@@ -122,21 +102,28 @@ export default function LayoutWithSidebar({
             </div>
           )}
 
-          {/* Aide & Support */}
+          {/* Aide & Personnalisation */}
           <div className="my-4 border-t border-border"></div>
           <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-            Aide & Support
+            Aide & Personnalisation
           </div>
           
-          <MobileNavLink icon={<GraduationCap />} label="Centre de formation" href="/universite" onClick={() => setMobileMenuOpen(false)} />
-          <MobileNavLink icon={<LineChart />} label="Demandes de Produits" href="/demandes" onClick={() => setMobileMenuOpen(false)} />
-          <MobileNavLink icon={<Users />} label="Programme d'affiliation" href="/affiliate" onClick={() => setMobileMenuOpen(false)} />
+          <MobileNavLink icon={<MessageSquarePlus />} label="Proposer un outil" href="/demandes" onClick={() => setMobileMenuOpen(false)} />
+
+          {/* Compte */}
+          <div className="my-4 border-t border-border"></div>
+          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            Compte
+          </div>
+          
+          <MobileNavLink icon={<User />} label="Mon Compte" href="/compte" onClick={() => setMobileMenuOpen(false)} />
+          <MobileNavLink icon={<Users />} label="Affiliation" href="/affiliate" onClick={() => setMobileMenuOpen(false)} />
+          <MobileNavLink icon={<Gift />} label="Parrainage" href="/gift" onClick={() => setMobileMenuOpen(false)} />
           <MobileNavLink icon={<HelpCircle />} label="Support" href="/support" onClick={() => setMobileMenuOpen(false)} />
         </nav>
 
         {/* Footer mobile */}
         <div className="mt-auto p-4 border-t border-border">
-          <MobileNavLink icon={<User />} label="Mon Compte" href="/compte" onClick={() => setMobileMenuOpen(false)} />
           <button
             onClick={() => {
               setMobileMenuOpen(false);
@@ -168,12 +155,12 @@ export default function LayoutWithSidebar({
       `}>
         {/* Header mobile avec bouton menu */}
         <div className="lg:hidden bg-card border-b border-border p-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-foreground">
+          <Link href="/dashboard" className="text-xl font-bold text-foreground hover:scale-105 transition-transform">
             DROP<span className="text-primary">SKILLS</span>
-          </h1>
+          </Link>
           <button
             onClick={() => setMobileMenuOpen(true)}
-            className="p-2 rounded-lg bg-muted text-muted-foreground hover:bg-muted/50 transition-colors"
+            className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -182,14 +169,16 @@ export default function LayoutWithSidebar({
         </div>
 
         {/* Contenu avec padding adaptatif */}
-        <div className="p-4 lg:p-6">
+        <div className="p-3 sm:p-4 lg:p-6 w-full max-w-full overflow-x-hidden">
           {isLoading ? (
             <div className="flex items-center justify-center h-64">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
               <span className="ml-2 text-muted-foreground">Chargement...</span>
             </div>
           ) : (
-            children
+            <div className="w-full max-w-full">
+              {children}
+            </div>
           )}
         </div>
       </main>

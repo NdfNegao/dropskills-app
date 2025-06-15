@@ -60,10 +60,10 @@ async function callAI(messages: ChatMessage[]): Promise<string> {
         model: DEFAULT_MODEL,
         messages: messages,
         max_tokens: 1000,
-        temperature: 0.7,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0,
+        temperature: 0.3, // Réduit pour plus de cohérence
+        top_p: 0.9, // Réduit pour plus de focus
+        frequency_penalty: 0.1, // Évite les répétitions
+        presence_penalty: 0.1, // Encourage la diversité
       }),
     });
 
@@ -74,7 +74,14 @@ async function callAI(messages: ChatMessage[]): Promise<string> {
     const data = await response.json();
     return data.choices[0]?.message?.content || 'Désolé, je n\'ai pas pu générer une réponse.';
   } catch (error) {
-    console.error('Erreur lors de l\'appel à l\'API IA:', error);
+    // Logging détaillé des erreurs API
+    console.error('=== ERREUR API IA ===');
+    console.error('Message utilisateur:', messages[messages.length - 1]?.content?.substring(0, 100) + '...');
+    console.error('Configuration AI:', { model: DEFAULT_MODEL, url: AI_API_URL });
+    console.error('Erreur détaillée:', error);
+    console.error('Timestamp:', new Date().toISOString());
+    console.error('==================');
+    
     return generateMockResponse(messages[messages.length - 1].content);
   }
 }
@@ -94,6 +101,75 @@ function generateMockResponse(userMessage: string): string {
 // Fonction pour valider et nettoyer l'input utilisateur
 function sanitizeInput(input: string): string {
   return input.trim().substring(0, 2000); // Limiter à 2000 caractères
+}
+
+// Fonction pour détecter les salutations et messages courts
+function isGreetingOrShortMessage(message: string): boolean {
+  const cleanMessage = message.toLowerCase().trim();
+  
+  // Salutations courantes
+  const greetings = [
+    'bonjour', 'bonsoir', 'salut', 'hello', 'hi', 'hey', 'coucou',
+    'bonne journée', 'bonne soirée', 'bon matin', 'good morning',
+    'good evening', 'good afternoon', 'ça va', 'comment allez-vous',
+    'comment ça va', 'how are you', 'comment vous allez'
+  ];
+  
+  // Vérifier si c'est une salutation exacte
+  if (greetings.some(greeting => cleanMessage === greeting || cleanMessage === greeting + '!' || cleanMessage === greeting + '?')) {
+    return true;
+  }
+  
+  // Vérifier si le message est très court (moins de 10 caractères) et ne contient pas de question spécifique
+  if (cleanMessage.length <= 10 && !cleanMessage.includes('?') && !cleanMessage.includes('comment') && !cleanMessage.includes('quoi') && !cleanMessage.includes('pourquoi')) {
+    return true;
+  }
+  
+  return false;
+}
+
+// Fonction pour générer une réponse de salutation personnalisée selon le mentor
+function generateGreetingResponse(mentorId: string): string {
+  const greetingResponses: Record<string, string[]> = {
+    'copy-mentor': [
+      "Bonjour ! Je suis votre Copy Mentor, expert en rédaction persuasive. Comment puis-je vous aider à créer des textes qui convertissent aujourd'hui ?",
+      "Salut ! Prêt à booster vos conversions avec du copywriting efficace ? Que souhaitez-vous améliorer ?",
+      "Hello ! Votre Copy Mentor est là pour vous aider. Avez-vous un projet de rédaction en cours ?"
+    ],
+    'content-mentor': [
+      "Bonjour ! Je suis votre Content Mentor, spécialiste des réseaux sociaux. Sur quelle plateforme souhaitez-vous développer votre présence ?",
+      "Salut ! Prêt à créer du contenu viral ? Dites-moi quel est votre défi actuel en création de contenu.",
+      "Hello ! Votre expert en stratégie de contenu est là. Quelle est votre audience cible ?"
+    ],
+    'funnel-mentor': [
+      "Bonjour ! Je suis votre Funnel Mentor, expert en tunnels de vente. Quel est votre taux de conversion actuel ?",
+      "Salut ! Prêt à optimiser votre tunnel de vente ? Où se situent vos points de friction ?",
+      "Hello ! Votre spécialiste en optimisation de parcours client est là. Quel produit souhaitez-vous promouvoir ?"
+    ],
+    'business-mentor': [
+      "Bonjour ! Je suis votre Business Mentor, conseiller en stratégie d'entreprise. Quel défi business puis-je vous aider à résoudre ?",
+      "Salut ! Prêt à développer votre entreprise ? Parlez-moi de votre projet actuel.",
+      "Hello ! Votre expert en stratégie business est là. À quelle étape en êtes-vous dans votre développement ?"
+    ],
+    'video-mentor': [
+      "Bonjour ! Je suis votre Video Mentor, créateur de scripts engageants. Pour quelle plateforme créez-vous du contenu vidéo ?",
+      "Salut ! Prêt à créer des vidéos qui cartonnent ? Quel type de contenu souhaitez-vous développer ?",
+      "Hello ! Votre expert en création vidéo est là. Avez-vous une idée de script en tête ?"
+    ],
+    'email-mentor': [
+      "Bonjour ! Je suis votre Email Mentor, spécialiste en marketing par email. Quel est votre taux d'ouverture actuel ?",
+      "Salut ! Prêt à booster vos campagnes email ? Quelle séquence souhaitez-vous optimiser ?",
+      "Hello ! Votre expert en email marketing est là. Travaillez-vous sur une newsletter ou des séquences automatisées ?"
+    ]
+  };
+  
+  const responses = greetingResponses[mentorId] || [
+    "Bonjour ! Je suis votre mentor IA. Comment puis-je vous aider aujourd'hui ?",
+    "Salut ! Prêt à travailler ensemble ? Dites-moi ce que vous souhaitez accomplir.",
+    "Hello ! Votre mentor est là pour vous accompagner. Quel est votre objectif ?"
+  ];
+  
+  return responses[Math.floor(Math.random() * responses.length)];
 }
 
 // Fonction pour obtenir l'historique des conversations (à implémenter avec une base de données)
@@ -160,24 +236,33 @@ export async function POST(request: NextRequest, { params }: { params: { mentorI
     // Nettoyer l'input utilisateur
     const cleanMessage = sanitizeInput(message);
 
-    // Récupérer l'historique de conversation
-    const conversationHistory = await getConversationHistory(user.id, mentorId);
+    let aiResponse: string;
 
-    // Construire les messages pour l'IA
-    const messages: ChatMessage[] = [
-      {
-        role: 'system',
-        content: mentorPrompt
-      },
-      ...conversationHistory,
-      {
-        role: 'user',
-        content: cleanMessage
-      }
-    ];
+    // Vérifier si c'est une salutation ou un message court
+    if (isGreetingOrShortMessage(cleanMessage)) {
+      // Répondre directement avec une salutation personnalisée
+      aiResponse = generateGreetingResponse(mentorId);
+      console.log(`Salutation détectée pour ${mentorId}: "${cleanMessage}" -> Réponse directe`);
+    } else {
+      // Récupérer l'historique de conversation
+      const conversationHistory = await getConversationHistory(user.id, mentorId);
 
-    // Appeler l'IA
-    const aiResponse = await callAI(messages);
+      // Construire les messages pour l'IA
+      const messages: ChatMessage[] = [
+        {
+          role: 'system',
+          content: mentorPrompt
+        },
+        ...conversationHistory,
+        {
+          role: 'user',
+          content: cleanMessage
+        }
+      ];
+
+      // Appeler l'IA
+      aiResponse = await callAI(messages);
+    }
 
     // Sauvegarder la conversation
     await saveConversation(user.id, mentorId, cleanMessage, aiResponse);

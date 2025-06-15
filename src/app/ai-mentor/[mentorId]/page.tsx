@@ -3,13 +3,13 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Users, Clock, Star, Lightbulb, TrendingUp, MessageCircle, Zap, PenTool, Target, Megaphone, Video, Mail, BarChart3, Palette, MessageSquare } from 'lucide-react';
+import { ArrowLeft, Users, Clock, Star, Lightbulb, TrendingUp, MessageCircle, Zap, PenTool, Target, Megaphone, Video, Mail, BarChart3, Palette, MessageSquare, Brain } from 'lucide-react';
 import PageBentoLayout from '@/components/PageBentoLayout';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ChatInterface } from '@/components/ai-mentor/ChatInterface';
-import { AI_MENTORS } from '@/data/ai-mentors';
+import { AI_MENTORS, MENTOR_SUGGESTIONS } from '@/data/ai-mentors';
 import { AIMentor } from '@/types/ai-mentor';
 import { useSession } from 'next-auth/react';
 
@@ -27,7 +27,8 @@ const getIcon = (iconName: string) => {
     'Users': Users,
     'Palette': Palette,
     'MessageSquare': MessageSquare,
-    'Zap': Zap
+    'Zap': Zap,
+    'Brain': Brain
   };
   
   const IconComponent = iconMap[iconName] || MessageSquare;
@@ -42,7 +43,11 @@ interface MentorPageProps {
 
 export default function MentorPage({ params }: MentorPageProps) {
   const { data: session } = useSession();
-  const mentor = AI_MENTORS.find(m => m.id === params.mentorId);
+  const mentorData = AI_MENTORS.find(m => m.id === params.mentorId);
+  const mentor = mentorData ? {
+    ...mentorData,
+    suggestedPrompts: MENTOR_SUGGESTIONS[mentorData.id] || []
+  } : null;
   
   if (!mentor) {
     notFound();
@@ -95,25 +100,25 @@ export default function MentorPage({ params }: MentorPageProps) {
     {
       label: 'Conversations actives',
       value: '1,234',
-      icon: MessageCircle,
+      icon: <MessageCircle className="w-5 h-5" />,
       color: 'text-blue-400'
     },
     {
       label: 'Utilisateurs satisfaits',
       value: '98%',
-      icon: Star,
+      icon: <Star className="w-5 h-5" />,
       color: 'text-yellow-400'
     },
     {
       label: 'Temps de réponse moyen',
       value: mentor.estimatedResponseTime,
-      icon: Clock,
+      icon: <Clock className="w-5 h-5" />,
       color: 'text-green-400'
     },
     {
       label: 'Expertise',
       value: mentor.expertise.length.toString(),
-      icon: Lightbulb,
+      icon: <Lightbulb className="w-5 h-5" />,
       color: 'text-purple-400'
     }
   ];

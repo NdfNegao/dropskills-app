@@ -50,29 +50,29 @@ export function AiToolCard({ tool, className = '' }: AiToolCardProps) {
   return (
     <Link 
       href={tool.href}
-      className={`block p-6 rounded-xl border border-border bg-card hover:border-primary transition-colors ${className}`}
+      className={`block p-4 sm:p-6 rounded-xl border border-border bg-card hover:border-primary transition-colors w-full ${className}`}
     >
-      <div className="flex items-start gap-4">
+      <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4 w-full">
         {/* Icône avec dégradé */}
-        <div className={`w-12 h-12 rounded-lg ${getColorClass(tool.color)} flex items-center justify-center flex-shrink-0`}>
-          <IconComponent className="w-6 h-6 text-white" />
+        <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-lg ${getColorClass(tool.color)} flex items-center justify-center flex-shrink-0`}>
+          <IconComponent className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
         </div>
 
         {/* Contenu */}
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-lg font-semibold text-card-foreground">{tool.name}</h3>
+        <div className="flex-1 min-w-0 w-full">
+          <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2 mb-2 w-full">
+            <h3 className="text-base sm:text-lg font-semibold text-card-foreground break-words leading-tight">{tool.name}</h3>
             {tool.isPremium && (
-              <Crown size="sm" color="yellow" />
+              <Crown size="sm" color="yellow" className="flex-shrink-0 self-start" />
             )}
           </div>
-          <p className="text-muted-foreground text-sm mb-3">{tool.description}</p>
+          <p className="text-muted-foreground text-sm mb-3 leading-relaxed break-words">{tool.description}</p>
           
           {/* Badge étape */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted/20 text-xs">
-            <span className="text-primary font-medium">{tool.stepTitle}</span>
-            <span className="text-muted-foreground">•</span>
-            <span className="text-muted-foreground">{tool.stepDescription}</span>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 px-3 py-2 rounded-full bg-muted/20 text-xs w-full">
+            <span className="text-primary font-medium break-words">{tool.stepTitle}</span>
+            <span className="text-muted-foreground hidden sm:inline">•</span>
+            <span className="text-muted-foreground break-words">{tool.stepDescription}</span>
           </div>
         </div>
       </div>

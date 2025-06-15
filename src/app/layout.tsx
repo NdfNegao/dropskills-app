@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import SessionWrapper from "../components/SessionWrapper";
 import Script from "next/script";
@@ -10,10 +9,6 @@ import { Analytics } from '@vercel/analytics/react';
 import PerformanceTracker from '@/components/PerformanceTracker';
 import { LikedProductsProvider } from '@/context/LikedProductsContext';
 import ThemeClientProvider from "@/components/ThemeClientProvider";
-
-const inter = Inter({
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Dropskills - Formation & Outils IA pour Entrepreneurs",
@@ -43,7 +38,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={inter.className + " min-h-screen"}>
+      <body className="font-sans min-h-screen">
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe

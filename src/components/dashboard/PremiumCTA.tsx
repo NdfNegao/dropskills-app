@@ -6,10 +6,10 @@ import { Rocket, Crown, Star, Heart, CheckCircle, Sparkles, ArrowRight } from 'l
 
 export default function PremiumCTA() {
   const features = [
-    { icon: CheckCircle, text: "15+ Outils IA Premium" },
-    { icon: CheckCircle, text: "Générations illimitées" },
-    { icon: CheckCircle, text: "Support prioritaire 24/7" },
-    { icon: CheckCircle, text: "Nouvelles fonctionnalités en avant-première" }
+    { icon: <CheckCircle className="w-4 h-4" />, text: "15+ Outils IA Premium" },
+    { icon: <CheckCircle className="w-4 h-4" />, text: "Générations illimitées" },
+    { icon: <CheckCircle className="w-4 h-4" />, text: "Support prioritaire 24/7" },
+    { icon: <CheckCircle className="w-4 h-4" />, text: "Nouvelles fonctionnalités en avant-première" }
   ];
 
   const stats = [
@@ -223,4 +223,4 @@ export default function PremiumCTA() {
       </div>
     </motion.div>
   );
-} 
+}
