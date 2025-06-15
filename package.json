@@ -14,6 +14,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "setup-rag-db": "node scripts/setup-rag-database.js",
+    "init-rag": "node scripts/init-rag.js",
     "create-admin": "node scripts/create-admin.js",
     "check-google": "node scripts/check-google-config.js",
     "postinstall": "echo 'Dependencies installed'",
@@ -24,6 +26,8 @@
     "deploy:analytics": "node scripts/deploy-with-analytics.js"
   },
   "dependencies": {
+    "@langchain/community": "^0.3.46",
+    "@langchain/openai": "^0.5.13",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-slot": "^1.2.3",
@@ -42,11 +46,12 @@
     "dotenv": "^16.5.0",
     "framer-motion": "^12.16.0",
     "json2csv": "^6.0.0-alpha.2",
+    "langchain": "^0.3.28",
     "lucide-react": "^0.278.0",
     "next": "^14.2.29",
     "next-auth": "^4.24.7",
     "node-fetch": "^3.3.2",
-    "openai": "^4.103.0",
+    "openai": "^4.104.0",
     "pdfkit": "^0.17.1",
     "process": "^0.11.10",
     "react": "18.2.0",
@@ -71,6 +76,7 @@
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.17",
     "ts-jest": "^29.3.4",
+    "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }
 }

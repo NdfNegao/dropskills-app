@@ -1,7 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { MENTOR_PROMPTS } from '@/data/ai-mentors';
+import { AI_MENTORS, MENTOR_PROMPTS } from '@/data/ai-mentors';
+import { generateRAGResponse } from '@/lib/rag';
+
+// Configuration des services IA (priorité : Grok > DeepSeek > OpenAI)
+const AI_CONFIG = {
+  grok: {
+    apiKey: process.env.GROK_API_KEY,
+    baseURL: 'https://api.x.ai/v1',
+    model: 'grok-beta'
+  },
+  deepseek: {
+    apiKey: process.env.DEEPSEEK_API_KEY,
+    baseURL: 'https://api.deepseek.com/v1',
+    model: 'deepseek-chat'
+  },
+  openai: {
+    apiKey: process.env.OPENAI_API_KEY,
+    baseURL: 'https://api.openai.com/v1',
+    model: 'gpt-4o'
+  }
+};
 
 // Configuration pour les services IA
 const getAIConfig = () => {
@@ -244,24 +264,83 @@ export async function POST(request: NextRequest, { params }: { params: { mentorI
       aiResponse = generateGreetingResponse(mentorId);
       console.log(`Salutation détectée pour ${mentorId}: "${cleanMessage}" -> Réponse directe`);
     } else {
-      // Récupérer l'historique de conversation
-      const conversationHistory = await getConversationHistory(user.id, mentorId);
-
-      // Construire les messages pour l'IA
-      const messages: ChatMessage[] = [
-        {
-          role: 'system',
-          content: mentorPrompt
-        },
-        ...conversationHistory,
-        {
-          role: 'user',
-          content: cleanMessage
+      // Pour le Master Mentor, utiliser le RAG
+      if (mentorId === 'master-mentor') {
+        console.log(`Utilisation du RAG pour: "${cleanMessage}"`);
+        
+        try {
+          const ragResponse = await generateRAGResponse(cleanMessage, mentorPrompt);
+          
+          // Si on a trouvé des sources pertinentes, utiliser la réponse RAG
+          if (ragResponse.sources.length > 0 && ragResponse.confidence > 0.6) {
+            aiResponse = ragResponse.answer;
+            
+            // Ajouter les sources si elles sont pertinentes
+            if (ragResponse.sources.length > 0) {
+              const sourcesList = ragResponse.sources
+                .map(source => `📚 ${source.document_title}`)
+                .join('\n');
+              
+              aiResponse += `\n\n---\n**Sources consultées :**\n${sourcesList}`;
+            }
+            
+            console.log(`RAG utilisé avec ${ragResponse.sources.length} sources (confiance: ${ragResponse.confidence.toFixed(2)})`);
+          } else {
+            // Fallback vers l'IA classique si pas assez de contexte
+            console.log(`RAG insuffisant (confiance: ${ragResponse.confidence.toFixed(2)}), fallback vers IA classique`);
+            
+            const conversationHistory = await getConversationHistory(user.id, mentorId);
+            const messages: ChatMessage[] = [
+              {
+                role: 'system',
+                content: mentorPrompt
+              },
+              ...conversationHistory,
+              {
+                role: 'user',
+                content: cleanMessage
+              }
+            ];
+            
+            aiResponse = await callAI(messages);
+          }
+        } catch (ragError) {
+          console.error('Erreur RAG, fallback vers IA classique:', ragError);
+          
+          // Fallback vers l'IA classique en cas d'erreur RAG
+          const conversationHistory = await getConversationHistory(user.id, mentorId);
+          const messages: ChatMessage[] = [
+            {
+              role: 'system',
+              content: mentorPrompt
+            },
+            ...conversationHistory,
+            {
+              role: 'user',
+              content: cleanMessage
+            }
+          ];
+          
+          aiResponse = await callAI(messages);
         }
-      ];
+      } else {
+        // Pour les autres mentors, utiliser l'IA classique
+        const conversationHistory = await getConversationHistory(user.id, mentorId);
 
-      // Appeler l'IA
-      aiResponse = await callAI(messages);
+        const messages: ChatMessage[] = [
+          {
+            role: 'system',
+            content: mentorPrompt
+          },
+          ...conversationHistory,
+          {
+            role: 'user',
+            content: cleanMessage
+          }
+        ];
+
+        aiResponse = await callAI(messages);
+      }
     }
 
     // Sauvegarder la conversation
