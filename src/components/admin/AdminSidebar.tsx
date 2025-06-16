@@ -46,6 +46,7 @@ export default function AdminSidebar({
     { icon: <MessageSquare />, label: "Mentors IA", href: "/admin/ai-dashboard/mentors", tooltip: "Gestion des mentors IA" },
     { icon: <Brain />, label: "Config Providers", href: "/admin/ai-config", tooltip: "Configuration des providers IA" },
     { icon: <MessageSquare />, label: "Prompts", href: "/admin/prompts", tooltip: "Gestion des prompts" },
+    { icon: <Database />, label: "RAG", href: "/admin/rag", tooltip: "Gestion de la base de connaissances RAG" },
     { icon: <UserCheck />, label: "Affiliés", href: "/admin/affiliates", tooltip: "Gestion des affiliés" },
     { icon: <Gift />, label: "Parrainage", href: "/admin/sponsorship", tooltip: "Gestion du parrainage" },
     { icon: <MessageCircle />, label: "Demandes produits", href: "/admin/product-requests", tooltip: "Demandes de produits" },
