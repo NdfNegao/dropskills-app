@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import AdminSidebar from './AdminSidebar';
 import AdminPageLayout from './AdminPageLayout';
+import { useTheme } from '@/context/ThemeContext';
 
 interface StatCardData {
   title: string;
@@ -53,6 +54,14 @@ export default function AdminLayoutWithSidebar({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user } = useAuth();
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
+
+  // Forcer le thème clair pour les pages admin
+  useEffect(() => {
+    if (theme !== 'light') {
+      setTheme('light');
+    }
+  }, [theme, setTheme]);
 
   const handleSignOut = async () => {
     await signOut({ redirect: false });
