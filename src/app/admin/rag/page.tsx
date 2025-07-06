@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import AdminLayoutWithSidebar from '@/components/admin/AdminLayoutWithSidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,8 +10,9 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Trash2, Plus, Search, BookOpen, Database, Zap } from 'lucide-react';
+import { Trash2, Plus, Search, BookOpen, Database, Zap, Upload } from 'lucide-react';
 import { toast } from 'sonner';
+import PDFUpload from '@/components/rag/PDFUpload';
 
 interface KnowledgeDocument {
   id: string;
@@ -184,18 +186,36 @@ export default function RAGAdminPage() {
     return colors[type] || 'bg-gray-100 text-gray-800';
   };
 
+  const statsData = [
+    {
+      title: "Documents",
+      value: documents.length.toString(),
+      icon: <BookOpen className="w-5 h-5" />
+    },
+    {
+      title: "Base de données",
+      value: "Active",
+      icon: <Database className="w-5 h-5" />
+    },
+    {
+      title: "Recherche",
+      value: searchResults.length.toString(),
+      icon: <Search className="w-5 h-5" />
+    },
+    {
+      title: "Upload PDF",
+      value: "Disponible",
+      icon: <Upload className="w-5 h-5" />
+    }
+  ];
+
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Administration RAG</h1>
-          <p className="text-muted-foreground">Gestion de la base de connaissances du Master Mentor</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Database className="h-5 w-5" />
-          <span className="text-sm text-muted-foreground">{documents.length} documents</span>
-        </div>
-      </div>
+    <AdminLayoutWithSidebar
+      icon={<Database className="w-5 h-5" />}
+      title="Administration RAG"
+      subtitle="Gestion de la base de connaissances du Master Mentor"
+      stats={statsData}
+    >
 
       <Tabs defaultValue="documents" className="space-y-6">
         <TabsList>
@@ -206,6 +226,10 @@ export default function RAGAdminPage() {
           <TabsTrigger value="search" className="flex items-center gap-2">
             <Search className="h-4 w-4" />
             Recherche
+          </TabsTrigger>
+          <TabsTrigger value="upload" className="flex items-center gap-2">
+            <Upload className="h-4 w-4" />
+            Upload PDF
           </TabsTrigger>
           <TabsTrigger value="add" className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
@@ -332,6 +356,26 @@ export default function RAGAdminPage() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="upload" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Upload de documents PDF</CardTitle>
+              <CardDescription>
+                Uploadez des fichiers PDF qui seront automatiquement traités et ajoutés à la base de connaissances.
+                Les documents en anglais peuvent être traduits automatiquement en français.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <PDFUpload 
+                onUploadSuccess={(result) => {
+                  console.log('PDF uploadé:', result);
+                  loadDocuments(); // Recharger la liste des documents
+                }}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="add" className="space-y-4">
           <Card>
             <CardHeader>
@@ -410,6 +454,6 @@ export default function RAGAdminPage() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </AdminLayoutWithSidebar>
   );
 }
