@@ -18,20 +18,33 @@ const nextConfig = {
   webpack: (config, { isServer, webpack }) => {
     // Exclure les fichiers de test de pdf-parse pour éviter les erreurs de build
     if (isServer) {
-      config.externals = config.externals || [];
-      
-      // Ignorer les fichiers de test manquants de pdf-parse
-      config.externals.push({
-        './test/data/05-versions-space.pdf': 'false',
-        './test/data/': 'false'
-      });
-      
-      // Ajouter un plugin pour ignorer les modules manquants
+      // Configuration pour ignorer les fichiers de test de pdf-parse
       config.plugins.push(
         new webpack.IgnorePlugin({
-          resourceRegExp: /^\.\/test\/data\//,
+          resourceRegExp: /^\.\/(test\/data\/|__tests__\/)/,
+          contextRegExp: /pdf-parse/
         })
       );
+      
+      // Fallback pour les modules manquants
+      const originalResolve = config.resolve.fallback || {};
+      config.resolve.fallback = {
+        ...originalResolve,
+        fs: false,
+        path: false,
+        crypto: false
+      };
+      
+      // Externaliser spécifiquement les fichiers de test problématiques
+      config.externals = config.externals || [];
+      if (typeof config.externals === 'object' && !Array.isArray(config.externals)) {
+        config.externals = [config.externals];
+      }
+      config.externals.push({
+        './test/data/05-versions-space.pdf': 'commonjs ./test/data/05-versions-space.pdf',
+        './test/data/': 'commonjs ./test/data/',
+        'pdf-parse/test': 'commonjs pdf-parse/test'
+      });
     }
     
     return config;
