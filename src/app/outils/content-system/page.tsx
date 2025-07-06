@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
 import StepWizard from '@/components/StepWizard';
@@ -57,6 +57,26 @@ function ContentSystemContent() {
   const [contentPlan, setContentPlan] = useState<ContentPlan[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showWizard, setShowWizard] = useState(true);
+  const [lastFormData, setLastFormData] = useState<ContentSystemData | null>(null);
+
+  // Charger les données sauvegardées au démarrage
+  useEffect(() => {
+    const savedContentPlan = localStorage.getItem('dropskills_content_system_data');
+    const savedFormData = localStorage.getItem('dropskills_content_system_form_data');
+    
+    if (savedContentPlan && savedFormData) {
+      try {
+        setContentPlan(JSON.parse(savedContentPlan));
+        setFormData(JSON.parse(savedFormData));
+        setLastFormData(JSON.parse(savedFormData));
+        setShowWizard(false);
+      } catch (error) {
+        console.error('Erreur lors du chargement des données sauvegardées:', error);
+        localStorage.removeItem('dropskills_content_system_data');
+        localStorage.removeItem('dropskills_content_system_form_data');
+      }
+    }
+  }, []);
 
 
   // Options pour les objectifs
@@ -145,6 +165,12 @@ function ContentSystemContent() {
       // Délai pour laisser les logs se terminer
       setTimeout(() => {
         setContentPlan(data.contentPlan);
+        setLastFormData(formData);
+        
+        // Sauvegarder les données dans localStorage
+        localStorage.setItem('dropskills_content_system_data', JSON.stringify(data.contentPlan));
+        localStorage.setItem('dropskills_content_system_form_data', JSON.stringify(formData));
+        
         setIsLoading(false);
         setShowWizard(false);
       }, 1000);
@@ -171,7 +197,12 @@ function ContentSystemContent() {
       tone: 'professional'
     });
     setContentPlan([]);
+    setLastFormData(null);
     setShowWizard(true);
+    
+    // Nettoyer le localStorage
+    localStorage.removeItem('dropskills_content_system_data');
+    localStorage.removeItem('dropskills_content_system_form_data');
   };
 
   const handleGoalChange = (goal: string) => {
@@ -763,7 +794,7 @@ function ContentSystemContent() {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-7xl mx-auto px-6">
       {showWizard ? (
         <StepWizard
           steps={steps}

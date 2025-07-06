@@ -49,9 +49,11 @@ function ICPMakerContent() {
 
   const handleGenerate = async (wizardData: ICPFormData) => {
     if (!wizardData.secteur || !wizardData.produitService) {
+      console.error('Données manquantes:', { secteur: wizardData.secteur, produitService: wizardData.produitService });
       return;
     }
 
+    console.log('Données du wizard reçues:', wizardData);
     setIsLoading(true);
     setLastFormData(wizardData);
     setMetadata(null);
@@ -63,6 +65,7 @@ function ICPMakerContent() {
         ...wizardData,
         prompt: dynamicPrompt
       };
+      console.log('Payload envoyé à l\'API:', payload);
       const response = await fetch('/api/icp/generate-v2', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -176,9 +179,9 @@ function ICPMakerContent() {
             isLoading={isLoading}
           />
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="w-full max-w-7xl mx-auto px-6">
             {/* Bouton Nouveau */}
-            <div className="lg:col-span-2 flex justify-center mb-6">
+            <div className="flex justify-center mb-6">
               <button
                 onClick={handleNewGeneration}
                 className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all flex items-center gap-2"

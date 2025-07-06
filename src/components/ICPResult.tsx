@@ -160,6 +160,9 @@ function ListCard({ title, items, icon, color = "blue" }: { title: string; items
 }
 
 export default function ICPResult({ result, metadata, error }: ICPResultProps) {
+  // Log pour débogage
+  console.log('ICPResult - Données reçues:', { result, metadata, error });
+  
   // Afficher l'erreur si elle existe
   if (error) {
     return (
@@ -171,6 +174,23 @@ export default function ICPResult({ result, metadata, error }: ICPResultProps) {
           <div>
             <h3 className="text-red-400 font-semibold">Erreur lors de la génération</h3>
             <p className="text-red-300 text-sm mt-1">{error}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  // Afficher un message si aucun résultat
+  if (!result) {
+    return (
+      <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-6">
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 bg-yellow-500/20 rounded-full flex items-center justify-center">
+            <span className="text-yellow-400 text-lg">⚠️</span>
+          </div>
+          <div>
+            <h3 className="text-yellow-400 font-semibold">Aucun résultat</h3>
+            <p className="text-yellow-300 text-sm mt-1">Aucune donnée ICP à afficher</p>
           </div>
         </div>
       </div>

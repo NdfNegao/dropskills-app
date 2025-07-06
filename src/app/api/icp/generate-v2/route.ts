@@ -45,6 +45,17 @@ export async function POST(request: NextRequest) {
     const formData: ICPFormData = requestData;
     const customPrompt = requestData.prompt;
     
+    // Log pour débogage
+    console.log('Données reçues dans l\'API:', {
+      secteur: formData.secteur,
+      produitService: formData.produitService,
+      promesseUnique: formData.promesseUnique,
+      budgetCible: formData.budgetCible,
+      canaux: formData.canaux,
+      zoneGeographique: formData.zoneGeographique,
+      tonalite: formData.tonalite
+    });
+    
     // Validation des données
     if (!formData.secteur?.trim() || !formData.produitService?.trim()) {
       return NextResponse.json(
@@ -191,22 +202,43 @@ Crée un ICP complet au format JSON suivant :
       console.error('Erreur de parsing JSON:', parseError);
       console.error('Réponse brute:', responseContent);
       
-      // Fallback avec données structurées
+      // Fallback avec données structurées basées sur les données du formulaire
       analysis = {
         profilSociodemographique: {
           age: "35-50 ans",
           sexe: "60% hommes, 40% femmes",
-          localisation: formData.zoneGeographique,
-          situationPro: "Entrepreneurs, dirigeants PME",
-          niveauRevenus: "50k-150k€ annuels"
+          localisation: formData.zoneGeographique || "France",
+          situationPro: `Professionnels du secteur ${formData.secteur || "business"}`,
+          niveauRevenus: formData.budgetCible || "50k-150k€ annuels"
         },
         psychologieMotivations: {
-          besoins: ["Optimiser sa productivité", "Prendre de meilleures décisions", "Automatiser les processus"],
-          desirs: ["Être reconnu comme leader", "Avoir plus de temps libre", "Maximiser la croissance"],
-          peurs: ["Être dépassé par la concurrence", "Perdre du temps", "Investir sans ROI"],
-          objections: ["C'est trop compliqué", "Le prix est élevé", "Manque de temps"]
+          besoins: [
+            `Améliorer leur performance dans le secteur ${formData.secteur}`,
+            "Optimiser leur productivité",
+            "Prendre de meilleures décisions",
+            "Automatiser les processus"
+          ],
+          desirs: [
+            "Être reconnu comme leader",
+            "Avoir plus de temps libre",
+            "Maximiser la croissance",
+            `Réussir avec ${formData.produitService}`
+          ],
+          peurs: [
+            "Être dépassé par la concurrence",
+            "Perdre du temps",
+            "Investir sans ROI",
+            "Ne pas atteindre leurs objectifs"
+          ],
+          objections: [
+            "C'est trop compliqué",
+            `Le budget ${formData.budgetCible} est-il justifié ?`,
+            "Manque de temps",
+            "Besoin de preuves de résultats"
+          ]
         },
         problemePrincipaux: [
+          `Difficultés spécifiques au secteur ${formData.secteur}`,
           "Manque de temps pour analyser les données",
           "Difficulté à identifier le client idéal",
           "Processus marketing inefficaces"
@@ -218,13 +250,13 @@ Crée un ICP complet au format JSON suivant :
           evenements: ["Salons professionnels", "Webinaires business"]
         },
         messagingImpactant: {
-          expressions: ["ROI", "Efficacité", "Croissance"],
+          expressions: ["ROI", "Efficacité", "Croissance", formData.secteur],
           accroches: [
-            "Boostez votre croissance avec l'IA",
-            "Des résultats mesurables en 30 jours",
-            "L'outil qui transforme votre business"
+            `${formData.promesseUnique || "Transformez votre business"}`,
+            `Spécialement conçu pour le secteur ${formData.secteur}`,
+            "Des résultats mesurables en 30 jours"
           ],
-          styleDiscours: formData.tonalite
+          styleDiscours: formData.tonalite || "Professionnel et rassurant"
         },
         budgetPouvoirAchat: {
           budgetTypique: formData.budgetCible,
@@ -247,30 +279,53 @@ Crée un ICP complet au format JSON suivant :
               nom: "Consultants Indépendants",
               description: "Freelances cherchant à professionnaliser leurs approches",
               pourcentage: "10%"
-            }
-          ]
-        },
-        ficheActionable: {
-          resumeExecutif: `Votre client idéal est un entrepreneur du secteur ${formData.secteur} avec un budget ${formData.budgetCible}, actif sur ${formData.canaux.slice(0, 2).join(' et ')}.`,
-          prioritesMarketing: [
-            `Concentrer les efforts sur ${formData.canaux[0] || 'LinkedIn'}`,
-            "Créer du contenu éducatif",
-            "Développer des preuves sociales",
-            "Optimiser le tunnel de conversion"
-          ],
-          prochainEtapes: [
-            "Créer des personas détaillés",
-            "Adapter le messaging",
-            "Tester les canaux prioritaires",
-            "Mesurer et optimiser"
-          ],
-          metriquesACles: [
-            "Coût d'acquisition client (CAC)",
-            "Taux de conversion",
-            "Lifetime Value (LTV)",
-            "Retour sur investissement publicitaire (ROAS)"
-          ]
-        }
+          }
+        ]
+      },
+      ficheActionable: {
+        resumeExecutif: `Votre client idéal est un professionnel du secteur ${formData.secteur} avec un budget ${formData.budgetCible}, actif sur ${formData.canaux.slice(0, 2).join(' et ')}, intéressé par ${formData.produitService}.`,
+        prioritesMarketing: [
+          `Concentrer les efforts sur ${formData.canaux[0] || 'LinkedIn'}`,
+          "Créer du contenu éducatif",
+          "Développer des preuves sociales",
+          "Optimiser le tunnel de conversion"
+        ],
+        prochainEtapes: [
+          "Créer des personas détaillés",
+          "Adapter le messaging",
+          "Tester les canaux prioritaires",
+          "Mesurer et optimiser"
+        ],
+        metriquesACles: [
+          "Coût d'acquisition client (CAC)",
+          "Taux de conversion",
+          "Lifetime Value (LTV)",
+          "Retour sur investissement publicitaire (ROAS)"
+        ]
+      },
+      journauxIntimes: {
+        douleur: `Je suis un professionnel du secteur ${formData.secteur} et je rencontre des difficultés importantes. Malgré mes efforts, je n'arrive pas à obtenir les résultats que j'espère. Les solutions que j'ai essayées jusqu'à présent ne répondent pas vraiment à mes besoins spécifiques. Je me sens parfois dépassé par la complexité de mon domaine et j'ai besoin d'une approche plus adaptée à ma situation. Le budget que je peux allouer (${formData.budgetCible}) doit vraiment être rentabilisé, car je ne peux pas me permettre d'investir sans voir de retour concret.`,
+        victoire: `Grâce à ${formData.produitService}, j'ai enfin trouvé la solution qui correspond parfaitement à mes besoins dans le secteur ${formData.secteur}. ${formData.promesseUnique} s'est révélée être exactement ce dont j'avais besoin. Mon investissement de ${formData.budgetCible} a été largement rentabilisé et je vois des résultats concrets au quotidien. Je me sens maintenant confiant et en contrôle de ma situation. Cette solution a transformé ma façon de travailler et m'a permis d'atteindre mes objectifs plus rapidement que je ne l'aurais imaginé.`
+      },
+      resumeExpress: [
+        `Professionnel du secteur ${formData.secteur}`,
+        `Budget disponible: ${formData.budgetCible}`,
+        `Actif sur: ${formData.canaux.slice(0, 2).join(', ')}`,
+        `Recherche: ${formData.produitService}`,
+        `Style de communication: ${formData.tonalite}`
+      ],
+      accrochesCiblees: {
+        douleur: [
+          `Vous galérez dans le secteur ${formData.secteur} ?`,
+          `Marre de perdre du temps avec des solutions inadaptées ?`,
+          `Votre budget ${formData.budgetCible} mérite mieux que ça !`
+        ],
+        situationRevee: [
+          `Imaginez réussir enfin dans le ${formData.secteur}`,
+          `${formData.promesseUnique} - c'est possible !`,
+          `Transformez votre ${formData.budgetCible} en investissement gagnant`
+        ]
+      }
       };
     }
 

@@ -106,11 +106,11 @@ export default function AdminSidebar({
       {/* Logo & collapse button */}
       <div className="flex items-center justify-between px-4 py-5 border-b border-gray-700">
         <Link href="/admin" className={`text-2xl font-extrabold transition-all duration-300 hover:scale-105 ${collapsed ? "hidden" : "block"}`}>
-          <span className="text-blue-400">ADMIN</span> <span className="text-white">PANEL</span>
+          <span className="text-red-400">ADMIN</span> <span className="text-white">PANEL</span>
         </Link>
         <button 
           onClick={() => handleCollapse(!collapsed)} 
-          className="text-gray-400 hover:text-blue-400 transition-all duration-200 hover:scale-110 hover:rotate-180"
+          className="text-gray-400 hover:text-red-400 transition-all duration-200 hover:scale-110 hover:rotate-180"
           aria-label={collapsed ? "Étendre la sidebar" : "Réduire la sidebar"}
         >
           {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
@@ -242,11 +242,11 @@ function AdminSidebarLink({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <span className={`text-xl w-5 h-5 flex items-center justify-center relative transition-all duration-200 ${isHovered ? 'scale-110' : ''} group-hover:text-blue-400`}>
+      <span className={`text-xl w-5 h-5 flex items-center justify-center relative transition-all duration-200 ${isHovered ? 'scale-110' : ''} group-hover:text-red-400 text-gray-300`}>
         {icon}
       </span>
       {!collapsed && (
-        <span className="flex-1 transition-all duration-200 group-hover:text-blue-400">{label}</span>
+        <span className="flex-1 transition-all duration-200 group-hover:text-red-400 text-gray-300">{label}</span>
       )}
       {collapsed && (tooltip || label) && (
         <span className={`absolute left-20 bg-gray-800 text-white rounded px-2 py-1 shadow-lg text-xs transition-all duration-200 whitespace-nowrap border border-gray-600 z-50 ${isHovered ? 'opacity-100 translate-x-2' : 'opacity-0'}`}>{tooltip || label}</span>
@@ -255,13 +255,7 @@ function AdminSidebarLink({
   );
   
   if (href === "#") {
-    // Debug : afficher le contenu si c'est un objet
-    {typeof content === "object" && !React.isValidElement(content) ? (
-      <pre>{JSON.stringify(content, null, 2)}</pre>
-    ) : (
-      <div className="cursor-not-allowed">{content}</div>
-    )}
-    return null;
+    return <div className="cursor-not-allowed">{content}</div>;
   }
   
   return <Link href={href}>{content}</Link>;

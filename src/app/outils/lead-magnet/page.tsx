@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
 import { LeadMagnetWizard } from '@/components/LeadMagnetWizard';
@@ -12,8 +12,27 @@ function LeadMagnetGenerator() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [results, setResults] = useState<any>(null);
   const [showLogs, setShowLogs] = useState(false);
+  const [lastFormData, setLastFormData] = useState<LeadMagnetFormData | null>(null);
+
+  // Charger les données sauvegardées au démarrage
+  useEffect(() => {
+    const savedResult = localStorage.getItem('dropskills_lead_magnet_data');
+    const savedFormData = localStorage.getItem('dropskills_lead_magnet_form_data');
+    
+    if (savedResult && savedFormData) {
+      try {
+        setResults(JSON.parse(savedResult));
+        setLastFormData(JSON.parse(savedFormData));
+      } catch (error) {
+        console.error('Erreur lors du chargement des données sauvegardées:', error);
+        localStorage.removeItem('dropskills_lead_magnet_data');
+        localStorage.removeItem('dropskills_lead_magnet_form_data');
+      }
+    }
+  }, []);
 
   const handleGenerate = async (formData: LeadMagnetFormData) => {
+    setLastFormData(formData);
     setIsGenerating(true);
     setShowLogs(true);
     
@@ -32,6 +51,10 @@ function LeadMagnetGenerator() {
 
       const data = await response.json();
       setResults(data);
+      
+      // Sauvegarder les données dans le localStorage
+      localStorage.setItem('dropskills_lead_magnet_data', JSON.stringify(data));
+      localStorage.setItem('dropskills_lead_magnet_form_data', JSON.stringify(formData));
     } catch (error) {
       console.error('Erreur:', error);
     } finally {
@@ -39,17 +62,26 @@ function LeadMagnetGenerator() {
     }
   };
 
+  const handleRestart = () => {
+    setResults(null);
+    setLastFormData(null);
+    
+    // Nettoyer le localStorage
+    localStorage.removeItem('dropskills_lead_magnet_data');
+    localStorage.removeItem('dropskills_lead_magnet_form_data');
+  };
+
   if (results) {
     return (
       <LeadMagnetResult 
         results={results} 
-        onBack={() => setResults(null)}
+        onBack={handleRestart}
       />
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="max-w-7xl mx-auto px-6 space-y-8">
       {/* Wizard Component */}
        <LeadMagnetWizard 
          onComplete={handleGenerate}

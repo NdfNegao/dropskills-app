@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
 import { TunnelWizard } from '@/components/TunnelWizard';
@@ -12,10 +12,28 @@ function TunnelMakerContent() {
   const [tunnelResult, setTunnelResult] = useState<TunnelAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showWizard, setShowWizard] = useState(true);
-// Removed unused state variable currentFormData
+  const [lastFormData, setLastFormData] = useState<TunnelFormData | null>(null);
+
+  // Charger les données sauvegardées au démarrage
+  useEffect(() => {
+    const savedResult = localStorage.getItem('dropskills_tunnel_maker_data');
+    const savedFormData = localStorage.getItem('dropskills_tunnel_maker_form_data');
+    
+    if (savedResult && savedFormData) {
+      try {
+        setTunnelResult(JSON.parse(savedResult));
+        setLastFormData(JSON.parse(savedFormData));
+        setShowWizard(false);
+      } catch (error) {
+        console.error('Erreur lors du chargement des données sauvegardées:', error);
+        localStorage.removeItem('dropskills_tunnel_maker_data');
+        localStorage.removeItem('dropskills_tunnel_maker_form_data');
+      }
+    }
+  }, []);
 
   const handleTunnelComplete = async (formData: TunnelFormData) => {
-// Remove this line since currentFormData state and setter were removed
+    setLastFormData(formData);
     setIsLoading(true);
     setShowWizard(false);
     
@@ -190,13 +208,22 @@ function TunnelMakerContent() {
     };
     
     setTunnelResult(mockResult);
+    
+    // Sauvegarder les données dans le localStorage
+    localStorage.setItem('dropskills_tunnel_maker_data', JSON.stringify(mockResult));
+    localStorage.setItem('dropskills_tunnel_maker_form_data', JSON.stringify(formData));
+    
     setIsLoading(false);
   };
 
   const handleRestart = () => {
     setShowWizard(true);
     setTunnelResult(null);
-// Remove this line since currentFormData state was removed
+    setLastFormData(null);
+    
+    // Nettoyer le localStorage
+    localStorage.removeItem('dropskills_tunnel_maker_data');
+    localStorage.removeItem('dropskills_tunnel_maker_form_data');
   };
 
   const copyToClipboard = (text: string) => {
@@ -213,7 +240,7 @@ function TunnelMakerContent() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto px-6">
       {/* Header */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-3 mb-4">

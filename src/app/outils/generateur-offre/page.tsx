@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Target,
@@ -112,14 +112,13 @@ const TONE_OPTIONS = [
 
 // Composants des étapes
 interface StepProps {
-  data: OfferFormData;
-  onChange: (updates: Partial<OfferFormData>) => void;
+  formData: OfferFormData;
+  updateFormData: (field: string, value: any) => void;
   errors: Record<string, string>;
-  onGenerate?: () => void;
-  isGenerating?: boolean;
+  isActive: boolean;
 }
 
-function BusinessTypeStep({ data, onChange, errors }: StepProps) {
+function BusinessTypeStep({ formData, updateFormData, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -162,9 +161,9 @@ function BusinessTypeStep({ data, onChange, errors }: StepProps) {
           ].map((option) => (
             <button
               key={option.id}
-              onClick={() => onChange({ businessType: option.id })}
+              onClick={() => updateFormData('businessType', option.id)}
               className={`p-4 rounded-lg border-2 transition-all text-left group ${
-                data.businessType === option.id
+                formData.businessType === option.id
                   ? 'border-blue-500 bg-blue-500/10 text-blue-400'
                   : 'border-[#232323] bg-[#1a1a1a] text-gray-300 hover:border-gray-600'
               }`}
@@ -184,7 +183,7 @@ function BusinessTypeStep({ data, onChange, errors }: StepProps) {
   );
 }
 
-function AudienceStep({ data, onChange, errors }: StepProps) {
+function AudienceStep({ formData, updateFormData, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -214,8 +213,8 @@ function AudienceStep({ data, onChange, errors }: StepProps) {
         </div>
         
         <textarea
-          value={data.targetAudience || ''}
-          onChange={(e) => onChange({ targetAudience: e.target.value })}
+          value={formData.targetAudience || ''}
+          onChange={(e) => updateFormData('targetAudience', e.target.value)}
           placeholder="Ex: Entrepreneurs de 30-45 ans dans le e-commerce qui ont du mal à augmenter leur chiffre d'affaires et cherchent des stratégies marketing efficaces..."
           className="w-full h-32 p-4 bg-[#1a1a1a] border border-[#232323] rounded-lg text-white placeholder-gray-500 focus:border-green-500 focus:outline-none resize-none"
         />
@@ -240,7 +239,7 @@ function AudienceStep({ data, onChange, errors }: StepProps) {
   );
 }
 
-function ProductStep({ data, onChange, errors }: StepProps) {
+function ProductStep({ formData, updateFormData, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -269,8 +268,8 @@ function ProductStep({ data, onChange, errors }: StepProps) {
           </div>
         </div>
         <textarea
-          value={data.productService || ''}
-          onChange={(e) => onChange({ productService: e.target.value })}
+          value={formData.productService || ''}
+          onChange={(e) => updateFormData('productService', e.target.value)}
           placeholder="Ex: Une formation complète de 8 semaines qui enseigne les stratégies marketing digital les plus efficaces pour doubler son chiffre d'affaires..."
           className="w-full h-32 p-4 bg-[#1a1a1a] border border-[#232323] rounded-lg text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none resize-none"
         />
@@ -290,8 +289,8 @@ function ProductStep({ data, onChange, errors }: StepProps) {
           </div>
         </div>
         <textarea
-          value={data.uniqueValue || ''}
-          onChange={(e) => onChange({ uniqueValue: e.target.value })}
+          value={formData.uniqueValue || ''}
+          onChange={(e) => updateFormData('uniqueValue', e.target.value)}
           placeholder="Ex: La seule méthode qui garantit des résultats en 30 jours grâce à notre système breveté de..."
           className="w-full h-24 p-4 bg-[#1a1a1a] border border-[#232323] rounded-lg text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none resize-none"
         />
@@ -316,7 +315,7 @@ function ProductStep({ data, onChange, errors }: StepProps) {
   );
 }
 
-function PricingStep({ data, onChange, errors }: StepProps) {
+function PricingStep({ formData, updateFormData, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -349,16 +348,16 @@ function PricingStep({ data, onChange, errors }: StepProps) {
             {PRICE_RANGES.map((range) => (
               <button
                 key={range}
-                onClick={() => onChange({ priceRange: range })}
+                onClick={() => updateFormData('priceRange', range)}
                 className={`p-4 rounded-lg border-2 transition-all text-left ${
-                  data.priceRange === range
+                  formData.priceRange === range
                     ? 'border-yellow-500 bg-yellow-500/10 text-white'
                     : 'border-[#232323] bg-[#1a1a1a] text-gray-300 hover:border-yellow-500/50'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium">{range}</span>
-                  {data.priceRange === range && <CheckCircle className="w-5 h-5 text-yellow-400" />}
+                  {formData.priceRange === range && <CheckCircle className="w-5 h-5 text-yellow-400" />}
                 </div>
               </button>
             ))}
@@ -382,9 +381,9 @@ function PricingStep({ data, onChange, errors }: StepProps) {
             {URGENCY_LEVELS.map((urgency) => (
               <button
                 key={urgency}
-                onClick={() => onChange({ urgency })}
+                onClick={() => updateFormData('urgency', urgency)}
                 className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
-                  data.urgency === urgency
+                  formData.urgency === urgency
                     ? 'border-orange-500 bg-orange-500/10 text-white'
                     : 'border-[#232323] bg-[#1a1a1a] text-gray-300 hover:border-orange-500/50'
                 }`}
@@ -394,7 +393,7 @@ function PricingStep({ data, onChange, errors }: StepProps) {
                     <Clock className="w-5 h-5 text-orange-400" />
                     <span className="font-medium">{urgency}</span>
                   </div>
-                  {data.urgency === urgency && <CheckCircle className="w-5 h-5 text-orange-400" />}
+                  {formData.urgency === urgency && <CheckCircle className="w-5 h-5 text-orange-400" />}
                 </div>
               </button>
             ))}
@@ -408,7 +407,7 @@ function PricingStep({ data, onChange, errors }: StepProps) {
   );
 }
 
-function ToneStep({ data, onChange, errors }: StepProps) {
+function ToneStep({ formData, updateFormData, errors }: StepProps) {
   const toneOptions = [
     { 
       value: 'professionnel', 
@@ -487,9 +486,9 @@ function ToneStep({ data, onChange, errors }: StepProps) {
             <button
               key={tone.value}
               type="button"
-              onClick={() => onChange({ tone: tone.value })}
+              onClick={() => updateFormData('tone', tone.value)}
               className={`group p-4 rounded-lg border-2 text-left transition-all ${
-                data.tone === tone.value
+                formData.tone === tone.value
                   ? `border-${tone.color}-500 bg-${tone.color}-500/10`
                   : 'border-[#232323] bg-[#1a1a1a] hover:border-gray-600'
               }`}
@@ -521,8 +520,8 @@ function ToneStep({ data, onChange, errors }: StepProps) {
         
         <input
           type="text"
-          value={data.brandKeywords || ''}
-          onChange={(e) => onChange({ brandKeywords: e.target.value })}
+          value={formData.brandKeywords || ''}
+          onChange={(e) => updateFormData('brandKeywords', e.target.value)}
           placeholder="Ex: Innovation, Excellence, Proximité, Résultats, Authenticité"
           className="w-full p-4 bg-[#1a1a1a] border border-[#232323] rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
         />
@@ -548,12 +547,8 @@ function ToneStep({ data, onChange, errors }: StepProps) {
   );
 }
 
-interface SummaryStepProps {
-  data: OfferFormData;
-  onGenerate: () => void;
-}
-
-function SummaryStep({ data, onGenerate }: SummaryStepProps) {
+function SummaryStep({ formData, updateFormData, errors, isActive }: StepProps) {
+  // Note: onGenerate sera géré par le parent StepWizard
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -584,7 +579,7 @@ function SummaryStep({ data, onGenerate }: SummaryStepProps) {
               Type d'activité
             </h4>
             <p className="text-gray-300 bg-[#0a0a0a] p-3 rounded border-l-4 border-blue-500">
-              {data.businessType || 'Non renseigné'}
+              {formData.businessType || 'Non renseigné'}
             </p>
           </div>
           
@@ -594,7 +589,7 @@ function SummaryStep({ data, onGenerate }: SummaryStepProps) {
               Audience cible
             </h4>
             <p className="text-gray-300 text-sm bg-[#0a0a0a] p-3 rounded border-l-4 border-green-500">
-              {data.targetAudience ? data.targetAudience.substring(0, 120) + (data.targetAudience.length > 120 ? '...' : '') : 'Non renseigné'}
+              {formData.targetAudience ? formData.targetAudience.substring(0, 120) + (formData.targetAudience.length > 120 ? '...' : '') : 'Non renseigné'}
             </p>
           </div>
           
@@ -604,7 +599,7 @@ function SummaryStep({ data, onGenerate }: SummaryStepProps) {
               Produit/Service
             </h4>
             <p className="text-gray-300 text-sm bg-[#0a0a0a] p-3 rounded border-l-4 border-purple-500">
-              {data.productService ? data.productService.substring(0, 120) + (data.productService.length > 120 ? '...' : '') : 'Non renseigné'}
+              {formData.productService ? formData.productService.substring(0, 120) + (formData.productService.length > 120 ? '...' : '') : 'Non renseigné'}
             </p>
           </div>
           
@@ -614,7 +609,7 @@ function SummaryStep({ data, onGenerate }: SummaryStepProps) {
               Gamme de prix
             </h4>
             <p className="text-gray-300 bg-[#0a0a0a] p-3 rounded border-l-4 border-yellow-500">
-              {data.priceRange || 'Non renseigné'}
+              {formData.priceRange || 'Non renseigné'}
             </p>
           </div>
           
@@ -624,7 +619,7 @@ function SummaryStep({ data, onGenerate }: SummaryStepProps) {
               Ton de communication
             </h4>
             <p className="text-gray-300 bg-[#0a0a0a] p-3 rounded border-l-4 border-pink-500">
-              {data.tone || 'Non renseigné'}
+              {formData.tone || 'Non renseigné'}
             </p>
           </div>
           
@@ -634,7 +629,7 @@ function SummaryStep({ data, onGenerate }: SummaryStepProps) {
               Type d'urgence
             </h4>
             <p className="text-gray-300 bg-[#0a0a0a] p-3 rounded border-l-4 border-indigo-500">
-              {data.urgency || 'Non renseigné'}
+              {formData.urgency || 'Non renseigné'}
             </p>
           </div>
         </div>
@@ -650,13 +645,9 @@ function SummaryStep({ data, onGenerate }: SummaryStepProps) {
         </div>
       </div>
 
-      <button 
-        onClick={onGenerate}
-        className="w-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-      >
-        <Sparkles className="w-5 h-5" />
-        Générer mon offre irrésistible
-      </button>
+        <div className="text-center text-gray-600">
+          <p>Cliquez sur "Suivant" pour générer votre offre irrésistible</p>
+        </div>
     </div>
   );
 }
@@ -670,10 +661,10 @@ function OfferGeneratorWizard({ onComplete, isLoading }: { onComplete: (data: Of
       description: 'Type d\'activité',
       icon: Building,
       component: BusinessTypeStep,
-      validation: (data: OfferFormData) => ({
-        isValid: !!data.businessType,
+      validation: (formData: OfferFormData) => ({
+        isValid: !!formData.businessType,
         errors: {
-          businessType: !data.businessType ? 'Veuillez sélectionner votre type de business' : ''
+          businessType: !formData.businessType ? 'Veuillez sélectionner votre type de business' : ''
         }
       })
     },
@@ -683,11 +674,11 @@ function OfferGeneratorWizard({ onComplete, isLoading }: { onComplete: (data: Of
       description: 'Clients cibles',
       icon: Users,
       component: AudienceStep,
-      validation: (data: OfferFormData) => ({
-        isValid: !!data.targetAudience && data.targetAudience.length >= 20,
+      validation: (formData: OfferFormData) => ({
+        isValid: !!formData.targetAudience && formData.targetAudience.length >= 20,
         errors: {
-          targetAudience: !data.targetAudience ? 'Veuillez décrire votre audience cible' :
-                          data.targetAudience.length < 20 ? 'Description trop courte (minimum 20 caractères)' : ''
+          targetAudience: !formData.targetAudience ? 'Veuillez décrire votre audience cible' :
+            formData.targetAudience.length < 20 ? 'Description trop courte (minimum 20 caractères)' : ''
         }
       })
     },
@@ -697,13 +688,13 @@ function OfferGeneratorWizard({ onComplete, isLoading }: { onComplete: (data: Of
       description: 'Offre & valeur',
       icon: Package,
       component: ProductStep,
-      validation: (data: OfferFormData) => ({
-        isValid: !!data.productService && data.productService.length >= 20 && !!data.uniqueValue && data.uniqueValue.length >= 15,
+      validation: (formData: OfferFormData) => ({
+        isValid: !!formData.productService && formData.productService.length >= 20 && !!formData.uniqueValue && formData.uniqueValue.length >= 15,
         errors: {
-          productService: !data.productService ? 'Veuillez décrire votre produit/service' :
-                         data.productService.length < 20 ? 'Description trop courte (minimum 20 caractères)' : '',
-          uniqueValue: !data.uniqueValue ? 'Veuillez définir votre proposition de valeur unique' :
-                      data.uniqueValue.length < 15 ? 'Description trop courte (minimum 15 caractères)' : ''
+          productService: !formData.productService ? 'Veuillez décrire votre produit/service' :
+            formData.productService.length < 20 ? 'Description trop courte (minimum 20 caractères)' : '',
+          uniqueValue: !formData.uniqueValue ? 'Veuillez définir votre proposition de valeur unique' :
+            formData.uniqueValue.length < 15 ? 'Description trop courte (minimum 15 caractères)' : ''
         }
       })
     },
@@ -713,11 +704,11 @@ function OfferGeneratorWizard({ onComplete, isLoading }: { onComplete: (data: Of
       description: 'Tarifs & urgence',
       icon: DollarSign,
       component: PricingStep,
-      validation: (data: OfferFormData) => ({
-        isValid: !!data.priceRange && !!data.urgency,
+      validation: (formData: OfferFormData) => ({
+        isValid: !!formData.priceRange && !!formData.urgency,
         errors: {
-          priceRange: !data.priceRange ? 'Veuillez sélectionner une gamme de prix' : '',
-          urgency: !data.urgency ? 'Veuillez choisir un type d\'urgence' : ''
+          priceRange: !formData.priceRange ? 'Veuillez sélectionner une gamme de prix' : '',
+          urgency: !formData.urgency ? 'Veuillez choisir un type d\'urgence' : ''
         }
       })
     },
@@ -727,10 +718,10 @@ function OfferGeneratorWizard({ onComplete, isLoading }: { onComplete: (data: Of
       description: 'Style de communication',
       icon: MessageSquare,
       component: ToneStep,
-      validation: (data: OfferFormData) => ({
-        isValid: !!data.tone,
+      validation: (formData: OfferFormData) => ({
+        isValid: !!formData.tone,
         errors: {
-          tone: !data.tone ? 'Veuillez choisir une tonalité' : ''
+          tone: !formData.tone ? 'Veuillez choisir une tonalité' : ''
         }
       })
     },
@@ -740,7 +731,7 @@ function OfferGeneratorWizard({ onComplete, isLoading }: { onComplete: (data: Of
       description: 'Validation finale',
       icon: CheckCircle,
       component: SummaryStep,
-      validation: () => ({ isValid: true, errors: {} })
+      validation: (formData: OfferFormData) => ({ isValid: true, errors: {} })
     }
   ];
 
@@ -879,6 +870,25 @@ function OfferGeneratorContent() {
   const [results, setResults] = useState<GeneratedOffer | null>(null);
   const [showLogs, setShowLogs] = useState(false);
   const [formData, setFormData] = useState<OfferFormData | null>(null);
+  const [lastFormData, setLastFormData] = useState<OfferFormData | null>(null);
+
+  // Charger les données sauvegardées au démarrage
+  useEffect(() => {
+    const savedResults = localStorage.getItem('dropskills_offer_generator_data');
+    const savedFormData = localStorage.getItem('dropskills_offer_generator_form_data');
+    
+    if (savedResults && savedFormData) {
+      try {
+        setResults(JSON.parse(savedResults));
+        setFormData(JSON.parse(savedFormData));
+        setLastFormData(JSON.parse(savedFormData));
+      } catch (error) {
+        console.error('Erreur lors du chargement des données sauvegardées:', error);
+        localStorage.removeItem('dropskills_offer_generator_data');
+        localStorage.removeItem('dropskills_offer_generator_form_data');
+      }
+    }
+  }, []);
 
   const handleGenerate = async (data: OfferFormData) => {
     setFormData(data);
@@ -917,6 +927,11 @@ function OfferGeneratorContent() {
       };
       
       setResults(mockResult);
+      setLastFormData(data);
+      
+      // Sauvegarder les données dans localStorage
+      localStorage.setItem('dropskills_offer_generator_data', JSON.stringify(mockResult));
+      localStorage.setItem('dropskills_offer_generator_form_data', JSON.stringify(data));
     } catch (error) {
       console.error('Erreur lors de la génération:', error);
     } finally {
@@ -944,6 +959,11 @@ function OfferGeneratorContent() {
     setResults(null);
     setShowLogs(false);
     setFormData(null);
+    setLastFormData(null);
+    
+    // Nettoyer le localStorage
+    localStorage.removeItem('dropskills_offer_generator_data');
+    localStorage.removeItem('dropskills_offer_generator_form_data');
   };
 
   return (

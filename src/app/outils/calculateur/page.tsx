@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ToolLayout from '@/components/ToolLayout';
 import PremiumGuard from '@/components/auth/PremiumGuard';
 import StepWizard, { WizardStep } from '@/components/StepWizard';
@@ -34,17 +34,15 @@ interface CalculationResult {
   profit: number;
   growth: number;
   formData: CalculationFormData;
-}
-
 interface StepProps {
-  data: CalculationFormData;
-  onChange: (updates: Partial<CalculationFormData>) => void;
+  formData: CalculationFormData;
+  updateFormData: (field: string, value: any) => void;
   errors: Record<string, string>;
-  isActive?: boolean;
+  isActive: boolean;
 }
 
 // Composant pour l'étape des informations produit
-function ProductInfoStep({ data, onChange, errors }: StepProps) {
+function ProductInfoStep({ formData, updateFormData, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-6">
@@ -67,8 +65,8 @@ function ProductInfoStep({ data, onChange, errors }: StepProps) {
         <input
           type="number"
           step="0.01"
-          value={data.productPrice || ''}
-          onChange={(e) => onChange({ ...data, productPrice: e.target.value })}
+          value={formData.productPrice || ''}
+          onChange={(e) => updateFormData('productPrice', e.target.value)}
           className={`w-full bg-[#1a1a1a] border ${errors.productPrice ? 'border-red-500' : 'border-[#333]'} rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none`}
           placeholder="Ex: 29.99"
         />
@@ -84,8 +82,8 @@ function ProductInfoStep({ data, onChange, errors }: StepProps) {
         </label>
         <input
           type="number"
-          value={data.monthlySales || ''}
-          onChange={(e) => onChange({ ...data, monthlySales: e.target.value })}
+          value={formData.monthlySales || ''}
+          onChange={(e) => updateFormData('monthlySales', e.target.value)}
           className={`w-full bg-[#1a1a1a] border ${errors.monthlySales ? 'border-red-500' : 'border-[#333]'} rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none`}
           placeholder="Ex: 100"
         />
@@ -98,7 +96,7 @@ function ProductInfoStep({ data, onChange, errors }: StepProps) {
 }
 
 // Composant pour l'étape des coûts
-function CostsStep({ data, onChange, errors }: StepProps) {
+function CostsStep({ formData, updateFormData, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-6">
@@ -121,8 +119,8 @@ function CostsStep({ data, onChange, errors }: StepProps) {
         <input
           type="number"
           step="0.01"
-          value={data.fixedCosts || ''}
-          onChange={(e) => onChange({ ...data, fixedCosts: e.target.value })}
+          value={formData.fixedCosts || ''}
+          onChange={(e) => updateFormData('fixedCosts', e.target.value)}
           className={`w-full bg-[#1a1a1a] border ${errors.fixedCosts ? 'border-red-500' : 'border-[#333]'} rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none`}
           placeholder="Ex: 500"
         />
@@ -139,8 +137,8 @@ function CostsStep({ data, onChange, errors }: StepProps) {
         <input
           type="number"
           step="0.01"
-          value={data.variableCosts || ''}
-          onChange={(e) => onChange({ ...data, variableCosts: e.target.value })}
+          value={formData.variableCosts || ''}
+          onChange={(e) => updateFormData('variableCosts', e.target.value)}
           className={`w-full bg-[#1a1a1a] border ${errors.variableCosts ? 'border-red-500' : 'border-[#333]'} rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none`}
           placeholder="Ex: 2.50"
         />
@@ -153,7 +151,7 @@ function CostsStep({ data, onChange, errors }: StepProps) {
 }
 
 // Composant pour l'étape de croissance
-function GrowthStep({ data, onChange, errors }: StepProps) {
+function GrowthStep({ formData, updateFormData, errors }: StepProps) {
   return (
     <div className="space-y-6">
       <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-6">
@@ -176,8 +174,8 @@ function GrowthStep({ data, onChange, errors }: StepProps) {
         <input
           type="number"
           step="0.1"
-          value={data.growthRate || ''}
-          onChange={(e) => onChange({ ...data, growthRate: e.target.value })}
+          value={formData.growthRate || ''}
+          onChange={(e) => updateFormData('growthRate', e.target.value)}
           className={`w-full bg-[#1a1a1a] border ${errors.growthRate ? 'border-red-500' : 'border-[#333]'} rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-[#00D2FF] focus:outline-none`}
           placeholder="Ex: 5 (pour 5% de croissance mensuelle)"
         />
@@ -206,6 +204,31 @@ function CalculateurContent() {
   const [results, setResults] = useState<CalculationResult | null>(null);
   const [showWizard, setShowWizard] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [lastFormData, setLastFormData] = useState<CalculationFormData | null>(null);
+
+  // Charger les données sauvegardées au montage du composant
+  useEffect(() => {
+    try {
+      const savedResults = localStorage.getItem('dropskills_calculateur_data');
+      const savedFormData = localStorage.getItem('dropskills_calculateur_form_data');
+      
+      if (savedResults) {
+        const parsedResults = JSON.parse(savedResults);
+        setResults(parsedResults);
+        setShowWizard(false);
+      }
+      
+      if (savedFormData) {
+        const parsedFormData = JSON.parse(savedFormData);
+        setLastFormData(parsedFormData);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des données sauvegardées:', error);
+      // En cas d'erreur, nettoyer le localStorage
+      localStorage.removeItem('dropskills_calculateur_data');
+      localStorage.removeItem('dropskills_calculateur_form_data');
+    }
+  }, []);
 
   // Configuration du wizard
   const steps: WizardStep[] = [
@@ -308,14 +331,21 @@ function CalculateurContent() {
     const totalCosts = fixed + variable * sales;
     const profit = monthlyRevenue - totalCosts;
 
-    setResults({
+    const calculationResult = {
       monthly: monthlyRevenue,
       yearly: yearlyRevenue,
       costs: totalCosts,
       profit: profit,
       growth: growth,
       formData: formData
-    });
+    };
+
+    setResults(calculationResult);
+    setLastFormData(formData);
+    
+    // Sauvegarder dans le localStorage
+    localStorage.setItem('dropskills_calculateur_data', JSON.stringify(calculationResult));
+    localStorage.setItem('dropskills_calculateur_form_data', JSON.stringify(formData));
     
     setIsLoading(false);
   };
@@ -323,6 +353,11 @@ function CalculateurContent() {
   const handleNewCalculation = () => {
     setResults(null);
     setShowWizard(true);
+    setLastFormData(null);
+    
+    // Nettoyer le localStorage
+    localStorage.removeItem('dropskills_calculateur_data');
+    localStorage.removeItem('dropskills_calculateur_form_data');
   };
 
   const formatCurrency = (amount: number) => {
@@ -333,7 +368,7 @@ function CalculateurContent() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto px-6">
       {showWizard ? (
         <div className="max-w-4xl mx-auto">
           <StepWizard

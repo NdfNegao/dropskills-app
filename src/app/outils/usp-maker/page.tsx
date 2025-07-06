@@ -6,7 +6,7 @@ import PremiumGuard from '@/components/auth/PremiumGuard';
 import { USPWizardV2 } from '@/components/USPWizardV2';
 import { USPResult } from '@/components/USPResult';
 import { USPFormData, USPAnalysis } from '@/types/usp';
-import { Target, TrendingUp, Users, DollarSign, Zap, Lightbulb } from 'lucide-react';
+import { Target, TrendingUp, Users, DollarSign, Zap, Lightbulb, Copy, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 function USPMakerContent() {
@@ -16,7 +16,7 @@ function USPMakerContent() {
   const [currentFormData, setCurrentFormData] = useState<USPFormData | null>(null);
   const [icpData, setIcpData] = useState<any>(null);
 
-  // Récupération des données ICP si disponibles
+  // Récupération des données ICP et USP sauvegardées si disponibles
   useEffect(() => {
     const savedICP = localStorage.getItem('dropskills_icp_data');
     if (savedICP) {
@@ -25,6 +25,22 @@ function USPMakerContent() {
         setIcpData(parsedICP);
       } catch (error) {
         console.error('Erreur lors du parsing des données ICP:', error);
+      }
+    }
+
+    // Charger les données USP sauvegardées
+    const savedUSP = localStorage.getItem('dropskills_usp_data');
+    const savedFormData = localStorage.getItem('dropskills_usp_form_data');
+    
+    if (savedUSP && savedFormData) {
+      try {
+        setUSPResult(JSON.parse(savedUSP));
+        setCurrentFormData(JSON.parse(savedFormData));
+        setShowWizard(false);
+      } catch (error) {
+        console.error('Erreur lors du chargement des données USP sauvegardées:', error);
+        localStorage.removeItem('dropskills_usp_data');
+        localStorage.removeItem('dropskills_usp_form_data');
       }
     }
   }, []);
@@ -54,8 +70,9 @@ function USPMakerContent() {
       const data = await response.json();
       setUSPResult(data.analysis);
       
-      // Sauvegarder l'USP générée
+      // Sauvegarder l'USP générée et les données du formulaire
       localStorage.setItem('dropskills_usp_data', JSON.stringify(data.analysis));
+      localStorage.setItem('dropskills_usp_form_data', JSON.stringify(formData));
       
     } catch (error) {
       console.error('Erreur:', error);
@@ -68,6 +85,11 @@ function USPMakerContent() {
   const handleBackToWizard = () => {
     setShowWizard(true);
     setUSPResult(null);
+    setCurrentFormData(null);
+    
+    // Nettoyer le localStorage
+    localStorage.removeItem('dropskills_usp_data');
+    localStorage.removeItem('dropskills_usp_form_data');
   };
 
   const handleRegenerate = () => {
@@ -101,7 +123,7 @@ function USPMakerContent() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-7xl mx-auto px-6">
       {icpData && (
         <div className="mb-6 inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm">
           <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
