@@ -15,7 +15,7 @@ const nextConfig = {
     // Ignorer les erreurs ESLint pendant le build en production
     ignoreDuringBuilds: process.env.NODE_ENV === 'production',
   },
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, webpack }) => {
     // Exclure les fichiers de test de pdf-parse pour éviter les erreurs de build
     if (isServer) {
       config.externals = config.externals || [];
@@ -28,7 +28,7 @@ const nextConfig = {
       
       // Ajouter un plugin pour ignorer les modules manquants
       config.plugins.push(
-        new config.webpack.IgnorePlugin({
+        new webpack.IgnorePlugin({
           resourceRegExp: /^\.\/test\/data\//,
         })
       );
