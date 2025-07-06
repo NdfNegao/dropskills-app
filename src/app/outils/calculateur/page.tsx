@@ -34,6 +34,8 @@ interface CalculationResult {
   profit: number;
   growth: number;
   formData: CalculationFormData;
+}
+
 interface StepProps {
   formData: CalculationFormData;
   updateFormData: (field: string, value: any) => void;
