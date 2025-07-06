@@ -18,33 +18,49 @@ const nextConfig = {
   webpack: (config, { isServer, webpack }) => {
     // Exclure les fichiers de test de pdf-parse pour éviter les erreurs de build
     if (isServer) {
-      // Configuration pour ignorer les fichiers de test de pdf-parse
+      // Remplacer les fichiers de test manquants par des modules vides
+      config.plugins.push(
+        new webpack.NormalModuleReplacementPlugin(
+          /\.\/(test\/data\/.*\.pdf)$/,
+          require.resolve('path')
+        )
+      );
+      
+      // Plugin pour ignorer complètement les modules de test
       config.plugins.push(
         new webpack.IgnorePlugin({
-          resourceRegExp: /^\.\/(test\/data\/|__tests__\/)/,
+          resourceRegExp: /^\.\/test\/data\//,
           contextRegExp: /pdf-parse/
         })
       );
       
-      // Fallback pour les modules manquants
-      const originalResolve = config.resolve.fallback || {};
+      // Configuration des externals pour forcer l'exclusion
+      config.externals = config.externals || [];
+      if (typeof config.externals === 'function') {
+        const originalExternals = config.externals;
+        config.externals = (context, request, callback) => {
+          if (request.includes('./test/data/') || request.includes('pdf-parse/test')) {
+            return callback(null, 'commonjs ' + request);
+          }
+          return originalExternals(context, request, callback);
+        };
+      } else {
+        if (typeof config.externals === 'object' && !Array.isArray(config.externals)) {
+          config.externals = [config.externals];
+        }
+        config.externals.push({
+          './test/data/05-versions-space.pdf': 'commonjs2 ./test/data/05-versions-space.pdf',
+          './test/data/': 'commonjs2 ./test/data/'
+        });
+      }
+      
+      // Fallback pour les modules Node.js
       config.resolve.fallback = {
-        ...originalResolve,
+        ...config.resolve.fallback,
         fs: false,
         path: false,
         crypto: false
       };
-      
-      // Externaliser spécifiquement les fichiers de test problématiques
-      config.externals = config.externals || [];
-      if (typeof config.externals === 'object' && !Array.isArray(config.externals)) {
-        config.externals = [config.externals];
-      }
-      config.externals.push({
-        './test/data/05-versions-space.pdf': 'commonjs ./test/data/05-versions-space.pdf',
-        './test/data/': 'commonjs ./test/data/',
-        'pdf-parse/test': 'commonjs pdf-parse/test'
-      });
     }
     
     return config;
