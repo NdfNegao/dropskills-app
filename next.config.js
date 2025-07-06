@@ -17,16 +17,21 @@ const nextConfig = {
   },
   webpack: (config, { isServer }) => {
     // Exclure les fichiers de test de pdf-parse pour éviter les erreurs de build
-    config.resolve.alias = {
-      ...config.resolve.alias,
-    };
-    
-    // Ignorer les fichiers de test manquants
-    config.externals = config.externals || [];
     if (isServer) {
+      config.externals = config.externals || [];
+      
+      // Ignorer les fichiers de test manquants de pdf-parse
       config.externals.push({
-        './test/data/05-versions-space.pdf': 'commonjs ./test/data/05-versions-space.pdf'
+        './test/data/05-versions-space.pdf': 'false',
+        './test/data/': 'false'
       });
+      
+      // Ajouter un plugin pour ignorer les modules manquants
+      config.plugins.push(
+        new config.webpack.IgnorePlugin({
+          resourceRegExp: /^\.\/test\/data\//,
+        })
+      );
     }
     
     return config;
