@@ -1,7 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { addDocument } from '@/lib/rag';
-import pdf from 'pdf-parse';
 import { Translate } from '@google-cloud/translate/build/src/v2';
+
+// Import dynamique de pdf-parse pour éviter les problèmes de build
+let pdfParse: any = null;
+const getPdfParse = async () => {
+  if (!pdfParse) {
+    try {
+      pdfParse = (await import('pdf-parse')).default;
+    } catch (error) {
+      console.error('Erreur chargement pdf-parse:', error);
+      throw new Error('Module pdf-parse non disponible');
+    }
+  }
+  return pdfParse;
+};
 
 // Configuration pour l'upload de fichiers
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -136,6 +149,7 @@ export async function POST(request: NextRequest) {
     // Extraire le texte du PDF
     let extractedText: string;
     try {
+      const pdf = await getPdfParse();
       const pdfData = await pdf(buffer);
       extractedText = cleanExtractedText(pdfData.text);
       
