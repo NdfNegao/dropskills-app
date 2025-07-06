@@ -16,17 +16,44 @@ const nextConfig = {
     ignoreDuringBuilds: process.env.NODE_ENV === 'production',
   },
   webpack: (config, { isServer, webpack }) => {
-    // Exclure les fichiers de test de pdf-parse pour éviter les erreurs de build
     if (isServer) {
-      // Remplacer les fichiers de test manquants par des modules vides
+      // Solution radicale: remplacer pdf-parse par une version qui évite les fichiers de test
       config.plugins.push(
-        new webpack.NormalModuleReplacementPlugin(
-          /\.\/(test\/data\/.*\.pdf)$/,
-          require.resolve('path')
-        )
+        new webpack.DefinePlugin({
+          'process.env.SKIP_PDF_PARSE_TESTS': JSON.stringify('true')
+        })
       );
       
-      // Plugin pour ignorer complètement les modules de test
+      // Intercepter tous les require/import vers les fichiers de test
+      const originalResolve = config.resolve.plugins || [];
+      config.resolve.plugins = [
+        ...originalResolve,
+        {
+          apply: (resolver) => {
+            resolver.hooks.resolve.tapAsync('IgnorePdfParseTests', (request, resolveContext, callback) => {
+              if (request.request && request.request.includes('./test/data/')) {
+                // Retourner un module vide au lieu du fichier manquant
+                return callback(null, {
+                  ...request,
+                  request: require.resolve('path')
+                });
+              }
+              callback();
+            });
+          }
+        }
+      ];
+      
+      // Configuration des externals pour exclure les fichiers de test
+      config.externals = config.externals || [];
+      if (Array.isArray(config.externals)) {
+        config.externals.push({
+          './test/data/05-versions-space.pdf': 'commonjs2 ./test/data/05-versions-space.pdf',
+          './test/data/': 'commonjs2 ./test/data/'
+        });
+      }
+      
+      // Plugin pour ignorer les modules de test
       config.plugins.push(
         new webpack.IgnorePlugin({
           resourceRegExp: /^\.\/test\/data\//,
@@ -34,27 +61,7 @@ const nextConfig = {
         })
       );
       
-      // Configuration des externals pour forcer l'exclusion
-      config.externals = config.externals || [];
-      if (typeof config.externals === 'function') {
-        const originalExternals = config.externals;
-        config.externals = (context, request, callback) => {
-          if (request.includes('./test/data/') || request.includes('pdf-parse/test')) {
-            return callback(null, 'commonjs ' + request);
-          }
-          return originalExternals(context, request, callback);
-        };
-      } else {
-        if (typeof config.externals === 'object' && !Array.isArray(config.externals)) {
-          config.externals = [config.externals];
-        }
-        config.externals.push({
-          './test/data/05-versions-space.pdf': 'commonjs2 ./test/data/05-versions-space.pdf',
-          './test/data/': 'commonjs2 ./test/data/'
-        });
-      }
-      
-      // Fallback pour les modules Node.js
+      // Fallbacks Node.js
       config.resolve.fallback = {
         ...config.resolve.fallback,
         fs: false,
