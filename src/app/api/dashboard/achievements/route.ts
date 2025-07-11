@@ -151,7 +151,7 @@ export async function GET() {
 }
 
 // Fonctions utilitaires
-function getFirstToolDate(toolLogs: any[]): string | undefined {
+function getFirstToolDate(toolLogs: any[] | null): string | undefined {
   if (!toolLogs?.length) return undefined;
   const firstLog = toolLogs
     .filter(log => log.status === 'success')
@@ -164,7 +164,7 @@ function getPremiumDate(userEmail: string): string {
   return '2024-01-20';
 }
 
-function getMultiToolDate(toolLogs: any[], targetCount: number): string | undefined {
+function getMultiToolDate(toolLogs: any[] | null, targetCount: number): string | undefined {
   if (!toolLogs?.length) return undefined;
   const successfulLogs = toolLogs.filter(log => log.status === 'success');
   const toolDates: Record<string, string> = {};
@@ -179,7 +179,7 @@ function getMultiToolDate(toolLogs: any[], targetCount: number): string | undefi
   return uniqueToolDates[targetCount - 1]?.split('T')[0];
 }
 
-function getGenerationMasterDate(toolLogs: any[], targetCount: number): string | undefined {
+function getGenerationMasterDate(toolLogs: any[] | null, targetCount: number): string | undefined {
   if (!toolLogs?.length) return undefined;
   const successfulLogs = toolLogs
     .filter(log => log.status === 'success')
@@ -188,10 +188,10 @@ function getGenerationMasterDate(toolLogs: any[], targetCount: number): string |
   return successfulLogs[targetCount - 1]?.created_at?.split('T')[0];
 }
 
-function getOpportunityDate(opportunities: any[], targetCount: number): string | undefined {
+function getOpportunityDate(opportunities: any[] | null, targetCount: number): string | undefined {
   if (!opportunities?.length || opportunities.length < targetCount) return undefined;
   const sortedOpps = opportunities.sort((a, b) => 
-    new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    new Date(a.created_at || '').getTime() - new Date(b.created_at || '').getTime()
   );
   return sortedOpps[targetCount - 1]?.created_at?.split('T')[0];
 }
@@ -207,7 +207,7 @@ function calculateStreak(logs: any[]): number {
 
   const uniqueDays = [...new Set(
     successfulLogs.map(log => new Date(log.created_at).toISOString().split('T')[0])
-  )].sort((a, b) => b.localeCompare(a));
+  )].sort((a, b) => (b || '').localeCompare(a || ''));
 
   if (!uniqueDays.length) return 0;
 
@@ -233,7 +233,7 @@ function calculateStreak(logs: any[]): number {
   return streak;
 }
 
-function getStreakDate(toolLogs: any[], targetStreak: number): string | undefined {
+function getStreakDate(toolLogs: any[] | null, targetStreak: number): string | undefined {
   // Logique simplifiée - retourne la date il y a 7 jours
   return new Date(Date.now() - (targetStreak - 1) * 86400000).toISOString().split('T')[0];
 }

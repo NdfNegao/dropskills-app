@@ -162,16 +162,18 @@ function generateOpportunities(keywords: string[], isPremium: boolean) {
     const template = opportunityTemplates[i % opportunityTemplates.length];
     const keyword = keywords[i % keywords.length];
     
+    if (!template) continue;
+    
     opportunities.push({
       id: `opp_${Date.now()}_${i}`,
-      title: template.title.replace(/\{keyword\}/g, keyword),
-      description: template.description.replace(/\{keyword\}/g, keyword),
-      source: template.source,
-      relevance_score: template.relevance_score,
-      priority_level: template.priority_level,
-      status: template.status,
-      tags: [keyword, template.sector.toLowerCase()],
-      sector: template.sector
+      title: template.title?.replace(/\{keyword\}/g, keyword) || '',
+      description: template.description?.replace(/\{keyword\}/g, keyword) || '',
+      source: template.source || '',
+      relevance_score: template.relevance_score || 0,
+      priority_level: template.priority_level || 'low',
+      status: template.status || 'new',
+      tags: [keyword, template.sector?.toLowerCase() || ''],
+      sector: template.sector || ''
     });
   }
 

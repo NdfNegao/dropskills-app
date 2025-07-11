@@ -112,7 +112,7 @@ function calculateStreak(logs: any[]): number {
   // Obtenir les jours uniques d'utilisation
   const uniqueDays = [...new Set(
     sortedLogs.map(log => new Date(log.created_at).toISOString().split('T')[0])
-  )].sort((a, b) => b.localeCompare(a));
+  )].sort((a, b) => (b || '').localeCompare(a || ''));
 
   if (!uniqueDays.length) return 0;
 
@@ -127,8 +127,8 @@ function calculateStreak(logs: any[]): number {
 
   // Calculer la streak
   for (let i = 1; i < uniqueDays.length; i++) {
-    const currentDate = new Date(uniqueDays[i]);
-    const previousDate = new Date(uniqueDays[i-1]);
+    const currentDate = new Date(uniqueDays[i] || '');
+    const previousDate = new Date(uniqueDays[i-1] || '');
     const diffTime = previousDate.getTime() - currentDate.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
