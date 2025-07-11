@@ -18,7 +18,8 @@ export async function GET() {
 
     const supabase = createServerComponentClient({ cookies });
     const userEmail = session.user.email;
-    const canAccessPremium = (session.user as any).role === 'PREMIUM' || (session.user as any).role === 'ADMIN';
+    // TEMPORAIRE: Accès premium ouvert à tous pour le lancement
+    const canAccessPremium = true; // (session.user as any).role === 'PREMIUM' || (session.user as any).role === 'ADMIN';
 
     // 1. Récupérer les stats d'utilisation des outils
     const { data: toolLogs } = await supabase
@@ -139,4 +140,4 @@ function calculateStreak(logs: any[]): number {
   }
 
   return streak;
-} 
+}

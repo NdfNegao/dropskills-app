@@ -23,7 +23,8 @@ export async function POST(request: NextRequest) {
 
     const supabase = createServerComponentClient({ cookies });
     const userEmail = session.user.email;
-    const canAccessPremium = (session.user as any).role === 'PREMIUM' || (session.user as any).role === 'ADMIN';
+    // TEMPORAIRE: Accès premium ouvert à tous pour le lancement
+    const canAccessPremium = true; // (session.user as any).role === 'PREMIUM' || (session.user as any).role === 'ADMIN';
 
     // 1. Analyser les mots-clés
     const keywordsList = keywords.split(',').map((k: string) => k.trim()).filter(Boolean);
@@ -175,4 +176,4 @@ function generateOpportunities(keywords: string[], isPremium: boolean) {
   }
 
   return opportunities;
-} 
+}

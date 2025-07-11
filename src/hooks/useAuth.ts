@@ -51,7 +51,8 @@ export function useAuth() {
 
   // Vérifications basées sur les données du token JWT ou de la session dev
   const isAdmin = user?.role === 'ADMIN';
-  const canAccessPremium = user?.isPremium || isAdmin;
+  // TEMPORAIRE: Accès premium ouvert à tous pour le lancement
+  const canAccessPremium = true; // user?.isPremium || isAdmin;
   const isAuthenticated = !!user;
   const isLoading = status === 'loading';
 

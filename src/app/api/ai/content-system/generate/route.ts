@@ -32,9 +32,10 @@ async function checkPremiumAccess() {
     return { error: 'Non authentifié', status: 401 };
   }
   const user = session.user as UserWithRole;
-  if (!['PREMIUM', 'ADMIN'].includes(user.role || '')) {
-    return { error: 'Accès premium requis', status: 403 };
-  }
+  // TEMPORAIRE: Accès ouvert à tous pour le lancement
+  // if (!['PREMIUM', 'ADMIN'].includes(user.role || '')) {
+  //   return { error: 'Accès premium requis', status: 403 };
+  // }
   return { user };
 }
 
