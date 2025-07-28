@@ -70,7 +70,7 @@ function generateOffer(data: any) {
     casual: { style: "décontracté", vocabulary: "simple" }
   };
 
-  const tone = toneAdjustments[data.tone as keyof typeof toneAdjustments] || toneAdjustments.professional;
+// Remove unused tone variable since it's not being used anywhere in the code
 
   // Génération de l'offre
   let offer = `🎯 ${template.hook}\n\n`;

@@ -218,8 +218,8 @@ function calculateStreak(logs: any[]): number {
   if (uniqueDays[0] !== today && uniqueDays[0] !== yesterday) return 0;
 
   for (let i = 1; i < uniqueDays.length; i++) {
-    const currentDate = new Date(uniqueDays[i]);
-    const previousDate = new Date(uniqueDays[i-1]);
+    const currentDate = new Date(uniqueDays[i] || new Date().toISOString());
+    const previousDate = new Date(uniqueDays[i-1] || new Date());
     const diffTime = previousDate.getTime() - currentDate.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 

@@ -106,11 +106,11 @@ export default function AdminSidebar({
       {/* Logo & collapse button */}
       <div className="flex items-center justify-between px-4 py-5 border-b border-gray-700">
         <Link href="/admin" className={`text-2xl font-extrabold transition-all duration-300 hover:scale-105 ${collapsed ? "hidden" : "block"}`}>
-          <span className="text-red-400">ADMIN</span> <span className="text-white">PANEL</span>
+          <span className="text-blue-400">ADMIN</span> <span className="text-white">PANEL</span>
         </Link>
         <button 
           onClick={() => handleCollapse(!collapsed)} 
-          className="text-gray-400 hover:text-red-400 transition-all duration-200 hover:scale-110 hover:rotate-180"
+          className="text-gray-400 hover:text-blue-400 transition-all duration-200 hover:scale-110 hover:rotate-180"
           aria-label={collapsed ? "Étendre la sidebar" : "Réduire la sidebar"}
         >
           {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}

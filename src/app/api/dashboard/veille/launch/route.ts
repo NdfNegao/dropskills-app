@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
       created_at: new Date().toISOString()
     }));
 
-    const { data: savedOpportunities, error: oppError } = await supabase
+    const { data: _savedOpportunities, error: oppError } = await supabase
       .from('opportunities')
       .insert(opportunitiesData)
       .select();
@@ -166,7 +166,7 @@ function generateOpportunities(keywords: string[], isPremium: boolean) {
     
     opportunities.push({
       id: `opp_${Date.now()}_${i}`,
-      title: template.title?.replace(/\{keyword\}/g, keyword) || '',
+      title: template.title ? template.title.replace(/\{keyword\}/g, keyword) : '',
       description: template.description?.replace(/\{keyword\}/g, keyword) || '',
       source: template.source || '',
       relevance_score: template.relevance_score || 0,
