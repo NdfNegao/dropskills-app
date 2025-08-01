@@ -12,7 +12,7 @@ interface ThemeContextProps {
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('light');
+  const [theme, setThemeState] = useState<Theme>('dark');
 
   // Toujours forcer la classe sur le body
   useEffect(() => {
@@ -29,7 +29,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (stored === 'light' || stored === 'dark') {
       setThemeState(stored);
     } else {
-      setThemeState('light');
+      setThemeState('dark');
     }
   }, []);
 
