@@ -106,7 +106,7 @@ export default function AdminSidebar({
       {/* Logo & collapse button */}
       <div className="flex items-center justify-between px-4 py-5 border-b border-gray-700">
         <Link href="/admin" className={`text-2xl font-extrabold transition-all duration-300 hover:scale-105 ${collapsed ? "hidden" : "block"}`}>
-          <span className="text-blue-400">ADMIN</span> <span className="text-white">PANEL</span>
+          <span className="text-white">ADMIN</span> <span className="text-white">PANEL</span>
         </Link>
         <button 
           onClick={() => handleCollapse(!collapsed)} 
@@ -194,8 +194,8 @@ export default function AdminSidebar({
             onClick={handleSignOut}
             className={`group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 font-medium relative text-left w-full hover:scale-105 hover:bg-gray-800`}
           >
-            <LogOut size={20} className="transition-transform duration-200 group-hover:rotate-12 group-hover:text-red-400" />
-            {!collapsed && <span className="group-hover:text-red-400">Déconnexion</span>}
+            <LogOut size={20} className="transition-transform duration-200 group-hover:rotate-12 group-hover:text-blue-400" />
+            {!collapsed && <span className="group-hover:text-blue-400">Déconnexion</span>}
             {collapsed && (
               <span className="absolute left-20 bg-gray-800 text-white rounded px-2 py-1 shadow-lg text-xs opacity-0 group-hover:opacity-100 z-50 transition-all duration-200 whitespace-nowrap border border-gray-600">
                 Déconnexion
@@ -242,11 +242,11 @@ function AdminSidebarLink({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <span className={`text-xl w-5 h-5 flex items-center justify-center relative transition-all duration-200 ${isHovered ? 'scale-110' : ''} group-hover:text-red-400 text-gray-300`}>
+      <span className={`text-xl w-5 h-5 flex items-center justify-center relative transition-all duration-200 ${isHovered ? 'scale-110' : ''} group-hover:text-blue-400 text-gray-300`}>
         {icon}
       </span>
       {!collapsed && (
-        <span className="flex-1 transition-all duration-200 group-hover:text-red-400 text-gray-300">{label}</span>
+        <span className="flex-1 transition-all duration-200 group-hover:text-blue-400 text-gray-300">{label}</span>
       )}
       {collapsed && (tooltip || label) && (
         <span className={`absolute left-20 bg-gray-800 text-white rounded px-2 py-1 shadow-lg text-xs transition-all duration-200 whitespace-nowrap border border-gray-600 z-50 ${isHovered ? 'opacity-100 translate-x-2' : 'opacity-0'}`}>{tooltip || label}</span>
