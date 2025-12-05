@@ -7,14 +7,7 @@ const nextConfig = {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
   },
-  typescript: {
-    // Ignorer les erreurs TypeScript pendant le build en production
-    ignoreBuildErrors: process.env.NODE_ENV === 'production',
-  },
-  eslint: {
-    // Ignorer les erreurs ESLint pendant le build en production
-    ignoreDuringBuilds: process.env.NODE_ENV === 'production',
-  },
+
   webpack: (config, { isServer, webpack }) => {
     if (isServer) {
       // Solution radicale: remplacer pdf-parse par une version qui évite les fichiers de test
@@ -23,7 +16,7 @@ const nextConfig = {
           'process.env.SKIP_PDF_PARSE_TESTS': JSON.stringify('true')
         })
       );
-      
+
       // Intercepter tous les require/import vers les fichiers de test
       const originalResolve = config.resolve.plugins || [];
       config.resolve.plugins = [
@@ -43,7 +36,7 @@ const nextConfig = {
           }
         }
       ];
-      
+
       // Configuration des externals pour exclure les fichiers de test
       config.externals = config.externals || [];
       if (Array.isArray(config.externals)) {
@@ -52,7 +45,7 @@ const nextConfig = {
           './test/data/': 'commonjs2 ./test/data/'
         });
       }
-      
+
       // Plugin pour ignorer les modules de test
       config.plugins.push(
         new webpack.IgnorePlugin({
@@ -60,7 +53,7 @@ const nextConfig = {
           contextRegExp: /pdf-parse/
         })
       );
-      
+
       // Fallbacks Node.js
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -69,7 +62,7 @@ const nextConfig = {
         crypto: false
       };
     }
-    
+
     return config;
   },
   images: {

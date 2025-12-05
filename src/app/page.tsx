@@ -1,10 +1,4 @@
-'use client';
-
 import React from 'react';
-import LayoutWithSidebar from '@/components/LayoutWithSidebar';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { Package, Users, TrendingUp, Star, Zap, Target, Mail, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
 import { Sparkles, CheckCircle, ShoppingCart, Rocket, Lock } from 'lucide-react';

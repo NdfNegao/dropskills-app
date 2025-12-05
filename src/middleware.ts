@@ -15,9 +15,9 @@ export default withAuth(
 
     // Routes premium - accessible aux utilisateurs premium ou admin
     if (pathname.startsWith('/premium-')) {
-      
+
       const hasAccess = token?.isPremium === true || token?.role === 'ADMIN';
-      
+
       if (!hasAccess) {
         return NextResponse.redirect(new URL('/premium', req.url));
       }
@@ -29,7 +29,7 @@ export default withAuth(
     callbacks: {
       authorized: ({ token, req }) => {
         const { pathname } = req.nextUrl;
-        
+
         // Pages publiques (pas besoin d'authentification)
         const publicPaths = [
           '/',
@@ -63,6 +63,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public folder
      */
-    '/((?!_next/static|_next/image|favicon.ico|public/).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
