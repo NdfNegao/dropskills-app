@@ -2,9 +2,6 @@ import NextAuth from 'next-auth';
 import { NextRequest } from 'next/server';
 import { authOptions } from '@/lib/auth';
 
-// Export authOptions for use in other API routes
-export { authOptions };
-
 export const dynamic = 'force-dynamic';
 
 const handler = NextAuth(authOptions);
