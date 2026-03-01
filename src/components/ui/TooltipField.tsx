@@ -18,13 +18,20 @@ export function TooltipField({
 }: TooltipFieldProps) {
   return (
     <div className="space-y-3">
-      <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+      <label className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
         {Icon && <Icon className="w-4 h-4" />}
         {label}
         {required && <span className="text-red-400">*</span>}
         <div className="group relative">
-          <HelpCircle className="w-4 h-4 text-gray-500 cursor-help hover:text-gray-400 transition-colors" />
-          <div className="absolute bottom-6 left-0 bg-[#232323] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg border border-[#333333] max-w-xs">
+          <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help hover:text-foreground transition-colors" />
+          <div 
+            className="absolute bottom-6 left-0 text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg max-w-xs"
+            style={{ 
+              backgroundColor: 'var(--card)', 
+              color: 'var(--foreground)',
+              border: '1px solid var(--border)'
+            }}
+          >
             {tooltip}
           </div>
         </div>

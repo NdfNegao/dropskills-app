@@ -46,7 +46,7 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#111111] to-[#0a0a0a] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-background flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
@@ -114,7 +114,7 @@ export default function SignInPage() {
             </motion.div>
             <div className="text-left">
               <motion.h1
-                className="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
+                className="text-3xl font-bold text-foreground"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
@@ -122,7 +122,7 @@ export default function SignInPage() {
                 Connexion
               </motion.h1>
               <motion.p
-                className="text-gray-400 flex items-center gap-2"
+                className="text-muted-foreground flex items-center gap-2"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -136,7 +136,7 @@ export default function SignInPage() {
 
         {/* Formulaire */}
         <motion.div
-          className="backdrop-blur-sm bg-[#111111]/80 border border-[#232323]/50 rounded-2xl p-8 shadow-2xl"
+          className="backdrop-blur-sm bg-card border border-border rounded-2xl p-8 shadow-2xl"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
@@ -158,7 +158,7 @@ export default function SignInPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-2">
                 Email
               </label>
               <div className="relative group">
@@ -176,7 +176,7 @@ export default function SignInPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-[#1a1a1a]/80 border border-[#333]/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#ff0033]/50 focus:border-[#ff0033]/50 transition-all duration-300 backdrop-blur-sm"
+                  className="w-full pl-10 pr-4 py-3 bg-card border border-border rounded-xl text-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300 backdrop-blur-sm"
                   placeholder="votre@email.com"
                   whileFocus={{ scale: 1.02 }}
                   transition={{ type: "spring", stiffness: 300 }}
@@ -189,7 +189,7 @@ export default function SignInPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
             >
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-muted-foreground mb-2">
                 Mot de passe
               </label>
               <div className="relative group">
@@ -207,7 +207,7 @@ export default function SignInPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 bg-[#1a1a1a]/80 border border-[#333]/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#ff0033]/50 focus:border-[#ff0033]/50 transition-all duration-300 backdrop-blur-sm"
+                  className="w-full pl-10 pr-12 py-3 bg-card border border-border rounded-xl text-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300 backdrop-blur-sm"
                   placeholder="Votre mot de passe"
                   whileFocus={{ scale: 1.02 }}
                   transition={{ type: "spring", stiffness: 300 }}

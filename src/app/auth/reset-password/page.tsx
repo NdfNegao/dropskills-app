@@ -51,7 +51,7 @@ function ResetPasswordContent() {
 
   if (!token) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#111111] to-[#0a0a0a] flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0 overflow-hidden">
           <motion.div
@@ -102,7 +102,7 @@ function ResetPasswordContent() {
             </motion.div>
             
             <motion.h2
-              className="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-4"
+              className="text-3xl font-bold text-foreground mb-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -151,7 +151,7 @@ function ResetPasswordContent() {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#111111] to-[#0a0a0a] flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0 overflow-hidden">
           <motion.div
@@ -214,7 +214,7 @@ function ResetPasswordContent() {
             </motion.div>
             
             <motion.h2
-              className="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-4"
+              className="text-3xl font-bold text-foreground mb-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -262,7 +262,7 @@ function ResetPasswordContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#111111] to-[#0a0a0a] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
@@ -360,7 +360,7 @@ function ResetPasswordContent() {
             </motion.h1>
             
             <motion.p
-              className="text-gray-400"
+              className="text-muted-foreground"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
@@ -393,7 +393,7 @@ function ResetPasswordContent() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
             >
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 Nouveau mot de passe
               </label>
               <motion.div
@@ -427,7 +427,7 @@ function ResetPasswordContent() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.9 }}
             >
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 Confirmer le mot de passe
               </label>
               <motion.div

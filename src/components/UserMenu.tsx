@@ -28,22 +28,18 @@ export default function UserMenu({ user }: UserMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Simuler premium (à remplacer par user.isPremium si dispo)
   const isPremium = true;
 
-  // Fermer le menu si on clique en dehors
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Obtenir les initiales de l'utilisateur
   const getInitials = () => {
     if (user.firstName && user.lastName) {
       return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
@@ -55,7 +51,6 @@ export default function UserMenu({ user }: UserMenuProps) {
     return "U";
   };
 
-  // Obtenir le nom complet
   const getDisplayName = () => {
     if (user.firstName && user.lastName) {
       return `${user.firstName} ${user.lastName}`;
@@ -75,7 +70,7 @@ export default function UserMenu({ user }: UserMenuProps) {
       icon: Sparkles,
       label: "Débloquer tous les produits",
       href: "/unlock-products",
-      className: "text-yellow-400",
+      className: "text-yellow-500",
     },
     {
       icon: Users,
@@ -99,97 +94,98 @@ export default function UserMenu({ user }: UserMenuProps) {
 
   return (
     <div className="relative" ref={menuRef}>
-      {/* Bouton du menu */}
+      {/* Trigger button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-3 p-2 rounded-xl bg-gradient-to-r from-[#232a3a]/60 to-[#1a1a1a]/80 shadow-lg hover:from-[#2e3a5a]/80 hover:to-[#232323]/90 transition-all focus:outline-none focus:ring-2 focus:ring-[#00D2FF]"
+        className="flex items-center gap-2.5 p-2 rounded-xl border border-border hover:bg-background-secondary transition-all focus:outline-none focus:ring-2 focus:ring-primary/30"
+        style={{ backgroundColor: 'var(--card)' }}
         aria-haspopup="true"
         aria-expanded={isOpen}
-        tabIndex={0}
       >
-        {/* Avatar ou initiales */}
-        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#00D2FF] to-[#3A7BD5] flex items-center justify-center text-white font-semibold shadow-md border-2 border-[#232a3a]">
+        {/* Avatar */}
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-semibold text-sm shadow-sm border-2 border-border flex-shrink-0">
           {user.avatar_url ? (
             <Image 
               src={user.avatar_url} 
               alt={getDisplayName() || 'Utilisateur'} 
               className="w-full h-full rounded-full object-cover"
-              width={40}
-              height={40}
+              width={32}
+              height={32}
             />
           ) : (
             getInitials()
           )}
         </div>
-        {/* Nom, email, badge premium */}
+        {/* Name + email */}
         <div className="text-left hidden md:block">
-          <div className="flex items-center gap-2">
-            <p className="text-white font-semibold text-sm tracking-tight">
+          <div className="flex items-center gap-1.5">
+            <p className="text-foreground font-semibold text-sm leading-none">
               {getDisplayName()}
             </p>
             {isPremium && (
-              <span className="ml-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-xs font-bold text-gray-900 shadow border border-yellow-300 animate-pulse">Premium</span>
+              <span className="px-1.5 py-0.5 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-500 text-[10px] font-bold text-gray-900">PRO</span>
             )}
           </div>
-          <p className="text-gray-400 text-xs">{user.email}</p>
+          <p className="text-muted-foreground text-xs mt-0.5">{user.email}</p>
         </div>
-        {/* Chevron */}
-        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform flex-shrink-0 ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
-      {/* Menu dropdown */}
+      {/* Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 bg-gradient-to-br from-[#232a3a]/80 to-[#181c22]/90 backdrop-blur-xl rounded-2xl border border-[#2e3a5a]/60 shadow-2xl overflow-hidden z-50 animate-fade-in">
-          {/* Header du menu */}
-          <div className="p-5 border-b border-[#232a3a]/60 flex items-center gap-4 bg-gradient-to-r from-[#232a3a]/60 to-[#1a1a1a]/80">
-            <div className="w-14 h-14 rounded-full bg-gradient-to-r from-[#00D2FF] to-[#3A7BD5] flex items-center justify-center text-white font-bold text-lg shadow border-2 border-[#232a3a]">
+        <div 
+          className="absolute right-0 mt-2 w-72 rounded-xl border border-border shadow-xl overflow-hidden z-50 animate-fade-in"
+          style={{ backgroundColor: 'var(--card)' }}
+        >
+          {/* Header */}
+          <div className="p-4 border-b border-border flex items-center gap-3" style={{ backgroundColor: 'var(--background-secondary)' }}>
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-base shadow border-2 border-border flex-shrink-0">
               {user.avatar_url ? (
                 <Image 
                   src={user.avatar_url} 
                   alt={getDisplayName() || 'Utilisateur'} 
                   className="w-full h-full rounded-full object-cover"
-                  width={56}
-                  height={56}
+                  width={48}
+                  height={48}
                 />
               ) : (
                 getInitials()
               )}
             </div>
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-white font-semibold text-base">{getDisplayName()}</span>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 mb-0.5">
+                <span className="text-foreground font-semibold text-sm truncate">{getDisplayName()}</span>
                 {isPremium && (
-                  <span className="ml-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-xs font-bold text-gray-900 shadow border border-yellow-300 animate-pulse">Premium</span>
+                  <span className="flex-shrink-0 px-1.5 py-0.5 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-500 text-[10px] font-bold text-gray-900">PRO</span>
                 )}
               </div>
-              <p className="text-gray-400 text-xs">{user.email}</p>
+              <p className="text-muted-foreground text-xs truncate">{user.email}</p>
             </div>
           </div>
 
-          {/* Liens du menu */}
-          <div className="py-2">
+          {/* Menu items */}
+          <div className="py-1.5">
             {menuItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-5 py-3 rounded-lg group transition-all focus:outline-none focus:ring-2 focus:ring-[#00D2FF] hover:bg-gradient-to-r hover:from-[#232a3a]/60 hover:to-[#232323]/80 ${item.className ? '' : 'hover:scale-[1.03]'}`}
+                className="flex items-center gap-3 px-4 py-2.5 hover:bg-background-secondary transition-colors group"
                 onClick={() => setIsOpen(false)}
-                tabIndex={0}
               >
-                <item.icon className={`w-5 h-5 ${item.className || "text-gray-400"} group-hover:text-[#00D2FF] transition-colors`} />
-                <span className="text-gray-200 group-hover:text-white font-medium text-sm tracking-tight">{item.label}</span>
+                <item.icon className={`w-4 h-4 flex-shrink-0 ${item.className || "text-muted-foreground"} group-hover:text-foreground transition-colors`} />
+                <span className="text-foreground/80 group-hover:text-foreground font-medium text-sm">{item.label}</span>
               </Link>
             ))}
-            {/* Séparateur */}
-            <div className="my-2 border-t border-[#232a3a]/60" />
-            {/* Déconnexion */}
+
+            <div className="my-1 border-t border-border" />
+
+            {/* Sign out */}
             <button
               onClick={handleSignOut}
-              className="flex items-center gap-3 px-5 py-3 w-full rounded-lg hover:bg-gradient-to-r hover:from-[#2e3a5a]/60 hover:to-[#232323]/80 transition-all group focus:outline-none focus:ring-2 focus:ring-red-400"
-              tabIndex={0}
+              className="flex items-center gap-3 px-4 py-2.5 w-full hover:bg-red-500/10 transition-colors group"
             >
-              <LogOut className="w-5 h-5 text-gray-400 group-hover:text-red-400 transition-colors" />
-              <span className="text-gray-300 group-hover:text-red-400 font-medium text-sm">Déconnexion</span>
+              <LogOut className="w-4 h-4 text-muted-foreground group-hover:text-red-500 transition-colors flex-shrink-0" />
+              <span className="text-foreground/80 group-hover:text-red-500 font-medium text-sm">Déconnexion</span>
             </button>
           </div>
         </div>

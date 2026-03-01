@@ -31,9 +31,9 @@ export function StandardInput({
   maxLength
 }: StandardInputProps) {
   const inputClasses = `
-    w-full px-4 py-3 bg-[#1a1a1a] border rounded-lg text-white placeholder-gray-500
-    focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all
-    ${error ? 'border-red-500' : 'border-[#232323] hover:border-[#333333]'}
+    w-full px-4 py-3 bg-card border rounded-lg text-foreground placeholder:text-muted-foreground
+    focus:ring-2 focus:ring-primary focus:border-transparent transition-all
+    ${error ? 'border-red-500' : 'border-border hover:border-border-hover'}
     ${multiline ? 'resize-none' : ''}
   `;
 
@@ -73,7 +73,7 @@ export function StandardInput({
           </p>
         )}
         {maxLength && (
-          <p className="text-gray-500 text-xs text-right">
+          <p className="text-muted-foreground text-xs text-right">
             {value.length}/{maxLength}
           </p>
         )}
@@ -83,7 +83,7 @@ export function StandardInput({
 
   return (
     <div className="space-y-3">
-      <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+      <label className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
         {icon && React.createElement(icon, { className: "w-4 h-4" })}
         {label}
         {required && <span className="text-red-400">*</span>}
@@ -96,7 +96,7 @@ export function StandardInput({
         </p>
       )}
       {maxLength && (
-        <p className="text-gray-500 text-xs text-right">
+        <p className="text-muted-foreground text-xs text-right">
           {value.length}/{maxLength}
         </p>
       )}

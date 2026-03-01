@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Lock, Mail, User, ArrowRight, Check, Sparkles, UserPlus } from "lucide-react";
 import Link from "next/link";
@@ -97,7 +97,7 @@ export default function SignUpPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#111111] to-[#0a0a0a] flex items-center justify-center py-12 px-4 relative overflow-hidden">
+      <div className="min-h-screen bg-background flex items-center justify-center py-12 px-4 relative overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0 overflow-hidden">
           <motion.div
@@ -121,7 +121,7 @@ export default function SignUpPage() {
           transition={{ duration: 0.6 }}
         >
           <motion.div
-            className="backdrop-blur-sm bg-[#111111]/80 border border-[#232323]/50 rounded-2xl p-8 shadow-2xl"
+            className="backdrop-blur-sm bg-card border border-border rounded-2xl p-8 shadow-2xl"
             initial={{ y: 20 }}
             animate={{ y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -184,7 +184,7 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#111111] to-[#0a0a0a] flex items-center justify-center py-12 px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-background flex items-center justify-center py-12 px-4 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
@@ -255,7 +255,7 @@ export default function SignUpPage() {
           </motion.div>
           
           <motion.h1
-            className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent"
+            className="text-4xl font-bold text-foreground"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -264,7 +264,7 @@ export default function SignUpPage() {
           </motion.h1>
           
           <motion.p
-            className="mt-3 text-gray-400 text-lg"
+            className="mt-3 text-muted-foreground text-lg"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
@@ -300,7 +300,7 @@ export default function SignUpPage() {
             transition={{ duration: 0.5, delay: 0.6 }}
           >
             <div>
-              <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="firstName" className="block text-sm font-medium text-muted-foreground mb-2">
                 Prénom
               </label>
               <div className="relative">
@@ -312,14 +312,14 @@ export default function SignUpPage() {
                   required
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 bg-[#111111]/80 border border-[#232323]/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#ff0033]/50 focus:border-transparent backdrop-blur-sm transition-all duration-300"
+                  className="w-full pl-10 pr-4 py-3 bg-card border border-border rounded-lg text-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent backdrop-blur-sm transition-all duration-300"
                   placeholder="Prénom"
                   whileFocus={{ scale: 1.02 }}
                 />
               </div>
             </div>
             <div>
-              <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="lastName" className="block text-sm font-medium text-muted-foreground mb-2">
                 Nom
               </label>
               <motion.input
@@ -329,7 +329,7 @@ export default function SignUpPage() {
                 required
                 value={formData.lastName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-[#111111]/80 border border-[#232323]/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#ff0033]/50 focus:border-transparent backdrop-blur-sm transition-all duration-300"
+                className="w-full px-4 py-3 bg-card border border-border rounded-lg text-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent backdrop-blur-sm transition-all duration-300"
                 placeholder="Nom"
                 whileFocus={{ scale: 1.02 }}
               />
@@ -342,7 +342,7 @@ export default function SignUpPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.7 }}
           >
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-2">
               Email
             </label>
             <div className="relative">
@@ -354,7 +354,7 @@ export default function SignUpPage() {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full pl-10 pr-4 py-3 bg-[#111111]/80 border border-[#232323]/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#ff0033]/50 focus:border-transparent backdrop-blur-sm transition-all duration-300"
+                className="w-full pl-10 pr-4 py-3 bg-card border border-border rounded-lg text-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent backdrop-blur-sm transition-all duration-300"
                 placeholder="votre@email.com"
                 whileFocus={{ scale: 1.02 }}
               />
@@ -367,7 +367,7 @@ export default function SignUpPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.8 }}
           >
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="password" className="block text-sm font-medium text-muted-foreground mb-2">
               Mot de passe
             </label>
             <div className="relative">
@@ -379,7 +379,7 @@ export default function SignUpPage() {
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full pl-10 pr-12 py-3 bg-[#111111]/80 border border-[#232323]/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#ff0033]/50 focus:border-transparent backdrop-blur-sm transition-all duration-300"
+                className="w-full pl-10 pr-12 py-3 bg-card border border-border rounded-lg text-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent backdrop-blur-sm transition-all duration-300"
                 placeholder="Mot de passe sécurisé"
                 whileFocus={{ scale: 1.02 }}
               />
@@ -428,7 +428,7 @@ export default function SignUpPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.9 }}
           >
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-muted-foreground mb-2">
               Confirmer le mot de passe
             </label>
             <div className="relative">
@@ -440,7 +440,7 @@ export default function SignUpPage() {
                 required
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full pl-10 pr-12 py-3 bg-[#111111]/80 border border-[#232323]/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#ff0033]/50 focus:border-transparent backdrop-blur-sm transition-all duration-300"
+                className="w-full pl-10 pr-12 py-3 bg-card border border-border rounded-lg text-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent backdrop-blur-sm transition-all duration-300"
                 placeholder="Confirmer le mot de passe"
                 whileFocus={{ scale: 1.02 }}
               />
@@ -507,7 +507,7 @@ export default function SignUpPage() {
 
         {/* Footer */}
         <motion.div
-          className="text-center text-sm text-gray-400"
+          className="text-center text-sm text-muted-foreground"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.1 }}

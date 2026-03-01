@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { signOut } from 'next-auth/react';
 import { useAuth } from "@/hooks/useAuth";
 import {
-  Home, Lock, GraduationCap, FolderOpen, Settings, LogOut, ChevronLeft, ChevronRight, Users, HelpCircle, User, MessageSquarePlus, Heart, Shield, Gift, BarChart3
+  Home, Lock, GraduationCap, FolderOpen, LogOut, ChevronLeft, ChevronRight, Users, HelpCircle, User, MessageSquarePlus, Heart, Shield, Gift
 } from "lucide-react";
 import Crown from '@/components/ui/Crown';
 import DollarConfetti from './DollarConfetti';
@@ -20,7 +20,7 @@ export default function DropskillsSidebar({
 }: DropskillsSidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
-  const { user, canAccessPremium, isLoading, isAdmin } = useAuth();
+  const { canAccessPremium, isLoading, isAdmin } = useAuth();
 
   const handleCollapse = (value: boolean) => {
     setCollapsed(value);
@@ -32,77 +32,77 @@ export default function DropskillsSidebar({
     router.push("/auth/signin");
   };
 
-  // Nouvelle organisation de la sidebar
   const mainNavigation = [
-    { icon: <Home />, label: "Accueil", href: "/dashboard", tooltip: "Accueil" },
-    { icon: <GraduationCap />, label: "Centre de Formation", href: "/universite", tooltip: "Centre de formation" },
-    { icon: <Heart />, label: "Favoris", href: "/favoris", tooltip: "Formations likées" },
-    { icon: <FolderOpen />, label: "Outils IA", href: "/outils", tooltip: "Tous les outils IA" },
-    { icon: <MessageSquarePlus />, label: "Mentors IA", href: "/ai-mentor", tooltip: "Mentors IA personnalisés" }
+    { icon: <Home size={18} />, label: "Accueil", href: "/dashboard", tooltip: "Accueil" },
+    { icon: <GraduationCap size={18} />, label: "Centre de Formation", href: "/universite", tooltip: "Centre de formation" },
+    { icon: <Heart size={18} />, label: "Favoris", href: "/favoris", tooltip: "Formations likées" },
+    { icon: <FolderOpen size={18} />, label: "Outils IA", href: "/outils", tooltip: "Tous les outils IA" },
+    { icon: <MessageSquarePlus size={18} />, label: "Mentors IA", href: "/ai-mentor", tooltip: "Mentors IA personnalisés" }
   ];
 
-  // Section Aide & Personnalisation
   const helpNavigation = [
-    { icon: <MessageSquarePlus />, label: "Proposer un outil", href: "/demandes", tooltip: "Proposer un outil ou une amélioration" }
+    { icon: <MessageSquarePlus size={18} />, label: "Proposer un outil", href: "/demandes", tooltip: "Proposer un outil ou une amélioration" }
   ];
 
-  // Section compte et autres
   const accountNavigation = [
-    { icon: <User />, label: "Mon Compte", href: "/compte", tooltip: "Profil et paramètres" },
-    { icon: <Users />, label: "Affiliation", href: "/affiliate", tooltip: "Gagnez de l'argent en recommandant DropSkills" },
-    { icon: <Gift />, label: "Parrainage", href: "/gift", tooltip: "Programme de parrainage" },
-    { icon: <HelpCircle />, label: "Support", href: "/support", tooltip: "Aide et support" }
+    { icon: <User size={18} />, label: "Mon Compte", href: "/compte", tooltip: "Profil et paramètres" },
+    { icon: <Users size={18} />, label: "Affiliation", href: "/affiliate", tooltip: "Gagnez de l'argent en recommandant DropSkills" },
+    { icon: <Gift size={18} />, label: "Parrainage", href: "/gift", tooltip: "Programme de parrainage" },
+    { icon: <HelpCircle size={18} />, label: "Support", href: "/support", tooltip: "Aide et support" }
   ];
 
-  // Section admin (uniquement pour cyril.iriebi@gmail.com)
   const adminNavigation = isAdmin ? [
-    { icon: <Shield />, label: "Administration", href: "/admin", tooltip: "Panneau d'administration" }
+    { icon: <Shield size={18} />, label: "Administration", href: "/admin", tooltip: "Panneau d'administration" }
   ] : [];
 
   if (isLoading) {
     return (
-      <aside className={`flex flex-col h-screen bg-background text-foreground transition-all duration-300 shadow-xl
+      <aside className={`flex flex-col h-screen bg-background text-foreground transition-all duration-300 border-r border-border
         w-64 hidden lg:flex fixed top-0 left-0 z-30 ${className}`}>
         <div className="flex items-center justify-center h-full">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff0033]"></div>
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
         </div>
       </aside>
     );
   }
 
   return (
-    <aside className={`flex flex-col h-screen bg-background text-foreground shadow-xl
-      ${collapsed ? "w-20" : "w-64"} 
+    <aside className={`flex flex-col h-screen bg-background text-foreground border-r border-border
+      ${collapsed ? "w-[72px]" : "w-64"} 
       hidden lg:flex
       fixed top-0 left-0 z-30
       transition-all duration-300
       ${className}
       `}>
       
-      {/* Logo & collapse button avec animation */}
-      <div className="flex items-center justify-between px-4 py-5 border-b border-border">
-        <Link href="/dashboard" className={`transition-all duration-300 hover:scale-105 ${collapsed ? "hidden" : "block"}`}>
-          <div className="text-2xl font-extrabold">
-            DROP <span className="text-[#ff0033]">SKILLS</span>
-          </div>
-          <div className="text-xs text-neutral-400 font-medium tracking-wider uppercase mt-0.5">
-            beta
-          </div>
-        </Link>
+      {/* Logo & collapse button */}
+      <div className={`flex items-center border-b border-border ${collapsed ? 'justify-center px-3 py-4' : 'justify-between px-4 py-4'}`}>
+        {!collapsed && (
+          <Link href="/dashboard" className="transition-all duration-200 hover:opacity-80">
+            <div className="text-xl font-extrabold tracking-tight">
+              DROP<span className="text-primary">SKILLS</span>
+            </div>
+            <div className="text-[10px] text-muted-foreground font-medium tracking-widest uppercase mt-0.5">
+              beta
+            </div>
+          </Link>
+        )}
         <button 
           onClick={() => handleCollapse(!collapsed)} 
-          className="text-neutral-400 hover:text-[#ff0033] transition-all duration-200 hover:scale-110 hover:rotate-180"
+          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-background-secondary transition-all duration-200"
           aria-label={collapsed ? "Étendre la sidebar" : "Réduire la sidebar"}
         >
-          {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+          {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </button>
       </div>
 
-      {/* Navigation principale */}
-      <nav className="flex-1 flex flex-col gap-1 px-2 py-4 overflow-y-auto">
-        {/* Menu principal */}
-        <div className="space-y-1">
-          {mainNavigation.map((item, index) => (
+      {/* Navigation */}
+      <nav className="flex-1 flex flex-col px-2 py-3 overflow-y-auto">
+        
+        {/* Section Navigation principale */}
+        <SidebarSection label="Navigation" collapsed={collapsed} />
+        <div className="space-y-0.5">
+          {mainNavigation.map((item) => (
             <SidebarLink 
               key={item.label}
               collapsed={collapsed} 
@@ -110,17 +110,16 @@ export default function DropskillsSidebar({
               label={item.label} 
               href={item.href}
               tooltip={item.tooltip}
-              index={index}
             />
           ))}
         </div>
 
-        {/* Bouton Débloquer Premium */}
+        {/* CTA Premium */}
         {!canAccessPremium && (
-          <div className="mt-4 px-2">
+          <div className="mt-3 mb-1">
             <SidebarCTA 
               collapsed={collapsed} 
-              icon={<Lock />} 
+              icon={<Lock size={16} />} 
               label="Débloquer Premium" 
               cta="Upgrade"
               href="/premium"
@@ -128,60 +127,10 @@ export default function DropskillsSidebar({
           </div>
         )}
 
-        {/* Séparateur */}
-        <div className={`my-4 ${collapsed ? 'mx-2' : 'mx-2'}`}>
-          <div className="h-px bg-border"></div>
-        </div>
-
-        {/* Section Aide & Personnalisation */}
-        <div className="mb-2">
-          <div className="space-y-1">
-            {helpNavigation.map((item, idx) => (
-              <SidebarLink
-                key={item.label}
-                collapsed={collapsed}
-                icon={item.icon}
-                label={item.label}
-                href={item.href}
-                tooltip={item.tooltip}
-                index={200 + idx}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Séparateur */}
-        <div className={`my-4 ${collapsed ? 'mx-2' : 'mx-2'}`}>
-          <div className="h-px bg-border"></div>
-        </div>
-
-        {/* Section admin (si utilisateur admin) */}
-        {isAdmin && (
-          <>
-            <div className="mb-2">
-              {adminNavigation.map((item, idx) => (
-                <SidebarLink
-                  key={item.label}
-                  collapsed={collapsed}
-                  icon={item.icon}
-                  label={item.label}
-                  href={item.href}
-                  tooltip={item.tooltip}
-                  index={250 + idx}
-                />
-              ))}
-            </div>
-            
-            {/* Séparateur */}
-            <div className={`my-4 ${collapsed ? 'mx-2' : 'mx-2'}`}>
-              <div className="h-px bg-border"></div>
-            </div>
-          </>
-        )}
-
-        {/* Section compte et autres */}
-        <div className="mb-2">
-          {accountNavigation.map((item, idx) => (
+        {/* Section Aide */}
+        <SidebarSection label="Aide" collapsed={collapsed} />
+        <div className="space-y-0.5">
+          {helpNavigation.map((item) => (
             <SidebarLink
               key={item.label}
               collapsed={collapsed}
@@ -189,33 +138,79 @@ export default function DropskillsSidebar({
               label={item.label}
               href={item.href}
               tooltip={item.tooltip}
-              index={300 + idx}
             />
           ))}
-          <button
-            onClick={handleSignOut}
-            className={`group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 font-medium relative text-left w-full hover:scale-105 mt-2 hover:bg-muted/20`}
-          >
-            <LogOut size={20} className="transition-transform duration-200 group-hover:rotate-12 group-hover:text-[#ff0033]" />
-            {!collapsed && <span className="group-hover:text-[#ff0033]">Déconnexion</span>}
-            {collapsed && (
-              <span className="absolute left-20 bg-card text-card-foreground rounded px-2 py-1 shadow-lg text-xs opacity-0 group-hover:opacity-100 z-50 transition-all duration-200 whitespace-nowrap border border-border">
-                Déconnexion
-              </span>
-            )}
-          </button>
+        </div>
+
+        {/* Section Admin (si admin) */}
+        {isAdmin && (
+          <>
+            <SidebarSection label="Admin" collapsed={collapsed} />
+            <div className="space-y-0.5">
+              {adminNavigation.map((item) => (
+                <SidebarLink
+                  key={item.label}
+                  collapsed={collapsed}
+                  icon={item.icon}
+                  label={item.label}
+                  href={item.href}
+                  tooltip={item.tooltip}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Section Compte */}
+        <SidebarSection label="Compte" collapsed={collapsed} />
+        <div className="space-y-0.5">
+          {accountNavigation.map((item) => (
+            <SidebarLink
+              key={item.label}
+              collapsed={collapsed}
+              icon={item.icon}
+              label={item.label}
+              href={item.href}
+              tooltip={item.tooltip}
+            />
+          ))}
+        </div>
+
+        {/* Déconnexion */}
+        <div className="mt-1">
+          <SignOutButton collapsed={collapsed} onSignOut={handleSignOut} />
         </div>
       </nav>
 
-      {/* Footer avec animations */}
-      <div className="mt-auto mb-4 flex flex-col gap-1 px-2 border-t border-border pt-4">
-        {!collapsed && (
-          <div className="text-xs text-neutral-600 mt-2 px-2 text-center animate-fade-in">
+      {/* Footer */}
+      {!collapsed && (
+        <div className="px-4 py-3 border-t border-border">
+          <div className="text-[10px] text-muted-foreground/50 text-center">
             © {new Date().getFullYear()} Dropskills
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </aside>
+  );
+}
+
+// ===== SUB-COMPONENTS =====
+
+interface SidebarSectionProps {
+  label: string;
+  collapsed: boolean;
+}
+
+function SidebarSection({ label, collapsed }: SidebarSectionProps) {
+  if (collapsed) {
+    return <div className="my-3 h-px bg-border mx-1" />;
+  }
+  return (
+    <div className="px-2 pt-4 pb-1">
+      <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
+        {label}
+      </span>
+    </div>
   );
 }
 
@@ -225,7 +220,6 @@ interface SidebarLinkProps {
   collapsed: boolean;
   href?: string;
   tooltip?: string;
-  index?: number;
 }
 
 function SidebarLink({ 
@@ -233,38 +227,90 @@ function SidebarLink({
   label, 
   collapsed, 
   href = "#", 
-  tooltip, 
-  index = 0
+  tooltip
 }: SidebarLinkProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const content = (
-    <div 
-      className={`group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 font-medium relative hover:scale-105`}
-      style={{ animationDelay: `${index * 50}ms` }}
+  const pathname = usePathname();
+  const isActive = href !== "#" && (pathname === href || pathname.startsWith(href + '/'));
+
+  if (href === "#") return null;
+
+  return (
+    <Link href={href}>
+      <div 
+        className={`
+          flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 relative cursor-pointer
+          ${isActive 
+            ? 'bg-primary/10 text-primary' 
+            : 'text-muted-foreground hover:bg-background-secondary hover:text-foreground'
+          }
+          ${collapsed ? 'justify-center' : ''}
+        `}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <span className={`w-4 h-4 flex items-center justify-center flex-shrink-0 ${isActive ? 'text-primary' : ''}`}>
+          {icon}
+        </span>
+        {!collapsed && (
+          <span className="flex-1 text-sm font-medium">{label}</span>
+        )}
+        {isActive && !collapsed && (
+          <div className="w-1.5 h-1.5 rounded-full bg-primary ml-auto flex-shrink-0" />
+        )}
+        {/* Tooltip en mode réduit */}
+        {collapsed && isHovered && (
+          <span 
+            className="absolute left-14 px-2 py-1 rounded-md text-xs font-medium z-50 whitespace-nowrap shadow-lg"
+            style={{ 
+              backgroundColor: 'var(--card)', 
+              color: 'var(--foreground)', 
+              border: '1px solid var(--border)' 
+            }}
+          >
+            {tooltip || label}
+          </span>
+        )}
+      </div>
+    </Link>
+  );
+}
+
+interface SignOutButtonProps {
+  collapsed: boolean;
+  onSignOut: () => void;
+}
+
+function SignOutButton({ collapsed, onSignOut }: SignOutButtonProps) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <button
+      onClick={onSignOut}
+      className={`
+        flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 relative w-full text-left
+        text-muted-foreground hover:bg-red-500/10 hover:text-red-500
+        ${collapsed ? 'justify-center' : ''}
+      `}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <span className={`text-xl w-5 h-5 flex items-center justify-center relative transition-all duration-200 ${isHovered ? 'scale-110' : ''} group-hover:text-[#ff0033]`}>
-        {icon}
-      </span>
-      {!collapsed && (
-        <span className="flex-1 transition-all duration-200 group-hover:text-[#ff0033]">{label}</span>
+      <LogOut size={18} className="flex-shrink-0" />
+      {!collapsed && <span className="text-sm font-medium">Déconnexion</span>}
+      {collapsed && isHovered && (
+        <span 
+          className="absolute left-14 px-2 py-1 rounded-md text-xs font-medium z-50 whitespace-nowrap shadow-lg"
+          style={{ 
+            backgroundColor: 'var(--card)', 
+            color: 'var(--foreground)', 
+            border: '1px solid var(--border)' 
+          }}
+        >
+          Déconnexion
+        </span>
       )}
-      {collapsed && (tooltip || label) && (
-        <span className={`absolute left-20 bg-card text-card-foreground rounded px-2 py-1 shadow-lg text-xs transition-all duration-200 whitespace-nowrap border border-border z-50 ${isHovered ? 'opacity-100 translate-x-2' : 'opacity-0'}`}>{tooltip || label}</span>
-      )}
-    </div>
+    </button>
   );
-  if (href === "#") {
-    // Debug : afficher le contenu si c'est un objet
-    {typeof content === "object" && !React.isValidElement(content) ? (
-      <pre>{JSON.stringify(content, null, 2)}</pre>
-    ) : (
-      <div className="cursor-not-allowed">{content}</div>
-    )}
-    return null;
-  }
-  return <Link href={href}>{content}</Link>;
 }
 
 interface SidebarCTAProps {
@@ -275,12 +321,11 @@ interface SidebarCTAProps {
   href: string;
 }
 
-function SidebarCTA({ icon, label, cta, collapsed, href }: SidebarCTAProps) {
+function SidebarCTA({ icon, collapsed, href }: SidebarCTAProps) {
   const [confetti, setConfetti] = useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
     setConfetti(true);
-    // Laisser l'effet se jouer avant de naviguer (sauf si ctrl/cmd)
     if (!e.ctrlKey && !e.metaKey) {
       e.preventDefault();
       setTimeout(() => {
@@ -291,34 +336,39 @@ function SidebarCTA({ icon, label, cta, collapsed, href }: SidebarCTAProps) {
   };
 
   if (collapsed) {
-    // Affichage minimal : couronne blanche sur fond rouge
     return (
-      <div className="relative flex items-center justify-center w-12 h-12 mx-auto my-2">
-        <a href={href} onClick={handleClick} className="flex items-center justify-center w-12 h-12 rounded-full bg-[#ff0033] shadow-lg hover:scale-110 transition-transform">
-          <Crown size="lg" color="white" />
+      <div className="relative flex items-center justify-center">
+        <a 
+          href={href} 
+          onClick={handleClick} 
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-primary shadow-md hover:bg-primary-hover transition-colors"
+        >
+          <Crown size="sm" color="white" />
         </a>
         <DollarConfetti trigger={confetti} onComplete={() => setConfetti(false)} />
       </div>
     );
   }
-  // Bloc complet en mode étendu
+
   return (
     <div className="relative">
-      <div className={`relative bg-card rounded-xl p-4 shadow-lg border border-border flex flex-col items-start justify-between w-full mb-2`}>
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-2xl text-[#ff0033]">{icon}</span>
-          <span className="font-bold text-card-foreground text-[14px]">Débloquez Premium</span>
+      <div className="bg-card rounded-xl p-3.5 border border-border">
+        <div className="flex items-center gap-2 mb-1.5">
+          <span className="text-primary">{icon}</span>
+          <span className="font-semibold text-foreground text-sm">Premium</span>
         </div>
-        <span className="text-card-foreground text-[12px] mb-4 block opacity-80">Passez à la version premium pour débloquer tout le contenu et les outils.</span>
-        <a href={href} onClick={handleClick} className="w-full">
-          <button type="button" className="w-full flex items-center justify-center gap-2 bg-[#ff0033] hover:bg-[#cc0029] text-white py-2.5 rounded-lg font-semibold text-base transition-all duration-200 shadow-md">
-            Go Premium <span className="ml-1">→</span>
+        <p className="text-muted-foreground text-xs mb-3 leading-relaxed">
+          Débloquez tout le contenu et les outils IA.
+        </p>
+        <a href={href} onClick={handleClick} className="block">
+          <button 
+            type="button" 
+            className="w-full flex items-center justify-center gap-1.5 bg-primary hover:bg-primary-hover text-white py-2 rounded-lg font-semibold text-sm transition-colors"
+          >
+            <Crown size="sm" color="white" />
+            Go Premium
           </button>
         </a>
-        {/* Effet de lumière */}
-        <span className="absolute top-2 right-2 w-2 h-2 bg-white/30 rounded-full blur-sm animate-pulse" />
-        <span className="absolute top-6 right-8 w-1.5 h-1.5 bg-white/20 rounded-full blur-sm animate-pulse" />
-        <span className="absolute top-8 right-4 w-1 h-1 bg-white/10 rounded-full blur-sm animate-pulse" />
       </div>
       <DollarConfetti trigger={confetti} onComplete={() => setConfetti(false)} />
     </div>
