@@ -30,8 +30,8 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     baseURL: 'https://api.deepseek.com/v1',
     model: 'deepseek-v3',
     pricing: {
-      input: 0.14,   // $0.14 per 1M tokens
-      output: 0.28   // $0.28 per 1M tokens
+      input: 0.28,   // $0.28 per 1M tokens (cache miss)
+      output: 0.42   // $0.42 per 1M tokens
     },
     capabilities: ['structured-analysis', 'cost-effective', 'multilingual'],
     temperature: 0.7,
@@ -172,8 +172,8 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     baseURL: 'https://api.x.ai/v1',
     model: 'grok-3',
     pricing: {
-      input: 0.50,   // Estimation basée sur la compétitivité annoncée
-      output: 1.50
+      input: 3.00,   // $3.00 per 1M tokens
+      output: 15.00  // $15.00 per 1M tokens
     },
     capabilities: ['creativity', 'copywriting', 'engagement'],
     temperature: 0.8,
@@ -261,6 +261,101 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
     }
   },
 
+  'claude-3-7-sonnet': {
+    name: 'Claude 3.7 Sonnet',
+    apiKey: process.env.ANTHROPIC_API_KEY || '',
+    baseURL: 'https://api.anthropic.com/v1',
+    model: 'claude-3-7-sonnet-20250219',
+    pricing: {
+      input: 3.00,
+      output: 15.00
+    },
+    capabilities: ['hybrid-reasoning', 'complex-problem-solving', 'coding', 'premium-quality'],
+    temperature: 0.7,
+    maxTokens: 8192,
+    isAvailable: () => !!process.env.ANTHROPIC_API_KEY,
+    checkAvailability: async () => {
+      try {
+        const provider = AI_PROVIDERS['claude-3-7-sonnet'];
+        if (!provider?.baseURL) throw new Error('baseURL non défini');
+        const res = await fetch(provider.baseURL);
+        return res.ok;
+      } catch {
+        return false;
+      }
+    },
+    generateText: async (prompt: string, options: unknown = {}) => {
+      const provider = AI_PROVIDERS['claude-3-7-sonnet'];
+      if (!provider?.baseURL) throw new Error('baseURL non défini');
+      const response = await fetch(`${provider.baseURL}/messages`, {
+        method: 'POST',
+        headers: {
+          'x-api-key': process.env.ANTHROPIC_API_KEY!,
+          'Content-Type': 'application/json',
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-3-7-sonnet-20250219',
+          max_tokens: (options && (options as AIOptions).maxTokens) || 8192,
+          messages: [{ role: 'user', content: prompt }],
+          temperature: (options && (options as AIOptions).temperature) || 0.7
+        })
+      });
+      const data = await response.json();
+      return data.content[0].text;
+    },
+    getCost: (inputTokens: number, outputTokens: number) => {
+      return (inputTokens * 3.00 / 1000000) + (outputTokens * 15.00 / 1000000);
+    }
+  },
+
+  'gpt-4o': {
+    name: 'GPT-4o',
+    apiKey: process.env.OPENAI_API_KEY || '',
+    baseURL: 'https://api.openai.com/v1',
+    model: 'gpt-4o',
+    pricing: {
+      input: 2.50,
+      output: 10.00
+    },
+    capabilities: ['multimodal', 'fast-reasoning', 'vision', 'high-accuracy'],
+    temperature: 0.7,
+    maxTokens: 4096,
+    isAvailable: () => !!process.env.OPENAI_API_KEY,
+    checkAvailability: async () => {
+      try {
+        const provider = AI_PROVIDERS['gpt-4o'];
+        if (!provider?.baseURL) throw new Error('baseURL non défini');
+        const res = await fetch(provider.baseURL);
+        return res.ok;
+      } catch {
+        return false;
+      }
+    },
+    generateText: async (prompt: string, options: unknown = {}) => {
+      const provider = AI_PROVIDERS['gpt-4o'];
+      if (!provider?.baseURL) throw new Error('baseURL non défini');
+      const response = await fetch(`${provider.baseURL}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: [{ role: 'user', content: prompt }],
+          temperature: (options && (options as AIOptions).temperature) || 0.7,
+          max_tokens: (options && (options as AIOptions).maxTokens) || 4096
+        })
+      });
+      const data = await response.json();
+      return data.choices[0].message.content;
+    },
+    getCost: (inputTokens: number, outputTokens: number) => {
+      return (inputTokens * 2.50 / 1000000) + (outputTokens * 10.00 / 1000000);
+    }
+  },
+
   'gemini-2.0-flash': {
     name: 'Gemini 2.0 Flash',
     apiKey: process.env.GOOGLE_AI_API_KEY || '',
@@ -313,10 +408,10 @@ export const AI_PROVIDERS: Record<string, AIProvider> = {
 // Configuration par défaut du mapping des outils vers les providers
 const DEFAULT_TOOL_PROVIDER_MAPPING: Record<string, string> = {
   'titles': 'deepseek-v3',
- 
-  'emails': 'deepseek-v3',
+
+  'emails': 'gpt-4o',
   'veille': 'deepseek-v3',
-  'content': 'claude-3.5-sonnet', // Claude pour le contenu long
+  'content': 'claude-3-7-sonnet', // Claude 3.7 pour le contenu long et complexe
   'usp': 'deepseek-v3',
   'icp': 'deepseek-v3'
 };
@@ -352,7 +447,8 @@ export class AIProviderManager {
     const candidates = [
       preferredProvider,
       'deepseek-v3',
-      'claude-3.5-sonnet'
+      'claude-3-7-sonnet',
+      'gpt-4o'
     ].filter(Boolean) as string[];
 
     for (const id of candidates) {

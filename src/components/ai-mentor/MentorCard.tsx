@@ -54,6 +54,9 @@ export interface MentorData {
   theme: string;
   href: string;
   isPopular?: boolean;
+  isActive?: boolean;
+  systemPrompt?: string;
+  suggestedPrompts?: string[];
   estimatedResponseTime?: string;
   conversationCount?: number;
 }

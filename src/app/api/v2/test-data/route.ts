@@ -3,7 +3,8 @@ import { supabase } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
   try {
-    const results = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const results: Record<string, any[]> = {
       categories: [],
       profiles: [],
       packs: [],

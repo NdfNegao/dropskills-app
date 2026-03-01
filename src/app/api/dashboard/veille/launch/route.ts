@@ -160,7 +160,7 @@ function generateOpportunities(keywords: string[], isPremium: boolean) {
 
   for (let i = 0; i < Math.min(keywords.length * 2, maxOpportunities); i++) {
     const template = opportunityTemplates[i % opportunityTemplates.length];
-    const keyword = keywords[i % keywords.length];
+    const keyword = keywords[i % keywords.length] ?? '';
     
     if (!template) continue;
     

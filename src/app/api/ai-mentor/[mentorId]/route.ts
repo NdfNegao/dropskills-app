@@ -70,7 +70,7 @@ async function callAI(messages: ChatMessage[]): Promise<string> {
       return generateMockResponse(messages[messages.length - 1].content);
     }
 
-    const response = await fetch(AI_API_URL, {
+    const response = await fetch(AI_API_URL!, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -115,7 +115,7 @@ function generateMockResponse(userMessage: string): string {
     `Parfait ! Cette question montre que vous êtes sur la bonne voie. Pour "${userMessage.substring(0, 50)}...", laissez-moi vous partager une stratégie éprouvée qui a fait ses preuves.`
   ];
   
-  return responses[Math.floor(Math.random() * responses.length)];
+  return responses[Math.floor(Math.random() * responses.length)] ?? responses[0] ?? '';
 }
 
 // Fonction pour valider et nettoyer l'input utilisateur
@@ -189,7 +189,7 @@ function generateGreetingResponse(mentorId: string): string {
     "Hello ! Votre mentor est là pour vous accompagner. Quel est votre objectif ?"
   ];
   
-  return responses[Math.floor(Math.random() * responses.length)];
+  return responses[Math.floor(Math.random() * responses.length)] ?? responses[0] ?? '';
 }
 
 // Fonction pour obtenir l'historique des conversations (à implémenter avec une base de données)

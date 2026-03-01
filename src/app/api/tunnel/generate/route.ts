@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { openai } from '@/lib/openai';
-import { TunnelFormData } from '@/app/outils/tunnel-maker/page';
+import { TunnelFormData } from '@/types/tunnel';
 
 export const dynamic = 'force-dynamic';
 
@@ -131,9 +131,7 @@ Contraintes :
     userPrompt += `\n\nFournis un tunnel complet selon le format JSON demandé.`;
 
     try {
-      const openaiClient = openai();
-      
-      const completion = await openaiClient.chat.completions.create({
+      const completion = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },

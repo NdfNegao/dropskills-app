@@ -239,7 +239,7 @@ async function createPolicies() {
 
 async function checkTables() {
   const tables = ['systeme_io_products', 'systeme_io_orders', 'systeme_io_webhooks', 'systeme_io_sync_logs'];
-  const results = {};
+  const results: Record<string, unknown> = {};
 
   for (const table of tables) {
     try {

@@ -216,7 +216,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Essayer d'insérer dans la table ai_usage_logs
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('ai_usage_logs')
       .insert([logEntry])
       .select()

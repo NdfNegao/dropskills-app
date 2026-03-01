@@ -7,11 +7,15 @@ export interface AIMentor {
   expertise: string[];
   icon: string;
   theme: string;
-  link: string;
+  link?: string;
+  href?: string;
   popular?: boolean;
-  estimatedResponseTime: string;
-  conversationCount: number;
-  suggestedPrompts: string[];
+  isPopular?: boolean;
+  isActive?: boolean;
+  systemPrompt?: string;
+  estimatedResponseTime?: string;
+  conversationCount?: number;
+  suggestedPrompts?: string[];
 }
 
 export interface ChatMessage {

@@ -66,26 +66,26 @@ export async function GET(request: NextRequest) {
     if (isActive !== null) {
       query = query.eq('is_active', isActive === 'true')
     }
-    const { data: aiTools = [], error } = await query
+    const { data, error } = await query
     if (error) throw error
+    const aiTools = data ?? []
 
     // Si usage demandé, on peut ajouter le count d'utilisation
-    let toolsWithUsage = aiTools
-    if (includeUsage) {
-      toolsWithUsage = await Promise.all(
-        aiTools.map(async (tool) => {
-          const { count } = await supabase
-            .from('ai_usage')
-            .select('*', { count: 'exact', head: true })
-            .eq('tool_id', tool.id)
-          
-          return {
-            ...tool,
-            usage_count: count || 0
-          }
-        })
-      )
-    }
+    const toolsWithUsage = includeUsage
+      ? await Promise.all(
+          aiTools.map(async (tool) => {
+            const { count } = await supabase
+              .from('ai_usage')
+              .select('*', { count: 'exact', head: true })
+              .eq('tool_id', tool.id)
+
+            return {
+              ...tool,
+              usage_count: count || 0
+            }
+          })
+        )
+      : aiTools
 
     return NextResponse.json({
       success: true,

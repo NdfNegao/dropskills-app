@@ -9,31 +9,30 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const includeStats = searchParams.get('stats') === 'true'
     
-    const { data: categories = [], error } = await supabase
+    const { data, error } = await supabase
       .from('categories')
       .select('*')
       .eq('is_active', true)
     if (error) throw error
+    const categories = data ?? []
 
     // Si stats demandées, on peut ajouter le count des packs par catégorie
-    let categoriesWithStats = categories
-    if (includeStats) {
-      // Pour chaque catégorie, compter les packs
-      categoriesWithStats = await Promise.all(
-        categories.map(async (category) => {
-          const { count } = await supabase
-            .from('packs')
-            .select('*', { count: 'exact', head: true })
-            .eq('category_id', category.id)
-            .eq('status', 'PUBLISHED')
-          
-          return {
-            ...category,
-            packs_count: count || 0
-          }
-        })
-      )
-    }
+    const categoriesWithStats = includeStats
+      ? await Promise.all(
+          categories.map(async (category) => {
+            const { count } = await supabase
+              .from('packs')
+              .select('*', { count: 'exact', head: true })
+              .eq('category_id', category.id)
+              .eq('status', 'PUBLISHED')
+
+            return {
+              ...category,
+              packs_count: count || 0
+            }
+          })
+        )
+      : categories
 
     return NextResponse.json({
       success: true,

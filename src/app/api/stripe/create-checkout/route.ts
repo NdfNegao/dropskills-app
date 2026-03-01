@@ -23,8 +23,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!stripe) {
+      return NextResponse.json({ error: 'Stripe non configuré' }, { status: 503 });
+    }
+
     const priceId = STRIPE_PRICES[planId as keyof typeof STRIPE_PRICES];
-    
+
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],

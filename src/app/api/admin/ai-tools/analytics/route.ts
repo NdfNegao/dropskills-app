@@ -6,9 +6,10 @@ export const dynamic = 'force-dynamic';
 
 
 export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const period = searchParams.get('period') || '7d'; // 7d, 30d, all
+
   try {
-    const { searchParams } = new URL(request.url);
-    const period = searchParams.get('period') || '7d'; // 7d, 30d, all
     
     // Calculer la date de début selon la période
     let startDate = new Date();
@@ -103,7 +104,7 @@ export async function GET(request: NextRequest) {
 
     type DailyStat = { usage: number; tokens: number; cost: number };
     const dailyStats = dailyLogs?.reduce((acc: Record<string, DailyStat>, log) => {
-      const date = new Date(log.created_at).toISOString().split('T')[0];
+      const date = new Date(log.created_at ?? '').toISOString().split('T')[0] ?? '';
       
       if (!acc[date]) {
         acc[date] = { usage: 0, tokens: 0, cost: 0 };

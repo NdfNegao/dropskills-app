@@ -29,21 +29,6 @@ export const authOptions: NextAuthOptions = {
           .single();
 
         if (error || !userData) {
-          // Fallback Pareto pour l'admin si non présent en BDD
-          if (
-            credentials.email === 'cyril.iriebi@gmail.com' &&
-            credentials.password === 'jjbMMA200587@'
-          ) {
-            return {
-              id: 'admin',
-              email: 'cyril.iriebi@gmail.com',
-              name: 'Cyril Iriebi',
-              firstName: 'Cyril',
-              lastName: 'Iriebi',
-              role: 'ADMIN',
-              isPremium: true
-            } as any;
-          }
           return null;
         }
 

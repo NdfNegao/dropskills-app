@@ -375,7 +375,7 @@ export async function POST(request: NextRequest) {
         model: 'gpt-3.5-turbo'
       }),
       performance: { usage: 0, successRate: 0, avgResponseTime: 0 },
-      lastModified: new Date().toISOString().split('T')[0],
+      lastModified: new Date().toISOString().split('T')[0] ?? '',
       version: 1,
       createdBy: session.user.email
     };
@@ -415,18 +415,19 @@ export async function PUT(request: NextRequest) {
     }
 
     // Mettre à jour le prompt
-    const updatedPrompt = {
-      ...mockPrompts[promptIndex],
-      name: name || mockPrompts[promptIndex].name,
-      description: description !== undefined ? description : mockPrompts[promptIndex].description,
-      category: category || mockPrompts[promptIndex].category,
-      type: type || mockPrompts[promptIndex].type,
-      content: content || mockPrompts[promptIndex].content,
-      tool: tool || mockPrompts[promptIndex].tool,
-      parameters: parameters || mockPrompts[promptIndex].parameters,
-      isActive: isActive !== undefined ? isActive : mockPrompts[promptIndex].isActive,
-      lastModified: new Date().toISOString().split('T')[0],
-      version: mockPrompts[promptIndex].version + 1
+    const existingPrompt = mockPrompts[promptIndex]!;
+    const updatedPrompt: PromptData = {
+      ...existingPrompt,
+      name: name || existingPrompt.name,
+      description: description !== undefined ? description : existingPrompt.description,
+      category: category || existingPrompt.category,
+      type: type || existingPrompt.type,
+      content: content || existingPrompt.content,
+      tool: tool || existingPrompt.tool,
+      parameters: parameters || existingPrompt.parameters,
+      isActive: isActive !== undefined ? isActive : existingPrompt.isActive,
+      lastModified: new Date().toISOString().split('T')[0] ?? '',
+      version: existingPrompt.version + 1
     };
 
     mockPrompts[promptIndex] = updatedPrompt;

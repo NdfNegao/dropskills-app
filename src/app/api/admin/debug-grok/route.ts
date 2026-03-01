@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
       'grok-3-mini'
     ];
     
-    const results = {};
+    const results: Record<string, unknown> = {};
     
     // Test endpoint models d'abord
     for (const endpoint of endpoints) {

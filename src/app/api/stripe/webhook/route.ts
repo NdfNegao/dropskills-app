@@ -14,6 +14,10 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  if (!stripe) {
+    return NextResponse.json({ error: 'Stripe non configuré' }, { status: 503 });
+  }
+
   let event;
 
   try {

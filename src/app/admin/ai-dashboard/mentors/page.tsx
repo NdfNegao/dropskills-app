@@ -147,13 +147,13 @@ export default function MentorsAdminPage() {
       description: mentor.description,
       expertise: mentor.expertise,
       icon: mentor.icon,
-      theme: mentor.theme,
-      link: mentor.link,
-      isPopular: mentor.isPopular,
-      estimatedResponseTime: mentor.estimatedResponseTime,
-      conversationCount: mentor.conversationCount,
-      suggestedPrompts: mentor.suggestedPrompts,
-      systemPrompt: mentor.systemPrompt,
+      theme: defaultFormData.theme,
+      link: mentor.link ?? '',
+      isPopular: mentor.isPopular ?? false,
+      estimatedResponseTime: mentor.estimatedResponseTime ?? '',
+      conversationCount: mentor.conversationCount ?? 0,
+      suggestedPrompts: mentor.suggestedPrompts ?? [],
+      systemPrompt: mentor.systemPrompt ?? '',
       isActive: mentor.isActive !== false
     });
     setShowForm(true);

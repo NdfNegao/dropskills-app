@@ -189,7 +189,7 @@ export default function MentorPage({ params }: MentorPageProps) {
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-foreground">{mentor.name}</h2>
-                    {mentor.popular && (
+                    {mentor.isPopular && (
                       <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
                         <TrendingUp className="w-3 h-3 mr-1" />
                         Populaire

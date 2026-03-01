@@ -71,7 +71,7 @@ export async function GET() {
       .select('user_email', { count: 'exact', head: true })
       .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
 
-    const activityPercentage = totalUsers > 0 ? Math.min(100, (recentActivity / totalUsers * 100)) : 0;
+    const activityPercentage = (totalUsers ?? 0) > 0 ? Math.min(100, ((recentActivity ?? 0) / (totalUsers ?? 1) * 100)) : 0;
 
     // Déterminer la tendance basée sur le pourcentage d'activité
     let trend: 'up' | 'down' | 'stable' = 'stable';

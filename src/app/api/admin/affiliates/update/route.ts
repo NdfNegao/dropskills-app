@@ -21,7 +21,7 @@ export async function PUT(request: NextRequest) {
       .eq('email', session.user.email)
       .single();
 
-    if (!userData || userData.email !== 'cyril.iriebi@gmail.com') {
+    if (!userData || session.user.email !== 'cyril.iriebi@gmail.com') {
       return NextResponse.json(
         { error: 'Permissions insuffisantes' },
         { status: 403 }
