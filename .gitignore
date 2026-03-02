@@ -125,4 +125,4 @@ api-keys.json
 credentials.json
 .env.production
 .env.staging
-.vercel/.env*
+.vercel/.env*.claude/worktrees/
