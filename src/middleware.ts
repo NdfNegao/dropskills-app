@@ -35,6 +35,8 @@ export default withAuth(
           '/',
           '/auth/signin',
           '/auth/signup',
+          '/auth/forgot-password',
+          '/auth/reset-password',
           '/auth/error',
           '/api/auth',
           '/premium',
