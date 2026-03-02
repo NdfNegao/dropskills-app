@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { AI_MENTORS } from '@/data/ai-mentors';
 import type { AIMentor } from '@/types/ai-mentor';
 
+export const dynamic = 'force-dynamic';
+
 // Vérification des permissions admin
 async function checkAdminPermissions() {
   const session = await getServerSession(authOptions);
